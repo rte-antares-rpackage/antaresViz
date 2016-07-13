@@ -1,5 +1,5 @@
 #' @export
-plot.antaresDataTable <- function(x, variable, main, ylab) {
+plot.antaresDataTable <- function(x, variable, main, ylab, ...) {
   if (missing(variable)) stop("Specify a variable to plot")
   
   if (missing(ylab)) ylab <- variable
@@ -7,7 +7,17 @@ plot.antaresDataTable <- function(x, variable, main, ylab) {
   idVars <- names(x)
   timeStep <- attr(x, "timeStep")
   
-  dt <- x[, c("timeId", variable), with = FALSE]
+  # Prepare data to plot
+  # First, we construct a table with three columns:
+  # - time: POSIXct or Date
+  # - colvar: factor representing the name of each "element" in the input data.
+  #           each element is represented with a different curve or bar in the
+  #           final graphic.
+  # - variable: values to visualize
+  #
+  # Then we reshape the data to have one line per date/time and one column per
+  # "element". Cells contain the variable to visualize.
+  dt <- x[, .(timeId, var = get(variable))]
   dt$time <- antaresRead:::.timeIdToDate(dt$timeId, timeStep = timeStep)
   
   if ("cluster" %in% idVars) {
@@ -20,14 +30,23 @@ plot.antaresDataTable <- function(x, variable, main, ylab) {
     dt$colvar <- x$area
   } else stop("No Id column")
   
-  if ("mcYear" %in% names(x)) dt[, colvar := sprintf("%s mc:%s", colvar, x$mcYear)]
+  if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
+    dt$mcYear <- x$mcYear
+    
+    uniqueColvar <- sort(unique(dt$colvar))
+    
+    dt <- dt[, .(var = c(mean(var), quantile(var, c(0.025, 0.975))),
+                 suffix = c("", "_l", "_u")), 
+             by = .(time, colvar)]
+    dt[, colvar := paste0(colvar, suffix)]
+  }
   
   if (timeStep != "annual") {
-    # If time step is annual plot a time series
-    dt <- dcast(dt, time ~ colvar, value.var = variable)
+    # Plot time series curves, unless data is annual
+    dt <- dcast(dt, time ~ colvar, value.var = "var")
     if (missing(main)) main <- paste("Evolution of", variable)
     
-    dygraph(dt, main = main) %>% 
+    g <- dygraph(dt, main = main) %>% 
       dyOptions(
         includeZero = TRUE, 
         gridLineColor = gray(0.8), 
@@ -38,16 +57,23 @@ plot.antaresDataTable <- function(x, variable, main, ylab) {
       dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
       dyRangeSelector()
     
+    if (exists("uniqueColvar")) {
+      for (v in uniqueColvar) {
+        g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
+      }
+    }
+    
   } else {
-    # else plot a barchart to compare elements
+    # If data is annual, plot a barchart to compare elements
     if (missing(main)) main <- paste("Comparison of", variable)
     
-    highchart() %>%
+    g <- highchart() %>%
       hc_xAxis(categories = dt$colvar) %>%
       hc_yAxis(title = list(text = ylab)) %>% 
-      hc_add_serie(data = dt[[variable]], type = "column") %>% 
+      hc_add_serie(name = variable, data = dt[[variable]], type = "column") %>% 
       hc_legend(enabled = FALSE) %>% 
       hc_title(text = main)
   }
   
+  g
 } 

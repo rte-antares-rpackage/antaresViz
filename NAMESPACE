@@ -3,3 +3,5 @@
 S3method(plot,antaresDataTable)
 import(antaresRead)
 import(data.table)
+import(dygraphs)
+import(highcharter)
