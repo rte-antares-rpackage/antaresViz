@@ -1,0 +1,19 @@
+Package: antaresViz
+Type: Package
+Title: antares visualizations
+Version: 0.1
+Date: 2016-07-06
+Author: Francois Guilem <francois.guillem@rte-france.com>
+Maintainer: Francois Guilem <francois.guillem@rte-france.com>
+Description: Visualize the data extracted from an antares project.
+License: rte
+LazyData: TRUE
+Depends:
+    antaresRead
+Imports:
+    dygraphs,
+    shiny,
+    miniUI,
+    magrittr,
+    highcharter
+RoxygenNote: 5.0.1
