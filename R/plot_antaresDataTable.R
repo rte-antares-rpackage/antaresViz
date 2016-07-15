@@ -18,7 +18,7 @@ plot.antaresDataTable <- function(x, variable, main, ylab, ...) {
   # Then we reshape the data to have one line per date/time and one column per
   # "element". Cells contain the variable to visualize.
   dt <- x[, .(timeId, var = get(variable))]
-  dt$time <- antaresRead:::.timeIdToDate(dt$timeId, timeStep = timeStep)
+  dt$time <- .timeIdToDate(dt$timeId, timeStep = timeStep)
   
   if ("cluster" %in% idVars) {
     dt$colvar <- paste(x$area, x$cluster)

@@ -3,4 +3,6 @@
 #' @import dygraphs
 #' @import highcharter
 #' 
-NULL
+.idCols <- antaresRead:::.idCols
+.timeIdToDate <- antaresRead:::.timeIdToDate
+pkgEnv <- antaresRead:::pkgEnv
