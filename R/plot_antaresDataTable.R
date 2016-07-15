@@ -1,6 +1,6 @@
 #' @export
 plot.antaresDataTable <- function(x, variable, main, ylab, ...) {
-  if (missing(variable)) stop("Specify a variable to plot")
+  if (missing(variable)) .plotAntaresDataTableInteractive(x)
   
   if (missing(ylab)) ylab <- variable
   
@@ -86,3 +86,79 @@ plot.antaresDataTable <- function(x, variable, main, ylab, ...) {
   
   g
 } 
+
+#' Private function that launches a shiny gadget that permits to the user to use
+#' a variable to plot.
+#' 
+#' @param x: antaresDataTable
+#' 
+#' @return 
+#' Once the user click on button "Done" the function returns the current chart.
+#' It can then be saved or reused by the user.
+#' 
+#' @noRd
+.plotAntaresDataTableInteractive <- function(x) {
+  variables <- setdiff(names(x), .idCols(x))
+  timeStep <- attr(x, "timeStep")
+  
+  if (timeStep == "annual") {
+    chart <- highchartOutput("chart", height = "100%")
+  } else {
+    chart <- dygraphOutput("chart", height = "100%")
+  }
+  
+  ui <- miniPage(
+    gadgetTitleBar(
+      tags$p(
+        ifelse(timeStep == "annual", "Comparison of ", "Evolution of "), 
+        .inlineSelectInput("variable", variables)
+      ), 
+      left = NULL
+    ),
+    miniContentPanel(
+      chart
+    )
+  )
+  
+  server <- function(input, output, session) {
+    if (timeStep != "annual") {
+      output$chart <- renderDygraph(plot(x, input$variable, main = ""))
+    } else {
+      output$chart <- renderHighchart(plot(x, input$variable, main = ""))
+    }
+    
+    
+    # When the Done button is clicked, return a value
+    observeEvent(input$done, {
+      returnValue <- plot(x, input$variable)
+      stopApp(returnValue)
+    })
+  }
+  
+  runGadget(ui, server)
+}
+
+#' private function that create an html input "select without any style.
+#' 
+#' @param inputId
+#'   Id of the input
+#' @param choices
+#'   vector containing the possibles choices
+#'   
+#' @noRd
+.inlineSelectInput <- function(inputId, choices) {
+  options <- lapply(choices, tags$option)
+  
+  tags$select(
+    id = inputId,
+    style = "-webkit-appearance: none; border:0; background:transparent;",
+    options
+  )
+}
+
+
+
+
+
+
+
