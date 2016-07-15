@@ -68,11 +68,20 @@ plot.antaresDataTable <- function(x, variable, main, ylab, ...) {
     if (missing(main)) main <- paste("Comparison of", variable)
     
     g <- highchart() %>%
-      hc_xAxis(categories = dt$colvar) %>%
       hc_yAxis(title = list(text = ylab)) %>% 
-      hc_add_serie(name = variable, data = dt[[variable]], type = "column") %>% 
       hc_legend(enabled = FALSE) %>% 
       hc_title(text = main)
+    
+    if (!exists("uniqueColvar")) {
+      g <- g %>% hc_xAxis(categories = dt$colvar) %>%
+      hc_add_serie(g, name = variable, data = dt$var, type = "column") 
+    } else {
+      g <- g %>% hc_xAxis(categories = dt[suffix == "", colvar]) %>%
+        hc_add_serie(name = variable, data = dt[suffix == "", var], type = "column") %>% 
+        hc_add_serie(name = "range", 
+                     data = cbind(dt[suffix == "_l", var], dt[suffix == "_u", var]), 
+                     type = "errorbar")
+    }
   }
   
   g
