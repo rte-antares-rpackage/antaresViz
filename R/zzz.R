@@ -1,7 +1,10 @@
 #' @import data.table
 #' @import antaresRead
+#' @import antaresProcessing
 #' @import dygraphs
 #' @import highcharter
+#' @import miniUI
+#' @import shiny
 #' 
 .idCols <- antaresRead:::.idCols
 .timeIdToDate <- antaresRead:::.timeIdToDate

@@ -9,11 +9,12 @@ Description: Visualize the data extracted from an antares project.
 License: rte
 LazyData: TRUE
 Depends:
-    antaresRead
+    antaresProcessing
 Imports:
     dygraphs,
     shiny,
     miniUI,
     magrittr,
-    highcharter
+    highcharter,
+    tibble
 RoxygenNote: 5.0.1
