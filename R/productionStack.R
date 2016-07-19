@@ -22,7 +22,29 @@ productionStack <- function(x, variables = "eco2mix", colors) {
   
   x <- .checkColumns(x, list(areas = c("timeId")))
   
-  .plotProductionStack(x$areas, variables, colors)
+  ui <- miniPage(
+    gadgetTitleBar("Production stack"),
+    miniContentPanel(
+      fillCol(flex = c(1,4,1),
+        selectInput("area", "Area", choices = as.list(levels(x$areas$area))),
+        dygraphOutput("chart", height = "100%"),
+        tags$div("coucou")
+      )
+    )
+  )
+  
+  server <- function(input, output, session) {
+    output$chart <- renderDygraph({
+      .plotProductionStack(x$areas[area == input$area], variables, colors)
+    })
+    
+    observeEvent(input$done, {
+      returnValue <- .plotProductionStack(x$areas[area == input$area], variables, colors)
+      stopApp(returnValue)
+    })
+  }
+  
+  runGadget(ui, server)
 }
 
 #' Returns the variables and colors corresponding to an alias
@@ -108,6 +130,16 @@ productionStack <- function(x, variables = "eco2mix", colors) {
   
   colors <- c("#FFFFFF", colors, colors)
   
-  dygraph(dt)  %>%  
-    dyOptions(stackedGraph = TRUE, colors = rev(colors), fillAlpha = 0.8)
+  dygraph(dt)  %>%
+    dyOptions(
+      stackedGraph = TRUE, 
+      colors = rev(colors), 
+      fillAlpha = 0.8,
+      includeZero = TRUE, 
+      gridLineColor = gray(0.8), 
+      axisLineColor = gray(0.6), 
+      axisLabelColor = gray(0.6), 
+      labelsKMB = TRUE
+    ) %>% 
+    dyLegend(show = "never")
 }
