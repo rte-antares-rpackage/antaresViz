@@ -1,5 +1,5 @@
 #' @export
-productionStack <- function(x, variables = "eco2mix", colors) {
+productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NULL) {
   
   # If parameter "variables" is an alias, then use the variables and colors 
   # corresponding to that alias
@@ -7,11 +7,11 @@ productionStack <- function(x, variables = "eco2mix", colors) {
     
     stackOptions <- .aliasToStackOptions(variables)
     variables <- stackOptions$variables
-    if (missing(colors)) colors <- stackOptions$colors
+    if (is.null(colors)) colors <- stackOptions$colors
     
   } else {
     
-    if (missing(colors)) stop("Colors need to be specified when using custom variables.")
+    if (is.null(colors)) stop("Colors need to be specified when using custom variables.")
   
   }
   
@@ -26,7 +26,12 @@ productionStack <- function(x, variables = "eco2mix", colors) {
     gadgetTitleBar("Production stack"),
     miniContentPanel(
       fillCol(flex = c(1,4,1),
-        selectInput("area", "Area", choices = as.list(levels(x$areas$area))),
+        selectInput(
+          "area", "Area", 
+          choices = as.list(levels(x$areas$area)), 
+          multiple = TRUE, 
+          selected = areas
+        ),
         dygraphOutput("chart", height = "100%"),
         tags$div("coucou")
       )
@@ -35,11 +40,13 @@ productionStack <- function(x, variables = "eco2mix", colors) {
   
   server <- function(input, output, session) {
     output$chart <- renderDygraph({
-      .plotProductionStack(x$areas[area == input$area], variables, colors)
+      if(length(input$area) > 0) {
+        .plotProductionStack(x$areas[area %in% input$area], variables, colors)
+      }
     })
     
     observeEvent(input$done, {
-      returnValue <- .plotProductionStack(x$areas[area == input$area], variables, colors)
+      returnValue <- .plotProductionStack(x$areas[area %in% input$area], variables, colors)
       stopApp(returnValue)
     })
   }
@@ -66,8 +73,8 @@ productionStack <- function(x, variables = "eco2mix", colors) {
   if (variables == "eco2mix") {
     
     variables <- alist(
-      exports = - (BALANCE + `ROW BAL.`),
       pumpedStorage  = PSP,
+      exports = - (BALANCE + `ROW BAL.`),
       wind = WIND,
       solar = SOLAR,
       nuclear = NUCLEAR,
@@ -78,9 +85,9 @@ productionStack <- function(x, variables = "eco2mix", colors) {
     )
     
     colors <- rgb(
-      red =   c(150,  17, 116, 242, 245,  39, 243, 172, 131),
-      green = c(150,  71, 205, 116, 179, 114,  10, 140,  86),
-      blue =  c(150, 116, 185,   6,   0, 178,  10,  53, 162),
+      red =   c( 17, 150, 116, 242, 245,  39, 243, 172, 131),
+      green = c( 71, 150, 205, 116, 179, 114,  10, 140,  86),
+      blue =  c(185, 150, 185,   6,   0, 178,  10,  53, 162),
       maxColorValue = 255
     )
     
@@ -109,26 +116,40 @@ productionStack <- function(x, variables = "eco2mix", colors) {
 .plotProductionStack <- function(x, variables, colors) {
   timeStep <- attr(x, "timeStep")
   
-  dt <- data.table(timeId = x$timeId)
+  dt <- data.table(timeId = x$timeId, area = x$area)
   dt$time <- .timeIdToDate(dt$timeId, timeStep)
   dt[, timeId := NULL]
-  dt[, c(rev(names(variables))) := 0]
+  dt[, c(rev(names(variables)), paste0("neg", names(variables))) := 0]
   
-  totalNeg <- rep(0, nrow(dt))
+  
+  nvar <- length(variables)
   
   for (i in length(variables):1) {
     values <- x[, eval(variables[[i]])]
+    set(dt, j = nvar + 3L - i, value = values)
+  }
+  
+  # Group by timeId
+  dt[, area := NULL]
+  dt <- dt[, lapply(.SD, sum), by = time]
+  
+  # Separate positive and negative values
+  totalNeg <- rep(0, nrow(dt))
+  
+  for (i in length(variables):1) {
+    values <- dt[[names(variables)[i]]]
     posValues <- pmax(0, values)
     negValues <- pmin(0, values)
     
-    set(dt, j = length(variables) - i + 2L, value = posValues)
-    set(dt, j = paste0("neg", names(variables)[i]), value = - negValues)
+    set(dt, j = nvar + 2L - i, value = posValues)
+    set(dt, j = nvar + 1L + i, value = - negValues)
     totalNeg <- totalNeg + negValues
   }
   
   dt[, totalNeg := totalNeg]
   
-  colors <- c("#FFFFFF", colors, colors)
+  
+  colors <- c("#FFFFFF", rev(colors), colors)
   
   dygraph(dt)  %>%
     dyOptions(
