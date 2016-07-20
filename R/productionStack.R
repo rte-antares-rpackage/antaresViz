@@ -1,5 +1,6 @@
 #' @export
-productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NULL) {
+productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NULL, 
+                            main = "Production stack") {
   
   # If parameter "variables" is an alias, then use the variables and colors 
   # corresponding to that alias
@@ -23,22 +24,33 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   x <- .checkColumns(x, list(areas = c("timeId")))
   
   ui <- miniPage(
-    gadgetTitleBar("Production stack"),
+    gadgetTitleBar(textOutput("title", inline = TRUE)),
     miniContentPanel(
-      fillCol(flex = c(1,4,1),
-        selectInput(
-          "area", "Area", 
-          choices = as.list(levels(x$areas$area)), 
-          multiple = TRUE, 
-          selected = areas
+      fillRow(flex = c(1,3),
+              
+        fillCol(flex = c(NA, 1),
+          textInput("main", "Title", value = main),
+          selectInput(
+            "area", "Areas", 
+            choices = as.list(levels(x$areas$area)), 
+            multiple = TRUE, 
+            selected = areas
+          )
         ),
-        dygraphOutput("chart", height = "100%"),
-        tags$div("coucou")
+        
+        fillCol(flex = c(4, 1),
+          dygraphOutput("chart", height = "100%"),
+          tags$div("coucou")
+        )
+        
       )
     )
   )
   
   server <- function(input, output, session) {
+    
+    output$title <- renderText(input$main)
+    
     output$chart <- renderDygraph({
       if(length(input$area) > 0) {
         .plotProductionStack(x$areas[area %in% input$area], variables, colors)
@@ -46,7 +58,10 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
     })
     
     observeEvent(input$done, {
-      returnValue <- .plotProductionStack(x$areas[area %in% input$area], variables, colors)
+      returnValue <- .plotProductionStack(x$areas[area %in% input$area], 
+                                          variables, 
+                                          colors,
+                                          main = input$main)
       stopApp(returnValue)
     })
   }
@@ -130,7 +145,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
 #' a column with the total of negative values.
 #' 
 #' @noRd
-.plotProductionStack <- function(x, variables, colors) {
+.plotProductionStack <- function(x, variables, colors, main = NULL) {
 
   timeStep <- attr(x, "timeStep")
   
@@ -169,7 +184,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   # 4- Finally plot !!
   colors <- c("#FFFFFF", rev(colors), colors)
   
-  dygraph(dt)  %>%
+  dygraph(dt, main = main)  %>%
     dyOptions(
       stackedGraph = TRUE, 
       colors = rev(colors), 
