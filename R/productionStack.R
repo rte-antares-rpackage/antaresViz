@@ -38,9 +38,9 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
           )
         ),
         
-        fillCol(flex = c(4, 1),
+        fillCol(flex = c(1, NA),
           dygraphOutput("chart", height = "100%"),
-          tags$div("coucou")
+          .productionStackLegend(variables, colors)
         )
         
       )
@@ -196,4 +196,29 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
       labelsKMB = TRUE
     ) %>% 
     dyLegend(show = "never")
+}
+
+.productionStackLegend <- function(variables, colors, itemsByRow = 5) {
+  legendItems <- mapply(.productionStackLegendItem, 
+                        label = names(variables), 
+                        color = colors, 
+                        SIMPLIFY = FALSE, 
+                        USE.NAMES = FALSE)
+  
+  nbRows <- ceiling(length(legendItems) / itemsByRow) 
+  
+  legendItems <- legendItems[(nbRows * itemsByRow):1]
+  
+  legendRows <- list()
+  for (i in 1:nbRows) {
+    j <- ((i - 1) * 5 + 1):(i * 5)
+    legendRows[[i]] <- do.call(fillRow, legendItems[j])
+  } 
+  
+  
+  fillRow(do.call(fillCol, legendRows), height = i * 30)
+}
+
+.productionStackLegendItem <- function(label, color) {
+  tags$div(label, style = sprintf("height:100%%;width:100%%;background-color:%s;", color))
 }
