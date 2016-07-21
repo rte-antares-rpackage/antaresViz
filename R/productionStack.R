@@ -1,6 +1,8 @@
 #' @export
 productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NULL, 
-                            main = "Production stack") {
+                            main = "Production stack", unit = c("MWh", "GWh", "TWh")) {
+  
+  unit <- match.arg(unit)
   
   # If parameter "variables" is an alias, then use the variables and colors 
   # corresponding to that alias
@@ -53,7 +55,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
     
     output$chart <- renderDygraph({
       if(length(input$area) > 0) {
-        .plotProductionStack(x$areas[area %in% input$area], variables, colors)
+        .plotProductionStack(x$areas[area %in% input$area], variables, colors, unit = unit)
       }
     })
     
@@ -145,7 +147,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
 #' a column with the total of negative values.
 #' 
 #' @noRd
-.plotProductionStack <- function(x, variables, colors, main = NULL) {
+.plotProductionStack <- function(x, variables, colors, main = NULL, unit = "MWh") {
 
   timeStep <- attr(x, "timeStep")
   
@@ -158,7 +160,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   nvar <- length(variables)
   
   for (i in length(variables):1) {
-    values <- x[, eval(variables[[i]])]
+    values <- x[, eval(variables[[i]])] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
     set(dt, j = nvar + 3L - i, value = values)
   }
   
@@ -193,12 +195,12 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
-      labelsKMB = TRUE
+      labelsKMB = FALSE
     ) %>% 
-    dyAxis("y", label = "Production", pixelsPerLabel = 60) %>% 
+    dyAxis("y", label = sprintf("Production (%s)", unit), pixelsPerLabel = 60) %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
-      highlightCallback = JS(
+      highlightCallback = JS(sprintf(
         "function(e, timestamp, data) {
            var values = {}
            data.forEach(function(d) {
@@ -210,11 +212,12 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
            for (k in values) {
              if (!values.hasOwnProperty(k)) continue; 
              var el = document.getElementById(k);
-             if (el) el.innerHTML = values[k];
+             if (el) el.innerHTML = '<b style=\"font-size:1.5em;\">' + Math.round(values[k]) + '</b> %s';
            }
 
-         }"
-      ),
+         }",
+        unit
+      )),
       unhighlightCallback = JS(
         "function(e) {
            var els = document.getElementsByClassName('legvalue');
@@ -246,10 +249,10 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
 }
 
 .productionStackLegendItem <- function(label, color) {
-  txtColor <- sprintf("color:%s", color)
+  txtColor <- sprintf("color:%s; text-align: right;", color)
   bgColor <- sprintf("background-color:%s", color)
   
-  fillCol(flex = c(1,NA,1), style = "padding:4px;",
+  fillCol(flex = c(3,NA,1), style = "padding:4px;",
           tags$div("", style=txtColor, id = label, class =  "legvalue"),
           tags$div(style = paste(c(bgColor, "height:6px", "margin:2px 0"), collapse = ";")),
           tags$div(label, style = txtColor))
