@@ -195,7 +195,33 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE
     ) %>% 
-    dyLegend(show = "never")
+    dyAxis("y", label = "Production", pixelsPerLabel = 60) %>% 
+    dyLegend(show = "never") %>% 
+    dyCallbacks(
+      highlightCallback = JS(
+        "function(e, timestamp, data) {
+           var values = {}
+           data.forEach(function(d) {
+             var sign = d.name.match(/^neg/) ? -1 : 1;
+             var varname = d.name.replace(/^neg/, '');
+             if (values[varname]) values[varname] += d.yval * sign;
+             else values[varname] = d.yval * sign;
+           })
+           for (k in values) {
+             if (!values.hasOwnProperty(k)) continue; 
+             var el = document.getElementById(k);
+             if (el) el.innerHTML = values[k];
+           }
+
+         }"
+      ),
+      unhighlightCallback = JS(
+        "function(e) {
+           var els = document.getElementsByClassName('legvalue');
+           for (var i = 0; i < els.length; ++i) {els[i].innerHTML = '';}
+         }"
+      )
+    )
 }
 
 .productionStackLegend <- function(variables, colors, itemsByRow = 5) {
@@ -207,7 +233,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   
   nbRows <- ceiling(length(legendItems) / itemsByRow) 
   
-  legendItems <- legendItems[(nbRows * itemsByRow):1]
+  legendItems <- rev(legendItems)
   
   legendRows <- list()
   for (i in 1:nbRows) {
@@ -216,9 +242,15 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   } 
   
   
-  fillRow(do.call(fillCol, legendRows), height = i * 30)
+  fillRow(do.call(fillCol, legendRows), height = i * 50)
 }
 
 .productionStackLegendItem <- function(label, color) {
-  tags$div(label, style = sprintf("height:100%%;width:100%%;background-color:%s;", color))
+  txtColor <- sprintf("color:%s", color)
+  bgColor <- sprintf("background-color:%s", color)
+  
+  fillCol(flex = c(1,NA,1), style = "padding:4px;",
+          tags$div("", style=txtColor, id = label, class =  "legvalue"),
+          tags$div(style = paste(c(bgColor, "height:6px", "margin:2px 0"), collapse = ";")),
+          tags$div(label, style = txtColor))
 }
