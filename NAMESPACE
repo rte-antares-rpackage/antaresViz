@@ -3,6 +3,7 @@
 S3method(plot,antaresDataTable)
 S3method(print,productionStack)
 export(productionStack)
+export(productionStackLegend)
 import(antaresProcessing)
 import(antaresRead)
 import(data.table)

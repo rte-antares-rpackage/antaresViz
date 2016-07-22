@@ -2,7 +2,9 @@
 productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NULL, 
                             main = "Production stack", unit = c("MWh", "GWh", "TWh"),
                             width = "100%", height = "500px",
-                            interactive = base::interactive()) {
+                            interactive = base::interactive(), 
+                            legend = TRUE, legendId = sample(1e9, 1),
+                            legendItemsPerRow = 5) {
   
   unit <- match.arg(unit)
   
@@ -36,8 +38,9 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
                              variables, 
                              colors,
                              main = main,
-                             unit = unit),
-        .productionStackLegend(variables, colors)
+                             unit = unit,
+                             legendId = legendId),
+        if (legend) productionStackLegend(variables, colors, legendItemsPerRow, legendId = legendId) else 0
       )
     )
     class(res) <- append("productionStack", class(res))
@@ -65,7 +68,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
         
         fillCol(flex = c(1, NA),
           dygraphOutput("chart", height = "100%"),
-          .productionStackLegend(variables, colors)
+          productionStackLegend(variables, colors, legendItemsPerRow, legendId = legendId)
         )
         
       )
@@ -78,12 +81,13 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
     
     output$chart <- renderDygraph({
       if(length(input$area) > 0) {
-        .plotProductionStack(x$areas[area %in% input$area], variables, colors, unit = unit)
+        .plotProductionStack(x$areas[area %in% input$area], variables, colors, unit = unit, legendId = legendId)
       }
     })
     
     observeEvent(input$done, {
-      returnValue <- plotWithLegend(input$area, variables, colors, input$main, unit, width, height)
+      returnValue <- plotWithLegend(input$area, variables, colors, input$main, 
+                                    unit, width, height)
       
       stopApp(returnValue)
     })
@@ -168,7 +172,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
 #' a column with the total of negative values.
 #' 
 #' @noRd
-.plotProductionStack <- function(x, variables, colors, main = NULL, unit = "MWh") {
+.plotProductionStack <- function(x, variables, colors, main = NULL, unit = "MWh",
+                                 legendId = "") {
 
   timeStep <- attr(x, "timeStep")
   
@@ -232,12 +237,12 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
            })
            for (k in values) {
              if (!values.hasOwnProperty(k)) continue; 
-             var el = document.getElementById(k);
+             var el = document.getElementById(k + '%s');
              if (el) el.innerHTML = '<b style=\"font-size:1.5em;\">' + Math.round(values[k]) + '</b> %s';
            }
 
          }",
-        unit
+        legendId, unit
       )),
       unhighlightCallback = JS(
         "function(e) {
@@ -248,10 +253,20 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
     )
 }
 
-.productionStackLegend <- function(variables, colors, itemsByRow = 5) {
+#' @export
+productionStackLegend <- function(variables, colors, itemsByRow = 5, legendId = "") {
+  if (is.character(variables)) { # variables is an alias
+    
+    stackOptions <- .aliasToStackOptions(variables)
+    variables <- stackOptions$variables
+    if (is.null(colors)) colors <- stackOptions$colors
+    
+  }
+  
   legendItems <- mapply(.productionStackLegendItem, 
                         label = names(variables), 
                         color = colors, 
+                        legendId = legendId,
                         SIMPLIFY = FALSE, 
                         USE.NAMES = FALSE)
   
@@ -261,7 +276,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   
   legendRows <- list()
   for (i in 1:nbRows) {
-    j <- ((i - 1) * 5 + 1):(i * 5)
+    j <- ((i - 1) * itemsByRow + 1):(i * itemsByRow)
     legendRows[[i]] <- do.call(fillRow, legendItems[j])
   } 
   
@@ -269,12 +284,12 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   fillRow(do.call(fillCol, legendRows), height = i * 60)
 }
 
-.productionStackLegendItem <- function(label, color) {
+.productionStackLegendItem <- function(label, color, legendId) {
   txtColor <- sprintf("color:%s; text-align: right;", color)
   bgColor <- sprintf("background-color:%s", color)
   
   fillCol(flex = c(1.5,NA,1), style = "padding:4px;",
-          tags$div("", style=txtColor, id = label, class =  "legvalue"),
+          tags$div("", style=txtColor, id = paste0(label, legendId), class =  "legvalue"),
           tags$div(style = paste(c(bgColor, "height:6px", "margin:2px 0"), collapse = ";")),
           tags$div(label, style = txtColor))
 }
