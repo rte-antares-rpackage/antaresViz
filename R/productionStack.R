@@ -60,10 +60,14 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
     })
     
     observeEvent(input$done, {
-      returnValue <- .plotProductionStack(x$areas[area %in% input$area], 
-                                          variables, 
-                                          colors,
-                                          main = input$main)
+      returnValue <- miniPage(fillCol(flex = c(1,NA),
+        .plotProductionStack(x$areas[area %in% input$area], 
+                             variables, 
+                             colors,
+                             main = input$main,
+                             unit = unit),
+        .productionStackLegend(variables, colors)
+      ))
       stopApp(returnValue)
     })
   }
@@ -186,7 +190,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   # 4- Finally plot !!
   colors <- c("#FFFFFF", rev(colors), colors)
   
-  dygraph(dt, main = main)  %>%
+  dygraph(dt, main = main, width = "100%")  %>%
     dyOptions(
       stackedGraph = TRUE, 
       colors = rev(colors), 
@@ -245,14 +249,14 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   } 
   
   
-  fillRow(do.call(fillCol, legendRows), height = i * 50)
+  fillRow(do.call(fillCol, legendRows), height = i * 60)
 }
 
 .productionStackLegendItem <- function(label, color) {
   txtColor <- sprintf("color:%s; text-align: right;", color)
   bgColor <- sprintf("background-color:%s", color)
   
-  fillCol(flex = c(3,NA,1), style = "padding:4px;",
+  fillCol(flex = c(1.5,NA,1), style = "padding:4px;",
           tags$div("", style=txtColor, id = label, class =  "legvalue"),
           tags$div(style = paste(c(bgColor, "height:6px", "margin:2px 0"), collapse = ";")),
           tags$div(label, style = txtColor))
