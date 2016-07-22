@@ -5,6 +5,7 @@
 #' @import highcharter
 #' @import miniUI
 #' @import shiny
+#' @import htmltools
 #' 
 .idCols <- antaresRead:::.idCols
 .timeIdToDate <- antaresRead:::.timeIdToDate

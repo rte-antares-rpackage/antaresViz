@@ -16,5 +16,6 @@ Imports:
     miniUI,
     magrittr,
     highcharter,
-    tibble
+    tibble,
+    htmltools
 RoxygenNote: 5.0.1
