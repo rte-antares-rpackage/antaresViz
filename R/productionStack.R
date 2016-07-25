@@ -1,5 +1,7 @@
 #' @export
-productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NULL, 
+productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
+                            lineColors = NULL,
+                            areas = NULL, 
                             main = "Production stack", unit = c("MWh", "GWh", "TWh"),
                             width = "100%", height = "500px",
                             interactive = base::interactive(), 
@@ -15,10 +17,15 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
     stackOptions <- .aliasToStackOptions(variables)
     variables <- stackOptions$variables
     if (is.null(colors)) colors <- stackOptions$colors
+    if (is.null(lines)) lines <- stackOptions$lines
+    if (is.null(lineColors)) lineColors <- stackOptions$lineColors
     
   } else {
     
     if (is.null(colors)) stop("Colors need to be specified when using custom variables.")
+    if (!is.null(lines) && is.null(lineColors)) {
+      stop("lineColors need to be specified when using custom lineCurves.")
+    }
   
   }
   
@@ -26,21 +33,25 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   if (length(colors) != length(variables)) {
     stop("Number of colors and number of variables should be equal.")
   }
+  if (length(lineColors) != length(lines)) {
+    stop("Number of line colors and number of lines should be equal.")
+  }
   
   x <- .checkColumns(x, list(areas = c("timeId")))
   
-  plotWithLegend <- function(areas, variables, colors, main = "", unit,
-                             width, height) {
+  plotWithLegend <- function(areas, main = "") {
     res <- miniPage(
       style=sprintf("width:%s;height:%s;", width, height),
       fillCol(flex = c(1,NA),
         .plotProductionStack(x$areas[area %in% areas], 
                              variables, 
                              colors,
+                             lines,
+                             lineColors,
                              main = main,
                              unit = unit,
                              legendId = legendId),
-        if (legend) productionStackLegend(variables, colors, legendItemsPerRow, legendId = legendId) else 0
+        if (legend) productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId) else 0
       )
     )
     class(res) <- append("productionStack", class(res))
@@ -48,7 +59,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   }
   
   if (!interactive) {
-    return(plotWithLegend(areas, variables, colors, main, unit, width, height))
+    return(plotWithLegend(areas, main))
   }
   
   ui <- miniPage(
@@ -68,7 +79,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
         
         fillCol(flex = c(1, NA),
           dygraphOutput("chart", height = "100%"),
-          productionStackLegend(variables, colors, legendItemsPerRow, legendId = legendId)
+          productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
         )
         
       )
@@ -81,13 +92,12 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
     
     output$chart <- renderDygraph({
       if(length(input$area) > 0) {
-        .plotProductionStack(x$areas[area %in% input$area], variables, colors, unit = unit, legendId = legendId)
+        .plotProductionStack(x$areas[area %in% input$area], variables, colors, line, lineColors, unit = unit, legendId = legendId)
       }
     })
     
     observeEvent(input$done, {
-      returnValue <- plotWithLegend(input$area, variables, colors, input$main, 
-                                    unit, width, height)
+      returnValue <- plotWithLegend(input$area, input$main)
       
       stopApp(returnValue)
     })
@@ -133,11 +143,15 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
       maxColorValue = 255
     )
     
+    lines <- alist(load = LOAD)
+    
+    lineColors <- c("#000000")
+    
   } else {
     stop("Unknown alias '", variables, "'.")
   }
   
-  list(variables = variables, colors = colors ) 
+  list(variables = variables, colors = colors, lines = lines, lineColors = lineColors) 
 }
 
 #' Generate an interactive production stack
@@ -172,8 +186,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
 #' a column with the total of negative values.
 #' 
 #' @noRd
-.plotProductionStack <- function(x, variables, colors, main = NULL, unit = "MWh",
-                                 legendId = "") {
+.plotProductionStack <- function(x, variables, colors, lines, lineColors, 
+                                 main = NULL, unit = "MWh", legendId = "") {
 
   timeStep <- attr(x, "timeStep")
   
@@ -181,13 +195,22 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   dt <- data.table(timeId = x$timeId, area = x$area)
   dt$time <- .timeIdToDate(dt$timeId, timeStep)
   dt[, timeId := NULL]
-  dt[, c(rev(names(variables)), paste0("neg", names(variables))) := 0]
+  dt[, c(rev(names(variables)), paste0("neg", names(variables)), "totalNeg", names(lines), paste0("opp", names(lines))) := 0]
   
   nvar <- length(variables)
+  nlines <- length(lines)
   
   for (i in length(variables):1) {
     values <- x[, eval(variables[[i]])] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
     set(dt, j = nvar + 3L - i, value = values)
+  }
+  
+  if (nlines > 0) {
+    for (i in nlines) {
+      value <- x[, eval(lines[[i]])] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
+      set(dt, j = 2L * nvar + 3L + i, value = value)
+      set(dt, j = 2L * nvar + 3L + nlines + i, value = -value)
+    }
   }
   
   # 2- Group by timeId
@@ -195,8 +218,6 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
   dt <- dt[, lapply(.SD, sum), by = time]
   
   # 3- Separate positive and negative values and compute total negative values
-  totalNeg <- rep(0, nrow(dt))
-  
   for (i in length(variables):1) {
     values <- dt[[names(variables)[i]]]
     posValues <- pmax(0, values)
@@ -204,15 +225,13 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
     
     set(dt, j = nvar + 2L - i, value = posValues)
     set(dt, j = nvar + 1L + i, value = - negValues)
-    totalNeg <- totalNeg + negValues
+    dt$totalNeg <- dt$totalNeg + negValues
   }
   
-  dt[, totalNeg := totalNeg]
-  
-  # 4- Finally plot !!
+  # 5- Finally plot !!
   colors <- c("#FFFFFF", rev(colors), colors)
   
-  dygraph(dt, main = main, width = "100%", height = "100%")  %>%
+  g <- dygraph(dt, main = main, width = "100%", height = "100%")  %>%
     dyOptions(
       stackedGraph = TRUE, 
       colors = rev(colors), 
@@ -223,7 +242,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
       axisLabelColor = gray(0.6), 
       labelsKMB = FALSE
     ) %>% 
-    dyAxis("y", label = sprintf("Production (%s)", unit), pixelsPerLabel = 60) %>% 
+    dyAxis("y", label = sprintf("Production (%s)", unit), pixelsPerLabel = 60, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
       highlightCallback = JS(sprintf(
@@ -251,10 +270,22 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, areas = NUL
          }"
       )
     )
+  
+  if (length(lines) > 0) {
+    for (i in length(lines)) {
+      g <- g %>% dySeries(name = paste0("opp", names(lines)[i]), color = lineColors[i], 
+                          fillGraph = FALSE, strokeWidth = 0)
+      g <- g %>% dySeries(name = names(lines)[i], color = lineColors[i], 
+                          fillGraph = FALSE, strokeWidth = 2)
+    }
+  }
+  
+  g
 }
 
 #' @export
-productionStackLegend <- function(variables, colors, itemsByRow = 5, legendId = "") {
+productionStackLegend <- function(variables, colors, lines, lineColors, 
+                                  itemsByRow = 5, legendId = "") {
   if (is.character(variables)) { # variables is an alias
     
     stackOptions <- .aliasToStackOptions(variables)
@@ -299,5 +330,3 @@ productionStackLegend <- function(variables, colors, itemsByRow = 5, legendId = 
 print.productionStack <- function(x, ...) {
   htmltools:::html_print(x)
 }
-
-
