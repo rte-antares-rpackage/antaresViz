@@ -51,7 +51,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
                              main = main,
                              unit = unit,
                              legendId = legendId),
-        if (legend) productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId) else 0
+        if (legend) productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId) else ""
       )
     )
     class(res) <- append("productionStack", class(res))
@@ -133,7 +133,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
       hydraulic = `H. ROR` + `H. STOR`,
       gas = GAS,
       coal = COAL + LIGNITE,
-      fuel = `MIX. FUEL`
+      fuel = `MIX. FUEL` + OIL + `MISC. DTG` + `MISC. NDG`
     )
     
     colors <- rgb(
@@ -235,7 +235,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
     dyOptions(
       stackedGraph = TRUE, 
       colors = rev(colors), 
-      fillAlpha = 0.8,
+      fillAlpha = 0.7,
       includeZero = TRUE, 
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
@@ -284,19 +284,22 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
 }
 
 #' @export
-productionStackLegend <- function(variables, colors, lines, lineColors, 
+productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = NULL, 
+                                  lineColors = NULL, 
                                   itemsByRow = 5, legendId = "") {
   if (is.character(variables)) { # variables is an alias
     
     stackOptions <- .aliasToStackOptions(variables)
     variables <- stackOptions$variables
     if (is.null(colors)) colors <- stackOptions$colors
+    if (is.null(lines)) lines <- stackOptions$lines
+    if (is.null(lineColors)) lineColors <- stackOptions$lineColors
     
   }
   
   legendItems <- mapply(.productionStackLegendItem, 
-                        label = names(variables), 
-                        color = colors, 
+                        label = c(names(variables), names(lines)), 
+                        color = c(colors, lineColors), 
                         legendId = legendId,
                         SIMPLIFY = FALSE, 
                         USE.NAMES = FALSE)
