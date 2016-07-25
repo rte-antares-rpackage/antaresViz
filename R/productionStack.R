@@ -1,3 +1,5 @@
+#' Visualize the production stack of an area
+#'
 #' @export
 productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
                             lineColors = NULL,
@@ -37,13 +39,26 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
     stop("Number of line colors and number of lines should be equal.")
   }
   
-  x <- .checkColumns(x, list(areas = c("timeId")))
+  # Check that input contains area or district data
+  if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
+  if (is(x, "antaresDataTable")) {
+    if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
+  }
+  if (is(x, "antaresDataTable")) {
+    if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
+  } else if (is(x, "antaresDataList")) {
+    if (is.null(x$areas) & is.null(x$districts)) stop("'x' should contain area or district data")
+    if (!is.null(x$areas)) x <- x$areas
+    else x <- x$districts
+  }
+  
+  if (is.null(x$area)) x$area <- x$district
   
   plotWithLegend <- function(areas, main = "") {
     res <- miniPage(
       style=sprintf("width:%s;height:%s;", width, height),
       fillCol(flex = c(1,NA),
-        .plotProductionStack(x$areas[area %in% areas], 
+        .plotProductionStack(x[area %in% areas], 
                              variables, 
                              colors,
                              lines,
@@ -71,7 +86,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
           textInput("main", "Title", value = main),
           selectInput(
             "area", "Areas", 
-            choices = as.list(levels(x$areas$area)), 
+            choices = as.list(levels(x$area)), 
             multiple = TRUE, 
             selected = areas
           )
@@ -92,7 +107,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
     
     output$chart <- renderDygraph({
       if(length(input$area) > 0) {
-        .plotProductionStack(x$areas[area %in% input$area], variables, colors, line, lineColors, unit = unit, legendId = legendId)
+        .plotProductionStack(x[area %in% input$area], variables, colors, lines, lineColors, unit = unit, legendId = legendId)
       }
     })
     
