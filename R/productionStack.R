@@ -1,5 +1,90 @@
 #' Visualize the production stack of an area
-#'
+#' 
+#' This function draws the production stack for a set of areas or districts. User
+#' can choose predefined stacks or define its own stacks. 
+#' 
+#' @param x
+#'   An object of class \code{antaresData} created with function 
+#'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
+#'   districts.
+#' @param variables
+#'   Either a character string containing an alias or a named list of expressions 
+#'   created with \code{\link[base]{alist}}. The name of each element is the name
+#'   of the variable to draw in the stacked graph. The element itself is an
+#'   expression explaining how to compute the variable (see examples).
+#' @param colors
+#'   Vector of colors with same length as parameter \code{variables}. If 
+#'   \code{variables} is an alias, then this argument should be \code{NULL} in 
+#'   order to use default colors.
+#' @param lines
+#'   A named list of expressions created with \code{\link[base]{alist}}
+#'   indicating how to compute the curves to disply on top of the stacked graph.
+#'   It should be \code{NULL} if there is no curve to trace or if parameter
+#'   \code{variables} is an alias.
+#' @param lineColors
+#'   Vector of colors with same length as parameter \code{lines}. This argument
+#'   should be \code{NULL} if there is no curve to trace or if parameter
+#'   \code{variables} is an alias.
+#' @param areas
+#'   Vector of area or district names. The data of these areas or districts is
+#'   aggregated by the function to construct the production stack.
+#' @param main
+#'   Title of the graph.
+#' @param unit
+#'   Unit used in the graph. Possible values are "MWh", "GWh" or "TWh".
+#' @param width
+#'   Width of the graph expressed in pixels or in percentage of 
+#'   the parent element. For instance "500px" and "100\%" are valid values.
+#' @param height
+#'   Height of the graph expressed in pixels or in percentage of 
+#'   the parent element. For instance "500px" and "100\%" are valid values.
+#' @param interactive
+#'   LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
+#'   the user interactively choose the areas or districts to display.
+#' @param legend
+#'   Logical value indicating if a legend should be drawn. This argument is 
+#'   usefull when one wants to create a shared legend with
+#'   \code{\link{productionStackLegend}}
+#' @param legendId
+#'   Id of the legend linked to the graph. This argument is 
+#'   usefull when one wants to create a shared legend with
+#'   \code{\link{productionStackLegend}}
+#' @param legendItemsPerRow
+#'   Number of elements to put in each row of the legend.
+#'   
+#' @return 
+#' An interactive html graphic. If argument \code{interactive} is \code{TRUE},
+#' then a shiny gadget is started and the function returns an interactive html
+#' graphic when the user clicks on button "Done".
+#' 
+#' @seealso \code{\link{productionStackLegend}}
+#' 
+#' @examples
+#' \dontrun{
+#' mydata <- readAntares(areas = "all", timeStep = "daily")
+#' 
+#' # Start a shiny gadget that permits to choose areas to display.
+#' productionStack(mydata, unit = "GWh", height="100%")
+#' 
+#' # Use in a non-interactive way
+#' productionStack(mydata, unit = "GWh", height="100%", areas = "fr", interactive = FALSE)
+#' 
+#' # Define a custom stack
+#' productionStack(mydata, unit = "GWh", height="100%", 
+#'                 variables = alist(wind = WIND, solar = SOLAR),
+#'                 colors = c("green", "orange"))
+#'                 
+#' # In a custom stack it is possible to use computed values
+#' productionStack(mydata, unit = "GWh", height="100%", 
+#'                 variables = alist(
+#'                   renewable = WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`, 
+#'                   thermal = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`
+#'                 ),
+#'                 colors = c("green", gray(0.3)),
+#'                 lines = alist(goalRenewable = LOAD * 0.23),
+#'                 lineColors = "#42EB09")
+#' }
+#' 
 #' @export
 productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
                             lineColors = NULL,
@@ -200,6 +285,12 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
 #' series, then the negative values of each column (absolute values) and finally
 #' a column with the total of negative values.
 #' 
+#' dygraphs does not offer the possibility to add a curve over a stacked graph.
+#' Once again this require a hack: before ploting any area, plot the curve series
+#' without filling the area under the curve, then plot an invisible series equal
+#' to the opposite of the curve in order to "go back" to zero. This way, the 
+#' next series is drawn from 0.
+#' 
 #' @noRd
 .plotProductionStack <- function(x, variables, colors, lines, lineColors, 
                                  main = NULL, unit = "MWh", legendId = "") {
@@ -298,6 +389,50 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   g
 }
 
+#' Plot an interactive legend for a production stack plot
+#' 
+#' This function create an nice looking legend that displays values when the user
+#' hovers a production stack created with \code{\link{productionStack}}. By 
+#' default \code{\link{productionStack}} already outputs a legend. This function
+#' is mostly usefull to share legend between two or more production stacks.
+#' 
+#' @inheritParams productionStack
+#' 
+#' @details 
+#' This function can be used to create a legend shared by multiple production 
+#' stacks in a Shiny application or an interactive document created with Rmarkdown.
+#' For instance, let assume one wants to display four productions stacks in a 2x2
+#' layout and have a unique legend below them in a Rmarkdown document. To do so,
+#' one can use the following chunck code:
+#' 
+#' \preformatted{
+#' ```{R, echo = FALSE}
+#' library(shiny)
+#' 
+#' fillCol(height = "600px", flex = c(1, 1, NA),
+#'   fillRow(
+#'     productionStack(mydata, areas = "fr", 
+#'                     main = "Production stack in France", unit = "GWh", 
+#'                     legend = FALSE, legendId = 1, height = "100\%"),
+#'     productionStack(mydata, areas = "de", 
+#'                     main = "Production stack in Germany", unit = "GWh", 
+#'                     legend = FALSE, legendId = 1, height = "100\%"),
+#'   ),
+#'   fillRow(
+#'     productionStack(mydata, areas = "es", 
+#'                     main = "Production stack in Spain", unit = "GWh", 
+#'                     legend = FALSE, legendId = 1, height = "100\%"),
+#'     productionStack(mydata, areas = "be", 
+#'                     main = "Production stack in Belgium", unit = "GWh", 
+#'                     legend = FALSE, legendId = 1, height = "100\%"),
+#'   ),
+#'   productionStackLegend(legendId = 1)
+#' )
+#' ```
+#' }
+#' 
+#' 
+#' 
 #' @export
 productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = NULL, 
                                   lineColors = NULL, 
