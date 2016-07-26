@@ -1,3 +1,29 @@
+productionStackAliases <- function() {
+  for (n in names(.productionStackAliases)) {
+    alias <- .productionStackAliases[[n]]
+    
+    cat(n, "\n===========\n")
+    cat(alias$description, "\n")
+    
+    cat("-----------\nVariables:\n")
+    for (v in names(alias$variables)) {
+      cat(sprintf("   %s = %s\n", 
+                  v, 
+                  deparse(alias$variables[[v]])))
+    }
+    if (!is.null(alias$lines)) {
+      cat("Curves:\n")
+      for (v in names(alias$lines)) {
+        cat(sprintf("   %s = %s\n", 
+                    v, 
+                    deparse(alias$lines[[v]])))
+      }
+    }
+    cat("\n")
+  }
+}
+
+
 # List of aliases for parameter "variables" in function productionStack()
 #
 # Each element has five elements:
@@ -10,10 +36,8 @@
 
 .productionStackAliases <- list(
   eco2mix = list(
-    description = "
-Production stack used on Eco2mix website: 
-http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique
-    ",
+    description = "Production stack used on Eco2mix website: 
+http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique",
     variables = alist(
       pumpedStorage  = PSP,
       exports = - (BALANCE + `ROW BAL.`),
@@ -35,13 +59,19 @@ http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique
       load = LOAD
     ),
     lineColors = c("#000000")
+  ),
+  
+  test = list(
+    description = "Test alias",
+    variables = alist(
+      renewable = WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`,
+      thermal = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`
+    ),
+    colors = c("green", gray(0.3)),
+    lines = alist(
+      goalRenewable = LOAD * 0.23
+    ),
+    lineColors = "#42EB09"
   )
-  
-  
-  
-  
-  
-  
-  
   
 )
