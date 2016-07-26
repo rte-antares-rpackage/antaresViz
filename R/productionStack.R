@@ -177,7 +177,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
           )
         ),
         
-        fillCol(flex = c(1, NA),
+        fillCol(flex = c(NA, 1, NA),
+          textOutput("warning"),
           dygraphOutput("chart", height = "100%"),
           productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
         )
@@ -194,6 +195,10 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
       if(length(input$area) > 0) {
         .plotProductionStack(x[area %in% input$area], variables, colors, lines, lineColors, unit = unit, legendId = legendId)
       }
+    })
+    
+    output$warning <- renderText({
+      if (length(input$area) == 0) "Please choose an area." else ""
     })
     
     observeEvent(input$done, {
