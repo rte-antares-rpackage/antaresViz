@@ -202,9 +202,11 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
     })
     
     observeEvent(input$done, {
-      returnValue <- plotWithLegend(input$area, input$main)
-      
-      stopApp(returnValue)
+      if (length(input$area) == 0) stopApp(NULL)
+      else {
+        returnValue <- plotWithLegend(input$area, input$main)
+        stopApp(returnValue)
+      }
     })
   }
   
