@@ -18,7 +18,7 @@ expression explaining how to compute the variable (see examples).}
 order to use default colors.}
 
 \item{lines}{A named list of expressions created with \code{\link[base]{alist}}
-indicating how to compute the curves to disply on top of the stacked graph.
+indicating how to compute the curves to display on top of the stacked graph.
 It should be \code{NULL} if there is no curve to trace or if parameter
 \code{variables} is an alias.}
 
