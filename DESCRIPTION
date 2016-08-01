@@ -9,7 +9,7 @@ Description: Visualize the data extracted from an antares project.
 License: rte
 LazyData: TRUE
 Depends:
-    antaresProcessing (>=0.5.0)
+    antaresProcessing (>= 0.5.0)
 Imports:
     dygraphs,
     shiny,
