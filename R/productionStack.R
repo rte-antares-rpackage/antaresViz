@@ -177,7 +177,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
           )
         ),
         
-        fillCol(flex = c(1, NA),
+        fillCol(flex = c(NA, 1, NA),
+          textOutput("warning"),
           dygraphOutput("chart", height = "100%"),
           productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
         )
@@ -196,10 +197,16 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
       }
     })
     
+    output$warning <- renderText({
+      if (length(input$area) == 0) "Please choose an area." else ""
+    })
+    
     observeEvent(input$done, {
-      returnValue <- plotWithLegend(input$area, input$main)
-      
-      stopApp(returnValue)
+      if (length(input$area) == 0) stopApp(NULL)
+      else {
+        returnValue <- plotWithLegend(input$area, input$main)
+        stopApp(returnValue)
+      }
     })
   }
   
@@ -212,46 +219,17 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
 #'   character string représenting an alias
 #'   
 #' @return 
-#' This function returns a list with two components:
+#' This function returns a list with four components:
 #' \item{variables}{Definition of the variables of the stack}
 #' \item{colors}{colors for the variables}
-#' 
-#' @details 
-#' For now, only the alias "eco2mix" is recognised. If an unknown alias is used,
-#' the function returns an error.
-#' 
+#' \item{lines}{Definition of the curves to draw on top of the production stack}
+#' \item{lineColors}{colors for the curves}
 #' @noRd
 .aliasToStackOptions <- function(variables) {
-  if (variables == "eco2mix") {
-    
-    variables <- alist(
-      pumpedStorage  = PSP,
-      exports = - (BALANCE + `ROW BAL.`),
-      wind = WIND,
-      solar = SOLAR,
-      nuclear = NUCLEAR,
-      hydraulic = `H. ROR` + `H. STOR`,
-      gas = GAS,
-      coal = COAL + LIGNITE,
-      fuel = `MIX. FUEL` + OIL + `MISC. DTG` + `MISC. NDG`
-    )
-    
-    colors <- rgb(
-      red =   c( 17, 150, 116, 242, 245,  39, 243, 172, 131),
-      green = c( 71, 150, 205, 116, 179, 114,  10, 140,  86),
-      blue =  c(185, 150, 185,   6,   0, 178,  10,  53, 162),
-      maxColorValue = 255
-    )
-    
-    lines <- alist(load = LOAD)
-    
-    lineColors <- c("#000000")
-    
-  } else {
+  if (! variables %in% names(.productionStackAliases)) {
     stop("Unknown alias '", variables, "'.")
   }
-  
-  list(variables = variables, colors = colors, lines = lines, lineColors = lineColors) 
+  .productionStackAliases[[variables]]
 }
 
 #' Generate an interactive production stack
@@ -463,7 +441,6 @@ productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = 
     j <- ((i - 1) * itemsByRow + 1):(i * itemsByRow)
     legendRows[[i]] <- do.call(fillRow, legendItems[j])
   } 
-  
   
   fillRow(do.call(fillCol, legendRows), height = i * 60)
 }
