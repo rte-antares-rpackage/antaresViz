@@ -171,7 +171,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
           textInput("main", "Title", value = main),
           selectInput(
             "area", "Areas", 
-            choices = as.list(levels(x$area)), 
+            choices = as.character(unique(x$area)), 
             multiple = TRUE, 
             selected = areas
           )
