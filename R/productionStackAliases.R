@@ -12,7 +12,7 @@ productionStackAliases <- function() {
                   deparse(alias$variables[[v]])))
     }
     if (!is.null(alias$lines)) {
-      cat("Curves:\n")
+      cat("Lines:\n")
       for (v in names(alias$lines)) {
         cat(sprintf("   %s = %s\n", 
                     v, 
@@ -34,44 +34,68 @@ productionStackAliases <- function() {
 # - lineColors:  Vector of colors with same length as lines. Mandatory only if
 #                "lines" is set
 
-.productionStackAliases <- list(
+.productionStackAliases <- alist(
   eco2mix = list(
     description = "Production stack used on Eco2mix website: 
 http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique",
-    variables = alist(
-      pumpedStorage  = PSP,
-      exports = - (BALANCE + `ROW BAL.`),
-      wind = WIND,
-      solar = SOLAR,
-      nuclear = NUCLEAR,
-      hydraulic = `H. ROR` + `H. STOR`,
-      gas = GAS,
-      coal = COAL + LIGNITE,
-      fuel = `MIX. FUEL` + OIL + `MISC. DTG` + `MISC. NDG`
-    ),
+    variables = pkgEnv$eco2mixVaribales,
     colors = rgb(
-      red =   c( 17, 150, 116, 242, 245,  39, 243, 172, 131),
-      green = c( 71, 150, 205, 116, 179, 114,  10, 140,  86),
-      blue =  c(185, 150, 185,   6,   0, 178,  10,  53, 162),
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$eco2mixVaribales), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
       maxColorValue = 255
-    ),
-    lines = alist(
-      load = LOAD
-    ),
-    lineColors = c("#000000")
+     ),
+     lines = pkgEnv$eco2mixLines,
+     lineColors = rgb(
+       pkgEnv$colorsVariablesTable[ match(names(pkgEnv$eco2mixLines), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+       maxColorValue = 255
+    )
   ),
   
   test = list(
     description = "Test alias",
-    variables = alist(
-      renewable = WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`,
-      thermal = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`
+    variables = pkgEnv$test,
+    colors = rgb(
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$test), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+      maxColorValue = 255
     ),
-    colors = c("green", gray(0.3)),
-    lines = alist(
-      goalRenewable = LOAD * 0.23
+    lines <- alist(
+      goalRenewable = LOAD*0.23
     ),
     lineColors = "#42EB09"
-  )
+  ),
+
+  thermalFirst = list(
+    description = "thermal first",
+    variables = pkgEnv$thermalFirst,
+    colors = rgb(
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$thermalFirst), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+      maxColorValue = 255
+    )
+    ), 
   
+  netLoad = list(
+    description = "netLoad",
+    variables = pkgEnv$netLoadVaribales,
+    colors = rgb(
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$netLoadVaribales), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+      maxColorValue = 255
+    ),
+    lines = pkgEnv$netLoadLines,
+    lineColors = rgb(
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$netLoadLines), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+      maxColorValue = 255
+    )
+  ), 
+  mustRun = list(
+    description = "must-run",
+    variables = pkgEnv$mustRunVaribales,
+    colors = rgb(
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$mustRunVaribales), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+      maxColorValue = 255
+    ),
+    lines = pkgEnv$mustRunLines,
+    lineColors = rgb(
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$mustRunLines), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+      maxColorValue = 255
+    )
+  )
 )

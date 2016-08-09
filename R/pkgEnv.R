@@ -1,0 +1,94 @@
+#' @import data.table
+#' @import plyr
+
+pkgEnv <- antaresRead:::pkgEnv
+
+# Private variables accessible only by functions from the package
+namesVariables<-c("pumpedStorage", "minusBalance", "bioenergie", "wind", "solar", "nuclear", "hydraulic", "gas", "coal", "fuel", "other", "load", "renewable", "thermal", "lignite", "oil", "mixFuel", "hydraulicRor", "hydraulicStro", "totalProduction", "netLoad" )
+colorsRed<-c( 17, 150, 22, 116, 242, 245,  39, 243, 172, 131, 173, 0, 0, 77, 238, 199, 127, 61, 84, 235, 72)
+colorsGreen<-c( 71, 150, 106, 205, 116, 179, 114,  10, 140,  86, 255, 0, 255, 77, 118, 145, 84, 96, 151, 155, 72)
+colorsBlue<-c(185, 150, 87, 185, 6, 0, 178,  10,  53, 162, 47, 0, 0, 77, 33, 237, 156, 125, 208, 166, 72)
+pkgEnv$colorsVariablesTable<-data.table(namesVariables=namesVariables, colorsRed=colorsRed,colorsGreen=colorsGreen,colorsBlue=colorsBlue)
+
+
+pkgEnv$eco2mixVaribales<-alist(
+  pumpedStorage  = PSP,
+  minusBalance = -(BALANCE + `ROW BAL.`),
+  bioenergie = `MISC. NDG`, 
+  wind = WIND,
+  solar = SOLAR,
+  nuclear = NUCLEAR,
+  hydraulic = `H. ROR` + `H. STOR`,
+  gas = GAS,
+  coal = COAL + LIGNITE,
+  fuel = `MIX. FUEL` + OIL ,
+  other = `MISC. DTG`
+)
+
+pkgEnv$eco2mixLines<-alist(
+  load = LOAD,
+  totalProduction= NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`+WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`+PSP
+)
+
+
+pkgEnv$thermalFirstVaribales<-alist(
+  pumpedStorage  = PSP,
+  minusBalance = -(BALANCE + `ROW BAL.`),
+  nuclear = NUCLEAR,
+  lignite=LIGNITE,
+  coal = COAL,
+  gas = GAS,
+  oil = OIL,
+  mixFuel=`MIX. FUEL`,
+  other = `MISC. DTG`,
+  bioenergie = `MISC. NDG`,
+  wind = WIND,
+  solar = SOLAR,
+  hydraulicRor=`H. ROR`,
+  hydraulicStro=`H. STOR`
+)
+
+
+pkgEnv$testVaribales<-alist(
+  renewable = WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`,
+  thermal = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`
+)
+
+pkgEnv$netLoadVaribales<-alist(
+  pumpedStorage  = PSP,
+  minusBalance = -(BALANCE + `ROW BAL.`),
+  nuclear = NUCLEAR,
+  lignite=LIGNITE,
+  coal = COAL,
+  gas = GAS,
+  oil = OIL,
+  mixFuel=`MIX. FUEL`,
+  other = `MISC. DTG`,
+  hydraulicStro=`H. STOR`
+)
+
+pkgEnv$netLoadLines<-alist(
+  netLoad = LOAD - `MISC. NDG`- WIND - SOLAR - `H. ROR`
+)
+
+
+pkgEnv$mustRunVaribales<-alist(
+  pumpedStorage  = PSP,
+  minusBalance = -(BALANCE + `ROW BAL.`),
+  other = `MISC. DTG`,
+  nuclear = NUCLEAR,
+  lignite=LIGNITE,
+  coal = COAL,
+  gas = GAS,
+  oil = OIL,
+  mixFuel=`MIX. FUEL`,
+  hydraulicStro=`H. STOR`,
+  bioenergie = `MISC. NDG`, 
+  wind = WIND,
+  solar = SOLAR,
+  hydraulicRor=`H. ROR`
+)
+
+pkgEnv$mustRunLines<-alist(
+  netLoad = `MISC. NDG`
+)

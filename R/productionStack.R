@@ -101,7 +101,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   # corresponding to that alias
   if (is.character(variables)) { # variables is an alias
     
-    stackOptions <- .aliasToStackOptions(variables)
+    stackOptions <- eval(.aliasToStackOptions(variables))
     variables <- stackOptions$variables
     if (is.null(colors)) colors <- stackOptions$colors
     if (is.null(lines)) lines <- stackOptions$lines

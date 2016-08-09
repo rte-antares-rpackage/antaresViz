@@ -11,4 +11,3 @@
 .timeIdToDate <- antaresRead:::.timeIdToDate
 .checkColumns <- antaresProcessing:::.checkColumns
 .checkAttrs <- antaresProcessing:::.checkAttrs
-pkgEnv <- antaresRead:::pkgEnv
