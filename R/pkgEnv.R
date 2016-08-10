@@ -2,13 +2,13 @@
 #' @import plyr
 
 pkgEnv <- antaresRead:::pkgEnv
-
 # Private variables accessible only by functions from the package
-namesVariables<-c("pumpedStorage", "minusBalance", "bioenergie", "wind", "solar", "nuclear", "hydraulic", "gas", "coal", "fuel", "other", "load", "renewable", "thermal", "lignite", "oil", "mixFuel", "hydraulicRor", "hydraulicStro", "totalProduction", "netLoad" )
-colorsRed<-c( 17, 150, 22, 116, 242, 245,  39, 243, 172, 131, 173, 0, 0, 77, 238, 199, 127, 61, 84, 235, 72)
-colorsGreen<-c( 71, 150, 106, 205, 116, 179, 114,  10, 140,  86, 255, 0, 255, 77, 118, 145, 84, 96, 151, 155, 72)
-colorsBlue<-c(185, 150, 87, 185, 6, 0, 178,  10,  53, 162, 47, 0, 0, 77, 33, 237, 156, 125, 208, 166, 72)
-pkgEnv$colorsVariablesTable<-data.table(namesVariables=namesVariables, colorsRed=colorsRed,colorsGreen=colorsGreen,colorsBlue=colorsBlue)
+
+
+#Path file for the GraphicalCharter 
+GraphicalCharterPath<-system.file ("inst/GraphicalCharter.csv", package = "antaresViz")
+#Sep = TAB
+pkgEnv$colorsVariablesTable<-fread(input = GraphicalCharterPath )
 
 
 pkgEnv$eco2mixVaribales<-alist(
