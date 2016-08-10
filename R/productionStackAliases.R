@@ -1,3 +1,16 @@
+#' show aliases for productionStack
+#'
+#' This function shows aliases for productionStack. These aliases can be used
+#' in the \code{\link{productionStack}} function in the \code{variables} argument
+#' 
+#' @return
+#' Print aliases. 
+#' 
+#' @examples 
+#' productionStackAliases()
+#' 
+#' @export
+#'
 productionStackAliases <- function() {
   for (n in names(.productionStackAliases)) {
     alias <- eval(.productionStackAliases[[n]])
