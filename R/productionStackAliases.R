@@ -1,6 +1,6 @@
 productionStackAliases <- function() {
   for (n in names(.productionStackAliases)) {
-    alias <- .productionStackAliases[[n]]
+    alias <- eval(.productionStackAliases[[n]])
     
     cat(n, "\n===========\n")
     cat(alias$description, "\n")
