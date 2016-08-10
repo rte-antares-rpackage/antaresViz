@@ -65,9 +65,9 @@ http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique",
 
   thermalFirst = list(
     description = "thermal first",
-    variables = pkgEnv$thermalFirst,
+    variables = pkgEnv$thermalFirstVaribales,
     colors = rgb(
-      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$thermalFirst), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$thermalFirstVaribales), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
       maxColorValue = 255
     )
     ), 

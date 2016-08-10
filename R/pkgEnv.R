@@ -89,5 +89,5 @@ pkgEnv$mustRunVaribales<-alist(
 )
 
 pkgEnv$mustRunLines<-alist(
-  thermalAvailability = `MISC. NDG`
+  thermalAvailability = `AVL DTG`
 )
