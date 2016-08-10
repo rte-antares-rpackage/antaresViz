@@ -52,9 +52,9 @@ http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique",
   
   test = list(
     description = "Test alias",
-    variables = pkgEnv$test,
+    variables = pkgEnv$testVaribales,
     colors = rgb(
-      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$test), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
+      pkgEnv$colorsVariablesTable[ match(names(pkgEnv$testVaribales), pkgEnv$colorsVariablesTable$namesVariables),.(colorsRed, colorsGreen, colorsBlue) ],
       maxColorValue = 255
     ),
     lines <- alist(
