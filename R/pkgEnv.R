@@ -6,10 +6,9 @@ pkgEnv <- antaresRead:::pkgEnv
 
 
 #Path file for the GraphicalCharter 
-GraphicalCharterPath<-system.file ("inst/GraphicalCharter.csv", package = "antaresViz")
 #Sep = TAB
-pkgEnv$colorsVariablesTable<-fread(input = GraphicalCharterPath )
-
+#the use of system.file create a bug... -> don't use it
+pkgEnv$colorsVariablesTable<-fread(input="inst/GraphicalCharter.csv")
 
 pkgEnv$eco2mixVaribales<-alist(
   pumpedStorage  = PSP,
