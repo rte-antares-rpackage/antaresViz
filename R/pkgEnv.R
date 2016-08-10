@@ -89,5 +89,5 @@ pkgEnv$mustRunVaribales<-alist(
 )
 
 pkgEnv$mustRunLines<-alist(
-  netLoad = `MISC. NDG`
+  thermalAvailability = `MISC. NDG`
 )
