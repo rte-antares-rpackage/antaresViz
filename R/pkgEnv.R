@@ -9,85 +9,176 @@ pkgEnv <- antaresRead:::pkgEnv
 #Sep = TAB
 #the use of system.file create a bug... -> don't use it
 pkgEnv$colorsVariablesTable<-fread(input="inst/GraphicalCharter.csv")
+#cols <- 'Formula'
+#pkgEnv$colorsVariablesTable[,(cols):=lapply(.SD, as.factor),.SDcols=cols]
 
+.getFormula<-function(NameVariable){
+  parse(text = pkgEnv$colorsVariablesTable[namesVariables==NameVariable, .(Formula)]$Formula)
+}
+
+.getCharacterFormula<-function(NameVariable){
+  pkgEnv$colorsVariablesTable[namesVariables==NameVariable, .(Formula)]$Formula
+}
+
+####################### begin Eco2Mix Alias #####################################
 pkgEnv$eco2mixVaribales<-alist(
-  pumpedStorage  = PSP,
-  minusBalance = -(BALANCE + `ROW BAL.`),
-  bioenergie = `MISC. NDG`, 
-  wind = WIND,
-  solar = SOLAR,
-  nuclear = NUCLEAR,
-  hydraulic = `H. ROR` + `H. STOR`,
-  gas = GAS,
-  coal = COAL + LIGNITE,
-  fuel = `MIX. FUEL` + OIL ,
-  other = `MISC. DTG`
+  pumpedStorage  = eval(.getFormula("pumpedStorage")),
+  minusBalance = eval(.getFormula("minusBalance")),
+  bioenergie = eval(.getFormula("bioenergie")), 
+  wind = eval(.getFormula("wind")),
+  solar = eval(.getFormula("solar")),
+  nuclear = eval(.getFormula("nuclear")),
+  hydraulic = eval(.getFormula("hydraulic")),
+  gas = eval(.getFormula("gas")),
+  coal = eval(.getFormula("coal")),
+  fuel = eval(.getFormula("fuel")),
+  other = eval(.getFormula("other"))
+)
+
+pkgEnv$eco2mixVaribalesCharacter<-alist(
+  pumpedStorage  = .getCharacterFormula("pumpedStorage"),
+  minusBalance = .getCharacterFormula("minusBalance"),
+  bioenergie = .getCharacterFormula("bioenergie"), 
+  wind = .getCharacterFormula("wind"),
+  solar = .getCharacterFormula("solar"),
+  nuclear = .getCharacterFormula("nuclear"),
+  hydraulic = .getCharacterFormula("hydraulic"),
+  gas = .getCharacterFormula("gas"),
+  coal = .getCharacterFormula("coal"),
+  fuel = .getCharacterFormula("fuel"),
+  other = .getCharacterFormula("other")
 )
 
 pkgEnv$eco2mixLines<-alist(
-  load = LOAD,
-  totalProduction= NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`+WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`+PSP
+  load = eval(.getFormula("load")),
+  totalProduction= eval(.getFormula("totalProduction"))
 )
 
+pkgEnv$eco2mixLinesCharacter<-alist(
+  load = .getCharacterFormula("load"),
+  totalProduction= .getCharacterFormula("totalProduction")
+)
+
+
+####################### end Eco2Mix Alias #####################################
+
+####################### begin ThermalFirst Alias #####################################
 
 pkgEnv$thermalFirstVaribales<-alist(
-  pumpedStorage  = PSP,
-  minusBalance = -(BALANCE + `ROW BAL.`),
-  nuclear = NUCLEAR,
-  lignite=LIGNITE,
-  coal = COAL,
-  gas = GAS,
-  oil = OIL,
-  mixFuel=`MIX. FUEL`,
-  other = `MISC. DTG`,
-  bioenergie = `MISC. NDG`,
-  wind = WIND,
-  solar = SOLAR,
-  hydraulicRor=`H. ROR`,
-  hydraulicStro=`H. STOR`
+  pumpedStorage  = eval(.getFormula("pumpedStorage")),
+  minusBalance = eval(.getFormula("minusBalance")),
+  nuclear = eval(.getFormula("nuclear")),
+  lignite= eval(.getFormula("lignite")),
+  coal = eval(.getFormula("coal")),
+  gas = eval(.getFormula("gas")),
+  oil = eval(.getFormula("oil")),
+  mixFuel= eval(.getFormula("mixFuel")),
+  other = eval(.getFormula("other")),
+  bioenergie = eval(.getFormula("bioenergie")),
+  wind = eval(.getFormula("wind")),
+  solar = eval(.getFormula("solar")),
+  hydraulicRor= eval(.getFormula("hydraulicRor")),
+  hydraulicStro= eval(.getFormula("hydraulicStro"))
 )
 
+pkgEnv$thermalFirstVaribalesCharacter<-alist(
+  pumpedStorage  = .getCharacterFormula("pumpedStorage"),
+  minusBalance = .getCharacterFormula("minusBalance"),
+  nuclear = .getCharacterFormula("nuclear"),
+  lignite= .getCharacterFormula("lignite"),
+  coal = .getCharacterFormula("coal"),
+  gas = .getCharacterFormula("gas"),
+  oil =.getCharacterFormula("oil"),
+  mixFuel= .getCharacterFormula("mixFuel"),
+  other =.getCharacterFormula("other"),
+  bioenergie = .getCharacterFormula("bioenergie"),
+  wind = .getCharacterFormula("wind"),
+  solar = .getCharacterFormula("solar"),
+  hydraulicRor= .getCharacterFormula("hydraulicRor"),
+  hydraulicStro= .getCharacterFormula("hydraulicStro")
+)
+
+####################### end ThermalFirst Alias #####################################
+
+####################### begin test Alias #####################################
 
 pkgEnv$testVaribales<-alist(
-  renewable = WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`,
-  thermal = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`
+  renewable = eval(.getFormula("renewable")),
+  thermal = eval(.getFormula("thermal"))
 )
+
+pkgEnv$testVaribalesCharacter<-alist(
+  renewable = .getCharacterFormula("renewable"),
+  thermal = .getCharacterFormula("thermal")
+)
+
+####################### end  test Alias #####################################
+
+####################### begin netLoad Alias #####################################
 
 pkgEnv$netLoadVaribales<-alist(
-  pumpedStorage  = PSP,
-  minusBalance = -(BALANCE + `ROW BAL.`),
-  nuclear = NUCLEAR,
-  lignite=LIGNITE,
-  coal = COAL,
-  gas = GAS,
-  oil = OIL,
-  mixFuel=`MIX. FUEL`,
-  other = `MISC. DTG`,
-  hydraulicStro=`H. STOR`
+  pumpedStorage  = eval(.getFormula("pumpedStorage")),
+  minusBalance = eval(.getFormula("minusBalance")),
+  nuclear = eval(.getFormula("nuclear")),
+  lignite= eval(.getFormula("lignite")),
+  coal = eval(.getFormula("coal")),
+  gas = eval(.getFormula("gas")),
+  oil = eval(.getFormula("oil")),
+  mixFuel= eval(.getFormula("mixFuel")),
+  other = eval(.getFormula("other")),
+  hydraulicStro= eval(.getFormula("hydraulicStro"))
 )
+
+pkgEnv$netLoadVaribalesCharacter<-alist(
+  pumpedStorage  = .getCharacterFormula("pumpedStorage"),
+  minusBalance = .getCharacterFormula("minusBalance"),
+  nuclear = .getCharacterFormula("nuclear"),
+  lignite= .getCharacterFormula("lignite"),
+  coal = .getCharacterFormula("coal"),
+  gas = .getCharacterFormula("gas"),
+  oil = .getCharacterFormula("oil"),
+  mixFuel= .getCharacterFormula("mixFuel"),
+  other = .getCharacterFormula("other"),
+  hydraulicStro= .getCharacterFormula("hydraulicStro")
+)
+
 
 pkgEnv$netLoadLines<-alist(
-  netLoad = LOAD - `MISC. NDG`- WIND - SOLAR - `H. ROR`
+  netLoad = eval(.getFormula("netLoad"))
 )
 
+pkgEnv$netLoadLinesCharacter<-alist(
+  netLoad = .getCharacterFormula("netLoad")
+)
+
+####################### end netLoad Alias #####################################
+
+
+####################### begin mustRun Alias #####################################
 
 pkgEnv$mustRunVaribales<-alist(
-  pumpedStorage  = PSP,
-  minusBalance = -(BALANCE + `ROW BAL.`),
-  other = `MISC. DTG`,
-  nuclear = NUCLEAR,
-  lignite=LIGNITE,
-  coal = COAL,
-  gas = GAS,
-  oil = OIL,
-  mixFuel=`MIX. FUEL`,
-  hydraulicStro=`H. STOR`,
-  bioenergie = `MISC. NDG`, 
-  wind = WIND,
-  solar = SOLAR,
-  hydraulicRor=`H. ROR`
+  pumpedStorage  = eval(.getFormula("pumpedStorage")),
+  minusBalance = eval(.getFormula("minusBalance")),
+  mustRunTotal = eval(.getFormula("mustRunTotal")),
+  thermalDispatchable = eval(.getFormula("thermalDispatchable")),
+  hydraulicDispatchable=  eval(.getFormula("hydraulicDispatchable")),
+  renewableNoDispatchable = eval(.getFormula("renewableNoDispatchable"))
+)
+
+pkgEnv$mustRunVaribalesCharacter<-alist(
+  pumpedStorage  = .getCharacterFormula("pumpedStorage"),
+  minusBalance = .getCharacterFormula("minusBalance"),
+  mustRunTotal = .getCharacterFormula("mustRunTotal"),
+  thermalDispatchable = .getCharacterFormula("thermalDispatchable"),
+  hydraulicDispatchable=  .getCharacterFormula("hydraulicDispatchable"),
+  renewableNoDispatchable = .getCharacterFormula("renewableNoDispatchable")
 )
 
 pkgEnv$mustRunLines<-alist(
-  thermalAvailability = `AVL DTG`
+  thermalAvailability = eval(.getFormula("thermalAvailability"))
 )
+
+pkgEnv$mustRunLinesCharacter<-alist(
+  thermalAvailability = .getCharacterFormula("thermalAvailability")
+)
+####################### end mustRun Alias #####################################
