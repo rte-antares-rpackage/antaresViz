@@ -290,7 +290,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   }
   
   if (nlines > 0) {
-    for (i in nlines) {
+    for (i in 1:nlines) {
         value <- x[, eval(lines[[i]]) ] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
       set(dt, j = 2L * nvar + 3L + i, value = value)
       set(dt, j = 2L * nvar + 3L + nlines + i, value = -value)
@@ -319,7 +319,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
     dyOptions(
       stackedGraph = TRUE, 
       colors = rev(colors), 
-      fillAlpha = 0.7,
+      fillAlpha = 0.6,
       includeZero = TRUE, 
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
@@ -356,11 +356,11 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
     )
   
   if (length(lines) > 0) {
-    for (i in length(lines)) {
+    for (i in 1:length(lines)) {
       g <- g %>% dySeries(name = paste0("opp", names(lines)[i]), color = lineColors[i], 
                           fillGraph = FALSE, strokeWidth = 0)
       g <- g %>% dySeries(name = names(lines)[i], color = lineColors[i], 
-                          fillGraph = FALSE, strokeWidth = 2)
+                          fillGraph = FALSE, strokeWidth = 3)
     }
   }
   
