@@ -18,7 +18,7 @@
 #'   order to use default colors.
 #' @param lines
 #'   A named list of expressions created with \code{\link[base]{alist}}
-#'   indicating how to compute the curves to disply on top of the stacked graph.
+#'   indicating how to compute the curves to display on top of the stacked graph.
 #'   It should be \code{NULL} if there is no curve to trace or if parameter
 #'   \code{variables} is an alias.
 #' @param lineColors
@@ -101,8 +101,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   # corresponding to that alias
   if (is.character(variables)) { # variables is an alias
     
-    stackOptions <- .aliasToStackOptions(variables)
-    variables <- stackOptions$variables
+    stackOptions <- eval(.aliasToStackOptions(variables))
+    variables <- eval(stackOptions$variables)
     if (is.null(colors)) colors <- stackOptions$colors
     if (is.null(lines)) lines <- stackOptions$lines
     if (is.null(lineColors)) lineColors <- stackOptions$lineColors
@@ -285,13 +285,13 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   nlines <- length(lines)
   
   for (i in length(variables):1) {
-    values <- x[, eval(variables[[i]])] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
+      values <- x[, eval(variables[[i]]) ] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
     set(dt, j = nvar + 3L - i, value = values)
   }
   
   if (nlines > 0) {
     for (i in nlines) {
-      value <- x[, eval(lines[[i]])] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
+        value <- x[, eval(lines[[i]]) ] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
       set(dt, j = 2L * nvar + 3L + i, value = value)
       set(dt, j = 2L * nvar + 3L + nlines + i, value = -value)
     }

@@ -1,0 +1,29 @@
+namesVariables	colorsRed	colorsGreen	colorsBlue	Formula
+pumpedStorage	17	71	185	PSP
+minusBalance	150	150	150	-(BALANCE + `ROW BAL.`)
+mustRunTotal	120	136	194	mustRunTotal
+mustRunPartial	120	236	194	mustRunPartial
+mustRun	220	236	94	mustRun
+bioenergie	22	106	87	`MISC. NDG`
+wind	116	205	185	WIND
+solar	242	116	6	SOLAR
+nuclear	245	179	0	NUCLEAR
+hydraulic	39	114	178	`H. ROR`+`H. STOR`
+gas	243	10	10	GAS
+coal	172	140	53	COAL
+fuel	131	86	162	`MIX. FUEL`
+other	173	255	47	`MISC. DTG`
+load	135	86	39	LOAD
+renewable	0	255	0	WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG`
+renewableNoDispatchable	0	255	0	WIND+SOLAR+`H. ROR`+`MISC. NDG`
+thermal	77	77	77	NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`
+thermalDispatchable	100	100	100	NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`
+hydraulicDispatchable	39	114	178	`H. STOR`
+lignite	238	118	33	LIGNITE
+oil	199	145	237	OIL
+mixFuel	127	84	156	`MIX. FUEL`
+hydraulicRor	61	96	125	`H. ROR`
+hydraulicStro	84	151	208	`H. STOR`
+totalProduction	235	155	166	PSP
+netLoad	101	180	197	netLoad
+thermalAvailability	1	1	1	`AVL DTG`
