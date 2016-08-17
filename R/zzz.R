@@ -6,6 +6,7 @@
 #' @import miniUI
 #' @import shiny
 #' @import htmltools
+#' @import manipulateWidget
 #' 
 .idCols <- antaresRead:::.idCols
 .timeIdToDate <- antaresRead:::.timeIdToDate

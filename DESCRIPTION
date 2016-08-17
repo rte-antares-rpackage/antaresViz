@@ -17,5 +17,6 @@ Imports:
     magrittr,
     highcharter,
     tibble,
-    htmltools
+    htmltools,
+    manipulateWidget
 RoxygenNote: 5.0.1

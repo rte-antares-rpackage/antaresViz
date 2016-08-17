@@ -54,12 +54,19 @@
 #' }
 #'
 #' @export
-plot.antaresDataTable <- function(x, variable, main, ylab, ...) {
-  if (missing(variable)) return(.plotAntaresDataTableInteractive(x)) # defined below
+plot.antaresDataTable <- function(x, variable, elements, 
+                                  interactive = base::interactive(), ...) {
+  if (missing(variable)) { # If missing variable start interactive mode
+    res <- manipulateWidget(
+      plot(x, variable, main = ""),
+      variable = mwSelect(setdiff(names(x), .idCols(x))) 
+    )
+    return(res)
+  }
   
   if (missing(ylab)) ylab <- variable
   
-  idVars <- names(x)
+  idVars <- .idCols(x)
   timeStep <- attr(x, "timeStep")
   
   # Prepare data to plot
@@ -140,80 +147,147 @@ plot.antaresDataTable <- function(x, variable, main, ylab, ...) {
   }
   
   g
-} 
-
-#' Private function that launches a shiny gadget that permits to the user to use
-#' a variable to plot.
-#' 
-#' @param x: antaresDataTable
-#' 
-#' @return 
-#' Once the user click on button "Done" the function returns the current chart.
-#' It can then be saved or reused by the user.
-#' 
-#' @noRd
-.plotAntaresDataTableInteractive <- function(x) {
-  variables <- setdiff(names(x), .idCols(x))
-  timeStep <- attr(x, "timeStep")
-  
-  if (timeStep == "annual") {
-    chart <- highchartOutput("chart", height = "100%")
-  } else {
-    chart <- dygraphOutput("chart", height = "100%")
-  }
-  
-  ui <- miniPage(
-    gadgetTitleBar(
-      tags$p(
-        ifelse(timeStep == "annual", "Comparison of ", "Evolution of "), 
-        .inlineSelectInput("variable", variables) # Defined below
-      ), 
-      left = NULL
-    ),
-    miniContentPanel(
-      chart
-    )
-  )
-  
-  server <- function(input, output, session) {
-    if (timeStep != "annual") {
-      output$chart <- renderDygraph(plot(x, input$variable, main = ""))
-    } else {
-      output$chart <- renderHighchart(plot(x, input$variable, main = ""))
-    }
-    
-    
-    # When the Done button is clicked, return a value
-    observeEvent(input$done, {
-      returnValue <- plot(x, input$variable)
-      stopApp(returnValue)
-    })
-  }
-  
-  runGadget(ui, server)
 }
 
-#' private function that create an html input "select without any style.
+#' Prepare the data for ploting
 #' 
-#' @param inputId
-#'   Id of the input
-#' @param choices
-#'   vector containing the possibles choices
+#' This function performs all data preparation required by all plotting functions
+#' 
+#' @param x
+#'   antaresDataTable
+#' @param variable
+#'   Name of a column of x
 #'   
-#' @noRd
-.inlineSelectInput <- function(inputId, choices) {
-  options <- lapply(choices, tags$option)
+#' @returns
+#' data.table
+.prepareDataForPlot <- function(x, variable) {
+  idVars <- .idCols(x)
+  dt <- x[, .(timeId, var = get(variable))]
   
-  tags$select(
-    id = inputId,
-    style = "-webkit-appearance: none; border:0; background:transparent;",
-    options
-  )
+  if ("cluster" %in% idVars) {
+    dt$element <- paste(x$area, x$cluster)
+  } else if ("district" %in% idVars) {
+    dt$element <- x$district
+  } else if ("link" %in% idVars) {
+    dt$element <- x$link
+  } else if ("area" %in% idVars) {
+    dt$element <- x$area
+  } else stop("No Id column")
+  
+  if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
+    dt$mcYear <- x$mcYear
+  }
+  
+  dt
 }
 
+#' Private function that draws a given time series for each element
+#' 
+#' @param dt
+#'   data.table created by .prepareDataForPlot
+#' @param timeStep
+#'   Time step of the data
+#' @param main
+#'   Title of the plot
+#' @param ylab
+#'   Label of the y-axis
+#' @param confInt
+#'   A number between 0 and 1 indicating the size of the confidence interval to
+#'   display If NULL, then confidence intervals are not computed and displayed.
+#' 
+#' @returns dygraphwidget object.
+#' 
+#' @noRd
+#' 
+.plotTS <- function(dt, timeStep, variable, confInt = NULL) {
+  
+  # If dt contains several Monte-Carlo scenario, compute aggregate statistics
+  if (!is.null(dt$mcYear) && length(unique(dt$mcYear)) > 1) {
+    if (is.null(confInt)) {
+      
+      dt <- dt[, .(var = mean(var)), by = .(element, timeId)]
+      
+    } else {
+      
+      uniqueElement <- sort(unique(dt$element))
+      
+      alpha <- (1 - confInt) / 2
+      dt <- dt[, .(var = c(mean(var), quantile(var, c(alpha, 1 - alpha))),
+                   suffix = c("", "_l", "_u")), 
+               by = .(timeId, element)]
+      dt[, element := paste0(element, suffix)]
+    }
+  }
+  
+  dt <- dcast(dt, timeId ~ element, value.var = "var")
+  dt$timeId <- .timeIdToDate(dt$timeId, timeStep = timeStep)
+  
+  ylab <- variable
+  main <- paste("Evolution of", variable)
+  
+  g <- dygraph(dt, main = main) %>% 
+    dyOptions(
+      includeZero = TRUE, 
+      gridLineColor = gray(0.8), 
+      axisLineColor = gray(0.6), 
+      axisLabelColor = gray(0.6), 
+      labelsKMB = TRUE
+    ) %>% 
+    dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
+    dyRangeSelector()
+  
+  if (exists("uniqueElement")) {
+    for (v in uniqueElement) {
+      g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
+    }
+  }
+  g
+}
 
-
-
-
+#' Private function that draw a barplot
+#' 
+#' The resulting barplot contains a bar per element which represent the sum of
+#' the value
+#' 
+.barplot <- function(dt, timeStep, variable, confInt = NULL) {
+  if (is.null(dt$mcYear) || length(unique(dt$mcYear)) == 1) {
+    dt <- dt[, .(var = sum(var)), by = element] 
+  } else {
+    dt <- dt[, .(var = sum(var)), by = .(element, mcYear)] 
+    
+    if (is.null(confInt)) {
+      dt <- dt[, .(var = mean(var)), by = .(element)]
+    } else {
+      uniqueElement <- sort(unique(dt$element))
+      
+      alpha <- (1 - confInt) / 2
+      dt <- dt[, .(var = c(mean(var), quantile(var, c(alpha, 1 - alpha))),
+                   suffix = c("", "_l", "_u")), 
+               by = .(element)]
+      dt[, element := paste0(element, suffix)]
+    }
+  }
+  
+  ylab <- variable
+  main <- paste("Comparison of", variable)
+  
+  g <- highchart() %>%
+    hc_yAxis(title = list(text = ylab)) %>% 
+    hc_legend(enabled = FALSE) %>% 
+    hc_title(text = main)
+  
+  if (!exists("uniqueColvar")) {
+    g <- g %>% hc_xAxis(categories = dt$element) %>%
+      hc_add_series(name = variable, data = dt$var, type = "column") 
+  } else {
+    g <- g %>% hc_xAxis(categories = dt[suffix == "", colvar]) %>%
+      hc_add_series(name = variable, data = dt[suffix == "", var], type = "column") %>% 
+      hc_add_series(name = "range", 
+                    data = cbind(dt[suffix == "_l", var], dt[suffix == "_u", var]), 
+                    type = "errorbar")
+  }
+  
+  g
+}
 
 
