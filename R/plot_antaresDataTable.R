@@ -54,123 +54,28 @@
 #' }
 #'
 #' @export
-plot.antaresDataTable <- function(x, variable, elements, 
+plot.antaresDataTable <- function(x, variable = NULL, elements = NULL, 
+                                  type = c("ts", "barplot", "monotone"),
                                   interactive = base::interactive(), ...) {
-  if (missing(variable)) { # If missing variable start interactive mode
-    res <- manipulateWidget(
-      plot(x, variable, main = ""),
-      variable = mwSelect(setdiff(names(x), .idCols(x))) 
-    )
-    return(res)
-  }
-  
-  if (missing(ylab)) ylab <- variable
-  
-  idVars <- .idCols(x)
-  timeStep <- attr(x, "timeStep")
-  
-  # Prepare data to plot
-  # First, we construct a table with three columns:
-  # - time: POSIXct or Date
-  # - colvar: factor representing the name of each "element" in the input data.
-  #           each element is represented with a different curve or bar in the
-  #           final graphic.
-  # - variable: values to visualize
-  #
-  # Then we reshape the data to have one line per date/time and one column per
-  # "element". Cells contain the variable to visualize.
-  dt <- x[, .(timeId, var = get(variable))]
-  dt$time <- .timeIdToDate(dt$timeId, timeStep = timeStep)
-  
-  if ("cluster" %in% idVars) {
-    dt$colvar <- paste(x$area, x$cluster)
-  } else if ("district" %in% idVars) {
-    dt$colvar <- x$district
-  } else if ("link" %in% idVars) {
-    dt$colvar <- x$link
-  } else if ("area" %in% idVars) {
-    dt$colvar <- x$area
-  } else stop("No Id column")
-  
-  if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
-    dt$mcYear <- x$mcYear
-    
-    uniqueColvar <- sort(unique(dt$colvar))
-    
-    dt <- dt[, .(var = c(mean(var), quantile(var, c(0.025, 0.975))),
-                 suffix = c("", "_l", "_u")), 
-             by = .(time, colvar)]
-    dt[, colvar := paste0(colvar, suffix)]
-  }
-  
-  if (timeStep != "annual") {
-    # Plot time series curves, unless data is annual
-    dt <- dcast(dt, time ~ colvar, value.var = "var")
-    if (missing(main)) main <- paste("Evolution of", variable)
-    
-    g <- dygraph(dt, main = main) %>% 
-      dyOptions(
-        includeZero = TRUE, 
-        gridLineColor = gray(0.8), 
-        axisLineColor = gray(0.6), 
-        axisLabelColor = gray(0.6), 
-        labelsKMB = TRUE
-      ) %>% 
-      dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
-      dyRangeSelector()
-    
-    if (exists("uniqueColvar")) {
-      for (v in uniqueColvar) {
-        g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
-      }
-    }
-    
-  } else {
-    # If data is annual, plot a barchart to compare elements
-    if (missing(main)) main <- paste("Comparison of", variable)
-    
-    g <- highchart() %>%
-      hc_yAxis(title = list(text = ylab)) %>% 
-      hc_legend(enabled = FALSE) %>% 
-      hc_title(text = main)
-    
-    if (!exists("uniqueColvar")) {
-      g <- g %>% hc_xAxis(categories = dt$colvar) %>%
-      hc_add_series(name = variable, data = dt$var, type = "column") 
-    } else {
-      g <- g %>% hc_xAxis(categories = dt[suffix == "", colvar]) %>%
-        hc_add_series(name = variable, data = dt[suffix == "", var], type = "column") %>% 
-        hc_add_series(name = "range", 
-                     data = cbind(dt[suffix == "_l", var], dt[suffix == "_u", var]), 
-                     type = "errorbar")
-    }
-  }
-  
-  g
-}
 
-#' Prepare the data for ploting
-#' 
-#' This function performs all data preparation required by all plotting functions
-#' 
-#' @param x
-#'   antaresDataTable
-#' @param variable
-#'   Name of a column of x
-#'   
-#' @returns
-#' data.table
-.prepareDataForPlot <- function(x, variable) {
-  idVars <- .idCols(x)
-  dt <- x[, .(timeId, var = get(variable))]
+  type <- match.arg(type)
+  idCols <- .idCols(x)
+  valueCols <- setdiff(names(x), idCols)
+  timeStep <- attr(x, "timeStep")
+  dataname <- deparse(substitute(x))
+  # Prepare data for plotting
+  dt <- x[, .(
+    time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
+    value = 0)
+  ]
   
-  if ("cluster" %in% idVars) {
-    dt$element <- paste(x$area, x$cluster)
-  } else if ("district" %in% idVars) {
+  if ("cluster" %in% idCols) {
+    dt$element <- paste(x$area, x$cluster, sep = " > ")
+  } else if ("district" %in% idCols) {
     dt$element <- x$district
-  } else if ("link" %in% idVars) {
+  } else if ("link" %in% idCols) {
     dt$element <- x$link
-  } else if ("area" %in% idVars) {
+  } else if ("area" %in% idCols) {
     dt$element <- x$area
   } else stop("No Id column")
   
@@ -178,7 +83,40 @@ plot.antaresDataTable <- function(x, variable, elements,
     dt$mcYear <- x$mcYear
   }
   
-  dt
+  # Function that generates the desired graphic.
+  plotFun <- function(dt, variable, elements, type) {
+    if (is.null(variable)) variable <- valueCols[1]
+    dt$value <- x[, get(variable)]
+    if (length(elements) > 0 & !"all" %in% elements) dt <- dt[element %in% elements]
+    switch(type,
+           "ts" = .plotTS(dt, timeStep, variable, confInt = NULL),
+           "barplot" = .barplot(dt, timeStep, variable, confInt = NULL),
+           "monotone" = .plotMonotone(dt, timeStep, variable, confInt = NULL),
+           stop("Invalid type"))
+  }
+  
+  # If not in interactive mode, generate a simple graphic, else create a GUI
+  # to interactively explore the data
+  if (!interactive) {
+    return(plotFun(dt, variable, elements, type))
+  } else {
+    uniqueElem <- sort(as.character(unique(dt$element)))
+    if (is.null(elements)) {
+      elements <- uniqueElem
+      if (length(elements) > 5) elements <- elements[1:5]
+    }
+    
+    res <- manipulateWidget(
+      plotFun(dt, variable, elements, type),
+      variable = mwSelect(valueCols, variable),
+      type = mwSelect(c("time series" = "ts", "barplot", "monotone"), type),
+      elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
+      .main = dataname
+    )
+    
+    return(res)
+  }
+  
 }
 
 #' Private function that draws a given time series for each element
@@ -202,25 +140,24 @@ plot.antaresDataTable <- function(x, variable, elements,
 .plotTS <- function(dt, timeStep, variable, confInt = NULL) {
   
   # If dt contains several Monte-Carlo scenario, compute aggregate statistics
-  if (!is.null(dt$mcYear) && length(unique(dt$mcYear)) > 1) {
+  if (!is.null(dt$mcYear)) {
     if (is.null(confInt)) {
       
-      dt <- dt[, .(var = mean(var)), by = .(element, timeId)]
+      dt <- dt[, .(value = mean(value)), by = .(element, time)]
       
     } else {
       
       uniqueElement <- sort(unique(dt$element))
       
       alpha <- (1 - confInt) / 2
-      dt <- dt[, .(var = c(mean(var), quantile(var, c(alpha, 1 - alpha))),
+      dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
                    suffix = c("", "_l", "_u")), 
-               by = .(timeId, element)]
+               by = .(time, element)]
       dt[, element := paste0(element, suffix)]
     }
   }
   
-  dt <- dcast(dt, timeId ~ element, value.var = "var")
-  dt$timeId <- .timeIdToDate(dt$timeId, timeStep = timeStep)
+  dt <- dcast(dt, time ~ element, value.var = "value")
   
   ylab <- variable
   main <- paste("Evolution of", variable)
@@ -246,22 +183,22 @@ plot.antaresDataTable <- function(x, variable, elements,
 
 #' Private function that draw a barplot
 #' 
-#' The resulting barplot contains a bar per element which represent the sum of
-#' the value
+#' The resulting barplot contains a bar per element which represents the average
+#' value over time steps.
 #' 
 .barplot <- function(dt, timeStep, variable, confInt = NULL) {
-  if (is.null(dt$mcYear) || length(unique(dt$mcYear)) == 1) {
-    dt <- dt[, .(var = sum(var)), by = element] 
+  if (is.null(dt$mcYear)) {
+    dt <- dt[, .(value = mean(value)), by = element] 
   } else {
-    dt <- dt[, .(var = sum(var)), by = .(element, mcYear)] 
+    dt <- dt[, .(value = mean(value)), by = .(element, mcYear)] 
     
     if (is.null(confInt)) {
-      dt <- dt[, .(var = mean(var)), by = .(element)]
+      dt <- dt[, .(value = mean(value)), by = .(element)]
     } else {
       uniqueElement <- sort(unique(dt$element))
       
       alpha <- (1 - confInt) / 2
-      dt <- dt[, .(var = c(mean(var), quantile(var, c(alpha, 1 - alpha))),
+      dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
                    suffix = c("", "_l", "_u")), 
                by = .(element)]
       dt[, element := paste0(element, suffix)]
@@ -278,16 +215,64 @@ plot.antaresDataTable <- function(x, variable, elements,
   
   if (!exists("uniqueColvar")) {
     g <- g %>% hc_xAxis(categories = dt$element) %>%
-      hc_add_series(name = variable, data = dt$var, type = "column") 
+      hc_add_series(name = variable, data = dt$value, type = "column") 
   } else {
     g <- g %>% hc_xAxis(categories = dt[suffix == "", colvar]) %>%
-      hc_add_series(name = variable, data = dt[suffix == "", var], type = "column") %>% 
+      hc_add_series(name = variable, data = dt[suffix == "", value], type = "column") %>% 
       hc_add_series(name = "range", 
-                    data = cbind(dt[suffix == "_l", var], dt[suffix == "_u", var]), 
+                    data = cbind(dt[suffix == "_l", value], dt[suffix == "_u", value]), 
                     type = "errorbar")
   }
   
   g
 }
 
+.plotMonotone <- function(dt, timeStep, variable, confInt = NULL) {
+  # If dt contains several Monte-Carlo scenario, compute aggregate statistics
+  if (is.null(dt$mcYear)) {
+    dt <- dt[, .(
+      rank = 1:length(value),
+      value = sort(value, decreasing = TRUE)
+    ), by = element]
+  } else {
+    dt <- dt[, .(
+      rank = 1:length(value),
+      value = sort(value, decreasing = TRUE)
+    ), by = .(element, mcYear)]
+    
+    if (is.null(confInt)) {
+      dt <- dt[, .(value = mean(value)), by = .(element, rank)]
+    } else {
+      uniqueElement <- sort(unique(dt$element))
+      
+      alpha <- (1 - confInt) / 2
+      dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
+                   suffix = c("", "_l", "_u")), 
+               by = .(rank, element)]
+      dt[, element := paste0(element, suffix)]
+    }
+  }
+  
+  dt <- dcast(dt, rank ~ element, value.var = "value")
+  
+  ylab <- variable
+  main <- paste("Monotone of", variable)
+  
+  g <- dygraph(dt, main = main) %>% 
+    dyOptions(
+      includeZero = TRUE, 
+      gridLineColor = gray(0.8), 
+      axisLineColor = gray(0.6), 
+      axisLabelColor = gray(0.6), 
+      labelsKMB = TRUE
+    ) %>% 
+    dyAxis("y", label = ylab, pixelsPerLabel = 60)
+  
+  if (exists("uniqueElement")) {
+    for (v in uniqueElement) {
+      g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
+    }
+  }
+  g
+}
 
