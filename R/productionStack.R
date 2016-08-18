@@ -113,7 +113,6 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
     if (!is.null(lines) && is.null(lineColors)) {
       stop("lineColors need to be specified when using custom lineCurves.")
     }
-  
   }
   
   # Check that there are as much colors as variables
@@ -139,78 +138,37 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   
   if (is.null(x$area)) x$area <- x$district
   
-  plotWithLegend <- function(areas, main = "") {
-    res <- miniPage(
-      style=sprintf("width:%s;height:%s;", width, height),
-      fillCol(flex = c(1,NA),
-        .plotProductionStack(x[area %in% areas], 
-                             variables, 
-                             colors,
-                             lines,
-                             lineColors,
-                             main = main,
-                             unit = unit,
-                             legendId = legendId),
-        if (legend) productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId) else ""
+  plotWithLegend <- function(areas, main = "", unit) {
+    if (length(areas) == 0) return ("Please choose an area")
+    
+    p <- .plotProductionStack(x[area %in% areas], 
+                              variables, 
+                              colors,
+                              lines,
+                              lineColors,
+                              main = main,
+                              unit = unit,
+                              legendId = legendId)
+    if (legend) {
+      combineWidgets(vflex = c(1, NA),
+                     p,
+                     productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
       )
-    )
-    class(res) <- append("productionStack", class(res))
-    res
+    } else {
+      combineWidgets(p)
+    }
   }
   
   if (!interactive) {
-    return(plotWithLegend(areas, main))
+    return(plotWithLegend(areas, main, unit))
   }
   
-  ui <- miniPage(
-    gadgetTitleBar(textOutput("title", inline = TRUE)),
-    miniContentPanel(
-      fillRow(flex = c(1,3),
-              
-        fillCol(flex = c(NA, 1),
-          textInput("main", "Title", value = main),
-          selectInput(
-            "area", "Areas", 
-            choices = as.character(unique(x$area)), 
-            multiple = TRUE, 
-            selected = areas
-          )
-        ),
-        
-        fillCol(flex = c(NA, 1, NA),
-          textOutput("warning"),
-          dygraphOutput("chart", height = "100%"),
-          productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
-        )
-        
-      )
-    )
+  manipulateWidget(
+    plotWithLegend(areas, main, unit),
+    main = mwText(main),
+    unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
+    areas = mwSelect(as.character(unique(x$area)), areas, multiple = TRUE)
   )
-  
-  server <- function(input, output, session) {
-    
-    output$title <- renderText(input$main)
-    
-    output$chart <- renderDygraph({
-      if(length(input$area) > 0) {
-        .plotProductionStack(x[area %in% input$area], variables, colors, lines, lineColors, unit = unit, legendId = legendId)
-      }
-    })
-    
-    output$warning <- renderText({
-      if (length(input$area) == 0) "Please choose an area." else ""
-    })
-    
-    observeEvent(input$done, {
-      if (length(input$area) == 0) stopApp(NULL)
-      else {
-        returnValue <- plotWithLegend(input$area, input$main)
-        stopApp(returnValue)
-      }
-    })
-  }
-  
-  runGadget(ui, server)
 }
 
 #' Returns the variables and colors corresponding to an alias

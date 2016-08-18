@@ -99,23 +99,21 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   # to interactively explore the data
   if (!interactive) {
     return(plotFun(dt, variable, elements, type))
-  } else {
-    uniqueElem <- sort(as.character(unique(dt$element)))
-    if (is.null(elements)) {
-      elements <- uniqueElem
-      if (length(elements) > 5) elements <- elements[1:5]
-    }
-    
-    res <- manipulateWidget(
-      plotFun(dt, variable, elements, type),
-      variable = mwSelect(valueCols, variable),
-      type = mwSelect(c("time series" = "ts", "barplot", "monotone"), type),
-      elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
-      .main = dataname
-    )
-    
-    return(res)
   }
+  
+  uniqueElem <- sort(as.character(unique(dt$element)))
+  if (is.null(elements)) {
+    elements <- uniqueElem
+    if (length(elements) > 5) elements <- elements[1:5]
+  }
+  
+  manipulateWidget(
+    plotFun(dt, variable, elements, type),
+    variable = mwSelect(valueCols, variable),
+    type = mwSelect(c("time series" = "ts", "barplot", "monotone"), type),
+    elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
+    .main = dataname
+  )
   
 }
 
