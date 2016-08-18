@@ -1,4 +1,4 @@
-namesVariables	colorsRed	colorsGreen	colorsBlue	Formula
+name	red	green	blue	formula
 pumpedStorage	17	71	185	PSP
 minusBalance	150	150	150	-(BALANCE + `ROW BAL.`)
 mustRunTotal	120	136	194	mustRunTotal

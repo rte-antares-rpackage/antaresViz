@@ -101,8 +101,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   # corresponding to that alias
   if (is.character(variables)) { # variables is an alias
     
-    stackOptions <- eval(.aliasToStackOptions(variables))
-    variables <- eval(stackOptions$variables)
+    stackOptions <- .aliasToStackOptions(variables)
+    variables <- stackOptions$variables
     if (is.null(colors)) colors <- stackOptions$colors
     if (is.null(lines)) lines <- stackOptions$lines
     if (is.null(lineColors)) lineColors <- stackOptions$lineColors
@@ -226,10 +226,10 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
 #' \item{lineColors}{colors for the curves}
 #' @noRd
 .aliasToStackOptions <- function(variables) {
-  if (! variables %in% names(.productionStackAliases)) {
+  if (! variables %in% names(pkgEnv$prodStackAliases)) {
     stop("Unknown alias '", variables, "'.")
   }
-  .productionStackAliases[[variables]]
+  pkgEnv$prodStackAliases[[variables]]
 }
 
 #' Generate an interactive production stack
@@ -313,7 +313,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   }
   
   # 5- Finally plot !!
-  colors <- c("#FFFFFF", rev(colors), colors)
+  colors <- unname(c("#FFFFFF", rev(colors), colors))
   
   g <- dygraph(dt, main = main, width = "100%", height = "100%")  %>%
     dyOptions(
