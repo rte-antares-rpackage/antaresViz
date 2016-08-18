@@ -131,7 +131,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #'   A number between 0 and 1 indicating the size of the confidence interval to
 #'   display If NULL, then confidence intervals are not computed and displayed.
 #' 
-#' @returns dygraphwidget object.
+#' @return dygraphwidget object.
 #' 
 #' @noRd
 #' 
