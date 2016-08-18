@@ -24,6 +24,6 @@ oil	199	145	237	OIL
 mixFuel	127	84	156	`MIX. FUEL`
 hydraulicRor	61	96	125	`H. ROR`
 hydraulicStro	84	151	208	`H. STOR`
-totalProduction	235	155	166	PSP
+totalProduction	235	155	166	NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`+WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG`
 netLoad	101	180	197	netLoad
 thermalAvailability	1	1	1	`AVL DTG`
