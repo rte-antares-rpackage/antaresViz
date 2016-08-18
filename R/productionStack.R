@@ -414,7 +414,7 @@ productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = 
     legendRows[[i]] <- do.call(fillRow, legendItems[j])
   } 
   
-  fillRow(do.call(fillCol, legendRows), height = i * 60)
+  tags$div(fillRow(do.call(fillCol, legendRows), height = i * 60), height = i * 60)
 }
 
 .productionStackLegendItem <- function(label, color, legendId) {
