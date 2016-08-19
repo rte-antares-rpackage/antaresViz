@@ -9,10 +9,25 @@
 #'   function starts a shiny gadget that let the user choose the variable to
 #'   represent. When the user clicks on the "Done" button", the graphic is
 #'   returned by the function.
+#' @param elements
+#'   Vector of "element" names indicating for which elements of 'x' should the
+#'   variable be plotted. For instance if the input data contains areas, then
+#'   this parameter should be a vector of area names. If data contains clusters
+#'   data, this parameter has to be the concatenation of the area name and the
+#'   cluster name, separated by \code{" > "}. This is to prevent confusion 
+#'   when two clusters from different areas have the same name.
+#' @param type
+#'   Type of plot to draw. "ts" creates a time series plot, "barplot" creates
+#'   a barplot with one bar per element representing the average value of the
+#'   variable for this element. "monotone" draws the monotone curve of the 
+#'   variable for each element. 
 #' @param main
 #'   Title of the generated graphic
 #' @param ylab
 #'   label of the "y" axis
+#' @param interactive
+#'   Should the function start a shiny gadget that lets the user modify the
+#'   parameters of the plot ?
 #' @param ...
 #'   currently unused
 #'   

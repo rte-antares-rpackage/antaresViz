@@ -5,10 +5,10 @@
 \title{Visualize the production stack of an area}
 \usage{
 productionStack(x, variables = "eco2mix", colors = NULL, lines = NULL,
-  lineColors = NULL, areas = NULL, main = "Production stack",
-  unit = c("MWh", "GWh", "TWh"), width = "100\%", height = "500px",
-  interactive = base::interactive(), legend = TRUE,
-  legendId = sample(1e+09, 1), legendItemsPerRow = 5)
+  lineColors = NULL, areas = NULL, dateRange = NULL,
+  main = "Production stack", unit = c("MWh", "GWh", "TWh"),
+  width = "100\%", height = "500px", interactive = base::interactive(),
+  legend = TRUE, legendId = sample(1e+09, 1), legendItemsPerRow = 5)
 }
 \arguments{
 \item{x}{An object of class \code{antaresData} created with function 
@@ -35,6 +35,9 @@ should be \code{NULL} if there is no curve to trace or if parameter
 
 \item{areas}{Vector of area or district names. The data of these areas or districts is
 aggregated by the function to construct the production stack.}
+
+\item{dateRange}{A vector of two dates. Only data points between these two dates are 
+displayed. If NULL, then all data is displayed.}
 
 \item{main}{Title of the graph.}
 

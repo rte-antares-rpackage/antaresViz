@@ -28,6 +28,9 @@
 #' @param areas
 #'   Vector of area or district names. The data of these areas or districts is
 #'   aggregated by the function to construct the production stack.
+#' @param dateRange
+#'   A vector of two dates. Only data points between these two dates are 
+#'   displayed. If NULL, then all data is displayed.
 #' @param main
 #'   Title of the graph.
 #' @param unit
