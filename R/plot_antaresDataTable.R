@@ -21,6 +21,9 @@
 #'   a barplot with one bar per element representing the average value of the
 #'   variable for this element. "monotone" draws the monotone curve of the 
 #'   variable for each element.
+#' @param dateRange
+#'   A vector of two dates. Only data points between these two dates are 
+#'   displayed. If NULL, then all data is displayed.
 #' @param confInt
 #'   Number between 0 and 1 indicating the size of the confidence interval to 
 #'   display. If it equals to 0, then confidence interval is not computed nor
@@ -76,6 +79,7 @@
 #' @export
 plot.antaresDataTable <- function(x, variable = NULL, elements = NULL, 
                                   type = c("ts", "barplot", "monotone"),
+                                  dateRange = NULL,
                                   confInt = 0,
                                   interactive = base::interactive(), ...) {
 
@@ -85,6 +89,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   timeStep <- attr(x, "timeStep")
   dataname <- deparse(substitute(x))
   showConfInt <- !is.null(x$mcYear) && length(unique(x$mcYear) > 1)
+  
   # Prepare data for plotting
   dt <- x[, .(
     time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
@@ -105,11 +110,16 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     dt$mcYear <- x$mcYear
   }
   
+  dataDateRange <- as.Date(range(dt$time))
+  if (is.null(dateRange) || length(dateRange) < 2) dateRange <- dataDateRange
+  
+  
   # Function that generates the desired graphic.
-  plotFun <- function(dt, variable, elements, type, confInt) {
+  plotFun <- function(dt, variable, elements, type, confInt, dateRange) {
     if (is.null(variable)) variable <- valueCols[1]
     dt$value <- x[, get(variable)]
     if (length(elements) > 0 & !"all" %in% elements) dt <- dt[element %in% elements]
+    dt <- dt[as.Date(time) %between% dateRange]
     switch(type,
            "ts" = .plotTS(dt, timeStep, variable, confInt = confInt),
            "barplot" = .barplot(dt, timeStep, variable, confInt = confInt),
@@ -120,7 +130,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(dt, variable, elements, type, confInt))
+    return(plotFun(dt, variable, elements, type, confInt,dateRange))
   }
   
   uniqueElem <- sort(as.character(unique(dt$element)))
@@ -130,9 +140,10 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   }
   
   manipulateWidget(
-    plotFun(dt, variable, elements, type, confInt),
+    plotFun(dt, variable, elements, type, confInt, dateRange),
     variable = mwSelect(valueCols, variable),
     type = mwSelect(c("time series" = "ts", "barplot", "monotone"), type),
+    dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
     .main = dataname,
