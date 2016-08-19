@@ -89,6 +89,7 @@
 productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
                             lineColors = NULL,
                             areas = NULL, 
+                            dateRange = NULL,
                             main = "Production stack", unit = c("MWh", "GWh", "TWh"),
                             width = "100%", height = "500px",
                             interactive = base::interactive(), 
@@ -100,9 +101,9 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   # If parameter "variables" is an alias, then use the variables and colors 
   # corresponding to that alias
   if (is.character(variables)) { # variables is an alias
-    stack <- variables
+    .stack <- variables
   } else {
-    stack <- NULL
+    .stack <- NULL
     if (is.null(colors)) stop("Colors need to be specified when using custom variables.")
     if (!is.null(lines) && is.null(lineColors)) {
       stop("lineColors need to be specified when using custom lineCurves.")
@@ -130,14 +131,19 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   }
   
   if (is.null(x$area)) x$area <- x$district
+  timeStep <- attr(x, "timeStep")
+  opts <- simOptions(x)
   
-  plotWithLegend <- function(areas, main = "", unit, stack) {
+  dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
+  if (length(dateRange) < 2) dateRange <- dataDateRange
+  
+  plotWithLegend <- function(areas, main = "", unit, stack, dateRange) {
     if (length(areas) == 0) return ("Please choose an area")
     
     # If user has provided an alias, then stack contains this alias and
     # the corresponding options are retrieved. Else use the options
     # provided by the user.
-    if (!is.null(stack)) {
+    if (!is.null(.stack)) {
       stackOptions <- .aliasToStackOptions(stack)
       variables <- stackOptions$variables
       colors <- stackOptions$colors
@@ -145,7 +151,12 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
       lineColors <- stackOptions$lineColors
     }
     
-    p <- .plotProductionStack(x[area %in% areas], 
+    dt <- x[area %in% areas]
+    if (!is.null(dateRange)) {
+      dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep)) %between% dateRange]
+    }
+    
+    p <- .plotProductionStack(dt, 
                               variables, 
                               colors,
                               lines,
@@ -164,25 +175,19 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   }
   
   if (!interactive) {
-    return(plotWithLegend(areas, main, unit, stack))
+    return(plotWithLegend(areas, main, unit, stack, dateRange))
   }
   
-  if (is.null(stack)) {
-    manipulateWidget(.main = "Production stack",
-      plotWithLegend(areas, main, unit, stack),
-      main = mwText(main),
-      unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-      areas = mwSelect(as.character(unique(x$area)), areas, multiple = TRUE)
-    )
-  } else {
-    manipulateWidget(.main = "Production stack",
-      plotWithLegend(areas, main, unit, stack),
-      main = mwText(main, label = "title"),
-      unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-      stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
-      areas = mwSelect(as.character(unique(x$area)), areas, multiple = TRUE)
-    )
-  }
+  manipulateWidget(
+    plotWithLegend(areas, main, unit, stack, dateRange),
+    main = mwText(main, label = "title"),
+    dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
+    stack = mwSelect(names(pkgEnv$prodStackAliases), .stack),
+    unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
+    areas = mwSelect(as.character(unique(x$area)), areas, multiple = TRUE),
+    .main = "Production stack",
+    .display = list(stack = !is.null(.stack))
+  )
 }
 
 #' Returns the variables and colors corresponding to an alias
@@ -249,7 +254,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   
   # 1- Create a data.table containing the series defined by parameter "variables"
   dt <- data.table(timeId = x$timeId, area = x$area)
-  dt$time <- .timeIdToDate(dt$timeId, timeStep)
+  dt$time <- .timeIdToDate(dt$timeId, timeStep, simOptions(x))
   dt[, timeId := NULL]
   dt[, c(rev(names(variables)), paste0("neg", names(variables)), "totalNeg", names(lines), paste0("opp", names(lines))) := 0]
   
