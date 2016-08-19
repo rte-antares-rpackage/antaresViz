@@ -5,8 +5,8 @@
 \title{plot time series contained in an antaresDataTable}
 \usage{
 \method{plot}{antaresDataTable}(x, variable = NULL, elements = NULL,
-  type = c("ts", "barplot", "monotone"), interactive = base::interactive(),
-  ...)
+  type = c("ts", "barplot", "monotone"), confInt = 0,
+  interactive = base::interactive(), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataTable}.}
@@ -27,6 +27,11 @@ when two clusters from different areas have the same name.}
 a barplot with one bar per element representing the average value of the
 variable for this element. "monotone" draws the monotone curve of the 
 variable for each element.}
+
+\item{confInt}{Number between 0 and 1 indicating the size of the confidence interval to 
+display. If it equals to 0, then confidence interval is not computed nor
+displayed. Used only when multiple Monte Carlo scenarios are present in 
+the input data.}
 
 \item{interactive}{Should the function start a shiny gadget that lets the user modify the
 parameters of the plot ?}

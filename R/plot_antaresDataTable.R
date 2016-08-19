@@ -20,7 +20,12 @@
 #'   Type of plot to draw. "ts" creates a time series plot, "barplot" creates
 #'   a barplot with one bar per element representing the average value of the
 #'   variable for this element. "monotone" draws the monotone curve of the 
-#'   variable for each element. 
+#'   variable for each element.
+#' @param confInt
+#'   Number between 0 and 1 indicating the size of the confidence interval to 
+#'   display. If it equals to 0, then confidence interval is not computed nor
+#'   displayed. Used only when multiple Monte Carlo scenarios are present in 
+#'   the input data.
 #' @param main
 #'   Title of the generated graphic
 #' @param ylab
@@ -71,6 +76,7 @@
 #' @export
 plot.antaresDataTable <- function(x, variable = NULL, elements = NULL, 
                                   type = c("ts", "barplot", "monotone"),
+                                  confInt = 0,
                                   interactive = base::interactive(), ...) {
 
   type <- match.arg(type)
@@ -78,6 +84,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   valueCols <- setdiff(names(x), idCols)
   timeStep <- attr(x, "timeStep")
   dataname <- deparse(substitute(x))
+  showConfInt <- !is.null(x$mcYear) && length(unique(x$mcYear) > 1)
   # Prepare data for plotting
   dt <- x[, .(
     time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
@@ -99,21 +106,21 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   }
   
   # Function that generates the desired graphic.
-  plotFun <- function(dt, variable, elements, type) {
+  plotFun <- function(dt, variable, elements, type, confInt) {
     if (is.null(variable)) variable <- valueCols[1]
     dt$value <- x[, get(variable)]
     if (length(elements) > 0 & !"all" %in% elements) dt <- dt[element %in% elements]
     switch(type,
-           "ts" = .plotTS(dt, timeStep, variable, confInt = NULL),
-           "barplot" = .barplot(dt, timeStep, variable, confInt = NULL),
-           "monotone" = .plotMonotone(dt, timeStep, variable, confInt = NULL),
+           "ts" = .plotTS(dt, timeStep, variable, confInt = confInt),
+           "barplot" = .barplot(dt, timeStep, variable, confInt = confInt),
+           "monotone" = .plotMonotone(dt, timeStep, variable, confInt = confInt),
            stop("Invalid type"))
   }
   
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(dt, variable, elements, type))
+    return(plotFun(dt, variable, elements, type, confInt))
   }
   
   uniqueElem <- sort(as.character(unique(dt$element)))
@@ -123,11 +130,13 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   }
   
   manipulateWidget(
-    plotFun(dt, variable, elements, type),
+    plotFun(dt, variable, elements, type, confInt),
     variable = mwSelect(valueCols, variable),
     type = mwSelect(c("time series" = "ts", "barplot", "monotone"), type),
+    confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
-    .main = dataname
+    .main = dataname,
+    .display = list(confInt = showConfInt)
   )
   
 }
@@ -150,11 +159,11 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #' 
 #' @noRd
 #' 
-.plotTS <- function(dt, timeStep, variable, confInt = NULL) {
+.plotTS <- function(dt, timeStep, variable, confInt = 0) {
   
   # If dt contains several Monte-Carlo scenario, compute aggregate statistics
   if (!is.null(dt$mcYear)) {
-    if (is.null(confInt)) {
+    if (confInt == 0) {
       
       dt <- dt[, .(value = mean(value)), by = .(element, time)]
       
@@ -199,13 +208,13 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #' The resulting barplot contains a bar per element which represents the average
 #' value over time steps.
 #' 
-.barplot <- function(dt, timeStep, variable, confInt = NULL) {
+.barplot <- function(dt, timeStep, variable, confInt = 0) {
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(value = mean(value)), by = element] 
   } else {
     dt <- dt[, .(value = mean(value)), by = .(element, mcYear)] 
     
-    if (is.null(confInt)) {
+    if (confInt == 0) {
       dt <- dt[, .(value = mean(value)), by = .(element)]
     } else {
       uniqueElement <- sort(unique(dt$element))
@@ -253,7 +262,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
       value = sort(value, decreasing = TRUE)
     ), by = .(element, mcYear)]
     
-    if (is.null(confInt)) {
+    if (confInt == 0) {
       dt <- dt[, .(value = mean(value)), by = .(element, rank)]
     } else {
       uniqueElement <- sort(unique(dt$element))
