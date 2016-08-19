@@ -304,9 +304,10 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
-      labelsKMB = FALSE
+      strokeWidth = 0
     ) %>% 
-    dyAxis("y", label = sprintf("Production (%s)", unit), pixelsPerLabel = 60, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
+    dyAxis("x", rangePad = 10) %>% 
+    dyAxis("y", label = sprintf("Production (%s)", unit), rangePad = 10, pixelsPerLabel = 60, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
       highlightCallback = JS(sprintf(

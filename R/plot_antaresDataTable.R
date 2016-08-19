@@ -203,7 +203,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE
     ) %>% 
-    dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
+    dyAxis("x", rangePad = 10) %>% 
+    dyAxis("y", label = ylab, pixelsPerLabel = 60, rangePad = 10) %>% 
     dyRangeSelector()
   
   if (exists("uniqueElement")) {
