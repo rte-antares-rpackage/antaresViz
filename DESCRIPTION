@@ -1,8 +1,8 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.1
-Date: 2016-08-01
+Version: 0.2
+Date: 2016-08-22
 Author: Francois Guilem <francois.guillem@rte-france.com>
 Maintainer: Francois Guilem <francois.guillem@rte-france.com>
 Description: Visualize the data extracted from an antares project.

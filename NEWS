@@ -1,0 +1,5 @@
+Changes in version 0.2 (2016-08-22)
+
+NEW FEATURES:
+* plot method for antaresTable objects and productionStack have an improved interface that helps user choose what he wants to visualize.
+* plot method for antaresTable objects can now draw time series but also barplots and monotones.
