@@ -220,6 +220,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #' The resulting barplot contains a bar per element which represents the average
 #' value over time steps.
 #' 
+#'  @noRd 
 .barplot <- function(dt, timeStep, variable, confInt = 0) {
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(value = mean(value)), by = element] 

@@ -5,7 +5,7 @@
 \title{plot time series contained in an antaresDataTable}
 \usage{
 \method{plot}{antaresDataTable}(x, variable = NULL, elements = NULL,
-  type = c("ts", "barplot", "monotone"), confInt = 0,
+  type = c("ts", "barplot", "monotone"), dateRange = NULL, confInt = 0,
   interactive = base::interactive(), ...)
 }
 \arguments{
@@ -27,6 +27,9 @@ when two clusters from different areas have the same name.}
 a barplot with one bar per element representing the average value of the
 variable for this element. "monotone" draws the monotone curve of the 
 variable for each element.}
+
+\item{dateRange}{A vector of two dates. Only data points between these two dates are 
+displayed. If NULL, then all data is displayed.}
 
 \item{confInt}{Number between 0 and 1 indicating the size of the confidence interval to 
 display. If it equals to 0, then confidence interval is not computed nor

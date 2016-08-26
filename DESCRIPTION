@@ -18,5 +18,7 @@ Imports:
     highcharter,
     tibble,
     htmltools,
-    manipulateWidget
+    manipulateWidget,
+    mapStudio,
+    leaflet
 RoxygenNote: 5.0.1

@@ -7,6 +7,8 @@
 #' @import shiny
 #' @import htmltools
 #' @import manipulateWidget
+#' @import mapStudio
+#' @import leaflet
 #' 
 .idCols <- antaresRead:::.idCols
 .timeIdToDate <- antaresRead:::.timeIdToDate
