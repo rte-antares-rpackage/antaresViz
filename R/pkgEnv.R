@@ -45,7 +45,7 @@ pkgEnv$prodStackAliases <- list(
     description = "Production stack used on Eco2mix website: 
     http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique",
     var = c("pumpedStorage", "minusBalance", "bioenergie", "wind", "solar", 
-            "nuclear", "hydraulic", "gas", "coal", "fuel", "other"),
+            "nuclear", "hydraulic", "gas", "coal", "lignite", "fuel", "other"),
     lines = c("load", "totalProduction")
   ),
   

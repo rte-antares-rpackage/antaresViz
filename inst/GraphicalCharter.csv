@@ -19,7 +19,7 @@ renewableNoDispatchable	0	255	0	WIND+SOLAR+`H. ROR`+`MISC. NDG`
 thermal	77	77	77	NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`
 thermalDispatchable	100	100	100	NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`
 hydraulicDispatchable	39	114	178	`H. STOR`
-lignite	238	118	33	LIGNITE
+lignite	180	130	43	LIGNITE
 oil	199	145	237	OIL
 mixFuel	127	84	156	`MIX. FUEL`
 hydraulicRor	61	96	125	`H. ROR`
