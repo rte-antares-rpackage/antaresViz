@@ -20,5 +20,6 @@ Imports:
     htmltools,
     manipulateWidget,
     mapStudio,
-    leaflet
+    leaflet,
+    sp
 RoxygenNote: 5.0.1

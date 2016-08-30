@@ -56,17 +56,23 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 }
 
 #' @export
-plot.mapLayout <- function(x, ...) {
+plot.mapLayout <- function(x, colAreas =  x$coords$color, colLinks = NULL, ...) {
+  
+  # Get links as spatialLinesObject
+  links <- lapply(1:nrow(x$links), function(i) {
+    l <- x$links[i, ]
+    sp::Lines(list(sp::Line(matrix(c(l$x0, l$x1, l$y0, l$y1), ncol = 2))), ID = i)
+  })
+  
+  links <- sp::SpatialLines(links)
+  
   map <- leaflet() %>% 
-    addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
-  
-  for (i in 1:nrow(x$links)) {
-    map <- with(x$links[i,], addPolylines(map, lng = c(x0, x1), lat = c(y0, y1),
-                                          popup = link))
-  }
-  
-  map <- addCircleMarkers(map, lng = x$coords$x, lat = x$coords$y, color = x$coords$color, 
-                   weight = 1, fillOpacity = 1, popup = x$coords$area)
+    addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}") %>% 
+    addPolylines(data = links, popup = x$links$link, color = colLinks, opacity = 1) %>% 
+    addCircleMarkers(lng = x$coords$x, lat = x$coords$y, 
+                     color = gray(0.3), weight = 1, 
+                     fillColor = colAreas, fillOpacity = 1, 
+                     popup = x$coords$area)
   
   map
 }

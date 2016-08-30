@@ -3,6 +3,7 @@
 S3method(plot,antaresDataTable)
 S3method(plot,mapLayout)
 export(mapLayout)
+export(plotMap)
 export(productionStack)
 export(productionStackAliases)
 export(productionStackLegend)
