@@ -140,14 +140,14 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
   if (length(dateRange) < 2) dateRange <- dataDateRange
   
-  plotWithLegend <- function(areas, main = "", unit, stack, dateRange) {
+  plotWithLegend <- function(areas, main = "", unit, .stack, dateRange) {
     if (length(areas) == 0) return ("Please choose an area")
     
     # If user has provided an alias, then stack contains this alias and
     # the corresponding options are retrieved. Else use the options
     # provided by the user.
     if (!is.null(.stack)) {
-      stackOptions <- .aliasToStackOptions(stack)
+      stackOptions <- .aliasToStackOptions(.stack)
       variables <- stackOptions$variables
       colors <- stackOptions$colors
       lines <- stackOptions$lines
@@ -178,7 +178,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   }
   
   if (!interactive) {
-    return(plotWithLegend(areas, main, unit, stack, dateRange))
+    return(plotWithLegend(areas, main, unit, .stack, dateRange))
   }
   
   manipulateWidget(
