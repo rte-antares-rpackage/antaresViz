@@ -18,7 +18,7 @@
 #' @export
 plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none", 
                     timeId = min(x$areas$timeId),
-                    interactive = base::interactive(),mp = NULL) {
+                    interactive = base::interactive(), mp = NULL) {
   
   plotFun <- function(t, areaVar, linkVar) {
     
@@ -91,11 +91,13 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
     return(plotFun(timeId, areaVar, linkVar))
   }
   
-  manipulateWidget(
-    plotFun(timeId, areaVar, linkVar),
-    timeId = mwSlider(min(x$areas$timeId), max(x$areas$timeId), timeId),
+  ui <- mwUI(
+    timeId = mwSlider(min(x$areas$timeId), max(x$areas$timeId), timeId, step = 1),
     areaVar = mwSelect(c("none", setdiff(names(x$areas), .idCols(x$areas))), areaVar),
-    linkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), linkVar)
+    linkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), linkVar),
+    .content = leafletOutput("map", height = "100%")
   )
   
+  runGadget(ui, .plotMapServer(x, mapLayout), viewer = browserViewer())
 }
+
