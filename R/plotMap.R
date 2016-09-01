@@ -20,6 +20,13 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
                     timeId = min(x$areas$timeId),
                     interactive = base::interactive(), mp = NULL) {
   
+  # Keep only links and areas present in the data
+  areaList <- unique(x$areas$area)
+  linkList <- unique(x$links$link)
+  mapLayout$coords <- mapLayout$coords[area %in% areaList]
+  mapLayout$links <- mapLayout$links[link %in% linkList]
+  
+  # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, areaVar, linkVar) {
     
     ml <- copy(mapLayout)
@@ -45,8 +52,6 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
       colAreas <- areaPal(ml$coords$var)
       
     } else {
-      areaList <- unique(x$areas$area)
-      ml$coords <- ml$coords[area %in% areaList]
       colAreas <- "#CCCCCC"
     }
     
@@ -71,8 +76,6 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
       
       colLinks <- linkPal(ml$links$var)
     } else {
-      linkList <- unique(x$links$link)
-      ml$links <- ml$links[link %in% linkList]
       colLinks <- "#CCCCDD"
     }
     
@@ -98,6 +101,7 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
     .content = leafletOutput("map", height = "100%")
   )
   
-  runGadget(ui, .plotMapServer(x, mapLayout), viewer = browserViewer())
+  args <- runGadget(ui, .plotMapServer(x, mapLayout), viewer = browserViewer())
+  do.call(plotFun, args)
 }
 

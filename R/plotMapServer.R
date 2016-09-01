@@ -1,10 +1,4 @@
 .plotMapServer <- function(x, mapLayout) {
-  # Keep only links and areas present in the data
-  areaList <- unique(x$areas$area)
-  linkList <- unique(x$links$link)
-  mapLayout$coords <- mapLayout$coords[area %in% areaList]
-  mapLayout$links <- mapLayout$links[link %in% linkList]
-  
   
   function(input, output, session) {
     # Initialization of the map
@@ -15,7 +9,8 @@
     
     map <- leafletProxy("map", session)
     
-    # Update circle colors when areavar is modified
+    # Update circles and links when timeId is changed. We update both
+    # so that areas stay above links
     observeEvent(input$linkVar, {
       .redrawLinks(x, mapLayout, input$linkVar, input$timeId, map)
       .redrawCircles(x, mapLayout, input$areaVar, input$timeId, map)
@@ -25,7 +20,7 @@
       .redrawCircles(x, mapLayout, input$areaVar, input$timeId, map)
     })
     
-    # Update circles and links when timeId is changed
+    # Update circle colors when areavar is modified
     observeEvent(input$timeId, {
       if (input$linkVar != "none") {
         .redrawLinks(x, mapLayout, input$linkVar, input$timeId, map)
@@ -36,8 +31,13 @@
       }
     })
     
+    # Return a list with the last value of inputs
     observeEvent(input$done, {
-      stopApp("glop glop")
+      stopApp(list(
+        t = input$timeId, 
+        areaVar = input$areaVar, 
+        linkVar = input$linkVar
+      ))
     })
   }
 }
