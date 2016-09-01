@@ -46,30 +46,14 @@
   ml <- copy(mapLayout)
   
   if (areaVar != "none") {
-    ml$coords <- merge(
-      ml$coords, 
-      x$areas[timeId == t, c("area", areaVar), with = FALSE], 
-      by = "area"
-    )
-    
-    setnames(ml$coords, areaVar, "var")
-    
-    rangevar <- range(x$areas[[areaVar]])
-    if (rangevar[1] >= 0) {
-      domain <- rangevar
-      areaPal <- colorBin("Blues", domain, bins = 5)
-    } else {
-      domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
-      areaPal <- colorBin("RdBu", domain, bins = 7)
-    }
-    
-    colAreas <- areaPal(ml$coords$var)
-    
+    colAndPal <- .getColAndPal(x$areas, mapLayout$coords, areaVar, t, "area")
+    ml$coords <- colAndPal$coords
+    colAreas <- colAndPal$col
   } else {
     colAreas <- "#CCCCCC"
   }
   
-  map %>% 
+  map <- map %>% 
     clearMarkers() %>% 
     addCircleMarkers(
       lng = ml$coords$x, lat = ml$coords$y, 
@@ -78,31 +62,23 @@
       popup = ml$coords$area,
       options = list(zIndexOffset=1000)
     )
+  
+  if (areaVar != "none") {
+    map <- addLegend(map, "topright", colAndPal$pal, ml$coords$var, 
+                     title = areaVar,
+                     opacity = 1, layerId = "legAreas")
+  }
+  
+  map
 }
 
 .redrawLinks <- function(x, mapLayout, linkVar, t, map) {
   ml <- copy(mapLayout)
   
   if (linkVar != "none") {
-    ml$links <- merge(
-      ml$links, 
-      x$links[timeId == t, c("link", linkVar), with = FALSE], 
-      by = "link"
-    )
-    
-    setnames(ml$links, linkVar, "var")
-    
-    rangevar <- range(x$links[[linkVar]])
-    if (rangevar[1] >= 0) {
-      domain <- rangevar
-      linkPal <- colorBin("Blues", domain, bins = 5)
-    } else {
-      domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
-      linkPal <- colorBin("RdBu", domain, bins = 7)
-    }
-    
-    colLinks <- linkPal(ml$links$var)
-    
+    colAndPal <- .getColAndPal(x$links, mapLayout$links, linkVar, t, "link")
+    ml$links <- colAndPal$coords
+    colLinks <- colAndPal$col
   } else {
     colLinks <- "#CCCCCC"
   }
@@ -114,7 +90,7 @@
   
   links <- sp::SpatialLines(links)
   
-  map %>% 
+  map <- map %>% 
     clearShapes() %>% 
     addPolylines(
       data = links, 
@@ -123,4 +99,35 @@
       opacity = 1, 
       group = "links"
     )
+  
+  if (linkVar != "none") {
+    map <- addLegend(map, "topright", colAndPal$pal, ml$links$var, 
+                     title = linkVar,
+                     opacity = 1, layerId = "legLinks")
+  }
+  
+  map
+}
+
+.getColAndPal <- function(data, coords, var, t, mergeBy) {
+  coords <- merge(
+    copy(coords),
+    data[timeId == t, c(mergeBy, var), with = FALSE],
+    by = mergeBy
+  )
+  
+  setnames(coords, var, "var")
+  
+  rangevar <- range(data[[var]])
+  if (rangevar[1] >= 0) {
+    domain <- rangevar
+    pal <- colorBin("Blues", domain, bins = 5)
+  } else {
+    domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
+    pal <- colorBin("RdBu", domain, bins = 7)
+  }
+  
+  col <- pal(coords$var)
+  
+  return(list(coords = coords, col = col, pal = pal))
 }
