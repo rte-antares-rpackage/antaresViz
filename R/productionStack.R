@@ -310,31 +310,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
     dyAxis("y", label = sprintf("Production (%s)", unit), rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
-      highlightCallback = JS(sprintf(
-        "function(e, timestamp, data) {
-           var values = {}
-
-           data.forEach(function(d) {
-             var sign = d.name.match(/^neg/) ? -1 : 1;
-             var varname = d.name.replace(/^neg/, '');
-             if (values[varname]) values[varname] += d.yval * sign;
-             else values[varname] = d.yval * sign;
-           })
-           for (k in values) {
-             if (!values.hasOwnProperty(k)) continue; 
-             var el = document.getElementById(k + '%s');
-             if (el) el.innerHTML = Math.round(values[k]);
-           }
-
-         }",
-        legendId
-      )),
-      unhighlightCallback = JS(
-        "function(e) {
-           var els = document.getElementsByClassName('legvalue');
-           for (var i = 0; i < els.length; ++i) {els[i].innerHTML = '';}
-         }"
-      )
+      highlightCallback = JS_updateLegend(legendId),
+      unhighlightCallback = JS_resetLegend()
     )
   
   if (length(lines) > 0) {
@@ -407,43 +384,13 @@ productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = 
     
   }
   
-  legendItems <- mapply(.productionStackLegendItem, 
-                        label = c(names(variables), names(lines)), 
-                        color = c(colors, lineColors), 
-                        legendId = legendId,
-                        SIMPLIFY = FALSE, 
-                        USE.NAMES = FALSE)
-  
-  nbRows <- ceiling(length(legendItems) / itemsByRow) 
-  
-  legendItems <- rev(legendItems)
-  
-  legendRows <- list()
-  for (i in 1:nbRows) {
-    j <- ((i - 1) * itemsByRow + 1):(i * itemsByRow)
-    legendRows[[i]] <- do.call(fillRow, legendItems[j])
-  } 
-  
-  tags$div(fillRow(do.call(fillCol, legendRows), height = i * 20), height = i * 20)
+  tsLegend(
+    labels = c(names(variables), names(lines)), 
+    colors = c(colors, lineColors),
+    type = c(rep("area", length(variables)), rep("line", length(lines))),
+    itemsByRow = itemsByRow,
+    legendId = legendId
+  )
 }
 
 
-
-.productionStackLegendItem <- function(label, color, legendId) {
-  txtColor <- sprintf("color:%s; text-align: right;font-size:12px;", "white")
-  bgColor <- sprintf("background-color:%s", color)
-  
-  tags$div(style = "width:100%%;height:17px;padding:0 4px;",
-  tags$div(style = sprintf("color:white;background-color:%s;width:100%%;height:17px", color),
-          tags$div(style=txtColor,
-            tags$div(
-              style = "position:absolute;left:4px;padding:0 2px;", 
-              class = "leglabel",
-              label),
-            tags$div(
-              style= sprintf("position:absolute;right:4px;padding:0 2px;background-color:%s;font-weight:bold;", color), 
-              id = paste0(label, legendId), 
-              class =  "legvalue",
-              "")
-          )))
-}
