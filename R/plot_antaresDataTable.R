@@ -172,6 +172,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #' 
 .plotTS <- function(dt, timeStep, variable, confInt = 0) {
   
+  uniqueElement <- sort(unique(dt$element))
+  plotConfInt <- FALSE
+  
   # If dt contains several Monte-Carlo scenario, compute aggregate statistics
   if (!is.null(dt$mcYear)) {
     if (confInt == 0) {
@@ -180,8 +183,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
       
     } else {
       
-      uniqueElement <- sort(unique(dt$element))
-      
+      plotConfInt <- TRUE
       alpha <- (1 - confInt) / 2
       dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
                    suffix = c("", "_l", "_u")), 
@@ -195,24 +197,39 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   ylab <- variable
   main <- paste("Evolution of", variable)
   
+  legendId <- sample(1e9, 1)
+  colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
+  
   g <- dygraph(dt, main = main) %>% 
     dyOptions(
       includeZero = TRUE, 
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
-      labelsKMB = TRUE
+      labelsKMB = TRUE,
+      colors = colors
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60, rangePad = 10) %>% 
-    dyRangeSelector()
+    dyRangeSelector() %>% 
+    dyLegend(show = "never") %>% 
+    dyCallbacks(
+      highlightCallback = JS_updateLegend(legendId),
+      unhighlightCallback = JS_resetLegend()
+    )
   
-  if (exists("uniqueElement")) {
+  if (plotConfInt) {
     for (v in uniqueElement) {
       g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
     }
   }
-  g
+  
+  combineWidgets(
+    vflex = c(1, NA),
+    g,
+    tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
+             colors = colors, legendId = legendId)
+  )
 }
 
 #' Private function that draw a barplot
@@ -263,6 +280,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 }
 
 .plotMonotone <- function(dt, timeStep, variable, confInt = NULL) {
+  
+  uniqueElement <- sort(unique(dt$element))
+  plotConfInt <- FALSE
   # If dt contains several Monte-Carlo scenario, compute aggregate statistics
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(
@@ -278,6 +298,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     if (confInt == 0) {
       dt <- dt[, .(value = mean(value)), by = .(element, rank)]
     } else {
+      plotConfInt <- TRUE
       uniqueElement <- sort(unique(dt$element))
       
       alpha <- (1 - confInt) / 2
@@ -293,6 +314,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   ylab <- variable
   main <- paste("Monotone of", variable)
   
+  legendId <- sample(1e9, 1)
+  colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
+  
   g <- dygraph(dt, main = main) %>% 
     dyOptions(
       includeZero = TRUE, 
@@ -301,13 +325,24 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE
     ) %>% 
-    dyAxis("y", label = ylab, pixelsPerLabel = 60)
+    dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
+    dyLegend(show = "never") %>% 
+    dyCallbacks(
+      highlightCallback = JS_updateLegend(legendId),
+      unhighlightCallback = JS_resetLegend()
+    )
   
-  if (exists("uniqueElement")) {
+  if (plotConfInt) {
     for (v in uniqueElement) {
       g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
     }
   }
-  g
+  
+  combineWidgets(
+    vflex = c(1, NA),
+    g,
+    tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
+             colors = colors, legendId = legendId)
+  )
 }
 
