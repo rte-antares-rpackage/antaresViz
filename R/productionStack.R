@@ -307,12 +307,13 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
       strokeWidth = 0
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
-    dyAxis("y", label = sprintf("Production (%s)", unit), rangePad = 10, pixelsPerLabel = 60, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
+    dyAxis("y", label = sprintf("Production (%s)", unit), rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
       highlightCallback = JS(sprintf(
         "function(e, timestamp, data) {
            var values = {}
+
            data.forEach(function(d) {
              var sign = d.name.match(/^neg/) ? -1 : 1;
              var varname = d.name.replace(/^neg/, '');
@@ -322,11 +323,11 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
            for (k in values) {
              if (!values.hasOwnProperty(k)) continue; 
              var el = document.getElementById(k + '%s');
-             if (el) el.innerHTML = '<b style=\"font-size:1.5em;\">' + Math.round(values[k]) + '</b> %s';
+             if (el) el.innerHTML = Math.round(values[k]);
            }
 
          }",
-        legendId, unit
+        legendId
       )),
       unhighlightCallback = JS(
         "function(e) {
@@ -423,15 +424,26 @@ productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = 
     legendRows[[i]] <- do.call(fillRow, legendItems[j])
   } 
   
-  tags$div(fillRow(do.call(fillCol, legendRows), height = i * 60), height = i * 60)
+  tags$div(fillRow(do.call(fillCol, legendRows), height = i * 20), height = i * 20)
 }
 
+
+
 .productionStackLegendItem <- function(label, color, legendId) {
-  txtColor <- sprintf("color:%s; text-align: right;", color)
+  txtColor <- sprintf("color:%s; text-align: right;font-size:12px;", "white")
   bgColor <- sprintf("background-color:%s", color)
   
-  fillCol(flex = c(1.5,NA,1), style = "padding:4px;",
-          tags$div("", style=txtColor, id = paste0(label, legendId), class =  "legvalue"),
-          tags$div(style = paste(c(bgColor, "height:6px", "margin:2px 0"), collapse = ";")),
-          tags$div(label, style = txtColor))
+  tags$div(style = "width:100%%;height:17px;padding:0 4px;",
+  tags$div(style = sprintf("color:white;background-color:%s;width:100%%;height:17px", color),
+          tags$div(style=txtColor,
+            tags$div(
+              style = "position:absolute;left:4px;padding:0 2px;", 
+              class = "leglabel",
+              label),
+            tags$div(
+              style= sprintf("position:absolute;right:4px;padding:0 2px;background-color:%s;font-weight:bold;", color), 
+              id = paste0(label, legendId), 
+              class =  "legvalue",
+              "")
+          )))
 }
