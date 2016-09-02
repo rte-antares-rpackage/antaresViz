@@ -212,7 +212,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   pkgEnv$prodStackAliases[[variables]]
 }
 
-#' Generate an interactive production stack
+#' Generate an interactive stack
 #' 
 #' @param x
 #'   data.table of class "antaresDataTable" containing data for one and only one
@@ -255,75 +255,17 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
 
   timeStep <- attr(x, "timeStep")
   
-  # 1- Create a data.table containing the series defined by parameter "variables"
-  dt <- data.table(timeId = x$timeId, area = x$area)
-  dt$time <- .timeIdToDate(dt$timeId, timeStep, simOptions(x))
-  dt[, timeId := NULL]
-  dt[, c(rev(names(variables)), paste0("neg", names(variables)), "totalNeg", names(lines), paste0("opp", names(lines))) := 0]
+  formulas <- append(variables, lines)
+  variables <- names(variables)
+  lines <- names(lines)
   
-  nvar <- length(variables)
-  nlines <- length(lines)
-  
-  for (i in length(variables):1) {
-      values <- x[, eval(variables[[i]]) ] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
-    set(dt, j = nvar + 3L - i, value = values)
+  dt <- data.table(timeId = x$timeId)
+  for (n in names(formulas)) {
+    dt[,c(n) := x[, eval(formulas[[n]]) / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]]
   }
   
-  if (nlines > 0) {
-    for (i in 1:nlines) {
-        value <- x[, eval(lines[[i]]) ] / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)
-      set(dt, j = 2L * nvar + 3L + i, value = value)
-      set(dt, j = 2L * nvar + 3L + nlines + i, value = -value)
-    }
-  }
-  
-  # 2- Group by timeId
-  dt[, area := NULL]
-  dt <- dt[, lapply(.SD, sum), by = time]
-  
-  # 3- Separate positive and negative values and compute total negative values
-  for (i in length(variables):1) {
-    values <- dt[[names(variables)[i]]]
-    posValues <- pmax(0, values)
-    negValues <- pmin(0, values)
-    
-    set(dt, j = nvar + 2L - i, value = posValues)
-    set(dt, j = nvar + 1L + i, value = - negValues)
-    dt$totalNeg <- dt$totalNeg + negValues
-  }
-  
-  # 5- Finally plot !!
-  colors <- unname(c("#FFFFFF", rev(colors), colors))
-  
-  g <- dygraph(dt, main = main, width = "100%", height = "100%")  %>%
-    dyOptions(
-      stackedGraph = TRUE, 
-      colors = rev(colors), 
-      fillAlpha = 0.6,
-      includeZero = TRUE, 
-      gridLineColor = gray(0.8), 
-      axisLineColor = gray(0.6), 
-      axisLabelColor = gray(0.6), 
-      strokeWidth = 0
-    ) %>% 
-    dyAxis("x", rangePad = 10) %>% 
-    dyAxis("y", label = sprintf("Production (%s)", unit), rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
-    dyLegend(show = "never") %>% 
-    dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId),
-      unhighlightCallback = JS_resetLegend()
-    )
-  
-  if (length(lines) > 0) {
-    for (i in 1:length(lines)) {
-      g <- g %>% dySeries(name = paste0("opp", names(lines)[i]), color = lineColors[i], 
-                          fillGraph = FALSE, strokeWidth = 0)
-      g <- g %>% dySeries(name = names(lines)[i], color = lineColors[i], 
-                          fillGraph = FALSE, strokeWidth = 3)
-    }
-  }
-  
-  g
+  .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, legendId,
+             main = main, ylab = sprintf("Production (%s)", unit))
 }
 
 #' Plot an interactive legend for a production stack plot
