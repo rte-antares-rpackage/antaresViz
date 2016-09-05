@@ -26,7 +26,7 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
                   .(link, timeId, flow = `FLOW LIN.`)],
                 linksDef,
                 by = "link")
-    dt[, flow := flow * direction]
+    dt[, flow := flow * direction / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]
     
     dt <- dcast(dt, timeId ~ to, value.var = "flow")
     
