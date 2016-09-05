@@ -53,6 +53,8 @@ tsLegend <- function(labels, colors, types = "line", itemsByRow = 5, legendId = 
                         SIMPLIFY = FALSE, 
                         USE.NAMES = FALSE)
   
+  legendItems <- append(legendItems, list(.tsLegendItem(type = "date", legendId = legendId)))
+  
   nbRows <- ceiling(length(legendItems) / itemsByRow) 
   
   legendItems <- rev(legendItems)
@@ -124,6 +126,11 @@ tsLegend <- function(labels, colors, types = "line", itemsByRow = 5, legendId = 
       )
     )
     
+  } else if (type == "date") {
+    content <- tags$div(
+      style = "text-align:center;",
+      tags$span(id = paste0("date", legendId), "")
+    )
   }
   
   tags$div(
@@ -132,17 +139,32 @@ tsLegend <- function(labels, colors, types = "line", itemsByRow = 5, legendId = 
   )
 }
 
-JS_updateLegend <- function(legendId) {
+JS_updateLegend <- function(legendId, timeStep = "hourly") {
+  
+  # Function that transform a timestamp ta a date label
+  timeToLab <- switch(
+    timeStep,
+    hourly = "var date = new Date(x); return date.toISOString().slice(0, 16)",
+    daily = "var date = new Date(x); return date.toISOString().slice(0, 10)",
+    weekly = "var date = new Date(x); return date.toISOString().slice(0, 10)",
+    monthly = "var date = new Date(x); return date.toISOString().slice(0, 7)",
+    "return x"
+  )
+  
   script <-"
 function(e, timestamp, data) {
-  var values = {}
+  function timeToLab(x) {%s}
+  document.getElementById('date%s').innerHTML = timeToLab(timestamp);
   
+  var values = {};
+
   data.forEach(function(d) {
     var sign = d.name.match(/^neg/) ? -1 : 1;
     var varname = d.name.replace(/^neg/, '');
     if (values[varname]) values[varname] += d.yval * sign;
     else values[varname] = d.yval * sign;
   })
+
   for (k in values) {
     if (!values.hasOwnProperty(k)) continue; 
     var el = document.getElementById(k + '%s');
@@ -150,16 +172,17 @@ function(e, timestamp, data) {
   }
 }"
   
-  JS(sprintf(script, legendId))
+  JS(sprintf(script, timeToLab, legendId, legendId))
 }
 
 
-JS_resetLegend <- function() {
+JS_resetLegend <- function(legendId) {
   script <- "
 function(e) {
+  document.getElementById('date%s').innerHTML = '';
   var els = document.getElementsByClassName('legvalue');
   for (var i = 0; i < els.length; ++i) {els[i].innerHTML = '';}
 }"
   
-  JS(script)
+  JS(sprintf(script, legendId))
 }

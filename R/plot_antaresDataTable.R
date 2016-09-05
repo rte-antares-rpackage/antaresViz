@@ -236,8 +236,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     dyRangeSelector() %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId),
-      unhighlightCallback = JS_resetLegend()
+      highlightCallback = JS_updateLegend(legendId, timeStep),
+      unhighlightCallback = JS_resetLegend(legendId)
     )
   
   if (plotConfInt) {
@@ -357,6 +357,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   g <- dygraph(dt, main = main) %>% 
     dyOptions(
       includeZero = TRUE, 
+      colors = colors,
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
@@ -365,8 +366,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId),
-      unhighlightCallback = JS_resetLegend()
+      highlightCallback = JS_updateLegend(legendId, timeStep = "none"),
+      unhighlightCallback = JS_resetLegend(legendId)
     )
   
   if (plotConfInt) {

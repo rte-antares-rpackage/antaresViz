@@ -97,8 +97,8 @@
     dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId),
-      unhighlightCallback = JS_resetLegend()
+      highlightCallback = JS_updateLegend(legendId, timeStep),
+      unhighlightCallback = JS_resetLegend(legendId)
     )
   
   if (length(lines) > 0) {
