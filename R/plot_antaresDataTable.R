@@ -29,13 +29,19 @@
 #'   display. If it equals to 0, then confidence interval is not computed nor
 #'   displayed. Used only when multiple Monte Carlo scenarios are present in 
 #'   the input data.
-#' @param main
-#'   Title of the generated graphic
-#' @param ylab
-#'   label of the "y" axis
 #' @param interactive
 #'   Should the function start a shiny gadget that lets the user modify the
 #'   parameters of the plot ?
+#' @param colors
+#'   Vector of colors
+#' @param main
+#'   Title of the generated graphic.
+#' @param ylab
+#'   label of the "y" axis.
+#' @param legend
+#'   Logical value indicating if a legend should be drawn.
+#' @param legendItemsByRow
+#'   Number of items to display in each row of the legend.
 #' @param ...
 #'   currently unused
 #'   
@@ -81,7 +87,12 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                                   type = c("ts", "barplot", "monotone"),
                                   dateRange = NULL,
                                   confInt = 0,
-                                  interactive = base::interactive(), ...) {
+                                  interactive = base::interactive(),
+                                  colors = NULL,
+                                  main = NULL,
+                                  ylab = NULL,
+                                  legend = TRUE,
+                                  legendItemsByRow = 5, ...) {
 
   type <- match.arg(type)
   idCols <- .idCols(x)
@@ -120,17 +131,19 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     dt$value <- x[, get(variable)]
     if (length(elements) > 0 & !"all" %in% elements) dt <- dt[element %in% elements]
     dt <- dt[as.Date(time) %between% dateRange]
-    switch(type,
-           "ts" = .plotTS(dt, timeStep, variable, confInt = confInt),
-           "barplot" = .barplot(dt, timeStep, variable, confInt = confInt),
-           "monotone" = .plotMonotone(dt, timeStep, variable, confInt = confInt),
-           stop("Invalid type"))
+    f <- switch(type,
+           "ts" = .plotTS,
+           "barplot" = .barplot,
+           "monotone" = .plotMonotone,
+           stop("Invalid type")
+         )
+    f(dt, timeStep, variable, confInt = confInt, colors, main, ylab, legend, legendItemsByRow)
   }
   
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(dt, variable, elements, type, confInt,dateRange))
+    return(plotFun(dt, variable, elements, type, confInt, dateRange))
   }
   
   uniqueElem <- sort(as.character(unique(dt$element)))
@@ -170,7 +183,11 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #' 
 #' @noRd
 #' 
-.plotTS <- function(dt, timeStep, variable, confInt = 0) {
+.plotTS <- function(dt, timeStep, variable, confInt = 0, colors = NULL,
+                    main = NULL,
+                    ylab = NULL,
+                    legend = TRUE,
+                    legendItemsByRow = 5) {
   
   uniqueElement <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -194,11 +211,16 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
   dt <- dcast(dt, time ~ element, value.var = "value")
   
-  ylab <- variable
-  main <- paste("Evolution of", variable)
+  # Graphical parameters
+  if (is.null(ylab)) ylab <- variable
+  if (is.null(main)) main <- paste("Evolution of", variable)
+  if (is.null(colors)) {
+    colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
+  } else {
+    colors <- rep(colors, length.out = length(uniqueElement))
+  }
   
   legendId <- sample(1e9, 1)
-  colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
   
   g <- dygraph(dt, main = main) %>% 
     dyOptions(
@@ -224,11 +246,13 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     }
   }
   
+  if (!legend) return(g)
+  
   combineWidgets(
     vflex = c(1, NA),
     g,
     tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
-             colors = colors, legendId = legendId)
+             colors = colors, legendId = legendId, itemsByRow = legendItemsByRow)
   )
 }
 
@@ -238,7 +262,12 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #' value over time steps.
 #' 
 #'  @noRd 
-.barplot <- function(dt, timeStep, variable, confInt = 0) {
+.barplot <- function(dt, timeStep, variable, confInt = 0, colors = NULL,
+                     main = NULL,
+                     ylab = NULL,
+                     legend = TRUE,
+                     legendItemsByRow = 5) {
+  
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(value = mean(value)), by = element] 
   } else {
@@ -257,8 +286,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     }
   }
   
-  ylab <- variable
-  main <- paste("Comparison of", variable)
+  if (is.null(ylab)) ylab <- variable
+  if (is.null(main)) main <- paste("Comparison of", variable)
   
   g <- highchart() %>%
     hc_yAxis(title = list(text = ylab)) %>% 
@@ -279,7 +308,11 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   g
 }
 
-.plotMonotone <- function(dt, timeStep, variable, confInt = NULL) {
+.plotMonotone <- function(dt, timeStep, variable, confInt = NULL, colors = NULL,
+                          main = NULL,
+                          ylab = NULL,
+                          legend = TRUE,
+                          legendItemsByRow = 5) {
   
   uniqueElement <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -311,11 +344,15 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
   dt <- dcast(dt, rank ~ element, value.var = "value")
   
-  ylab <- variable
-  main <- paste("Monotone of", variable)
+  if (is.null(ylab)) ylab <- variable
+  if (is.null(main)) main <- paste("Monotone of", variable)
+  if (is.null(colors)) {
+    colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
+  } else {
+    colors <- rep(colors, length.out = length(uniqueElement))
+  }
   
   legendId <- sample(1e9, 1)
-  colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
   
   g <- dygraph(dt, main = main) %>% 
     dyOptions(
@@ -337,6 +374,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
       g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
     }
   }
+  
+  if (!legend) return(g)
   
   combineWidgets(
     vflex = c(1, NA),
