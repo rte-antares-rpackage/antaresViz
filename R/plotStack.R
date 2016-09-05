@@ -84,7 +84,7 @@
   # 5- Finally plot !!
   colors <- unname(c("#FFFFFF", rev(colors), colors))
   
-  g <- dygraph(dt, main = main, width = "100%", height = "100%")  %>%
+  g <- dygraph(dt, main = main, width = "100%", height = "100%", group = legendId)  %>%
     dyOptions(
       stackedGraph = TRUE, 
       colors = rev(colors), 

@@ -222,7 +222,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
   legendId <- sample(1e9, 1)
   
-  g <- dygraph(dt, main = main) %>% 
+  g <- dygraph(dt, main = main, group = legendId) %>% 
     dyOptions(
       includeZero = TRUE, 
       gridLineColor = gray(0.8), 
@@ -354,7 +354,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
   legendId <- sample(1e9, 1)
   
-  g <- dygraph(dt, main = main) %>% 
+  g <- dygraph(dt, main = main, group = legendId) %>% 
     dyOptions(
       includeZero = TRUE, 
       colors = colors,
