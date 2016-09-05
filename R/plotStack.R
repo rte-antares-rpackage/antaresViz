@@ -4,7 +4,9 @@
 #'   data.table containing at least a column "timeId" and numeric columns
 #'   representing areas or lines to draw
 #' @param timeStep
+#'   timeStep
 #' @param opts
+#'   simulation options
 #' @param colors
 #'   vector of colors
 #' @param lines
