@@ -15,18 +15,16 @@ L.directedSegment = function(pt1, pt2, style) {
   });
   
   var ptHalf = [(pt1[0] + pt2[0]) / 2, (pt1[1] + pt2[1]) / 2];
-  var line = L.polyline(
-    [pt1, ptHalf, pt2], 
-    {opacity: style.opacity || 1, color: style.color, weight: style.weight || 3}
-  );
+  var line = L.polyline([pt1, ptHalf, pt2]);
   
   var marker = L.marker(ptHalf, {icon: iconArrow});
   
   // Default style options
   if (!style) style = {};
   style.color = style.color || "blue";
-  style.weight = style.weight || 3;
-  style.opacity = style.opacity || 1;
+  if (!("weight" in style)) style.weight = 3;
+  if (!("opacity" in style)) style.opacity = 1;
+  if (!("dir" in style)) style.dir = 1;
   
   return {
     line: line, 
@@ -47,13 +45,15 @@ L.directedSegment = function(pt1, pt2, style) {
       var path = marker._icon.getElementsByTagName("path")[0];
       path.style.fill = this.style.color;
       //path.style.stroke = this.style.color;
-      path.style.fillOpacity = this.style.opacity;
+      var opacity = this.style.dir == 0 ? 0 : this.style.opacity;
+      path.style.fillOpacity = opacity;
       //path.style.strokeWidth = this.style.weight;
       this.line.setStyle({opacity: this.style.opacity, color: this.style.color, weight: this.style.weight});
       
       // rotate marker
       var g = marker._icon.getElementsByTagName("g")[0];
-      g.setAttribute('transform', "translate(50, 50) rotate(" + this.angle + ") scale(" + 0.35 * Math.sqrt(this.style.weight) +")");
+      var angle = this.style.dir == 1 ? this.angle : 180 + this.angle;
+      g.setAttribute('transform', "translate(50, 50) rotate(" + angle + ") scale(" + 0.35 * Math.sqrt(this.style.weight) +")");
       
       return this;
     },
@@ -95,6 +95,7 @@ window.LeafletWidget.methods.addDirectedSegments = function(data) {
     if (data.color) style.color = data.color[i];
     if (data.opacity) style.opacity = data.opacity[i];
     if (data.weight) style.weight = data.weight[i];
+    if (data.dir) style.dir = data.dir[i];
     var l = L.directedSegment([data.y0[i], data.x0[i]], [data.y1[i], data.x1[i]], style);
     l.addTo(this);
     
@@ -117,6 +118,7 @@ window.LeafletWidget.methods.updateDirectedSegments = function(data) {
     if (data.color) style.color = data.color[i];
     if (data.opacity) style.opacity = data.opacity[i];
     if (data.weight) style.weight = data.weight[i];
+    if (data.dir) style.dir = data.dir[i];
     
     var l = this.layerManager.getLayer("directedSegment", data.layerId[i]);
     l.setStyle(style);
