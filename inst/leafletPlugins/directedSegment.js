@@ -1,85 +1,126 @@
-L.directedSegment = function(pt1, pt2, style) {
-  var arrow = '\
-  <svg id="glop" height="100" width="100">\
-    <g>\
-      <path d="M 0,0 0,20 20,10 Z" transform="translate(-10, -10)" />\
-    </g>\
-  </svg>\
-  ';
-  
-  var iconArrow = L.divIcon({
-    html: arrow, 
-    className: "leaflet-label", 
-    iconSize: [100, 100], iconAnchor:
-    [50, 50]
-  });
-  
-  var ptHalf = [(pt1[0] + pt2[0]) / 2, (pt1[1] + pt2[1]) / 2];
-  var line = L.polyline([pt1, ptHalf, pt2]);
-  
-  var marker = L.marker(ptHalf, {icon: iconArrow});
-  
-  // Default style options
-  if (!style) style = {};
-  style.color = style.color || "blue";
-  if (!("weight" in style)) style.weight = 3;
-  if (!("opacity" in style)) style.opacity = 1;
-  if (!("dir" in style)) style.dir = 1;
-  
-  return {
-    line: line, 
-    marker: marker,
-    pt1: pt1,
-    pt2: pt2,
-    style: style,
-    angle: 0,
-    onAdd: function(map) {},
-    onRemove: function(map) {},
-    setStyle: function(style) {
-      if (style) {
-        for (var p in style) {
-          this.style[p] = style[p];
-        }
-      }
-      
-      var path = marker._icon.getElementsByTagName("path")[0];
-      path.style.fill = this.style.color;
-      //path.style.stroke = this.style.color;
-      var opacity = this.style.dir == 0 ? 0 : this.style.opacity;
-      path.style.fillOpacity = opacity;
-      //path.style.strokeWidth = this.style.weight;
-      this.line.setStyle({opacity: this.style.opacity, color: this.style.color, weight: this.style.weight});
-      
-      // rotate marker
-      var g = marker._icon.getElementsByTagName("g")[0];
-      var angle = this.style.dir == 1 ? this.angle : 180 + this.angle;
-      g.setAttribute('transform', "translate(50, 50) rotate(" + angle + ") scale(" + 0.35 * Math.sqrt(this.style.weight) +")");
-      
-      return this;
-    },
-    addTo: function(map) {
-      // Compute the needed rotation of the arrow
-      var pt1cart = map.latLngToLayerPoint(this.pt1);
-      var pt2cart = map.latLngToLayerPoint(this.pt2);
-      
-      var angle = Math.atan((pt2cart.y - pt1cart.y) / (pt2cart.x - pt1cart.x));
-      angle = Math.round(angle / Math.PI * 180);
-      if (pt2cart.x - pt1cart.x < 0) {
-        angle = 180 + angle;
-      }
-      
-      this.angle = angle;
-      
-      // Add line and marker to map
-      this.line.addTo(map);
-      this.marker.addTo(map);
-      this.setStyle();
-      
-      return this;
-    }
-  };
+/*
+DirectedSegment
 
+Leaflet class for drawing a simple  segment with an arrow on its middle that 
+represents its direction.
+
+Creation:
+  L.directedSegment(<LatLng> start, <LatLng> end, <DirectedSegment options> options?)
+
+Options:
+  color: color of the segment
+  weight: width of the segment
+  opacity: opacity of the segment
+  dir: 1 if direction is from start to end, -1 if it is from end to start, 0
+    if it has no direction
+
+Methods:
+  setStyle(<DirectedSegment options> options): update the style of the directed 
+    segment
+
+*/
+
+L.DirectedSegment = L.Class.extend({
+  options: {
+    color: "blue",
+    weight: 3,
+    opacity: 1,
+    dir: 1
+  },
+  
+  initialize: function(start, end, options) {
+    this._start = start;
+    this._end = end;
+    L.Util.setOptions(this, options);
+  },
+  
+  onAdd: function(map) {
+    this._map = map;
+    
+    function createSvgElement(el, parent) {
+      el = document.createElementNS("http://www.w3.org/2000/svg", el);
+      parent.appendChild(el);
+      return el;
+    }
+    
+    map._initPathRoot();
+    var container = map.getPanes().overlayPane.children[0];
+
+    
+    this._el = createSvgElement("g", container);
+    this._line = createSvgElement("path", this._el);
+    this._arrow = createSvgElement("path", this._el);
+    this._arrow.setAttribute("d", "M -10,-10 -10,10 10,0 Z");
+    
+    //container.appendChild(this._el);
+
+    // add a viewreset event listener for updating layer's position, do the latter
+    map.on('viewreset', this._reset, this);
+    this._reset();
+  },
+  
+  onRemove: function(map) {
+    // remove layer's DOM elements and listeners
+    map.getPanes().overlayPane.removeChild(this._el);
+    map.off('viewreset', this._reset, this);
+  },
+  
+  _reset: function() {
+    var p1 = this._map.latLngToLayerPoint(this._start);
+    var p2 = this._map.latLngToLayerPoint(this._end);
+
+    // Middle point
+    var middle = {x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2};
+    // Angle of the line
+    var angle = Math.atan((p2.y - p1.y) / (p2.x - p1.x));
+    angle = angle / Math.PI * 180;
+    if (p2.x - p1.x < 0) {
+      angle = 180 + angle;
+    }
+    if (this.options.dir == -1) {
+      angle = 180 + angle;
+    }
+    
+    // Place line on the map
+    var pathLine = L.Util.template(
+      "M{x1} {y1}L{x2} {y2}",
+      {x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y}
+    );
+    this._line.setAttribute("d", pathLine);
+    
+    // style line
+    this._line.style.stroke = this.options.color; 
+    this._line.style.strokeOpacity = this.options.opacity;
+    this._line.style.strokeWidth = this.options.weight;
+    
+    // Place and rotate
+    var transform = L.Util.template(
+      "translate({x}, {y}) rotate({a}) scale({s})",
+      {
+        x: middle.x, 
+        y: middle.y, 
+        a: angle, 
+        s: 0.35 * Math.sqrt(this.options.weight)}
+    );
+    this._arrow.setAttribute("transform", transform);
+    
+    // style arrow
+    this._arrow.style.fill = this.options.color; 
+    this._arrow.style.fillOpacity = this.options.dir === 0 ? 0 : this.options.opacity;
+  },
+  
+  setStyle: function(options) {
+    L.Util.setOptions(this, options);
+    this._reset();
+  }
+});
+
+L.directedSegment = function(start, end, options) {
+  return new L.DirectedSegment(start, end, options);
 };
+
+
+// Methods that enhance R htmlwidget leaflet
 
 /*
 Add a segment on the map with a triangle in the middle representing its direction.
@@ -97,7 +138,6 @@ window.LeafletWidget.methods.addDirectedSegments = function(data) {
     if (data.weight) style.weight = data.weight[i];
     if (data.dir) style.dir = data.dir[i];
     var l = L.directedSegment([data.y0[i], data.x0[i]], [data.y1[i], data.x1[i]], style);
-    l.addTo(this);
     
     var id = data.layerId ? data.layerId[i] : undefined;
     
