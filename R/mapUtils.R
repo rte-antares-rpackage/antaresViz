@@ -1,4 +1,5 @@
-addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3, opacity = 1) {
+#' @export
+addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3, opacity = 1, layerId = NULL) {
   # Check if dependency is present
   deps <- sapply(map$dependencies, function(x) x$name)
   if (! "directedSegment" %in% deps) {
@@ -14,5 +15,14 @@ addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3,
   data <- data.frame(x0 = x0, y0 = y0, x1 = x1, y1 = y1, 
                      color = color, weight = weight, opacity = opacity)
   
-  invokeMethod(map, data = leaflet:::getMapData(map), "addDirectedSegment", data)
+  if(!is.null(layerId)) data$layerId <- layerId
+  
+  invokeMethod(map, data = leaflet:::getMapData(map), "addDirectedSegments", data)
+}
+
+#' @export
+updateDirectedSegments <- function(map, layerId, color = "blue", weight = 3, opacity = 1) {
+  data <- data.frame(layerId = layerId, color = color, weight = weight, opacity = opacity)
+  
+  invokeMethod(map, data = leaflet:::getMapData(map), "updateDirectedSegments", data)
 }

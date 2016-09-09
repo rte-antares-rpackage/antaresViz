@@ -35,6 +35,8 @@ L.directedSegment = function(pt1, pt2, style) {
     pt2: pt2,
     style: style,
     angle: 0,
+    onAdd: function(map) {},
+    onRemove: function(map) {},
     setStyle: function(style) {
       if (style) {
         for (var p in style) {
@@ -79,13 +81,46 @@ L.directedSegment = function(pt1, pt2, style) {
 
 };
 
-window.LeafletWidget.methods.addDirectedSegment = function(data) {
-  var style;
+/*
+Add a segment on the map with a triangle in the middle representing its direction.
+
+@param data:
+  data.frame with columns x0, y0, x1, y1 and optionnaly dir, color, opacity, weight
+  and layerId
+    
+*/
+window.LeafletWidget.methods.addDirectedSegments = function(data) {
   for (var i = 0; i < data.x0.length; i++) {
-    style = {};
+    var style = {};
     if (data.color) style.color = data.color[i];
     if (data.opacity) style.opacity = data.opacity[i];
     if (data.weight) style.weight = data.weight[i];
-    L.directedSegment([data.y0[i], data.x0[i]], [data.y1[i], data.x1[i]], style).addTo(this);
+    var l = L.directedSegment([data.y0[i], data.x0[i]], [data.y1[i], data.x1[i]], style);
+    l.addTo(this);
+    
+    var id = data.layerId ? data.layerId[i] : undefined;
+    
+    this.layerManager.addLayer(l, "directedSegment", id);
   }
 };
+
+/*
+Update the style of directed segments
+
+@param data
+  data.frame with columns layerId and optionnaly dir, color, opacity and weight
+  
+*/
+window.LeafletWidget.methods.updateDirectedSegments = function(data) {
+  for (var i = 0; i < data.layerId.length; i++) {
+    var style = {};
+    if (data.color) style.color = data.color[i];
+    if (data.opacity) style.opacity = data.opacity[i];
+    if (data.weight) style.weight = data.weight[i];
+    
+    var l = this.layerManager.getLayer("directedSegment", data.layerId[i]);
+    l.setStyle(style);
+    
+  }
+};
+
