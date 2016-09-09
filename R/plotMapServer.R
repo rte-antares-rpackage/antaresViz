@@ -3,8 +3,7 @@
   function(input, output, session) {
     # Initialization of the map
     output$map <- renderLeaflet({
-      leaflet() %>% 
-        addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
+      plot(mapLayout)
     })
     
     map <- leafletProxy("map", session)
@@ -83,22 +82,7 @@
     colLinks <- "#CCCCCC"
   }
   
-  links <- lapply(1:nrow(ml$links), function(i) {
-    l <- ml$links[i, ]
-    sp::Lines(list(sp::Line(matrix(c(l$x0, l$x1, l$y0, l$y1), ncol = 2))), ID = i)
-  })
-  
-  links <- sp::SpatialLines(links)
-  
-  map <- map %>% 
-    clearShapes() %>% 
-    addPolylines(
-      data = links, 
-      popup = x$links$link, 
-      color = colLinks, 
-      opacity = 1, 
-      group = "links"
-    )
+  map <- map %>% updateDirectedSegments(layerId = ml$links$link, color = colLinks)
   
   if (linkVar != "none") {
     map <- addLegend(map, "topright", colAndPal$pal, ml$links$var, 

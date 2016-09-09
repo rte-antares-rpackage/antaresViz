@@ -56,19 +56,11 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 }
 
 #' @export
-plot.mapLayout <- function(x, colAreas =  x$coords$color, colLinks = NULL, ...) {
-  
-  # Get links as spatialLinesObject
-  links <- lapply(1:nrow(x$links), function(i) {
-    l <- x$links[i, ]
-    sp::Lines(list(sp::Line(matrix(c(l$x0, l$x1, l$y0, l$y1), ncol = 2))), ID = i)
-  })
-  
-  links <- sp::SpatialLines(links)
-  
+plot.mapLayout <- function(x, colAreas =  x$coords$color, colLinks = "blue", ...) {
   map <- leaflet() %>% 
     addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}") %>% 
-    addPolylines(data = links, popup = x$links$link, color = colLinks, opacity = 1) %>% 
+    addDirectedSegments(x$links$x0, x$links$y0, x$links$x1, x$links$y1, 
+                        color = colLinks, layerId = x$links$link) %>% 
     addCircleMarkers(lng = x$coords$x, lat = x$coords$y, 
                      color = gray(0.3), weight = 1, 
                      fillColor = colAreas, fillOpacity = 1, 
