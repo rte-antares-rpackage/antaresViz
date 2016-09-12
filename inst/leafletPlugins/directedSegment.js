@@ -1,7 +1,7 @@
 /*
 DirectedSegment
 
-Leaflet class for drawing a simple  segment with an arrow on its middle that 
+Leaflet class for drawing a simple segment with an arrow on its middle that 
 represents its direction.
 
 Creation:
@@ -20,7 +20,7 @@ Methods:
 
 */
 
-L.DirectedSegment = L.Class.extend({
+L.DirectedSegment = L.Polyline.extend({
   options: {
     color: "blue",
     weight: 3,
@@ -31,11 +31,11 @@ L.DirectedSegment = L.Class.extend({
   initialize: function(start, end, options) {
     this._start = start;
     this._end = end;
-    L.Util.setOptions(this, options);
+    L.Polyline.prototype.initialize.call(this, [start, end], options);
   },
-  
+
   onAdd: function(map) {
-    this._map = map;
+    L.Polyline.prototype.onAdd.call(this, map);
     
     function createSvgElement(el, parent) {
       el = document.createElementNS("http://www.w3.org/2000/svg", el);
@@ -43,16 +43,9 @@ L.DirectedSegment = L.Class.extend({
       return el;
     }
     
-    map._initPathRoot();
-    var container = map.getPanes().overlayPane.children[0];
-
-    
-    this._el = createSvgElement("g", container);
-    this._line = createSvgElement("path", this._el);
-    this._arrow = createSvgElement("path", this._el);
+    this._arrow = createSvgElement("path", this._container);
     this._arrow.setAttribute("d", "M -10,-10 -10,10 10,0 Z");
-    
-    //container.appendChild(this._el);
+    this._arrow.className = "leaflet-clickable";
 
     // add a viewreset event listener for updating layer's position, do the latter
     map.on('viewreset', this._reset, this);
@@ -60,8 +53,7 @@ L.DirectedSegment = L.Class.extend({
   },
   
   onRemove: function(map) {
-    // remove layer's DOM elements and listeners
-    map.getPanes().overlayPane.removeChild(this._el);
+    L.Polyline.prototype.onRemove.call(this, map);
     map.off('viewreset', this._reset, this);
   },
   
@@ -81,18 +73,6 @@ L.DirectedSegment = L.Class.extend({
       angle = 180 + angle;
     }
     
-    // Place line on the map
-    var pathLine = L.Util.template(
-      "M{x1} {y1}L{x2} {y2}",
-      {x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y}
-    );
-    this._line.setAttribute("d", pathLine);
-    
-    // style line
-    this._line.style.stroke = this.options.color; 
-    this._line.style.strokeOpacity = this.options.opacity;
-    this._line.style.strokeWidth = this.options.weight;
-    
     // Place and rotate
     var transform = L.Util.template(
       "translate({x}, {y}) rotate({a}) scale({s})",
@@ -110,6 +90,7 @@ L.DirectedSegment = L.Class.extend({
   },
   
   setStyle: function(options) {
+    L.Polyline.prototype.setStyle.call(this, options);
     L.Util.setOptions(this, options);
     this._reset();
   }
@@ -127,7 +108,7 @@ Add a segment on the map with a triangle in the middle representing its directio
 
 @param data:
   data.frame with columns x0, y0, x1, y1 and optionnaly dir, color, opacity, weight
-  and layerId
+  popup and layerId
     
 */
 window.LeafletWidget.methods.addDirectedSegments = function(data) {
@@ -139,8 +120,9 @@ window.LeafletWidget.methods.addDirectedSegments = function(data) {
     if (data.dir) style.dir = data.dir[i];
     var l = L.directedSegment([data.y0[i], data.x0[i]], [data.y1[i], data.x1[i]], style);
     
-    var id = data.layerId ? data.layerId[i] : undefined;
+    if (data.popup) l.bindPopup(data.popup[i]);
     
+    var id = data.layerId ? data.layerId[i] : undefined;
     this.layerManager.addLayer(l, "directedSegment", id);
   }
 };
@@ -149,7 +131,8 @@ window.LeafletWidget.methods.addDirectedSegments = function(data) {
 Update the style of directed segments
 
 @param data
-  data.frame with columns layerId and optionnaly dir, color, opacity and weight
+  data.frame with columns layerId and optionnaly dir, color, opacity popup 
+  and weight
   
 */
 window.LeafletWidget.methods.updateDirectedSegments = function(data) {
@@ -163,6 +146,7 @@ window.LeafletWidget.methods.updateDirectedSegments = function(data) {
     var l = this.layerManager.getLayer("directedSegment", data.layerId[i]);
     l.setStyle(style);
     
+    if (data.popup) l.bindPopup(data.popup[i]);
   }
 };
 

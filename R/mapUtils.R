@@ -1,5 +1,6 @@
 #' @export
-addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3, opacity = 1, dir = 1, layerId = NULL) {
+addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3, 
+                                opacity = 1, dir = 1, popup = NULL, layerId = NULL) {
   # Check if javascript dependency is present
   deps <- sapply(map$dependencies, function(x) x$name)
   if (! "directedSegment" %in% deps) {
@@ -16,13 +17,16 @@ addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3,
                      color = color, weight = weight, opacity = opacity)
   
   if(!is.null(layerId)) data$layerId <- layerId
+  if(!is.null(popup)) data$popup <- popup
   
   invokeMethod(map, data = leaflet:::getMapData(map), "addDirectedSegments", data)
 }
 
 #' @export
-updateDirectedSegments <- function(map, layerId, color = "blue", weight = 3, opacity = 1, dir = 1) {
+updateDirectedSegments <- function(map, layerId, color = "blue", weight = 3, 
+                                   opacity = 1, dir = 1, popup = NULL) {
   data <- data.frame(layerId = layerId, color = color, weight = weight, opacity = opacity, dir = dir)
+  if(!is.null(popup)) data$popup <- popup
   
   invokeMethod(map, data = leaflet:::getMapData(map), "updateDirectedSegments", data)
 }
