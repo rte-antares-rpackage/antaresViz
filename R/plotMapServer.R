@@ -63,7 +63,7 @@
     )
   
   if (areaVar != "none") {
-    map <- addLegend(map, "topright", colAndPal$pal, ml$coords$var, 
+    map <- addLegend(map, "topright", colAndPal$pal, ml$coords[[areaVar]], 
                      title = areaVar,
                      opacity = 1, layerId = "legAreas")
   }
@@ -78,14 +78,17 @@
     colAndPal <- .getColAndPal(x$links, mapLayout$links, linkVar, t, "link")
     ml$links <- colAndPal$coords
     colLinks <- colAndPal$col
+    dir <- colAndPal$dir
   } else {
     colLinks <- "#CCCCCC"
+    dir <- 0
   }
   
-  map <- map %>% updateDirectedSegments(layerId = ml$links$link, color = colLinks)
+  map <- map %>% updateDirectedSegments(layerId = ml$links$link, color = colLinks,
+                                        dir = dir)
   
   if (linkVar != "none") {
-    map <- addLegend(map, "topright", colAndPal$pal, ml$links$var, 
+    map <- addLegend(map, "topright", colAndPal$pal, ml$links[[linkVar]], 
                      title = linkVar,
                      opacity = 1, layerId = "legLinks")
   }
@@ -94,15 +97,18 @@
 }
 
 .getColAndPal <- function(data, coords, var, t, mergeBy) {
+  if ("FLOW LIN." %in% names(data)) {
+    var <- union(var, "FLOW LIN.")
+  }
   coords <- merge(
     copy(coords),
     data[timeId == t, c(mergeBy, var), with = FALSE],
     by = mergeBy
   )
   
-  setnames(coords, var, "var")
+  #setnames(coords, var[1], "var")
   
-  rangevar <- range(data[[var]])
+  rangevar <- range(data[[var[1]]])
   if (rangevar[1] >= 0) {
     domain <- rangevar
     pal <- colorBin("Blues", domain, bins = 5)
@@ -111,7 +117,15 @@
     pal <- colorBin("RdBu", domain, bins = 7)
   }
   
-  col <- pal(coords$var)
+  col <- pal(coords[[var[1]]])
   
-  return(list(coords = coords, col = col, pal = pal))
+  res <- list(coords = coords, col = col, pal = pal)
+  
+  if ("FLOW LIN." %in% names(coords)) {
+    res$dir <- sign(coords$`FLOW LIN.`)
+  } else {
+    res$dir <- 0
+  }
+  
+  res
 }

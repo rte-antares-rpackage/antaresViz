@@ -32,59 +32,32 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
     ml <- copy(mapLayout)
     
     if (areaVar != "none") {
-      ml$coords <- merge(
-        mapLayout$coords, 
-        x$areas[timeId == t, c("area", areaVar), with = FALSE], 
-        by = "area"
-      )
-      
-      setnames(ml$coords, areaVar, "var")
-      
-      rangevar <- range(x$areas[[areaVar]])
-      if (rangevar[1] >= 0) {
-        domain <- rangevar
-        areaPal <- colorBin("Blues", domain, bins = 5)
-      } else {
-        domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
-        areaPal <- colorBin("RdBu", domain, bins = 7)
-      }
-      
-      colAreas <- areaPal(ml$coords$var)
-      
+      colAndPal <- .getColAndPal(x$areas, mapLayout$coords, areaVar, t, "area")
+      ml$coords <- colAndPal$coords
+      colAreas <- colAndPal$col
+      areaPal <- colAndPal$pal
     } else {
       colAreas <- "#CCCCCC"
     }
     
     if (linkVar != "none") {
-      
-      ml$links <- merge(
-        mapLayout$links, 
-        x$links[timeId == t, c("link", linkVar), with = FALSE], 
-        by = "link"
-      )
-      
-      setnames(ml$links, linkVar, "var")
-      
-      rangevar <- range(x$links[[linkVar]])
-      if (rangevar[1] >= 0) {
-        domain <- rangevar
-        linkPal <- colorBin("Blues", domain, bins = 5)
-      } else {
-        domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
-        linkPal <- colorBin("RdBu", domain, bins = 7)
-      }
-      
-      colLinks <- linkPal(ml$links$var)
+      colAndPal <- .getColAndPal(x$links, ml$links, linkVar, t, "link")
+      ml$links <- colAndPal$coords
+      colLinks <- colAndPal$col
+      linkPal <- colAndPal$pal
+      dir <- colAndPal$dir
     } else {
-      colLinks <- "#CCCCDD"
+      colLinks <- "#CCCCCC"
+      dir <- 0
     }
     
-    map <- plot(ml, colAreas, colLinks)
+    map <- plot(ml, colAreas, colLinks, dir = dir)
+    
     if (areaVar != "none") 
-      map <- addLegend(map, "topright", areaPal, ml$coords$var, title = areaVar,
+      map <- addLegend(map, "topright", areaPal, ml$coords[[areaVar]], title = areaVar,
                        opacity = 1)
     if (linkVar != "none")
-      map <- addLegend(map, "topright", linkPal, ml$links$var, title = linkVar,
+      map <- addLegend(map, "topright", linkPal, ml$links[[linkVar]], title = linkVar,
                        opacity = 1)
     
     map

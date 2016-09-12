@@ -56,13 +56,14 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 }
 
 #' @export
-plot.mapLayout <- function(x, colAreas =  x$coords$color, colLinks = "blue", ...) {
+plot.mapLayout <- function(x, colAreas =  x$coords$color, colLinks = "blue", 
+                           dirLinks = 0, ...) {
   map <- leaflet() %>% 
-    addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}") %>% 
-    addDirectedSegments(x$links$x0, x$links$y0, x$links$x1, x$links$y1, 
-                        color = colLinks, layerId = x$links$link) %>% 
+    addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}") %>%
+    addDirectedSegments(x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
+                        color = colLinks, layerId = x$links$link, popup = x$links$link) %>% 
     addCircleMarkers(lng = x$coords$x, lat = x$coords$y, 
-                     color = gray(0.3), weight = 1, 
+                     color = gray(0.5), weight = 1, 
                      fillColor = colAreas, fillOpacity = 1, 
                      popup = x$coords$area)
   

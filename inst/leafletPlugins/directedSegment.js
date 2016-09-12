@@ -36,6 +36,8 @@ L.DirectedSegment = L.Polyline.extend({
 
   onAdd: function(map) {
     L.Polyline.prototype.onAdd.call(this, map);
+    this._container.setAttribute("style", " -webkit-filter: -webkit-drop-shadow( 1px 1px 1px rgba(0,0,0,.5) ); filter: drop-shadow( 1px 1px 1px rgba(0,0,0,.3) );");
+    this._container.setAttribute("class", "leaflet-zoom-hide");
     
     function createSvgElement(el, parent) {
       el = document.createElementNS("http://www.w3.org/2000/svg", el);
@@ -45,7 +47,7 @@ L.DirectedSegment = L.Polyline.extend({
     
     this._arrow = createSvgElement("path", this._container);
     this._arrow.setAttribute("d", "M -10,-10 -10,10 10,0 Z");
-    this._arrow.className = "leaflet-clickable";
+    this._arrow.setAttribute("class", "leaflet-clickable");
 
     // add a viewreset event listener for updating layer's position, do the latter
     map.on('viewreset', this._reset, this);
