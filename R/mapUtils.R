@@ -1,17 +1,8 @@
+
+
 #' @export
 addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3, 
                                 opacity = 1, dir = 1, popup = NULL, layerId = NULL) {
-  # Check if javascript dependency is present
-  deps <- sapply(map$dependencies, function(x) x$name)
-  if (! "directedSegment" %in% deps) {
-    dep <- htmlDependency(
-      "directedSegment", 
-      "1.0",
-      src = system.file("leafletPlugins", package = "antaresViz"), 
-      script = "directedSegment.js"
-    )
-    map$dependencies <- c(map$dependencies, list(dep))
-  }
   
   data <- data.frame(x0 = x0, y0 = y0, x1 = x1, y1 = y1, dir = dir, 
                      color = color, weight = weight, opacity = opacity)
@@ -19,7 +10,9 @@ addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3,
   if(!is.null(layerId)) data$layerId <- layerId
   if(!is.null(popup)) data$popup <- popup
   
-  invokeMethod(map, data = leaflet:::getMapData(map), "addDirectedSegments", data)
+  map %>% 
+    requireDep("directedSegment") %>% 
+    invokeMethod(data = leaflet:::getMapData(map), "addDirectedSegments", data)
 }
 
 #' @export
@@ -30,3 +23,15 @@ updateDirectedSegments <- function(map, layerId, color = "blue", weight = 3,
   
   invokeMethod(map, data = leaflet:::getMapData(map), "updateDirectedSegments", data)
 }
+
+#' @export
+addPolarChart <- function(map, lng, lat, radius, data) {
+  options <- data.frame(lng = lng, lat = lat, radius = radius)
+  
+  if (nrow(options) == 1) data <- matrix(data, nrow = 1)
+  data <- as.matrix(data)
+  
+  map %>% requireDep(c("d3", "polarChart")) %>% 
+    invokeMethod(leaflet:::getMapData(map), "addPolarChart", options, data)
+}
+

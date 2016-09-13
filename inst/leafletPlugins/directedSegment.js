@@ -152,3 +152,7 @@ window.LeafletWidget.methods.updateDirectedSegments = function(data) {
   }
 };
 
+window.LeafletWidget.methods.consoleLog = function(x) {
+  console.log(x);
+};
+
