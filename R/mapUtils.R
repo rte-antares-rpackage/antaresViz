@@ -26,7 +26,8 @@ updateDirectedSegments <- function(map, layerId, color = "blue", weight = 3,
 
 #' @export
 addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
-                          scale = c("radius", "area"), maxValue = NULL) {
+                          scale = c("radius", "area"), maxValue = NULL, 
+                          colors = NULL) {
  
   scale <- match.arg(scale)
   
@@ -54,6 +55,6 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
   }
   
   map %>% requireDep(c("d3", "polarChart")) %>% 
-    invokeMethod(leaflet:::getMapData(map), "addPolarChart", options, data)
+    invokeMethod(leaflet:::getMapData(map), "addPolarChart", options, data, colors)
 }
 

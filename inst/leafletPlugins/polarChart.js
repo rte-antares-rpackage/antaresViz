@@ -103,12 +103,13 @@ Add a segment on the map with a triangle in the middle representing its directio
   matrix containing the data to contruct the polar area charts
     
 */
-window.LeafletWidget.methods.addPolarChart = function(options, data) {
+window.LeafletWidget.methods.addPolarChart = function(options, data, colors) {
   for (var i = 0; i < options.lng.length; i++) {
     
     style = {};
     if (options.opacity) style.opacity = options.opacity[i];
     if (options.maxValue) style.maxValue = options.maxValue[i];
+    if (colors) style.colors = colors;
     
     var l = L.polarChart(
       [options.lat[i], options.lng[i]],
