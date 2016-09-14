@@ -19,7 +19,8 @@ Methods:
 L.PolarChart = L.Class.extend({
   options: {
     opacity: 1,
-    colors: d3.schemeCategory10
+    colors: d3.schemeCategory10,
+    maxValue: 0
   },
   
   initialize: function(center, radius, data, options) {
@@ -65,7 +66,7 @@ L.PolarChart = L.Class.extend({
   
   _reset: function () {
     var radius = this._radius;
-    var dmax = d3.max(this._data);
+    var dmax = this.options.maxValue || d3.max(this._data);
     
     var pie = d3.pie().value(function(d) {return 1;});
     var arc = d3.arc().innerRadius(0).outerRadius(function(d) {return d.data * radius / dmax});
@@ -77,7 +78,8 @@ L.PolarChart = L.Class.extend({
       .enter()
       .append("path")
       .attr("d", arc)
-      .attr("fill", function(d, i) {return color(d.data)});
+      .attr("fill", function(d, i) {return color(i)})
+      .attr("fill-opacity", this.options.opacity);
       
     // update layer's position
     var pos = this._map.latLngToLayerPoint(this._center);
@@ -85,8 +87,8 @@ L.PolarChart = L.Class.extend({
   }
 });
 
-L.polarChart = function(center, radius, data) {
-  return new L.PolarChart(center, radius, data);
+L.polarChart = function(center, radius, data, options) {
+  return new L.PolarChart(center, radius, data, options);
 };
 
 // Methods that enhance R htmlwidget leaflet
@@ -95,7 +97,7 @@ L.polarChart = function(center, radius, data) {
 Add a segment on the map with a triangle in the middle representing its direction.
 
 @param options:
-  data.frame with columns lng, lat, radius
+  data.frame with columns lng, lat, radius and optionally opacity and maxValue
   
 @param data:
   matrix containing the data to contruct the polar area charts
@@ -104,10 +106,15 @@ Add a segment on the map with a triangle in the middle representing its directio
 window.LeafletWidget.methods.addPolarChart = function(options, data) {
   for (var i = 0; i < options.lng.length; i++) {
     
+    style = {};
+    if (options.opacity) style.opacity = options.opacity[i];
+    if (options.maxValue) style.maxValue = options.maxValue[i];
+    
     var l = L.polarChart(
       [options.lat[i], options.lng[i]],
       options.radius[i],
-      data[i]
+      data[i],
+      style
     );
     
     var id = options.layerId ? options.layerId[i] : undefined;

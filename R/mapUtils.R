@@ -25,11 +25,33 @@ updateDirectedSegments <- function(map, layerId, color = "blue", weight = 3,
 }
 
 #' @export
-addPolarChart <- function(map, lng, lat, radius, data) {
-  options <- data.frame(lng = lng, lat = lat, radius = radius)
+addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
+                          scale = c("radius", "area"), maxValue = NULL) {
+ 
+  scale <- match.arg(scale)
   
+  options <- data.frame(lng = lng, lat = lat, radius = radius, 
+                        opacity = opacity, maxValue = 1)
+  
+  # Data preparation
   if (nrow(options) == 1) data <- matrix(data, nrow = 1)
   data <- as.matrix(data)
+  
+  if (scale == "area") {
+    data <- sqrt(data)
+    if (!is.null(maxValue)) maxValue <- sqrt(maxValue)
+  } 
+  
+  if (is.null(maxValue)) {
+    maxValue <- apply(data, 2, max)
+  } else {
+    if (length(maxValue) == 1 && maxValue == 0) maxValue <- max(data)
+    maxValue <- rep_len(maxValue, ncol(data))
+  }
+  
+  for (i in 1:ncol(data)) {
+    data[, i] <- data[, i] / maxValue[i]
+  }
   
   map %>% requireDep(c("d3", "polarChart")) %>% 
     invokeMethod(leaflet:::getMapData(map), "addPolarChart", options, data)
