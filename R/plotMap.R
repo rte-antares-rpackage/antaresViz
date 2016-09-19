@@ -67,10 +67,19 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
     return(plotFun(timeId, areaVar, linkVar))
   }
   
+  areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
+  linkValColums <- setdiff(names(x$links), .idCols(x$links))
+  
   ui <- mwUI(
     timeId = mwSlider(min(x$areas$timeId), max(x$areas$timeId), timeId, step = 1),
-    areaVar = mwSelect(c("none", setdiff(names(x$areas), .idCols(x$areas))), areaVar),
-    linkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), linkVar),
+    Areas = list(
+      areaVar = mwSelect(c("none", areaValColums), areaVar, label = "Color"),
+      areaRadius = mwSelect(areaValColums, areaVar, label = "Radius", multiple = TRUE)
+    ),
+    Links = list(
+      linkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), linkVar, label = "Color"),
+      width = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), linkVar, label = "Width")
+    ),
     .content = leafletOutput("map", height = "100%")
   )
   
