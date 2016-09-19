@@ -1,119 +1,97 @@
-.plotMapServer <- function(x, mapLayout) {
+.plotMapServer <- function(x, mapLayout, initialMap) {
   
   function(input, output, session) {
     # Initialization of the map
-    output$map <- renderLeaflet({
-      plot(mapLayout)
-    })
+    output$map <- renderLeaflet(initialMap)
     
     map <- leafletProxy("map", session)
-    
-    # Update circles and links when timeId is changed. We update both
-    # so that areas stay above links
-    observeEvent(input$linkVar, {
-      .redrawLinks(x, mapLayout, input$linkVar, input$timeId, map)
-      .redrawCircles(x, mapLayout, input$areaVar, input$timeId, map)
-    })
-    
-    observeEvent(input$areaVar, {
-      .redrawCircles(x, mapLayout, input$areaVar, input$timeId, map)
-    })
-    
-    # Update circle colors when areavar is modified
-    observeEvent(input$timeId, {
-      if (input$linkVar != "none") {
-        .redrawLinks(x, mapLayout, input$linkVar, input$timeId, map)
-        .redrawCircles(x, mapLayout, input$areaVar, input$timeId, map)
-      }
-      if (input$areaVar != "none" & input$linkVar == "none") {
-        .redrawCircles(x, mapLayout, input$areaVar, input$timeId, map)
-      }
+
+    observe({
+      .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, input$sizeLinkVar)
+      .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, input$sizeAreaVars)
     })
     
     # Return a list with the last value of inputs
     observeEvent(input$done, {
       stopApp(list(
         t = input$timeId, 
-        areaVar = input$areaVar, 
-        linkVar = input$linkVar
+        colAreaVar = input$colAreaVar, 
+        sizeAreaVars = input$sizeAreaVars,
+        colLinkVar = input$colLinkVar,
+        sizeLinkVar = input$sizeLinkVar
       ))
     })
   }
 }
 
-.redrawCircles <- function(x, mapLayout, areaVar, t, map) {
+.redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars) {
   ml <- copy(mapLayout)
   
-  if (areaVar != "none") {
-    colAndPal <- .getColAndPal(x$areas, mapLayout$coords, areaVar, t, "area")
-    ml$coords <- colAndPal$coords
-    colAreas <- colAndPal$col
-  } else {
-    colAreas <- "#CCCCCC"
-  }
+  opts <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
+                              colAreaVar, sizeAreaVars)
+  ml$coords <- opts$coords
   
   map <- map %>% 
-    updateCircleMarkers(ml$coords$area, fillColor = colAreas)
+    updateCircleMarkers(ml$coords$area, fillColor = opts$color, 
+                        radius = sqrt(opts$size) * 15)
   
-  if (areaVar != "none") {
-    map <- addLegend(map, "topright", colAndPal$pal, ml$coords[[areaVar]], 
-                     title = areaVar,
+  if (!is.null(opts$pal)) {
+    map <- addLegend(map, "topright", opts$pal, opts$coords[[colAreaVar]], 
+                     title = colAreaVar,
                      opacity = 1, layerId = "legAreas")
   }
   
   map
 }
 
-.redrawLinks <- function(x, mapLayout, linkVar, t, map) {
+.redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar) {
   ml <- copy(mapLayout)
   
-  if (linkVar != "none") {
-    colAndPal <- .getColAndPal(x$links, mapLayout$links, linkVar, t, "link")
-    ml$links <- colAndPal$coords
-    colLinks <- colAndPal$col
-    dir <- colAndPal$dir
-  } else {
-    colLinks <- "#CCCCCC"
-    dir <- 0
-  }
+  opts <- .getColAndSize(x$links, mapLayout$links, "link", t,
+                         colLinkVar, sizeLinkVar)
   
-  map <- map %>% updateDirectedSegments(layerId = ml$links$link, color = colLinks,
-                                        dir = dir)
+  map <- map %>% updateDirectedSegments(layerId = ml$links$link, 
+                                        color = opts$color,
+                                        weight = opts$size * 10,
+                                        dir = opts$dir)
   
-  if (linkVar != "none") {
-    map <- addLegend(map, "topright", colAndPal$pal, ml$links[[linkVar]], 
-                     title = linkVar,
+  if (!is.null(opts$pal)) {
+    map <- addLegend(map, "topright", opts$pal, opts$coords[[colLinkVar]], 
+                     title = colLinkVar,
                      opacity = 1, layerId = "legLinks")
   }
   
   map
 }
 
-.getColAndPal <- function(data, coords, var, t, mergeBy) {
-  if ("FLOW LIN." %in% names(data)) {
-    var <- union(var, "FLOW LIN.")
+.getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar) {
+
+  coords <- merge(coords, data[timeId == t], by = mergeBy)
+  
+  # Initialize the object returned by the function
+  res <- list(coords = coords, color = "#CCCCCC", size = 1, dir = 0)
+  
+  # color
+  if (colVar != "none" & length(sizeVar) <= 1) {
+    rangevar <- range(data[[colVar]])
+    if (rangevar[1] >= 0) {
+      domain <- rangevar
+      res$pal <- colorBin("Blues", domain, bins = 5)
+    } else {
+      domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
+      res$pal <- colorBin("RdBu", domain, bins = 7)
+    }
+    
+    res$color <- res$pal(coords[[colVar]])
   }
-  coords <- merge(
-    copy(coords),
-    data[timeId == t, c(mergeBy, var), with = FALSE],
-    by = mergeBy
-  )
   
-  #setnames(coords, var[1], "var")
-  
-  rangevar <- range(data[[var[1]]])
-  if (rangevar[1] >= 0) {
-    domain <- rangevar
-    pal <- colorBin("Blues", domain, bins = 5)
-  } else {
-    domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
-    pal <- colorBin("RdBu", domain, bins = 7)
+  # size
+  if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
+    res$size <- abs(as.matrix(coords[, sizeVar, with = FALSE]))
+    if (length(sizeVar) == 1) res$size <- res$size / max(res$size)
   }
   
-  col <- pal(coords[[var[1]]])
-  
-  res <- list(coords = coords, col = col, pal = pal)
-  
+  # Direction
   if ("FLOW LIN." %in% names(coords)) {
     res$dir <- sign(coords$`FLOW LIN.`)
   } else {

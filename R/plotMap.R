@@ -5,9 +5,9 @@
 #'   \code{\link[antaresRead]{readAntares}}
 #' @param mapLayout
 #'   Object created with function \code{\link{mapLayout}}
-#' @param areaVar
+#' @param colAreaVar
 #'   area variable to display on the map
-#' @param linkVar
+#' @param colLinkVar
 #'   link variable to display on the map
 #' @param timeId
 #'   timeId
@@ -16,7 +16,8 @@
 #'   parameters of the plot ?
 #' 
 #' @export
-plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none", 
+plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+                    colLinkVar = "none", sizeLinkVar = "none", 
                     timeId = min(x$areas$timeId),
                     interactive = base::interactive(), mp = NULL) {
   
@@ -27,44 +28,35 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
   mapLayout$links <- mapLayout$links[link %in% linkList]
   
   # Function that draws the final map when leaving the shiny gadget.
-  plotFun <- function(t, areaVar, linkVar) {
+  plotFun <- function(t, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar) {
     
     ml <- copy(mapLayout)
     
-    if (areaVar != "none") {
-      colAndPal <- .getColAndPal(x$areas, mapLayout$coords, areaVar, t, "area")
-      ml$coords <- colAndPal$coords
-      colAreas <- colAndPal$col
-      areaPal <- colAndPal$pal
-    } else {
-      colAreas <- "#CCCCCC"
-    }
+    optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
+                               colAreaVar, sizeAreaVars)
+    optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
+                               colLinkVar, sizeLinkVar)
     
-    if (linkVar != "none") {
-      colAndPal <- .getColAndPal(x$links, ml$links, linkVar, t, "link")
-      ml$links <- colAndPal$coords
-      colLinks <- colAndPal$col
-      linkPal <- colAndPal$pal
-      dir <- colAndPal$dir
-    } else {
-      colLinks <- "#CCCCCC"
-      dir <- 0
-    }
+    ml$coords <- optsArea$coords
+    ml$links <- optsLink$coords
     
-    map <- plot(ml, colAreas, colLinks, dir = dir)
+    map <- plot(ml, optsArea$color, optsArea$size * 15, 
+                optsLink$color, optsLink$size * 10, dir = optsLink$dir)
     
-    if (areaVar != "none") 
-      map <- addLegend(map, "topright", areaPal, ml$coords[[areaVar]], title = areaVar,
+    if (colAreaVar != "none") 
+      map <- addLegend(map, "topright", optsArea$pal, optsArea$coords[[colAreaVar]], title = colAreaVar,
                        opacity = 1)
-    if (linkVar != "none")
-      map <- addLegend(map, "topright", linkPal, ml$links[[linkVar]], title = linkVar,
+    if (colLinkVar != "none")
+      map <- addLegend(map, "topright", optsLink$pal, optsLink$coords[[colLinkVar]], title = colLinkVar,
                        opacity = 1)
     
     map
   }
   
+  initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar)
+  
   if (!interactive) {
-    return(plotFun(timeId, areaVar, linkVar))
+    return(initialMap)
   }
   
   areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
@@ -73,17 +65,17 @@ plotMap <- function(x, mapLayout, areaVar = "none", linkVar = "none",
   ui <- mwUI(
     timeId = mwSlider(min(x$areas$timeId), max(x$areas$timeId), timeId, step = 1),
     Areas = list(
-      areaVar = mwSelect(c("none", areaValColums), areaVar, label = "Color"),
-      areaRadius = mwSelect(areaValColums, areaVar, label = "Radius", multiple = TRUE)
+      colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
+      sizeAreaVars = mwSelect(areaValColums, colAreaVar, label = "Radius", multiple = TRUE)
     ),
     Links = list(
-      linkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), linkVar, label = "Color"),
-      width = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), linkVar, label = "Width")
+      colLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), colLinkVar, label = "Color"),
+      sizeLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), colLinkVar, label = "Width")
     ),
     .content = leafletOutput("map", height = "100%")
   )
   
-  args <- runGadget(ui, .plotMapServer(x, mapLayout), viewer = browserViewer())
+  args <- runGadget(ui, .plotMapServer(x, mapLayout, initialMap), viewer = browserViewer())
   do.call(plotFun, args)
 }
 
