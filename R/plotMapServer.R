@@ -53,14 +53,7 @@
   }
   
   map <- map %>% 
-    clearMarkers() %>% 
-    addCircleMarkers(
-      lng = ml$coords$x, lat = ml$coords$y, 
-      color = gray(0.3), weight = 1, 
-      fillColor = colAreas, fillOpacity = 1, 
-      popup = ml$coords$area,
-      options = list(zIndexOffset=1000)
-    )
+    updateCircleMarkers(ml$coords$area, fillColor = colAreas)
   
   if (areaVar != "none") {
     map <- addLegend(map, "topright", colAndPal$pal, ml$coords[[areaVar]], 

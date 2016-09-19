@@ -65,7 +65,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, colLinks = "blue",
     addCircleMarkers(lng = x$coords$x, lat = x$coords$y, 
                      color = gray(0.5), weight = 1, 
                      fillColor = colAreas, fillOpacity = 1, 
-                     popup = x$coords$area)
+                     popup = x$coords$area, layerId = x$coords$area)
   
   map
 }
