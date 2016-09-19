@@ -57,11 +57,13 @@ L.PolarChart = L.Class.extend({
   
   setStyle: function(options) {
     L.Util.setOptions(this, options);
+    console.log(this.options.opacity);
     this._reset();
   },
   
-  setDate: function(data) {
+  setData: function(data) {
     this._data = data;
+    this._reset();
   },
   
   _reset: function () {
@@ -71,6 +73,9 @@ L.PolarChart = L.Class.extend({
     var pie = d3.pie().value(function(d) {return 1;});
     var arc = d3.arc().innerRadius(0).outerRadius(function(d) {return d.data * radius / dmax});
     var color = d3.scaleOrdinal(this.options.colors);
+    
+    // remove old polar chart if necessary
+    this._g.selectAll("path").remove();
     
     // redraw the polar chart
     this._g.selectAll("path")
@@ -97,7 +102,8 @@ L.polarChart = function(center, radius, data, options) {
 Add a segment on the map with a triangle in the middle representing its direction.
 
 @param options:
-  data.frame with columns lng, lat, radius and optionally opacity and maxValue
+  data.frame with columns lng, lat, radius and optionally opacity, maxValue and
+  layerId
   
 @param data:
   matrix containing the data to contruct the polar area charts
@@ -120,5 +126,23 @@ window.LeafletWidget.methods.addPolarChart = function(options, data, colors) {
     
     var id = options.layerId ? options.layerId[i] : undefined;
     this.layerManager.addLayer(l, "polarChart", id);
+  }
+};
+
+window.LeafletWidget.methods.updatePolarCharts = function(options, data, colors) {
+  for (var i = 0; i < options.layerId.length; i++) {
+    var l = this.layerManager.getLayer("polarChart", options.layerId[i]);
+    
+    var style = {};
+    style = {};
+    if (options.opacity) style.opacity = options.opacity[i];
+    if (options.maxValue) style.maxValue = options.maxValue[i];
+    if (colors) style.colors = colors;
+    
+    l.setStyle(style);
+    
+    if (data) {
+      l.setData(data[i]);
+    }
   }
 };

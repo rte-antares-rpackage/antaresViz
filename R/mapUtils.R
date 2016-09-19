@@ -52,12 +52,14 @@ updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL,
 #' @export
 addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
                           scale = c("radius", "area"), maxValue = NULL, 
-                          colors = NULL) {
+                          colors = NULL, layerId = NULL) {
  
   scale <- match.arg(scale)
   
-  options <- data.frame(lng = lng, lat = lat, radius = radius, 
-                        opacity = opacity, maxValue = 1)
+  options <- .prepareOptions(
+    required = list(lng = lng, lat = lat), 
+    optional = list(radius = radius, opacity = opacity, maxValue = 1, layerId = layerId)
+  )
   
   # Data preparation
   if (nrow(options) == 1) data <- matrix(data, nrow = 1)
@@ -83,3 +85,36 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
     invokeMethod(leaflet:::getMapData(map), "addPolarChart", options, data, colors)
 }
 
+updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1,
+                             scale = c("radius", "area"), maxValue = NULL) {
+  scale <- match.arg(scale)
+  
+  options <- .prepareOptions(
+    required = list(layerId = layerId),
+    optional = list(radius = radius, opacity = opacity, maxValue = 1)
+  )
+  
+  if (!is.null(data)) {
+    # Data preparation
+    if (nrow(options) == 1) data <- matrix(data, nrow = 1)
+    data <- as.matrix(data)
+    
+    if (scale == "area") {
+      data <- sqrt(data)
+      if (!is.null(maxValue)) maxValue <- sqrt(maxValue)
+    } 
+    
+    if (is.null(maxValue)) {
+      maxValue <- apply(data, 2, max)
+    } else {
+      if (length(maxValue) == 1 && maxValue == 0) maxValue <- max(data)
+      maxValue <- rep_len(maxValue, ncol(data))
+    }
+    
+    for (i in 1:ncol(data)) {
+      data[, i] <- data[, i] / maxValue[i]
+    }
+  }
+  
+  invokeMethod(map, data = NULL, "updatePolarCharts", options, data)
+}
