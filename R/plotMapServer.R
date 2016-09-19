@@ -1,4 +1,4 @@
-.plotMapServer <- function(x, mapLayout, initialMap) {
+.plotMapServer <- function(x, mapLayout, initialMap, defaults) {
   
   function(input, output, session) {
     # Initialization of the map
@@ -7,8 +7,8 @@
     map <- leafletProxy("map", session)
 
     observe({
-      .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, input$sizeLinkVar)
-      .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, input$sizeAreaVars)
+      .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, input$sizeLinkVar, defaults)
+      .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, input$sizeAreaVars, defaults)
     })
     
     # Return a list with the last value of inputs
@@ -24,27 +24,34 @@
   }
 }
 
-.redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars) {
+.redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars, defaults) {
   ml <- copy(mapLayout)
   
-  opts <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
+  optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
                               colAreaVar, sizeAreaVars)
-  ml$coords <- opts$coords
+  ml$coords <- optsArea$coords
   
-  if (is.matrix(opts$size) && ncol(opts$size) > 1) {
-    map <- map %>% 
-      updateCircleMarkers(opts$coords$area, opacity = 0, fillOpacity = 0) %>% 
-      updatePolarChart(opts$coords$area, opacity = 1, data = opts$size)
-  } else {
-    map <- map %>% 
-      updateCircleMarkers(opts$coords$area, fillColor = opts$color, 
-                          radius = sqrt(opts$size) * 15, 
-                          opacity = 1, fillOpacity = 1) %>% 
-      updatePolarChart(opts$coords$area, opacity = 0)
+  if (is.null(optsArea$color)) optsArea$color <- defaults$colArea
+  
+  if (is.null(optsArea$size)) optsArea$size <- defaults$sizeArea
+  else if (ncol(optsArea$size) == 1) {
+    optsArea$size <- sqrt(optsArea$size) * defaults$maxSizeArea
   }
   
-  if (!is.null(opts$pal)) {
-    map <- addLegend(map, "topright", opts$pal, opts$coords[[colAreaVar]], 
+  if (is.matrix(optsArea$size) && ncol(optsArea$size) > 1) {
+    map <- map %>% 
+      updateCircleMarkers(optsArea$coords$area, opacity = 0, fillOpacity = 0) %>% 
+      updatePolarChart(optsArea$coords$area, opacity = 1, data = optsArea$size)
+  } else {
+    map <- map %>% 
+      updateCircleMarkers(optsArea$coords$area, fillColor = optsArea$color, 
+                          radius = optsArea$size, 
+                          opacity = 1, fillOpacity = 1) %>% 
+      updatePolarChart(optsArea$coords$area, opacity = 0)
+  }
+  
+  if (!is.null(optsArea$pal)) {
+    map <- addLegend(map, "topright", optsArea$pal, optsArea$coords[[colAreaVar]], 
                      title = colAreaVar,
                      opacity = 1, layerId = "legAreas")
   } else {
@@ -54,19 +61,23 @@
   map
 }
 
-.redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar) {
+.redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar, defaults) {
   ml <- copy(mapLayout)
   
-  opts <- .getColAndSize(x$links, mapLayout$links, "link", t,
-                         colLinkVar, sizeLinkVar)
+  optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
+                             colLinkVar, sizeLinkVar)
+  
+  if (is.null(optsLink$color)) optsLink$color <- defaults$colLink
+  if (is.null(optsLink$size)) optsLink$size <- defaults$sizeLink
+  else optsLink$size <- optsLink$size * defaults$maxSizeLink
   
   map <- map %>% updateDirectedSegments(layerId = ml$links$link, 
-                                        color = opts$color,
-                                        weight = opts$size * 10,
-                                        dir = opts$dir)
+                                        color = optsLink$color,
+                                        weight = optsLink$size,
+                                        dir = optsLink$dir)
   
-  if (!is.null(opts$pal)) {
-    map <- addLegend(map, "topright", opts$pal, opts$coords[[colLinkVar]], 
+  if (!is.null(optsLink$pal)) {
+    map <- addLegend(map, "topright", optsLink$pal, optsLink$coords[[colLinkVar]], 
                      title = colLinkVar,
                      opacity = 1, layerId = "legLinks")
   } else {
@@ -81,7 +92,7 @@
   coords <- merge(coords, data[timeId == t], by = mergeBy)
   
   # Initialize the object returned by the function
-  res <- list(coords = coords, color = "#CCCCCC", size = 1, dir = 0)
+  res <- list(coords = coords, dir = 0)
   
   # color
   if (colVar != "none" & length(sizeVar) <= 1) {

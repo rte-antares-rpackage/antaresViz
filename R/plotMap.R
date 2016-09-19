@@ -19,7 +19,10 @@
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     colLinkVar = "none", sizeLinkVar = "none", 
                     timeId = min(x$areas$timeId),
-                    interactive = base::interactive(), mp = NULL) {
+                    interactive = base::interactive(),
+                    defaults = plotMapOptions()) {
+  
+  defaults <- do.call(plotMapOptions, defaults)
   
   # Keep only links and areas present in the data
   areaList <- unique(x$areas$area)
@@ -34,14 +37,26 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     
     optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
                                colAreaVar, sizeAreaVars)
+    
+    if (is.null(optsArea$color)) optsArea$color <- defaults$colArea
+    
+    if (is.null(optsArea$size)) optsArea$size <- defaults$sizeArea
+    else if (ncol(optsArea$size) == 1) {
+      optsArea$size <- sqrt(optsArea$size) * defaults$maxSizeArea
+    }
+    
     optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
                                colLinkVar, sizeLinkVar)
+    
+    if (is.null(optsLink$color)) optsLink$color <- defaults$colLink
+    if (is.null(optsLink$size)) optsLink$size <- defaults$sizeLink
+    else optsLink$size <- optsLink$size * defaults$maxSizeLink
     
     ml$coords <- optsArea$coords
     ml$links <- optsLink$coords
     
-    map <- plot(ml, optsArea$color, optsArea$size * 15, 
-                optsLink$color, optsLink$size * 10, dir = optsLink$dir)
+    map <- plot(ml, optsArea$color, optsArea$size, 
+                optsLink$color, optsLink$size, dir = optsLink$dir)
     
     # Add legends
     if (!is.null(optsArea$pal)) 
@@ -78,16 +93,18 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     timeId = mwSlider(min(x$areas$timeId), max(x$areas$timeId), timeId, step = 1),
     Areas = list(
       colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
-      sizeAreaVars = mwSelect(areaValColums, colAreaVar, label = "Radius", multiple = TRUE)
+      sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Radius", multiple = TRUE)
     ),
     Links = list(
       colLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), colLinkVar, label = "Color"),
-      sizeLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), colLinkVar, label = "Width")
+      sizeLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), sizeLinkVar, label = "Width")
     ),
     .content = leafletOutput("map", height = "100%")
   )
   
-  args <- runGadget(ui, .plotMapServer(x, mapLayout, initialMap), viewer = browserViewer())
+  args <- runGadget(ui, 
+                    .plotMapServer(x, mapLayout, initialMap, defaults), 
+                    viewer = browserViewer())
   do.call(plotFun, args)
 }
 
