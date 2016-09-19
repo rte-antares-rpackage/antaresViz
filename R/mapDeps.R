@@ -12,6 +12,13 @@
 
 mapDeps <- list(
   
+  updateCircleMarkers = htmlDependency(
+    "updateCircleMarkers",
+    "1.0",
+    src = system.file("leafletPlugins", package = "antaresViz"), 
+    script = "updateCircleMarkers.js"
+  ),
+  
   directedSegment = htmlDependency(
     "directedSegment", 
     "1.0",

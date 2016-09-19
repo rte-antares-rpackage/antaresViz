@@ -1,27 +1,52 @@
+.prepareOptions <- function(required, optional) {
+  options <- do.call(data.frame, required)
+  for (o in names(optional)) {
+    if (!is.null(optional[[o]])) options[[o]] <- optional[[o]]
+  }
+  options
+}
 
+#' @export
+updateCircleMarkers <- function(map, layerId, radius=NULL, stroke=NULL, 
+                                color=NULL, weight=NULL, 
+                                opacity=NULL, fill=NULL, fillColor=NULL, 
+                                fillOpacity= NULL) {
+  options <- .prepareOptions(
+    required = list(layerId = layerId),
+    optional = list(radius = radius, stroke = stroke, color = color, 
+                    weight = weight, opacity = opacity, fill = fill, 
+                    fillColor = fillColor, fillOpacity = fillOpacity)
+  )
+  
+  map %>% requireDep("updateCircleMarkers") %>% 
+    invokeMethod(data=NULL, "updateCircleMarkers", options)
+}
 
 #' @export
 addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3, 
                                 opacity = 1, dir = 1, popup = NULL, layerId = NULL) {
   
-  data <- data.frame(x0 = x0, y0 = y0, x1 = x1, y1 = y1, dir = dir, 
-                     color = color, weight = weight, opacity = opacity)
-  
-  if(!is.null(layerId)) data$layerId <- layerId
-  if(!is.null(popup)) data$popup <- popup
+  options <- .prepareOptions(
+    required = list(x0 = x0, y0 = y0, x1 = x1, y1 = y1),
+    optional = list(dir = dir, color = color, weight = weight, opacity = opacity, 
+                    layerId = layerId, popup = popup)
+  )
   
   map %>% 
     requireDep("directedSegment") %>% 
-    invokeMethod(data = leaflet:::getMapData(map), "addDirectedSegments", data)
+    invokeMethod(data = leaflet:::getMapData(map), "addDirectedSegments", options)
 }
 
 #' @export
-updateDirectedSegments <- function(map, layerId, color = "blue", weight = 3, 
-                                   opacity = 1, dir = 1, popup = NULL) {
-  data <- data.frame(layerId = layerId, color = color, weight = weight, opacity = opacity, dir = dir)
-  if(!is.null(popup)) data$popup <- popup
+updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL, 
+                                   opacity = NULL, dir = NULL, popup = NULL) {
+  options <- .prepareOptions(
+    required = list(layerId = layerId),
+    optional = list(color = color, weight = weight, opacity = opacity,dir = dir,
+                    popup = popup)
+  )
   
-  invokeMethod(map, data = leaflet:::getMapData(map), "updateDirectedSegments", data)
+  invokeMethod(map, data = leaflet:::getMapData(map), "updateDirectedSegments", options)
 }
 
 #' @export
