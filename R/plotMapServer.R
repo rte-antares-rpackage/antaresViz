@@ -31,14 +31,24 @@
                               colAreaVar, sizeAreaVars)
   ml$coords <- opts$coords
   
-  map <- map %>% 
-    updateCircleMarkers(ml$coords$area, fillColor = opts$color, 
-                        radius = sqrt(opts$size) * 15)
+  if (is.matrix(opts$size) && ncol(opts$size) > 1) {
+    map <- map %>% 
+      updateCircleMarkers(opts$coords$area, opacity = 0, fillOpacity = 0) %>% 
+      updatePolarChart(opts$coords$area, opacity = 1, data = opts$size)
+  } else {
+    map <- map %>% 
+      updateCircleMarkers(opts$coords$area, fillColor = opts$color, 
+                          radius = sqrt(opts$size) * 15, 
+                          opacity = 1, fillOpacity = 1) %>% 
+      updatePolarChart(opts$coords$area, opacity = 0)
+  }
   
   if (!is.null(opts$pal)) {
     map <- addLegend(map, "topright", opts$pal, opts$coords[[colAreaVar]], 
                      title = colAreaVar,
                      opacity = 1, layerId = "legAreas")
+  } else {
+    map <- removeControl(map, "legAreas")
   }
   
   map
@@ -59,6 +69,8 @@
     map <- addLegend(map, "topright", opts$pal, opts$coords[[colLinkVar]], 
                      title = colLinkVar,
                      opacity = 1, layerId = "legLinks")
+  } else {
+    map <- removeControl(map, "legLinks")
   }
   
   map
