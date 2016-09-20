@@ -2,28 +2,79 @@
 % Please edit documentation in R/plotMap.R
 \name{plotMap}
 \alias{plotMap}
-\title{Display results on a map}
+\title{Display results of a simulation on a map}
 \usage{
-plotMap(x, mapLayout, areaVar = "none", linkVar = "none",
-  timeId = min(x$areas$timeId), interactive = base::interactive(),
-  mp = NULL)
+plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+  colLinkVar = "none", sizeLinkVar = "none", timeId = min(x$areas$timeId),
+  interactive = base::interactive(), options = plotMapOptions())
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
-\code{\link[antaresRead]{readAntares}}}
+\code{\link[antaresRead]{readAntares}} and containing areas and links data}
 
 \item{mapLayout}{Object created with function \code{\link{mapLayout}}}
 
-\item{areaVar}{area variable to display on the map}
+\item{colAreaVar}{Name of a variable present in \code{x$areas}. The values of this variable
+are represented by the color of the areas on the map. If \code{"none"}, then
+the default color is used for all areas.}
 
-\item{linkVar}{link variable to display on the map}
+\item{sizeAreaVars}{vector of variables present in \code{x$areas} to associate with the size of 
+areas on the map. If this parameter has length equal to 0, all areas have the
+same size. If it has length equal to one, then the radius of the areas change
+depending on the values of the variable choosen. If it has length greater than
+1 then areas are represented by a polar area chart where the size of each section
+depends on the values of each variable.}
 
-\item{timeId}{timeId}
+\item{colLinkVar}{Name of a variable present in \code{x$links}. The values of this variable
+are represented by the color of the links on the map. If \code{"none"}, then
+the default color is used for all links}
+
+\item{sizeLinkVar}{Name of a variable present in \code{x$links}. Its values are represented by
+the line width of the links on the map.}
+
+\item{timeId}{A single time id present in the data.}
 
 \item{interactive}{Should the function start a shiny gadget that lets the user modify the
 parameters of the plot ?}
+
+\item{options}{List of parameters that override some default visual settings. See the
+help of \code{\link{plotMapOptions}}.}
+}
+\value{
+An htmlwidget of class "leaflet". It can be modified with package 
+\code{leaflet}. By default the function starts a shiny gadget that lets the
+user play with most of the parameters of the function. The function returns
+a leaflet map when the user clicks on the button \code{"done"}.
 }
 \description{
-Display results on a map
+This function generates an interactive map that let the user visually explore
+the results of an Antares simulation. By default the function starts a Shiny 
+gadget that let the user which variables to represent.
+}
+\examples{
+\dontrun{
+mydata <- readAntares(areas = "all", links = "all", timeStep = "daily",
+                      select = "nostat")
+
+# Place areas on a map. Ths has to be done once for a given study. Then the
+# object returned by "mapLayout" may be saved and reloaded with
+# functions save and load
+
+layout <- readLayout()
+ml <- mapLayout(layout)
+save("ml", file = "ml.rda")
+
+plotMap(mydata, ml)
+
+# Specify the variables to use to control the color or size of elements.
+plotMap(mydata, ml, 
+        sizeAreaVars = c("WIND", "SOLAR", "H. ROR"),
+        sizeLinkVar = "FLOW LIN.")
+
+# Change default graphical properties
+plotMap(mydata, ml, options = list(colArea="red", colLink = "orange"))
+
+}
+
 }
 

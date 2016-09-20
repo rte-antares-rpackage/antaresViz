@@ -1,28 +1,80 @@
-#' Display results on a map
+#' Display results of a simulation on a map
+#' 
+#' This function generates an interactive map that let the user visually explore
+#' the results of an Antares simulation. By default the function starts a Shiny 
+#' gadget that let the user which variables to represent.
 #' 
 #' @param x
 #'   Object of class \code{antaresDataList} created with 
-#'   \code{\link[antaresRead]{readAntares}}
+#'   \code{\link[antaresRead]{readAntares}} and containing areas and links data
 #' @param mapLayout
 #'   Object created with function \code{\link{mapLayout}}
 #' @param colAreaVar
-#'   area variable to display on the map
+#'   Name of a variable present in \code{x$areas}. The values of this variable
+#'   are represented by the color of the areas on the map. If \code{"none"}, then
+#'   the default color is used for all areas. 
+#' @param sizeAreaVars
+#'   vector of variables present in \code{x$areas} to associate with the size of 
+#'   areas on the map. If this parameter has length equal to 0, all areas have the
+#'   same size. If it has length equal to one, then the radius of the areas change
+#'   depending on the values of the variable choosen. If it has length greater than
+#'   1 then areas are represented by a polar area chart where the size of each section
+#'   depends on the values of each variable.
 #' @param colLinkVar
-#'   link variable to display on the map
+#'   Name of a variable present in \code{x$links}. The values of this variable
+#'   are represented by the color of the links on the map. If \code{"none"}, then
+#'   the default color is used for all links  
+#' @param sizeLinkVar
+#'   Name of a variable present in \code{x$links}. Its values are represented by
+#'   the line width of the links on the map.
 #' @param timeId
-#'   timeId
+#'   A single time id present in the data.
 #' @param interactive
 #'   Should the function start a shiny gadget that lets the user modify the
 #'   parameters of the plot ?
+#' @param options
+#'   List of parameters that override some default visual settings. See the
+#'   help of \code{\link{plotMapOptions}}.
+#'   
+#' @return 
+#' An htmlwidget of class "leaflet". It can be modified with package 
+#' \code{leaflet}. By default the function starts a shiny gadget that lets the
+#' user play with most of the parameters of the function. The function returns
+#' a leaflet map when the user clicks on the button \code{"done"}.
+#' 
+#' @examples 
+#' \dontrun{
+#' mydata <- readAntares(areas = "all", links = "all", timeStep = "daily",
+#'                       select = "nostat")
+#' 
+#' # Place areas on a map. Ths has to be done once for a given study. Then the
+#' # object returned by "mapLayout" may be saved and reloaded with
+#' # functions save and load
+#' 
+#' layout <- readLayout()
+#' ml <- mapLayout(layout)
+#' save("ml", file = "ml.rda")
+#' 
+#' plotMap(mydata, ml)
+#' 
+#' # Specify the variables to use to control the color or size of elements.
+#' plotMap(mydata, ml, 
+#'         sizeAreaVars = c("WIND", "SOLAR", "H. ROR"),
+#'         sizeLinkVar = "FLOW LIN.")
+#' 
+#' # Change default graphical properties
+#' plotMap(mydata, ml, options = list(colArea="red", colLink = "orange"))
+#' 
+#' }
 #' 
 #' @export
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     colLinkVar = "none", sizeLinkVar = "none", 
                     timeId = min(x$areas$timeId),
                     interactive = base::interactive(),
-                    defaults = plotMapOptions()) {
+                    options = plotMapOptions()) {
   
-  defaults <- do.call(plotMapOptions, defaults)
+  options <- do.call(plotMapOptions, options)
   
   # Keep only links and areas present in the data
   areaList <- unique(x$areas$area)
@@ -38,19 +90,19 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
                                colAreaVar, sizeAreaVars)
     
-    if (is.null(optsArea$color)) optsArea$color <- defaults$colArea
+    if (is.null(optsArea$color)) optsArea$color <- options$colArea
     
-    if (is.null(optsArea$size)) optsArea$size <- defaults$sizeArea
+    if (is.null(optsArea$size)) optsArea$size <- options$sizeArea
     else if (ncol(optsArea$size) == 1) {
-      optsArea$size <- sqrt(optsArea$size) * defaults$maxSizeArea
+      optsArea$size <- sqrt(optsArea$size) * options$maxSizeArea
     }
     
     optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
                                colLinkVar, sizeLinkVar)
     
-    if (is.null(optsLink$color)) optsLink$color <- defaults$colLink
-    if (is.null(optsLink$size)) optsLink$size <- defaults$sizeLink
-    else optsLink$size <- optsLink$size * defaults$maxSizeLink
+    if (is.null(optsLink$color)) optsLink$color <- options$colLink
+    if (is.null(optsLink$size)) optsLink$size <- options$sizeLink
+    else optsLink$size <- optsLink$size * options$maxSizeLink
     
     ml$coords <- optsArea$coords
     ml$links <- optsLink$coords
@@ -103,7 +155,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   )
   
   args <- runGadget(ui, 
-                    .plotMapServer(x, mapLayout, initialMap, defaults), 
+                    .plotMapServer(x, mapLayout, initialMap, options), 
                     viewer = browserViewer())
   do.call(plotFun, args)
 }

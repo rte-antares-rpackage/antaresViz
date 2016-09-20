@@ -1,4 +1,4 @@
-.plotMapServer <- function(x, mapLayout, initialMap, defaults) {
+.plotMapServer <- function(x, mapLayout, initialMap, options) {
   
   function(input, output, session) {
     # Initialization of the map
@@ -7,8 +7,8 @@
     map <- leafletProxy("map", session)
 
     observe({
-      .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, input$sizeLinkVar, defaults)
-      .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, input$sizeAreaVars, defaults)
+      .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, input$sizeLinkVar, options)
+      .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, input$sizeAreaVars, options)
     })
     
     # Return a list with the last value of inputs
@@ -24,18 +24,18 @@
   }
 }
 
-.redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars, defaults) {
+.redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars, options) {
   ml <- copy(mapLayout)
   
   optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
                               colAreaVar, sizeAreaVars)
   ml$coords <- optsArea$coords
   
-  if (is.null(optsArea$color)) optsArea$color <- defaults$colArea
+  if (is.null(optsArea$color)) optsArea$color <- options$colArea
   
-  if (is.null(optsArea$size)) optsArea$size <- defaults$sizeArea
+  if (is.null(optsArea$size)) optsArea$size <- options$sizeArea
   else if (ncol(optsArea$size) == 1) {
-    optsArea$size <- sqrt(optsArea$size) * defaults$maxSizeArea
+    optsArea$size <- sqrt(optsArea$size) * options$maxSizeArea
   }
   
   if (is.matrix(optsArea$size) && ncol(optsArea$size) > 1) {
@@ -61,15 +61,15 @@
   map
 }
 
-.redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar, defaults) {
+.redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar, options) {
   ml <- copy(mapLayout)
   
   optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
                              colLinkVar, sizeLinkVar)
   
-  if (is.null(optsLink$color)) optsLink$color <- defaults$colLink
-  if (is.null(optsLink$size)) optsLink$size <- defaults$sizeLink
-  else optsLink$size <- optsLink$size * defaults$maxSizeLink
+  if (is.null(optsLink$color)) optsLink$color <- options$colLink
+  if (is.null(optsLink$size)) optsLink$size <- options$sizeLink
+  else optsLink$size <- optsLink$size * options$maxSizeLink
   
   map <- map %>% updateDirectedSegments(layerId = ml$links$link, 
                                         color = optsLink$color,
