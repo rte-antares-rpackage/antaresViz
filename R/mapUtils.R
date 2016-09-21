@@ -119,3 +119,7 @@ updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1
   
   invokeMethod(map, data = NULL, "updatePolarCharts", options, data)
 }
+
+addShadows <- function(map) {
+  map %>% requireDep("shadows") %>% invokeMethod(data = NULL, "addShadows")
+}

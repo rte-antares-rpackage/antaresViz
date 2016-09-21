@@ -38,6 +38,13 @@ mapDeps <- list(
     "4.2.3",
     src = system.file("leafletPlugins", package = "antaresViz"), 
     script = "d3.min.js"
+  ),
+  
+  shadows = htmlDependency(
+    "shadows",
+    "1.0",
+    src = system.file("leafletPlugins", package = "antaresViz"),
+    script = "svgShadows.js"
   )
   
 )

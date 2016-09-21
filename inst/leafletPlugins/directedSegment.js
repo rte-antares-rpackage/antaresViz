@@ -36,7 +36,6 @@ L.DirectedSegment = L.Polyline.extend({
 
   onAdd: function(map) {
     L.Polyline.prototype.onAdd.call(this, map);
-    this._container.setAttribute("style", " -webkit-filter: -webkit-drop-shadow( 1px 1px 1px rgba(0,0,0,.5) ); filter: drop-shadow( 1px 1px 1px rgba(0,0,0,.3) );");
     this._container.setAttribute("class", "leaflet-zoom-hide");
     
     function createSvgElement(el, parent) {

@@ -128,10 +128,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       map <- addCircleMarkers(map, ml$coords$x, ml$coords$y, opacity = 0, 
                               fillOpacity = 0,
                               layerId = ml$coords$area,
-                              popup = ml$coords$area)
+                              popup = ml$coords$area, stroke = FALSE)
     }
     
-    map
+    map %>% addShadows()
   }
   
   initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar)
