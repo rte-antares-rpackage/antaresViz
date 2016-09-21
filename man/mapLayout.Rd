@@ -21,6 +21,19 @@ An object of class \code{mapLayout}.
 \description{
 This function launches an interactive application that let the user place 
 areas of a study on a map. the GPS coordinates of the areas are then returned
-and can be used in functions.
+and can be used in functions. This function should be used only once per 
+study. The result should then be saved in an external file and be reused.
+}
+\examples{
+\dontrun{
+# Read the coordinates of the areas in the Antares interface, then convert it
+# in a map layout.
+layout <- readLayout()
+ml <- mapLayout(layout)
+
+# Save the result for future use
+save(ml, file = "ml.rda")
+}
+
 }
 

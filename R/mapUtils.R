@@ -1,3 +1,15 @@
+#' Private function that prepare R arguments to be sent to javascript functions.
+#'
+#' @param required
+#'   Named list of required parameters
+#' @param optional
+#'   Named list of optional parameters
+#' 
+#' @return 
+#'   A data.frame where each column represent one parameter
+#' 
+#' @noRd
+#' 
 .prepareOptions <- function(required, optional) {
   options <- do.call(data.frame, required)
   for (o in names(optional)) {
@@ -6,6 +18,66 @@
   options
 }
 
+# The following are extensions for package leaflet. They are quite hacky because
+# for now, leaflet does not provide any mechanism to add custom functions. 
+# An issue has been created on github: https://github.com/rstudio/leaflet/issues/290
+
+#' Update the style of circle markers
+#' 
+#' Function to update the visual properties of circle markers already added to a 
+#' map. The main utility of this function appears when used with function 
+#' \code{\link[leaflet]{leafletProxy}}.
+#' 
+#' @param map
+#'   A map object created with \code{\link[leaflet]{leaflet()}}
+#' @param layerId
+#'   The layer Id
+#' @param radius
+#'   Numeric vector of radii for the circles.
+#' @param stroke
+#'   Wheter to draw the border of the circles
+#' @param color
+#'   Color of the border of the circles
+#' @param weight
+#'   Line width of the border of the circles
+#' @param opacity
+#'   Opacity of the border of the circles
+#' @param fill
+#'   Wheter to fill the circles with colors
+#' @param fillColor
+#'   Fill color
+#' @param fillOpacity
+#'   Fill opacity
+#'   
+#' @return 
+#' the new map object
+#' 
+#' @examples 
+#' require(leaflet)
+#' 
+#' leaflet() %>% 
+#'   addCircleMarkers(c(0, 0), c(0, 10), layerId = c("a", "b")) %>% 
+#'   updateCircleMarkers(c("a"), color = "red")
+#' 
+#' \dontrun{  
+#' # updateCircleMarkers becomes really usefull inside the server function of
+#' # a shiny application.
+#' 
+#' server <- function(input, output, session) {
+#'   output$map <- renderLeaflet({
+#'     leaflet() %>% addCircleMarkers(c(0, 0), c(0, 10), layerId = c("a", "b"))
+#'   })
+#'   
+#'   map <- leafletProxy("map", session)
+#'   
+#'   observe({
+#'     updateCircleMarkers(map, layerId = c("a", "b"), color = input$color)
+#'   })
+#'   
+#'   ...
+#' }
+#' 
+#' }
 #' @export
 updateCircleMarkers <- function(map, layerId, radius=NULL, stroke=NULL, 
                                 color=NULL, weight=NULL, 
@@ -22,6 +94,54 @@ updateCircleMarkers <- function(map, layerId, radius=NULL, stroke=NULL,
     invokeMethod(data=NULL, "updateCircleMarkers", options)
 }
 
+#' Add or update directed segments
+#' 
+#' These functions add or update directed segments on a leaflet map: they are 
+#' simply lines with an arrow in their middle that represent their direction.
+#' 
+#' @param map
+#'   A map object created with \code{\link[leaflet]{leaflet()}}
+#' @param x0
+#'   longitude of the origin of the segments
+#' @param y0
+#'   lattitude of the origin of the segments
+#' @param x1
+#'   longitude of the destination of the segments
+#' @param y1
+#'   lattitude of the destination of the segments
+#' @param color
+#'   color of the segments
+#' @param weight
+#'   line width of the segments
+#' @param opacity
+#'   opacity of the segments
+#' @param dir
+#'   direction of the segments. Possible values are -1, 0 and 1. If it equals
+#'   to 0, then no arrow is drawn. If it equals 1 an arrow is drawn and 
+#'   points to the destination of the segment. If it equals to -1, then the arrow 
+#'   is reversed and points to the origin of the segment. 
+#' @param popup
+#'   a character vector of the HTML content for the popups. They are displayed 
+#'   when user clicks on a segment.
+#' @param layerId
+#'   Layer id.
+#'   
+#' @return 
+#'   The modified map object.
+#'   
+#' @examples 
+#' require(leaflet)
+#' 
+#' leaflet() %>% 
+#'   addDirectedSegments(
+#'     x0 = c(0, 0, 0),
+#'     y0 = c(0, 1, 2),
+#'     x1 = c(3, 3, 3),
+#'     y1 = c(0, 1, 2),
+#'     weight = c(1, 2, 3),
+#'     dir = c(0, 1, -1)
+#'   )
+#' 
 #' @export
 addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3, 
                                 opacity = 1, dir = 1, popup = NULL, layerId = NULL) {
@@ -37,6 +157,7 @@ addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3,
     invokeMethod(data = leaflet:::getMapData(map), "addDirectedSegments", options)
 }
 
+#' @rdname addDirectedSegments
 #' @export
 updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL, 
                                    opacity = NULL, dir = NULL, popup = NULL) {
@@ -49,6 +170,59 @@ updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL,
   invokeMethod(map, data = leaflet:::getMapData(map), "updateDirectedSegments", options)
 }
 
+#' Add or update polar charts
+#' 
+#' These functions add and update polar area charts on a leaflet map. 
+#' 
+#' @param lng
+#'   longitude of the polar charts
+#' @param lat
+#'   lattitude of the polar charts
+#' @param data
+#'   numeric matrix. Number of rows must equal the number of polar charts. The
+#'   number of columns is equal to the number of sectors in each polar chart.
+#' @param radius
+#'   maximal radius of a polar chart
+#' @param opacity
+#'   Opacity of a polar chart
+#' @param scale
+#'   Should the values be represented by the radius or the area ? Radius by 
+#'   default. This creates a high distorsion of the values, but permits to 
+#'   clearly see differences between different zones.
+#' @param maxValue
+#'   Either a single numeric value, or a vector with length equal to the number
+#'   of columns of data. In the first case (one value), all variable will share
+#'   the same scale while in the second one each variable will have its own scale.
+#'   If it is \code{NULL}, the maximal value of each column is used (so scales
+#'   are different for each column). If it equals to 0, the global maximum of
+#'   the matrix is used and all variables share the same scale.
+#' @param colors
+#'   Vector of colors for the sectors of the polar chart
+#' @inheritParams addDirectedSegments
+#' 
+#' @return 
+#' The modified map object.
+#' 
+#' @examples 
+#' 
+#' require(leaflet)
+#' mydata <- rbind(1:3, 4:6)
+#' 
+#' # Polar chart with distinct scales for each column of mydata. For the second
+#' # polar chart the radius will be equal to 20 (maximal radius) for each sector.
+#' # For the first one radius will be 1/4 * 20, 2/5 * 20 and 3/6 * 20
+#' 
+#' leaflet() %>% addPolarCharts(c(0,30), c(0, 0), mydata) 
+#' 
+#' # Common scale for the three columns
+#' 
+#' leaflet() %>% addPolarCharts(c(0,30), c(0, 0), mydata, maxValue = 0)
+#' 
+#' # Explicitely provide the maximal value. This is useful for comparison to have
+#' # the same scale on different maps.
+#' 
+#' leaflet() %>% addPolarChart(c(0,30), c(0, 0), mydata, maxValue = 9)
+#' 
 #' @export
 addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
                           scale = c("radius", "area"), maxValue = NULL, 
@@ -86,6 +260,8 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
     invokeMethod(leaflet:::getMapData(map), "addPolarChart", options, data, colors)
 }
 
+#' @rdname addPolarChart
+#' @export
 updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1,
                              scale = c("radius", "area"), maxValue = NULL, popup = NULL) {
   scale <- match.arg(scale)
@@ -120,6 +296,25 @@ updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1
   invokeMethod(map, data = NULL, "updatePolarCharts", options, data)
 }
 
+#' Add a shadow to map layers
+#' 
+#' This function adds a shadow to every svg element added to a leaflet map. It
+#' can greatly improve the lisibility of the map.
+#' 
+#' @inheritParams addDirectedSegments
+#' 
+#' @return 
+#' The modified map object
+#' 
+#' @examples 
+#' 
+#' leaflet() %>%
+#'   addTiles() %>% 
+#'   addDirectedSegments(0, 0, 1, 0, col= gray(0.9)) %>%
+#'   addCircleMarkers(c(0, 1), c(0, 0), color = "white", fillOpacity = 1, stroke = FALSE) %>%
+#'   addShadows()
+#' 
+#' @export
 addShadows <- function(map) {
   map %>% requireDep("shadows") %>% invokeMethod(data = NULL, "addShadows")
 }

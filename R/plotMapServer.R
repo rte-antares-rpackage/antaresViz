@@ -1,3 +1,21 @@
+#' Private function used by plotMap as the server function of the shiny gadget
+#' it launches.
+#' It takes as parameter a map and it updates the visual attributes of its
+#' elements (color and size of areas and links) when the user changes the value
+#' of an input.
+#' 
+#' @param x
+#'   Object of class antaresDataTable containing areas and links
+#' @param mapLayout
+#'   Object created with function mapLayout
+#' @param initialMap
+#'   Initial map
+#' @param options
+#' 
+#' @return 
+#' A shiny server function.
+#'
+#' @noRd
 .plotMapServer <- function(x, mapLayout, initialMap, options) {
   
   function(input, output, session) {
@@ -7,6 +25,7 @@
     map <- leafletProxy("map", session)
 
     observe({
+      # These functions are defined below.
       .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, input$sizeLinkVar, options)
       .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, input$sizeAreaVars, options)
     })
@@ -24,6 +43,7 @@
   }
 }
 
+# Update the circles or polar charts representing areas
 .redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars, options) {
   ml <- copy(mapLayout)
   
@@ -61,6 +81,7 @@
   map
 }
 
+# Update the links in the map
 .redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar, options) {
   ml <- copy(mapLayout)
   
@@ -87,6 +108,31 @@
   map
 }
 
+#' Private function that binds data with map layout and returns colors and sizes
+#' for each element
+#' 
+#' @param data
+#'   antaresDataTable containing data for areas or links
+#' @param coords
+#'   element of a map layout corresponding to data (coordinates of areas or links)
+#' @param mergeBy
+#'   name of the variable to merge data and coords by ("area" or "link")
+#' @param t
+#'   timeStep
+#' @param colVar
+#'   variable to map with colors. "none" for no mapping
+#' @param sizeVar
+#'   variables to map with sizes. "none", NULL or c() for no mapping
+#' 
+#' @return 
+#' A list with the following elements:
+#' * coords : coords augmented with data
+#' * dir    : direction of the links (if relevant)
+#' * color  : color of each element
+#' * pal    : color palette used
+#' * size   : size of elements.
+#' 
+#' @noRd
 .getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar) {
 
   coords <- merge(coords, data[timeId == t], by = mergeBy)
