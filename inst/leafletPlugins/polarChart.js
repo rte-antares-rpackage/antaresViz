@@ -16,7 +16,7 @@ Methods:
     segment
 */
 
-L.PolarChart = L.Class.extend({
+L.PolarChart = L.CircleMarker.extend({
   options: {
     opacity: 1,
     colors: d3.schemeCategory10,
@@ -28,21 +28,23 @@ L.PolarChart = L.Class.extend({
     this._radius = radius;
     this._data = data;
     L.Util.setOptions(this, options);
+    L.CircleMarker.prototype.initialize.call(
+      this, 
+      center, 
+      {radius: radius, stroke: false, fill: false}
+    );
   },
   
   onAdd: function (map) {
-    this._map = map;
+    L.CircleMarker.prototype.onAdd.call(this, map);
     
     // create a DOM element and put it into one of the map panes
-    var container = map.getPanes().overlayPane;
     var radius = this._radius;
     
-    this._svg = d3.select(container).append("svg")
-      .attr("width", radius*2)
-      .attr("height", radius * 2)
-      .attr("class", "leaflet-zoom-hide");
+    this._container.setAttribute("class", "leaflet-zoom-hide");
     
-    this._g = this._svg.append("g").attr("transform", "translate(" + radius + "," + radius + ")");
+    this._g = d3.select(this._container).append("g");
+      //.attr("transform", "translate(" + radius + "," + radius + ")");
 
     // add a viewreset event listener for updating layer's position, do the latter
     map.on('viewreset', this._reset, this);
@@ -51,7 +53,7 @@ L.PolarChart = L.Class.extend({
 
   onRemove: function (map) {
     // remove layer's DOM elements and listeners
-    this._svg.remove();
+    L.CircleMarker.prototype.onRemove.call(this, map);
     map.off('viewreset', this._reset, this);
   },
   
@@ -67,6 +69,11 @@ L.PolarChart = L.Class.extend({
   },
   
   _reset: function () {
+    // Set Position of the container
+    var p = this._map.latLngToLayerPoint(this._center);
+    this._g.attr("transform", "translate(" + p.x + "," + p.y + ")");
+    
+    // Draw polar area chart
     var radius = this._radius;
     var dmax = this.options.maxValue || d3.max(this._data);
     
@@ -82,13 +89,10 @@ L.PolarChart = L.Class.extend({
   		.data(pie(this._data))
       .enter()
       .append("path")
+      .attr("class", "leaflet-clickable")
       .attr("d", arc)
       .attr("fill", function(d, i) {return color(i)})
       .attr("fill-opacity", this.options.opacity);
-      
-    // update layer's position
-    var pos = this._map.latLngToLayerPoint(this._center);
-    L.DomUtil.setPosition(this._svg.node(), {x: pos.x - radius, y: pos.y - radius});
   }
 });
 
@@ -102,8 +106,8 @@ L.polarChart = function(center, radius, data, options) {
 Add a segment on the map with a triangle in the middle representing its direction.
 
 @param options:
-  data.frame with columns lng, lat, radius and optionally opacity, maxValue and
-  layerId
+  data.frame with columns lng, lat, radius and optionally opacity, maxValue
+  popup and layerId
   
 @param data:
   matrix containing the data to contruct the polar area charts
@@ -124,6 +128,8 @@ window.LeafletWidget.methods.addPolarChart = function(options, data, colors) {
       style
     );
     
+    if (options.popup) l.bindPopup(options.popup[i]);
+    
     var id = options.layerId ? options.layerId[i] : undefined;
     this.layerManager.addLayer(l, "polarChart", id);
   }
@@ -134,10 +140,11 @@ window.LeafletWidget.methods.updatePolarCharts = function(options, data, colors)
     var l = this.layerManager.getLayer("polarChart", options.layerId[i]);
     
     var style = {};
-    style = {};
     if (options.opacity) style.opacity = options.opacity[i];
     if (options.maxValue) style.maxValue = options.maxValue[i];
     if (colors) style.colors = colors;
+    
+    if (options.popup) l.bindPopup(options.popup[i]);
     
     l.setStyle(style);
     

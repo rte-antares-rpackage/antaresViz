@@ -52,13 +52,14 @@ updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL,
 #' @export
 addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
                           scale = c("radius", "area"), maxValue = NULL, 
-                          colors = NULL, layerId = NULL) {
+                          colors = NULL, popup = NULL, layerId = NULL) {
  
   scale <- match.arg(scale)
   
   options <- .prepareOptions(
     required = list(lng = lng, lat = lat), 
-    optional = list(radius = radius, opacity = opacity, maxValue = 1, layerId = layerId)
+    optional = list(radius = radius, opacity = opacity, maxValue = 1, 
+                    layerId = layerId, popup = popup)
   )
   
   # Data preparation
@@ -86,12 +87,12 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
 }
 
 updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1,
-                             scale = c("radius", "area"), maxValue = NULL) {
+                             scale = c("radius", "area"), maxValue = NULL, popup = NULL) {
   scale <- match.arg(scale)
   
   options <- .prepareOptions(
     required = list(layerId = layerId),
-    optional = list(radius = radius, opacity = opacity, maxValue = 1)
+    optional = list(radius = radius, opacity = opacity, maxValue = 1, popup = popup)
   )
   
   if (!is.null(data)) {

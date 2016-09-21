@@ -122,11 +122,13 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (length(sizeAreaVars) <= 1) {
       map <- addPolarChart(map, ml$coords$x, ml$coords$y, 
                            data = matrix(1, nrow = nrow(ml$coords)),
-                           opacity = 0, layerId = ml$coords$area)
+                           opacity = 0, layerId = ml$coords$area,
+                           popup = ml$coords$area)
     } else {
       map <- addCircleMarkers(map, ml$coords$x, ml$coords$y, opacity = 0, 
                               fillOpacity = 0,
-                              layerId = ml$coords$area)
+                              layerId = ml$coords$area,
+                              popup = ml$coords$area)
     }
     
     map

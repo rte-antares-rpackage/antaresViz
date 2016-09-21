@@ -61,7 +61,8 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10, colLin
   
   if (is.matrix(sizeAreas) && ncol(sizeAreas) > 1) {
     addAreas <- function(map) {
-      addPolarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas)
+      addPolarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
+                    popup = x$coords$area, layerId = x$coords$area)
     }
   } else {
     addAreas <- function(map) {
