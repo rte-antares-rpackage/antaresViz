@@ -53,7 +53,6 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
                         SIMPLIFY = FALSE, 
                         USE.NAMES = FALSE)
   
-  legendItems <- append(legendItems, list(.tsLegendItem(type = "date", legendId = legendId)))
   
   nbRows <- ceiling(length(legendItems) / legendItemsPerRow) 
   
@@ -65,7 +64,25 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
     legendRows[[i]] <- do.call(fillRow, legendItems[j])
   } 
   
-  tags$div(fillRow(do.call(fillCol, legendRows), height = i * 20), height = i * 20)
+  legendItems <- tags$div(
+    fillRow(do.call(fillCol, legendRows), height = i * 20),
+    height = i * 20,
+    style = "padding-left: 100px;"
+  )
+  
+  tags$div(
+    style="position:relative;",
+    height = max(i * 20, 40),
+    tags$div(
+      style = "position:absolute;top:0;bottom:0;width:100px;
+",
+      tags$div(
+        style="text-align:center;font-weight:bold;font-size:16px",
+        id = paste0("date", legendId)
+      )
+    ),
+    legendItems
+  )
 }
 
 .style <- function(...) {
@@ -87,7 +104,7 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
     
     content <- tags$div(
       style = .style(color = txtCol, "background-color" = color, 
-                     width = "100%", height=h),
+                     position= "absolute", left = "2px", right = "4px", height=h),
       tags$div(
         style = .style(position="absolute", left="4px", padding="0 2px"), 
         class = "leglabel",
@@ -126,11 +143,6 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
       )
     )
     
-  } else if (type == "date") {
-    content <- tags$div(
-      style = "text-align:center;",
-      tags$span(id = paste0("date", legendId), "")
-    )
   }
   
   tags$div(
@@ -175,10 +187,13 @@ JS_updateLegend <- function(legendId, timeStep = "hourly") {
   # Function that transform a timestamp ta a date label
   timeToLab <- switch(
     timeStep,
-    hourly = "var date = new Date(x); return date.toISOString().slice(0, 16)",
-    daily = "var date = new Date(x); return date.toISOString().slice(0, 10)",
-    weekly = "var date = new Date(x); return date.toISOString().slice(0, 10)",
-    monthly = "var date = new Date(x); return date.toISOString().slice(0, 7)",
+    hourly = "var date = new Date(x); 
+              var day = date.toString().slice(0, 10);
+              var h = date.toString().slice(16, 21);
+              return day + '<br/>' + h;",
+    daily = "var date = new Date(x); return date.toString().slice(0, 10)",
+    weekly = "var date = new Date(x); return date.toString().slice(0, 10)",
+    monthly = "var date = new Date(x); return date.toString().slice(4, 8)",
     "return x"
   )
   

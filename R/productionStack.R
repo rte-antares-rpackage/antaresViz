@@ -251,7 +251,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
 #' 
 #' @noRd
 .plotProductionStack <- function(x, variables, colors, lines, lineColors, 
-                                 main = NULL, unit = "MWh", legendId = "") {
+                                 main = NULL, unit = "MWh", legendId = "",
+                                 width = NULL, height = NULL) {
   
   timeStep <- attr(x, "timeStep")
   
