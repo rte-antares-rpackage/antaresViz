@@ -6,7 +6,8 @@
 \usage{
 plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   colLinkVar = "none", sizeLinkVar = "none", timeId = min(x$areas$timeId),
-  interactive = base::interactive(), options = plotMapOptions())
+  interactive = base::interactive(), options = plotMapOptions(),
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -34,11 +35,17 @@ the line width of the links on the map.}
 
 \item{timeId}{A single time id present in the data.}
 
-\item{interactive}{Should the function start a shiny gadget that lets the user modify the
-parameters of the plot ?}
+\item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
+the user interactively choose the areas or districts to display.}
 
 \item{options}{List of parameters that override some default visual settings. See the
 help of \code{\link{plotMapOptions}}.}
+
+\item{width}{Width of the graph expressed in pixels or in percentage of 
+the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{height}{Height of the graph expressed in pixels or in percentage of 
+the parent element. For instance "500px" and "100\%" are valid values.}
 }
 \value{
 An htmlwidget of class "leaflet". It can be modified with package 

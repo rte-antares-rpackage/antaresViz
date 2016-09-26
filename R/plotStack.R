@@ -40,7 +40,8 @@
 #' 
 #' @noRd
 .plotStack <- function(x, timeStep, opts, colors, lines = NULL, lineColors = NULL, 
-                       legendId = "", main = "", ylab = "") {
+                       legendId = "", main = "", ylab = "",
+                       width = NULL, height = NULL) {
   
   variables <- setdiff(names(x), c("timeId", lines))
   
@@ -84,7 +85,7 @@
   # 5- Finally plot !!
   colors <- unname(c("#FFFFFF", rev(colors), colors))
   
-  g <- dygraph(dt, main = main, group = legendId)  %>%
+  g <- dygraph(dt, main = main, group = legendId, width = width, height = height)  %>%
     dyOptions(
       stackedGraph = TRUE, 
       colors = rev(colors), 

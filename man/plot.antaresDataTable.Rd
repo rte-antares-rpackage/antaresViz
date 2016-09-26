@@ -7,7 +7,8 @@
 \method{plot}{antaresDataTable}(x, variable = NULL, elements = NULL,
   type = c("ts", "barplot", "monotone"), dateRange = NULL, confInt = 0,
   interactive = base::interactive(), colors = NULL, main = NULL,
-  ylab = NULL, legend = TRUE, legendItemsByRow = 5, ...)
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5, width = NULL,
+  height = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataTable}.}
@@ -37,18 +38,26 @@ display. If it equals to 0, then confidence interval is not computed nor
 displayed. Used only when multiple Monte Carlo scenarios are present in 
 the input data.}
 
-\item{interactive}{Should the function start a shiny gadget that lets the user modify the
-parameters of the plot ?}
+\item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
+the user interactively choose the areas or districts to display.}
 
 \item{colors}{Vector of colors}
 
-\item{main}{Title of the generated graphic.}
+\item{main}{Title of the graph.}
 
-\item{ylab}{label of the "y" axis.}
+\item{ylab}{Label of the Y axis.}
 
-\item{legend}{Logical value indicating if a legend should be drawn.}
+\item{legend}{Logical value indicating if a legend should be drawn. This argument is 
+usefull when one wants to create a shared legend with
+\code{\link{productionStackLegend}}}
 
-\item{legendItemsByRow}{Number of items to display in each row of the legend.}
+\item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
+
+\item{width}{Width of the graph expressed in pixels or in percentage of 
+the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{height}{Height of the graph expressed in pixels or in percentage of 
+the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{...}{currently unused}
 }

@@ -5,7 +5,8 @@
 \title{Plot method for map layout}
 \usage{
 \method{plot}{mapLayout}(x, colAreas = x$coords$color, sizeAreas = 10,
-  colLinks = "#CCCCCC", sizeLinks = 3, dirLinks = 0, ...)
+  colLinks = "#CCCCCC", sizeLinks = 3, dirLinks = 0, width = NULL,
+  height = height, ...)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}
@@ -27,6 +28,12 @@ section of the polar charts.}
 are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
 If it is equal to 1 or -1 it is represented by a line with an arrow pointing
 respectively the destination and the origin of the link.}
+
+\item{width}{Width of the graph expressed in pixels or in percentage of 
+the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{height}{Height of the graph expressed in pixels or in percentage of 
+the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{...}{Currently unused.}
 }

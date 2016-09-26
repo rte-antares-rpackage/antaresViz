@@ -1,9 +1,34 @@
+#' Plot the exchanges of an area
+#' 
+#' This function draws a stack representing the evolution of the exchanges of
+#' an area with its neighbours.
+#' 
+#' @param x
+#'   data.table of class \code{antaresDataTable} created with function
+#'   \code{\link[antaresRead]{readAntares}}. It must contain link data.
+#' @param area
+#'   Name of a single area. The flows from/to this area will be drawn by the
+#'   function.
+#' @inheritParams productionStack
+#' 
+#' @return 
+#' A htmlwidget of class \code{dygraph}. It can be modified with functions from
+#' package \code{dygraphs}.
+#' 
+#' @examples 
+#' \dontrun{
+#' mydata <- readAntares(links = "all", timeStep = "daily")
+#' exchangeStack(mydata)
+#' 
+#' }
+#' 
+#' @export
 exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL, 
-                            main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
-                            width = "100%", height = "500px",
-                            interactive = base::interactive(), 
-                            legend = TRUE, legendId = sample(1e9, 1),
-                            legendItemsPerRow = 5) {
+                           main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
+                           interactive = base::interactive(), 
+                           legend = TRUE, legendId = sample(1e9, 1),
+                           legendItemsPerRow = 5,
+                           width = NULL, height = NULL) {
   
   unit <- match.arg(unit)
   timeStep <- attr(x, "timeStep")
@@ -41,7 +66,8 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     
     # Stack
     g <- .plotStack(dt, timeStep, opts, colors,
-                    legendId = legendId, main = main, ylab = ylab)
+                    legendId = legendId, main = main, ylab = ylab,
+                    width = width, height = height)
     
     if (!legend) {
       return(g)

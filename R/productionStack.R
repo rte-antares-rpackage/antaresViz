@@ -94,10 +94,10 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
                             areas = NULL, 
                             dateRange = NULL,
                             main = "Production stack", unit = c("MWh", "GWh", "TWh"),
-                            width = "100%", height = "500px",
                             interactive = base::interactive(), 
                             legend = TRUE, legendId = sample(1e9, 1),
-                            legendItemsPerRow = 5) {
+                            legendItemsPerRow = 5,
+                            width = NULL, height = NULL) {
   
   unit <- match.arg(unit)
   
@@ -166,7 +166,8 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
                               lineColors,
                               main = main,
                               unit = unit,
-                              legendId = legendId)
+                              legendId = legendId,
+                              width = width, height = height)
     if (legend) {
       l <- productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
       p <- htmlwidgets::onRender(p, JS_addLegend, list(size = l$attribs$height, 
@@ -264,7 +265,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   }
   
   .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, legendId,
-             main = main, ylab = sprintf("Production (%s)", unit))
+             main = main, ylab = sprintf("Production (%s)", unit, width = width, height = height))
 }
 
 #' Plot an interactive legend for a production stack plot

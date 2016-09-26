@@ -7,8 +7,9 @@
 productionStack(x, variables = "eco2mix", colors = NULL, lines = NULL,
   lineColors = NULL, areas = NULL, dateRange = NULL,
   main = "Production stack", unit = c("MWh", "GWh", "TWh"),
-  width = "100\%", height = "500px", interactive = base::interactive(),
-  legend = TRUE, legendId = sample(1e+09, 1), legendItemsPerRow = 5)
+  interactive = base::interactive(), legend = TRUE,
+  legendId = sample(1e+09, 1), legendItemsPerRow = 5, width = NULL,
+  height = NULL)
 }
 \arguments{
 \item{x}{An object of class \code{antaresData} created with function 
@@ -43,12 +44,6 @@ displayed. If NULL, then all data is displayed.}
 
 \item{unit}{Unit used in the graph. Possible values are "MWh", "GWh" or "TWh".}
 
-\item{width}{Width of the graph expressed in pixels or in percentage of 
-the parent element. For instance "500px" and "100\%" are valid values.}
-
-\item{height}{Height of the graph expressed in pixels or in percentage of 
-the parent element. For instance "500px" and "100\%" are valid values.}
-
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}
 
@@ -61,6 +56,12 @@ usefull when one wants to create a shared legend with
 \code{\link{productionStackLegend}}}
 
 \item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
+
+\item{width}{Width of the graph expressed in pixels or in percentage of 
+the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{height}{Height of the graph expressed in pixels or in percentage of 
+the parent element. For instance "500px" and "100\%" are valid values.}
 }
 \value{
 An interactive html graphic. If argument \code{interactive} is \code{TRUE},

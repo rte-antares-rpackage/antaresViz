@@ -29,12 +29,10 @@
 #'   the line width of the links on the map.
 #' @param timeId
 #'   A single time id present in the data.
-#' @param interactive
-#'   Should the function start a shiny gadget that lets the user modify the
-#'   parameters of the plot ?
 #' @param options
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
+#' @inheritParams productionStack
 #'   
 #' @return 
 #' An htmlwidget of class "leaflet". It can be modified with package 
@@ -72,7 +70,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     colLinkVar = "none", sizeLinkVar = "none", 
                     timeId = min(x$areas$timeId),
                     interactive = base::interactive(),
-                    options = plotMapOptions()) {
+                    options = plotMapOptions(),
+                    width = NULL, height = NULL) {
   
   options <- do.call(plotMapOptions, options)
   
@@ -108,7 +107,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     ml$links <- optsLink$coords
     
     map <- plot(ml, optsArea$color, optsArea$size, 
-                optsLink$color, optsLink$size, dir = optsLink$dir)
+                optsLink$color, optsLink$size, dir = optsLink$dir,
+                width = width, height = height)
     
     # Add legends
     if (!is.null(optsArea$pal)) 
