@@ -244,7 +244,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   if (!legend) return(g)
   
   l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
-                 colors = colors, legendId = legendId, itemsByRow = legendItemsPerRow)
+                 colors = colors, legendId = legendId, legendItemsPerRow = legendItemsPerRow)
   g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
                                                  html = htmltools::doRenderTags(l)))
   
@@ -376,7 +376,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   if (!legend) return(g)
   
   l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
-                 colors = colors, legendId = legendId, itemsByRow = legendItemsPerRow)
+                 colors = colors, legendId = legendId, legendItemsPerRow = legendItemsPerRow)
   g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
                                                  html = htmltools::doRenderTags(l)))
   

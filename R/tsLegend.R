@@ -43,7 +43,7 @@
 #' 
 #' 
 #' @export
-tsLegend <- function(labels, colors, types = "line", itemsByRow = 5, legendId = "") {
+tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, legendId = "") {
   
   legendItems <- mapply(.tsLegendItem, 
                         label = labels, 
@@ -55,13 +55,13 @@ tsLegend <- function(labels, colors, types = "line", itemsByRow = 5, legendId = 
   
   legendItems <- append(legendItems, list(.tsLegendItem(type = "date", legendId = legendId)))
   
-  nbRows <- ceiling(length(legendItems) / itemsByRow) 
+  nbRows <- ceiling(length(legendItems) / legendItemsPerRow) 
   
   legendItems <- rev(legendItems)
   
   legendRows <- list()
   for (i in 1:nbRows) {
-    j <- ((i - 1) * itemsByRow + 1):(i * itemsByRow)
+    j <- ((i - 1) * legendItemsPerRow + 1):(i * legendItemsPerRow)
     legendRows[[i]] <- do.call(fillRow, legendItems[j])
   } 
   

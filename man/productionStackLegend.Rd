@@ -5,7 +5,7 @@
 \title{Plot an interactive legend for a production stack plot}
 \usage{
 productionStackLegend(variables = "eco2mix", colors = NULL, lines = NULL,
-  lineColors = NULL, itemsByRow = 5, legendId = "")
+  lineColors = NULL, legendItemsPerRow = 5, legendId = "")
 }
 \arguments{
 \item{variables}{Either a character string containing an alias or a named list of expressions 
@@ -25,6 +25,8 @@ It should be \code{NULL} if there is no curve to trace or if parameter
 \item{lineColors}{Vector of colors with same length as parameter \code{lines}. This argument
 should be \code{NULL} if there is no curve to trace or if parameter
 \code{variables} is an alias.}
+
+\item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
 
 \item{legendId}{Id of the legend linked to the graph. This argument is 
 usefull when one wants to create a shared legend with

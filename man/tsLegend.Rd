@@ -4,12 +4,15 @@
 \alias{tsLegend}
 \title{Plot an interactive legend for a production stack plot}
 \usage{
-tsLegend(labels, colors, types = "line", itemsByRow = 5, legendId = "")
+tsLegend(labels, colors, types = "line", legendItemsPerRow = 5,
+  legendId = "")
 }
 \arguments{
 \item{colors}{Vector of colors with same length as parameter \code{variables}. If 
 \code{variables} is an alias, then this argument should be \code{NULL} in 
 order to use default colors.}
+
+\item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
 
 \item{legendId}{Id of the legend linked to the graph. This argument is 
 usefull when one wants to create a shared legend with

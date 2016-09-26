@@ -75,7 +75,7 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     
     # Add a nice legend
     legend <- tsLegend(names(dt)[-1], colors,  
-                       itemsByRow = legendItemsPerRow, 
+                       legendItemsPerRow = legendItemsPerRow, 
                        legendId = legendId)
     
     g %>%  htmlwidgets::onRender(JS_addLegend, list(size = legend$attribs$height, 

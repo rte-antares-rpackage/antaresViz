@@ -315,7 +315,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
 #' @export
 productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = NULL, 
                                   lineColors = NULL, 
-                                  itemsByRow = 5, legendId = "") {
+                                  legendItemsPerRow = 5, legendId = "") {
   if (is.character(variables)) { # variables is an alias
     
     stackOptions <- .aliasToStackOptions(variables)
@@ -330,7 +330,7 @@ productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = 
     labels = c(names(variables), names(lines)), 
     colors = c(colors, lineColors),
     type = c(rep("area", length(variables)), rep("line", length(lines))),
-    itemsByRow = itemsByRow,
+    legendItemsPerRow = legendItemsPerRow,
     legendId = legendId
   )
 }
