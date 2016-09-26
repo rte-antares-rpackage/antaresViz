@@ -168,13 +168,12 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
                               unit = unit,
                               legendId = legendId)
     if (legend) {
-      combineWidgets(vflex = c(1, NA),
-                     p,
-                     productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
-      )
-    } else {
-      combineWidgets(p)
+      l <- productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
+      p <- htmlwidgets::onRender(p, JS_addLegend, list(size = l$attribs$height, 
+                                                       html = htmltools::doRenderTags(l)))
     }
+    
+    p
   }
   
   if (!interactive) {
@@ -252,7 +251,7 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
 #' @noRd
 .plotProductionStack <- function(x, variables, colors, lines, lineColors, 
                                  main = NULL, unit = "MWh", legendId = "") {
-
+  
   timeStep <- attr(x, "timeStep")
   
   formulas <- append(variables, lines)
@@ -334,5 +333,3 @@ productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = 
     legendId = legendId
   )
 }
-
-

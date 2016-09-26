@@ -139,6 +139,37 @@ tsLegend <- function(labels, colors, types = "line", itemsByRow = 5, legendId = 
   )
 }
 
+JS_addLegend <- JS('
+function(el, x, data) {
+  var htmlwidgetContainer = el.parentElement; 
+  
+  var container = document.createElement("div");
+  container.id = "container";
+  container.style.height = el.style.height;
+  container.style.width = el.style.width;
+  container.style.position = "relative";
+  
+  el.style.position = "absolute";
+  el.style.top = "0";
+  el.style.bottom = data.size + "px";
+  el.style.height = "auto";
+  container.appendChild(el);
+  
+  var leg = document.createElement("div");
+  leg.style.height = data.size + "px";
+  leg.style.position = "absolute";
+  leg.style.bottom = "0";
+  leg.style.left = "0";
+  leg.style.right = "0";
+  leg.innerHTML = data.html;
+  container.appendChild(leg);
+  
+  htmlwidgetContainer.appendChild(container);
+  
+  this.resize();
+}
+')
+
 JS_updateLegend <- function(legendId, timeStep = "hourly") {
   
   # Function that transform a timestamp ta a date label

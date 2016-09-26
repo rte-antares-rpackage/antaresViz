@@ -93,7 +93,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                                   ylab = NULL,
                                   legend = TRUE,
                                   legendItemsByRow = 5, ...) {
-
+  
   type <- match.arg(type)
   idCols <- .idCols(x)
   valueCols <- setdiff(names(x), idCols)
@@ -105,7 +105,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   dt <- x[, .(
     time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
     value = 0)
-  ]
+    ]
   
   if ("cluster" %in% idCols) {
     dt$element <- paste(x$area, x$cluster, sep = " > ")
@@ -132,11 +132,11 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     if (length(elements) > 0 & !"all" %in% elements) dt <- dt[element %in% elements]
     dt <- dt[as.Date(time) %between% dateRange]
     f <- switch(type,
-           "ts" = .plotTS,
-           "barplot" = .barplot,
-           "monotone" = .plotMonotone,
-           stop("Invalid type")
-         )
+                "ts" = .plotTS,
+                "barplot" = .barplot,
+                "monotone" = .plotMonotone,
+                stop("Invalid type")
+    )
     f(dt, timeStep, variable, confInt = confInt, colors, main, ylab, legend, legendItemsByRow)
   }
   
@@ -248,12 +248,11 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
   if (!legend) return(g)
   
-  combineWidgets(
-    vflex = c(1, NA),
-    g,
-    tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
-             colors = colors, legendId = legendId, itemsByRow = legendItemsByRow)
-  )
+  l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
+                 colors = colors, legendId = legendId, itemsByRow = legendItemsByRow)
+  g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
+                                                 html = htmltools::doRenderTags(l)))
+  
 }
 
 #' Private function that draw a barplot
@@ -379,11 +378,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
   if (!legend) return(g)
   
-  combineWidgets(
-    vflex = c(1, NA),
-    g,
-    tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
-             colors = colors, legendId = legendId)
-  )
+  l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
+                 colors = colors, legendId = legendId, itemsByRow = legendItemsByRow)
+  g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
+                                                 html = htmltools::doRenderTags(l)))
+  
 }
-

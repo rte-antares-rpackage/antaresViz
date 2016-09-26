@@ -48,12 +48,12 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     }
     
     # Add a nice legend
-    combineWidgets(vflex = c(1, NA),
-                   g,
-                   tsLegend(names(dt)[-1], colors,  
-                            itemsByRow = legendItemsPerRow, 
-                            legendId = legendId)
-    )
+    legend <- tsLegend(names(dt)[-1], colors,  
+                       itemsByRow = legendItemsPerRow, 
+                       legendId = legendId)
+    
+    g %>%  htmlwidgets::onRender(JS_addLegend, list(size = legend$attribs$height, 
+                                       html = htmltools::doRenderTags(legend)))
     
   }
   
