@@ -119,7 +119,7 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
         class = "leglabel",
         label),
       tags$div(
-        style= .style(position="absolute", right="4px", padding="0 2px 0 4px",
+        style= .style(position="absolute", right="0px", padding="0 2px 0 4px",
                       "background-color"=color, "font-weight"="bold",
                       height="16px"), 
         id = paste0(label, legendId), 
