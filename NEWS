@@ -1,3 +1,14 @@
+Changes in version 0.3 (2016-09-27)
+
+NEW FEATURES:
+* New function exchangesStack to draw the exchanges of an area with its neighbours
+* New function mapLayout that helps the user to bind areas of an antares study with geographical coordinates. The function launches an interactive widget where the user can place and move areas.
+* New plot method for objects return by mapLayout(). It generates an interactive map that represents the network of an antares study.
+* New function plotMap to visualize the results of an Antares simulation on a map.
+* All functions have gained new arguments to control graphical parameters like title, axis label, colors, width and height.
+* All functions that produce time series (stacked or not) now produce a beautiful and very clear legend.
+* Time series plots (stacked or not) can share a unique legend. When they do, their zoom is synchronised: if the users zooms on one graphic, the zoom is also applied to the other graphics. This can be very helpful in shiny application or interactive documents produced with Rmarkdown.
+
 Changes in version 0.2 (2016-08-22)
 
 NEW FEATURES:

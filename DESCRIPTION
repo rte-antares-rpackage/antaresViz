@@ -1,8 +1,8 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.2
-Date: 2016-08-22
+Version: 0.3
+Date: 2016-09-28
 Author: Francois Guilem <francois.guillem@rte-france.com>
 Maintainer: Francois Guilem <francois.guillem@rte-france.com>
 Description: Visualize the data extracted from an antares project.
@@ -18,7 +18,7 @@ Imports:
     highcharter,
     tibble,
     htmltools,
-    manipulateWidget,
+    manipulateWidget (>= 0.2.0),
     mapStudio,
     leaflet,
     sp
