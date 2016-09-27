@@ -1,15 +1,26 @@
-#' Plot an interactive legend for a production stack plot
+#' Plot an interactive legend for time series plots
 #' 
-#' This function create an nice looking legend that displays values when the user
-#' hovers a production stack created with \code{\link{productionStack}}. By 
-#' default \code{\link{productionStack}} already outputs a legend. This function
-#' is mostly usefull to share legend between two or more production stacks.
+#' These functions create a nice looking legend that displays values when the user
+#' hovers a time series produced with plot this package. By 
+#' default, the different functions already output a legend. This function
+#' is mostly useful to share a unique legend between two or more time series plots.
 #' 
+#' @param labels
+#'   vector containing the names of the times series
+#' @param colors
+#'   vector of colors. for function \code{tsLegend} it must have the same length
+#'   as parameter \code{labels}. For function \code{productionStackLegend}, it 
+#'   must have same length as parameter \code{variables}. If \code{variables} is
+#'   an alias, then this argument should be \code{NULL} in order to use default
+#'   colors.
+#' @param types
+#'   "line" or "area" or a vector with same length as \code{labels} containing 
+#'   these two values.
 #' @inheritParams productionStack
 #' 
 #' @details 
-#' This function can be used to create a legend shared by multiple production 
-#' stacks in a Shiny application or an interactive document created with Rmarkdown.
+#' Thes functions can be used to create a legend shared by multiple plots 
+#' in a Shiny application or an interactive document created with Rmarkdown.
 #' For instance, let assume one wants to display four productions stacks in a 2x2
 #' layout and have a unique legend below them in a Rmarkdown document. To do so,
 #' one can use the following chunck code:
@@ -22,25 +33,23 @@
 #'   fillRow(
 #'     productionStack(mydata, areas = "fr", 
 #'                     main = "Production stack in France", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%"),
+#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
 #'     productionStack(mydata, areas = "de", 
 #'                     main = "Production stack in Germany", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%"),
+#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
 #'   ),
 #'   fillRow(
 #'     productionStack(mydata, areas = "es", 
 #'                     main = "Production stack in Spain", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%"),
+#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
 #'     productionStack(mydata, areas = "be", 
 #'                     main = "Production stack in Belgium", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%"),
+#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
 #'   ),
 #'   productionStackLegend(legendId = 1)
 #' )
 #' ```
 #' }
-#' 
-#' 
 #' 
 #' @export
 tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, legendId = "") {

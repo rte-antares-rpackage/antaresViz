@@ -266,53 +266,11 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
   }
   
   .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, legendId,
-             main = main, ylab = sprintf("Production (%s)", unit, width = width, height = height))
+             main = main, ylab = sprintf("Production (%s)", unit), 
+             width = width, height = height)
 }
 
-#' Plot an interactive legend for a production stack plot
-#' 
-#' This function create an nice looking legend that displays values when the user
-#' hovers a production stack created with \code{\link{productionStack}}. By 
-#' default \code{\link{productionStack}} already outputs a legend. This function
-#' is mostly usefull to share legend between two or more production stacks.
-#' 
-#' @inheritParams productionStack
-#' 
-#' @details 
-#' This function can be used to create a legend shared by multiple production 
-#' stacks in a Shiny application or an interactive document created with Rmarkdown.
-#' For instance, let assume one wants to display four productions stacks in a 2x2
-#' layout and have a unique legend below them in a Rmarkdown document. To do so,
-#' one can use the following chunck code:
-#' 
-#' \preformatted{
-#' ```{R, echo = FALSE}
-#' library(shiny)
-#' 
-#' fillCol(height = "600px", flex = c(1, 1, NA),
-#'   fillRow(
-#'     productionStack(mydata, areas = "fr", 
-#'                     main = "Production stack in France", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%"),
-#'     productionStack(mydata, areas = "de", 
-#'                     main = "Production stack in Germany", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%"),
-#'   ),
-#'   fillRow(
-#'     productionStack(mydata, areas = "es", 
-#'                     main = "Production stack in Spain", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%"),
-#'     productionStack(mydata, areas = "be", 
-#'                     main = "Production stack in Belgium", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%"),
-#'   ),
-#'   productionStackLegend(legendId = 1)
-#' )
-#' ```
-#' }
-#' 
-#' 
-#' 
+#' @rdname tsLegend
 #' @export
 productionStackLegend <- function(variables = "eco2mix", colors = NULL, lines = NULL, 
                                   lineColors = NULL, 
