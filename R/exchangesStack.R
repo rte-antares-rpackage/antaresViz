@@ -74,7 +74,7 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     }
     
     # Add a nice legend
-    legend <- tsLegend(names(dt)[-1], colors,  
+    legend <- tsLegend(names(dt)[-1], colors, types = "area", 
                        legendItemsPerRow = legendItemsPerRow, 
                        legendId = legendId)
     
