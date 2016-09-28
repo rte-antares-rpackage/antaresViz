@@ -18,6 +18,7 @@ Imports:
     highcharter,
     tibble,
     htmltools,
+    htmlwidgets (>= 0.7.0),
     manipulateWidget (>= 0.2.0),
     mapStudio,
     leaflet,
