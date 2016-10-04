@@ -40,7 +40,8 @@
        "antaresLegend",
        "1.0",
        src = system.file("leafletPlugins", package = "antaresViz"),
-       script = "antaresLegend.js"
+       script = "antaresLegend.js",
+       style = "antaresLegend.css"
      )
      
    )

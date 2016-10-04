@@ -319,10 +319,32 @@ addShadows <- function(map) {
   map %>% requireDep("shadows") %>% invokeMethod(data = NULL, "addShadows")
 }
 
-addAntaresLegend <- function(map, html) {
-  map %>% requireDep("antaresLegend") %>% invokeMethod(data=NULL, "addAntaresLegend", html)
+addAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL, 
+                             htmlLinkColor = NULL, htmlLinkSize = NULL) {
+  options <- list(
+    htmlAreaColor = htmlAreaColor,
+    htmlAreaSize = htmlAreaSize,
+    htmlLinkColor = htmlLinkColor,
+    htmlLinkSize = htmlLinkSize
+  )
+  
+  map %>% requireDep("antaresLegend") %>% 
+    invokeMethod(data=NULL, "addAntaresLegend", options)
 }
 
-updateAntaresLegend <- function(map, html) {
-  map %>% requireDep("antaresLegend") %>% invokeMethod(data=NULL, "updateAntaresLegend", html)
+updateAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL, 
+                                htmlLinkColor = NULL, htmlLinkSize = NULL) {
+  options <- list(
+    htmlAreaColor = htmlAreaColor,
+    htmlAreaSize = htmlAreaSize,
+    htmlLinkColor = htmlLinkColor,
+    htmlLinkSize = htmlLinkSize
+  )
+  
+  # Remove null elements
+  nullOpts <- sapply(options, is.null)
+  options <- options[!nullOpts]
+  
+  map %>% requireDep("antaresLegend") %>% 
+    invokeMethod(data=NULL, "updateAntaresLegend", options)
 }
