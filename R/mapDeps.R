@@ -34,6 +34,13 @@
        "1.0",
        src = system.file("leafletPlugins", package = "antaresViz"),
        script = "svgShadows.js"
+     ),
+     
+     antaresLegend = htmlDependency(
+       "antaresLegend",
+       "1.0",
+       src = system.file("leafletPlugins", package = "antaresViz"),
+       script = "antaresLegend.js"
      )
      
    )

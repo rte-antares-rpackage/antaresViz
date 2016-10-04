@@ -150,8 +150,3 @@ window.LeafletWidget.methods.updateDirectedSegments = function(data) {
     if (data.popup) l.bindPopup(data.popup[i]);
   }
 };
-
-window.LeafletWidget.methods.consoleLog = function(x) {
-  console.log(x);
-};
-

@@ -1,35 +1,18 @@
-L.MyLegend = L.Control.extend({
+L.AntaresLegend = L.Control.extend({
   options: {
     position: "topright",
-    areaColor: null,
-    areaSize: null,
-    areaSizesColors: null,
-    linkColor: null,
-    linkSize: null,
+    html: null,
     collapsed: true
   },
   
-  onAdd: function() {
+  initialize: function(options) {
     var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-    
     container.style.backgroundColor = 'white';
     container.style.padding = "5px";
-
     
     var content = L.DomUtil.create("div");
-    content.style.width = "200px";
-    content.style.height = "100px";
-    content.style.backgroundColor = "red";
-    content.style.display = "none";
     
     var btn = L.DomUtil.create("button", "btn btn-link btn-xs pull-right");
-    btn.textContent = "Show legend";
-    
-    var self = this;
-    btn.onclick = function() {
-      self.options.collapsed = !self.options.collapsed;
-      self.showHide();
-    };
     
     container.appendChild(content);
     container.appendChild(btn);
@@ -38,10 +21,35 @@ L.MyLegend = L.Control.extend({
     this._btn = btn;
     this._container = container;
     
-    return container;
+    L.Control.prototype.initialize.call(this, options);
   },
   
-  onRemove: function() {},
+  onAdd: function() {
+    var self = this;
+    
+    this._btn.onclick = function() {
+      self.options.collapsed = !self.options.collapsed;
+      self.showHide();
+    };
+    
+    this._reset();
+    
+    return this._container;
+  },
+  
+  onRemove: function() {
+    this._container.parentNode.removeChild(this._container);
+  },
+  
+  _reset: function() {
+    if (!this.options.html) {
+      this._container.style.display = "none";
+    } else {
+      this._container.style.display = "block";
+      this._content.innerHTML = this.options.html;
+      this.showHide();
+    }
+  },
   
   showHide: function() {
     if (this.options.collapsed) {
@@ -51,9 +59,25 @@ L.MyLegend = L.Control.extend({
       this._content.style.display = "block";
       this._btn.textContent = "Hide legend";
     }
+  },
+  
+  setContent: function(html) {
+    this.options.html = html;
+    this._reset();
   }
 });
 
-L.control.myLegend = function (options) {
-    return new L.MyLegend(options);
+L.antaresLegend = function (options) {
+    return new L.AntaresLegend(options);
+};
+
+window.LeafletWidget.methods.addAntaresLegend = function(html) {
+  var l = L.antaresLegend({html:html});
+  console.log(this.controls);
+  this.controls.add(l, "antaresLegend");
+};
+
+window.LeafletWidget.methods.updateAntaresLegend = function(html) {
+  var l = this.controls._controlsById.antaresLegend;
+  l.setContent(html);
 };

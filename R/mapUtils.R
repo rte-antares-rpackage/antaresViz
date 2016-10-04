@@ -318,3 +318,11 @@ updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1
 addShadows <- function(map) {
   map %>% requireDep("shadows") %>% invokeMethod(data = NULL, "addShadows")
 }
+
+addAntaresLegend <- function(map, html) {
+  map %>% requireDep("antaresLegend") %>% invokeMethod(data=NULL, "addAntaresLegend", html)
+}
+
+updateAntaresLegend <- function(map, html) {
+  map %>% requireDep("antaresLegend") %>% invokeMethod(data=NULL, "updateAntaresLegend", html)
+}
