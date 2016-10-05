@@ -3,46 +3,71 @@ html, body {
 }
 
 .legend {
-  background-color: white;
+  margin: 0 5px;
 }
 
 .legend > h2 {
   color: #555;
-  margin: 10px 0;
+  margin: 5px 0 0 0;
   font-size: 16px;
 }
 
 .legend-section {
-  padding-left: 20px;
+  padding-left: 14px;
   float: left;
 }
 
 .legend-section > h3 {
   margin:0;
   color: #999;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: normal;
 }
 
-.legend-colors, .legend-labels {
+.legend-colors, .legend-labels, .legend-symbols {
   float:left;
 }
 
 .legend-colors {
-  margin-top:10px;
+  margin-top:6px;
   border:solid 1px #ccc;
 }
 
 .legend-color {
-  width:20px;
-  height:20px;
+  width:14px;
+  height:14px;
 }
 
 .legend-label {
   color: #999;
-  padding-left:10px;
-  height:20px;
-  font-size: 12px;
-  line-height: 20px;
+  padding-left:5px;
+  font-size: 9px;
+  line-height: 14px;
 }
 
+.legend-symbols > svg {
+  display:block;
+  margin: 2px 0;
+}
+
+.btn-link {
+  background-image: none;
+  border: 1px solid transparent;
+  background-color:transparent;
+  cursor: pointer;
+  color: #337ab7;
+  float:right;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+button:active {
+  outline: none;
+  border: none;
+}
+
+button:focus {
+  outline: none;
+}

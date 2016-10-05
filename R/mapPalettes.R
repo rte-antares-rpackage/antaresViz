@@ -49,11 +49,11 @@ continuousColorPal <- function(x, n = 5, domain = range(x, na.rm = TRUE),
   res <- pal[colId]
   res[is.na(res)] <- naCol
   
-  breaks[1] <- min(x, na.rm = TRUE)
-  breaks[length(breaks)] <- max(x, na.rm = TRUE)
-  if (any(breaks < min(x, na.rm = TRUE))) {
-    pal <- pal[-(1:sum(breaks < min(x, na.rm = TRUE)))]
-    breaks <- breaks[breaks >= min(x, na.rm = TRUE)]
+  breaks[1] <- domain[1]
+  breaks[length(breaks)] <- domain[2]
+  if (any(breaks < domain[1])) {
+    pal <- pal[-(1:sum(breaks < domain[1]))]
+    breaks <- breaks[breaks >= domain[1]]
   }
   attr(res, "breaks") <- breaks 
   attr(res, "pal") <- pal

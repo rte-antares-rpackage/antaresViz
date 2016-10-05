@@ -150,13 +150,14 @@
     }
     
     res$color <- continuousColorPal(coords[[colVar]], domain = domain)
-    res$palette <- attr(res$color, "pal")
+    res$pal <- attr(res$color, "pal")
     res$colorBreaks <- attr(res$color, "breaks")
   }
   
   # size
   if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
     res$size <- abs(as.matrix(coords[, sizeVar, with = FALSE]))
+    res$maxSize <- max(res$size)
     if (length(sizeVar) == 1) res$size <- res$size / max(res$size)
   }
   

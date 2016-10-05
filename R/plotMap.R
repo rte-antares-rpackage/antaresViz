@@ -108,15 +108,16 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     
     map <- plot(ml, optsArea$color, optsArea$size, 
                 optsLink$color, optsLink$size, dir = optsLink$dir,
-                width = width, height = height)
+                width = width, height = height) %>% addAntaresLegend()
     
     # Add legends
-    # if (!is.null(optsArea$pal)) 
-    #   map <- addLegend(map, "topright", optsArea$pal, optsArea$coords[[colAreaVar]], title = colAreaVar,
-    #                    opacity = 1)
-    # if (!is.null(optsLink$pal))
-    #   map <- addLegend(map, "topright", optsLink$pal, optsLink$coords[[colLinkVar]], title = colLinkVar,
-    #                    opacity = 1)
+    if (!is.null(optsArea$pal))
+      map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
+    if (!is.null(optsArea$maxSize)) {
+      map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
+    }
+    if (!is.null(optsLink$pal))
+      map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
     
     # Add an invisible layer containing either circleMarkers or polarCharts
     if (length(sizeAreaVars) <= 1) {
