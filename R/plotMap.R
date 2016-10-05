@@ -111,12 +111,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                 width = width, height = height)
     
     # Add legends
-    if (!is.null(optsArea$pal)) 
-      map <- addLegend(map, "topright", optsArea$pal, optsArea$coords[[colAreaVar]], title = colAreaVar,
-                       opacity = 1)
-    if (!is.null(optsLink$pal))
-      map <- addLegend(map, "topright", optsLink$pal, optsLink$coords[[colLinkVar]], title = colLinkVar,
-                       opacity = 1)
+    # if (!is.null(optsArea$pal)) 
+    #   map <- addLegend(map, "topright", optsArea$pal, optsArea$coords[[colAreaVar]], title = colAreaVar,
+    #                    opacity = 1)
+    # if (!is.null(optsLink$pal))
+    #   map <- addLegend(map, "topright", optsLink$pal, optsLink$coords[[colLinkVar]], title = colLinkVar,
+    #                    opacity = 1)
     
     # Add an invisible layer containing either circleMarkers or polarCharts
     if (length(sizeAreaVars) <= 1) {

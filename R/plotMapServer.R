@@ -70,13 +70,13 @@
       updatePolarChart(optsArea$coords$area, opacity = 0)
   }
   
-  if (!is.null(optsArea$pal)) {
-    map <- addLegend(map, "topright", optsArea$pal, optsArea$coords[[colAreaVar]], 
-                     title = colAreaVar,
-                     opacity = 1, layerId = "legAreas")
-  } else {
-    map <- removeControl(map, "legAreas")
-  }
+  # if (!is.null(optsArea$pal)) {
+  #   map <- addLegend(map, "topright", optsArea$pal, optsArea$coords[[colAreaVar]], 
+  #                    title = colAreaVar,
+  #                    opacity = 1, layerId = "legAreas")
+  # } else {
+  #   map <- removeControl(map, "legAreas")
+  # }
   
   map
 }
@@ -97,13 +97,13 @@
                                         weight = optsLink$size,
                                         dir = optsLink$dir)
   
-  if (!is.null(optsLink$pal)) {
-    map <- addLegend(map, "topright", optsLink$pal, optsLink$coords[[colLinkVar]], 
-                     title = colLinkVar,
-                     opacity = 1, layerId = "legLinks")
-  } else {
-    map <- removeControl(map, "legLinks")
-  }
+  # if (!is.null(optsLink$pal)) {
+  #   map <- addLegend(map, "topright", optsLink$pal, optsLink$coords[[colLinkVar]], 
+  #                    title = colLinkVar,
+  #                    opacity = 1, layerId = "legLinks")
+  # } else {
+  #   map <- removeControl(map, "legLinks")
+  # }
   
   map
 }
@@ -145,13 +145,13 @@
     rangevar <- range(data[[colVar]])
     if (rangevar[1] >= 0) {
       domain <- rangevar
-      res$pal <- colorBin("Blues", domain, bins = 5)
     } else {
       domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
-      res$pal <- colorBin("RdBu", domain, bins = 7)
     }
     
-    res$color <- res$pal(coords[[colVar]])
+    res$color <- continuousColorPal(coords[[colVar]], domain = domain)
+    res$palette <- attr(res$color, "pal")
+    res$colorBreaks <- attr(res$color, "breaks")
   }
   
   # size
