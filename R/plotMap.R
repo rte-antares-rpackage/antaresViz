@@ -114,7 +114,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (!is.null(optsArea$pal))
       map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
     if (!is.null(optsArea$maxSize)) {
-      map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
+      if (length(sizeAreaVars) == 1) {
+        map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
+      }
     }
     if (!is.null(optsLink$pal))
       map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))

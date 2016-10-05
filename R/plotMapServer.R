@@ -70,13 +70,20 @@
       updatePolarChart(optsArea$coords$area, opacity = 0)
   }
   
-  # if (!is.null(optsArea$pal)) {
-  #   map <- addLegend(map, "topright", optsArea$pal, optsArea$coords[[colAreaVar]], 
-  #                    title = colAreaVar,
-  #                    opacity = 1, layerId = "legAreas")
-  # } else {
-  #   map <- removeControl(map, "legAreas")
-  # }
+  if (!is.null(optsArea$pal)) {
+    map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
+  } else {
+    map <- updateAntaresLegend(map, htmlAreaColor = "")
+  }
+  if (!is.null(optsArea$maxSize)) {
+    if (length(sizeAreaVars) == 1) {
+      map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
+    } else {
+      map <- updateAntaresLegend(map, htmlAreaSize = "")
+    }
+  } else {
+    map <- updateAntaresLegend(map, htmlAreaSize = "")
+  }
   
   map
 }
@@ -97,13 +104,11 @@
                                         weight = optsLink$size,
                                         dir = optsLink$dir)
   
-  # if (!is.null(optsLink$pal)) {
-  #   map <- addLegend(map, "topright", optsLink$pal, optsLink$coords[[colLinkVar]], 
-  #                    title = colLinkVar,
-  #                    opacity = 1, layerId = "legLinks")
-  # } else {
-  #   map <- removeControl(map, "legLinks")
-  # }
+  if (!is.null(optsLink$pal)) {
+    map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
+  } else {
+    map <- updateAntaresLegend(map, htmlLinkColor = "")
+  }
   
   map
 }
