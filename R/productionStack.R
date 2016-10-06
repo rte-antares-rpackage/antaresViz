@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Visualize the production stack of an area
 #' 
 #' This function draws the production stack for a set of areas or districts. User

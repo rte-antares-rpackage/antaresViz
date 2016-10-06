@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Graphical options for plotMap
 #' 
 #' This function gets and sets options that control some graphical aspects 

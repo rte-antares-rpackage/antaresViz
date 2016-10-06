@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Private function that prepare R arguments to be sent to javascript functions.
 #'
 #' @param required

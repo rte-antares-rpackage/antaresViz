@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Plot the exchanges of an area
 #' 
 #' This function draws a stack representing the evolution of the exchanges of

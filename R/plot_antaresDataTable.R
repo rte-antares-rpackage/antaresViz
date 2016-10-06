@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' plot time series contained in an antaresDataTable
 #' 
 #' This function generates an interactive plot of an antares Time series.

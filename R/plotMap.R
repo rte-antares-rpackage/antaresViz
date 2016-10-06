@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Display results of a simulation on a map
 #' 
 #' This function generates an interactive map that let the user visually explore
