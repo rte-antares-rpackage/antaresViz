@@ -27,12 +27,15 @@ colorLegend <- function(title, colors, breaks) {
   )
 }
 
+prettyValues <- function(maxValue, n = 3) {
+  values <- pretty(c(0, maxValue), n = n+1)
+  c(values[2:n], maxValue)
+}
+
 radiusLegend <- function(title, maxRadius, maxValue) {
   options(scipen = 6)
   
-  values <- pretty(c(0, maxValue), n = 4)
-  values <- c(values[2:3], maxValue)
-  
+  values <- prettyValues(maxValue)
   radius <- sqrt(values) / sqrt(maxValue) * maxRadius
   
   circles <- sprintf(
@@ -66,7 +69,39 @@ radiusLegend <- function(title, maxRadius, maxValue) {
 }
 
 lineWidthLegend <- function(title, maxWidth, maxValue) {
+  options(scipen = 6)
   
+  values <- prettyValues(maxValue)
+  widths <- values / maxValue * maxWidth;
+  
+  lines <- sprintf(
+    '<svg width="%s" height="%s">
+      <line x1="%s" y1="%s" x2="%s" y2="%s" stroke-width="%s"></line>
+    </svg>',
+    30, maxWidth * 2, 0, maxWidth, 30, maxWidth, widths
+  )
+  lines <- paste(rev(lines), collapse = "\n")
+  
+  labels <- sprintf(
+    '<div class="legend-label" style="line-height:%spx">%s</div>',
+    maxWidth * 2 + 2, values
+  )
+  labels <- paste(rev(labels), collapse = "")
+  
+  sprintf(
+    '
+    <div class="legend-section">
+      <h3>%s</h3>
+      <div class="legend-symbols">
+        %s
+      </div>
+      <div class="legend-labels">
+        %s
+      </div>
+    </div>
+    ',
+    title, lines, labels
+  )
 }
 
 polarChartLegend <- function(title = "") {

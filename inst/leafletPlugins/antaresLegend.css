@@ -50,6 +50,10 @@ html, body {
   font-size: 9px;
 }
 
+.legend svg line {
+  stroke: #ccc;
+}
+
 .legend-symbols > svg {
   display:block;
   margin: 2px 0;

@@ -127,6 +127,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (!is.null(optsLink$pal))
       map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
     
+    if (!is.null(optsLink$maxSize)) {
+      map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$maxSizeLink, optsLink$maxSize))
+    }
+    
     # Add an invisible layer containing either circleMarkers or polarCharts
     if (length(sizeAreaVars) <= 1) {
       map <- addPolarChart(map, ml$coords$x, ml$coords$y, 

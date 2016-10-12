@@ -113,6 +113,11 @@
   } else {
     map <- updateAntaresLegend(map, htmlLinkColor = "")
   }
+  if (!is.null(optsLink$maxSize)) {
+    map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$maxSizeLink, optsLink$maxSize))
+  } else {
+    map <- updateAntaresLegend(map, htmlLinkSize = "")
+  }
   
   map
 }
