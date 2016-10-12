@@ -64,3 +64,94 @@ radiusLegend <- function(title, maxRadius, maxValue) {
     title, circles, labels
   )
 }
+
+lineWidthLegend <- function(title, maxWidth, maxValue) {
+  
+}
+
+polarChartLegend <- function(title = "") {
+  sprintf(
+    '
+    <div class="legend-section">
+      <h3>%s</h3>
+      <svg id="polar-chart-legend" width="200" height="60"></svg>
+    </div>
+    ',
+    title
+  )
+}
+
+polarChartLegendJS <- function(labels, colors = NULL) {
+  if (is.null(colors)) {
+    colors <- "d3.schemeCategory10"
+  } else {
+    colors <- jsonlite::toJSON(colors)
+  }
+  
+  labels <- jsonlite::toJSON(labels)
+  
+  sprintf('
+  var labels = %s;
+  var colors = %s;
+  var radius = 15;
+  
+  var svg = d3.select("#polar-chart-legend")
+  var g = svg.append("g")
+    .attr("transform", "translate(" + 100 + "," + 30 + ")");
+  
+  // Draw the polar chart
+  var pie = d3.pie().value(function(d) {return 1;});
+  var arc = d3.arc().innerRadius(0).outerRadius(radius);
+  var innerArc = d3.arc().innerRadius(radius).outerRadius(radius);
+  var outerArc = d3.arc().innerRadius(radius * 1.5).outerRadius(radius * 1.5);
+  var color = d3.scaleOrdinal(colors);
+  
+  g.selectAll("path")
+    .data(pie(labels))
+    .enter()
+    .append("path")
+    .attr("d", arc)
+    .attr("fill", function(d, i) {return color(i)});
+  
+  // Add labels
+  var txt = svg.append("g")
+    .attr("transform", "translate(" + 100 + "," + 30 + ")");
+  
+  function midAngle(d){
+    return d.startAngle + (d.endAngle - d.startAngle)/2;
+  }
+  
+  txt.selectAll("text")
+    .data(pie(labels))
+    .enter()
+    .append("text")
+    .text(function(d){return d.data;})
+    .attr("dy", "2.5px")
+    .attr("transform", function(d) {
+      var pos = outerArc.centroid(d);
+      pos[0] = radius * 2 * (midAngle(d) < Math.PI ? 1 : -1);
+      return "translate("+ pos +")";
+    })
+    .attr("text-anchor", function(d) {
+      return midAngle(d) < Math.PI ? "start" : "end";
+    })
+    .attr("class", "legend-label");
+  
+  // add lines
+  var lines = svg.append("g")
+    .attr("transform", "translate(" + 100 + "," + 30 + ")");
+  
+  lines.selectAll("polyline")
+    .data(pie(labels))
+    .enter()
+    .append("polyline")
+    .attr("fill", "none")
+    .attr("stroke", "#ccc")
+    .attr("points", function(d) {
+      var pos = outerArc.centroid(d);
+      pos[0] = radius * 1.5 * (midAngle(d) < Math.PI ? 1 : -1);
+      return [innerArc.centroid(d), outerArc.centroid(d), pos];
+    });
+  
+  ', labels, colors)
+}

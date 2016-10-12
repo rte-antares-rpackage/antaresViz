@@ -80,7 +80,7 @@ L.AntaresLegend = L.Control.extend({
     this._content.querySelector("#area-color").innerHTML = o.htmlAreaColor;
     this._content.querySelector("#link-size").innerHTML = o.htmlLinkSize;
     this._content.querySelector("#link-color").innerHTML = o.htmlLinkColor;
-    this.options.onComplete();
+    eval(this.options.onComplete);
   },
   
   showHide: function() {

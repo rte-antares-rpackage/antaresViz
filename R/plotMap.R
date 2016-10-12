@@ -116,6 +116,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (!is.null(optsArea$maxSize)) {
       if (length(sizeAreaVars) == 1) {
         map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
+      } else {
+        map <- updateAntaresLegend(
+          map, 
+          htmlAreaSize = polarChartLegend(),
+          onComplete = polarChartLegendJS(sizeAreaVars)
+        )
       }
     }
     if (!is.null(optsLink$pal))

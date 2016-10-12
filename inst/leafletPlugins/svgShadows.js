@@ -21,7 +21,4 @@ window.LeafletWidget.methods.addShadows = function() {
   for (var i = 0; i < els.length - 1; i++) {
     els[i].setAttribute("filter", "url(#dropShadow)");
   }
-  
-  console.log(els[0]);
-  console.log(els[1]);
 };

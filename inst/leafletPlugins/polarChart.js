@@ -59,7 +59,6 @@ L.PolarChart = L.CircleMarker.extend({
   
   setStyle: function(options) {
     L.Util.setOptions(this, options);
-    console.log(this.options.opacity);
     this._reset();
   },
   

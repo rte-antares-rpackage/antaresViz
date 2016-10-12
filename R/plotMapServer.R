@@ -79,7 +79,11 @@
     if (length(sizeAreaVars) == 1) {
       map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
     } else {
-      map <- updateAntaresLegend(map, htmlAreaSize = "")
+      map <- updateAntaresLegend(
+        map, 
+        htmlAreaSize = polarChartLegend(),
+        onComplete = polarChartLegendJS(sizeAreaVars)
+      )
     }
   } else {
     map <- updateAntaresLegend(map, htmlAreaSize = "")

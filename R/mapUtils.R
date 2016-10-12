@@ -321,7 +321,7 @@ addShadows <- function(map) {
 
 addAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL, 
                              htmlLinkColor = NULL, htmlLinkSize = NULL,
-                             onComplete = JS("function() {}")) {
+                             onComplete = "") {
   options <- list(
     htmlAreaColor = htmlAreaColor,
     htmlAreaSize = htmlAreaSize,
@@ -336,7 +336,7 @@ addAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL,
 
 updateAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL, 
                                 htmlLinkColor = NULL, htmlLinkSize = NULL,
-                                onComplete = JS("function() {}")) {
+                                onComplete = "") {
   options <- list(
     htmlAreaColor = htmlAreaColor,
     htmlAreaSize = htmlAreaSize,
