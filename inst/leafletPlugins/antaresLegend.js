@@ -5,6 +5,7 @@ L.AntaresLegend = L.Control.extend({
     htmlAreaSize: null,
     htmlLinkColor: null,
     htmlLinkSize: null,
+    onComplete:null,
     collapsed: true
   },
   
@@ -57,7 +58,6 @@ L.AntaresLegend = L.Control.extend({
   },
   
   _reset: function() {
-    console.log(this._content.querySelector("#legend-area"));
     var legAreas = this._content.querySelector("#legend-area");
     var legLinks = this._content.querySelector("#legend-link");
     var o = this.options;
@@ -80,6 +80,7 @@ L.AntaresLegend = L.Control.extend({
     this._content.querySelector("#area-color").innerHTML = o.htmlAreaColor;
     this._content.querySelector("#link-size").innerHTML = o.htmlLinkSize;
     this._content.querySelector("#link-color").innerHTML = o.htmlLinkColor;
+    this.options.onComplete();
   },
   
   showHide: function() {
