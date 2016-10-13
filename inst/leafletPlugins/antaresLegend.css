@@ -80,3 +80,8 @@ button:active {
 button:focus {
   outline: none;
 }
+
+.leaflet-container path{ 
+  transition: all .75s;
+  -webkit-transition: all .75s;
+}

@@ -157,7 +157,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   linkValColums <- setdiff(names(x$links), .idCols(x$links))
   
   ui <- mwUI(
-    timeId = mwSlider(min(x$areas$timeId), max(x$areas$timeId), timeId, step = 1),
+    timeId = mwSlider(min(x$areas$timeId), max(x$areas$timeId), timeId, step = 1, animate = TRUE),
     Areas = list(
       colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
       sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Radius", multiple = TRUE)
