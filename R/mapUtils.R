@@ -393,6 +393,148 @@ updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1
   invokeMethod(map, data = NULL, "updatePolarCharts", options, data)
 }
 
+#' Add or update polar charts
+#' 
+#' These functions add and update polar area charts on a leaflet map. 
+#' 
+#' @param lng
+#'   longitude of the polar charts
+#' @param lat
+#'   lattitude of the polar charts
+#' @param data
+#'   numeric matrix. Number of rows must equal the number of polar charts. The
+#'   number of columns is equal to the number of sectors in each polar chart.
+#' @param radius
+#'   maximal radius of a polar chart
+#' @param opacity
+#'   Opacity of a polar chart
+#' @param scale
+#'   Should the values be represented by the radius or the area ? Radius by 
+#'   default. This creates a high distorsion of the values, but permits to 
+#'   clearly see differences between different zones.
+#' @param maxValue
+#'   Either a single numeric value, or a vector with length equal to the number
+#'   of columns of data. In the first case (one value), all variable will share
+#'   the same scale while in the second one each variable will have its own scale.
+#'   If it is \code{NULL}, the maximal value of each column is used (so scales
+#'   are different for each column). If it equals to 0, the global maximum of
+#'   the matrix is used and all variables share the same scale.
+#' @param colors
+#'   Vector of colors for the sectors of the polar chart
+#' @inheritParams addDirectedSegments
+#' 
+#' @return 
+#' The modified map object.
+#' 
+#' @examples 
+#' 
+#' require(leaflet)
+#' mydata <- rbind(1:3, 4:6)
+#' 
+#' # Polar chart with distinct scales for each column of mydata. For the second
+#' # polar chart the radius will be equal to 20 (maximal radius) for each sector.
+#' # For the first one radius will be 1/4 * 20, 2/5 * 20 and 3/6 * 20
+#' 
+#' leaflet() %>% addPolarCharts(c(0,30), c(0, 0), mydata) 
+#' 
+#' # Common scale for the three columns
+#' 
+#' leaflet() %>% addPolarCharts(c(0,30), c(0, 0), mydata, maxValue = 0)
+#' 
+#' # Explicitely provide the maximal value. This is useful for comparison to have
+#' # the same scale on different maps.
+#' 
+#' leaflet() %>% addPolarChart(c(0,30), c(0, 0), mydata, maxValue = 9)
+#' 
+#' @export
+addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
+                        minValue = NULL, maxValue = NULL, 
+                        colors = NULL, popup = NULL, layerId = NULL) {
+  
+  # Data preparation
+  if (max(length(lng), length(lat)) == 1) data <- matrix(data, nrow = 1)
+  data <- as.matrix(data)
+  
+  if (is.null(maxValue)) {
+    maxValue <- apply(data, 2, max)
+  } else {
+    if (length(maxValue) == 1 && maxValue == 0) maxValue <- max(data)
+    maxValue <- rep_len(maxValue, ncol(data))
+  }
+  maxValue <- pmax(maxValue, 0)
+  
+  if (is.null(minValue)) {
+    minValue <- apply(data, 2, min)
+  } else {
+    if (length(minValue) == 1 && minValue == -Inf) minValue <- min(data)
+    minValue <- rep_len(minValue, ncol(data))
+  }
+  minValue <- pmin(minValue, 0)
+  
+  scaleCoef <- pmax(maxValue, abs(minValue))
+  
+  for (i in 1:ncol(data)) {
+    data[, i] <- data[, i] / scaleCoef[i]
+  }
+  
+  rangeValues <- range(c(maxValue / scaleCoef, minValue / scaleCoef))
+  
+  options <- .prepareOptions(
+    required = list(lng = lng, lat = lat), 
+    optional = list(size = size, opacity = opacity, 
+                    minValue = rangeValues[1], maxValue = rangeValues[2], 
+                    layerId = layerId, popup = popup)
+  )
+  
+  map %>% requireDep(c("d3", "barChart")) %>% 
+    invokeMethod(leaflet:::getMapData(map), "addBarCharts", options, data, colors)
+}
+
+
+#' @rdname addPolarChart
+#' @export
+updateBarChart <- function(map, layerId, data, size = 30,
+                           minValue = NULL, maxValue = NULL, 
+                           colors = NULL, popup = NULL) {
+  
+  if (!is.null(data)) {
+    # Data preparation
+    if (length(layerId) == 1) data <- matrix(data, nrow = 1)
+    data <- as.matrix(data)
+    
+    if (is.null(maxValue)) {
+      maxValue <- apply(data, 2, max)
+    } else {
+      if (length(maxValue) == 1 && maxValue == 0) maxValue <- max(data)
+      maxValue <- rep_len(maxValue, ncol(data))
+    }
+    maxValue <- pmax(maxValue, 0)
+    
+    if (is.null(minValue)) {
+      minValue <- apply(data, 2, min)
+    } else {
+      if (length(minValue) == 1 && minValue == -Inf) minValue <- min(data)
+      minValue <- rep_len(minValue, ncol(data))
+    }
+    minValue <- pmin(minValue, 0)
+    
+    scaleCoef <- pmax(maxValue, abs(minValue))
+    
+    for (i in 1:ncol(data)) {
+      data[, i] <- data[, i] / scaleCoef[i]
+    }
+    
+    rangeValues <- range(c(maxValue / scaleCoef, minValue / scaleCoef))
+  }
+  
+  options <- .prepareOptions(
+    required = list(layerId = layerId),
+    optional = list(size = size, minValue = rangeValues[1], maxValue = rangeValues[2], popup = popup)
+  )
+  
+  invokeMethod(map, data = NULL, "updateBarCharts", options, data)
+}
+
 #' Add a shadow to map layers
 #' 
 #' This function adds a shadow to every svg element added to a leaflet map. It

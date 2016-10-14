@@ -35,6 +35,11 @@ L.BarChart = L.CircleMarker.extend({
     map.off('viewreset', this._reset, this);
   },
   
+  setOptions: function(options) {
+    L.Util.setOptions(this, options);
+    this._reset();
+  },
+  
   _reset: function() {
     var x = d3.scaleLinear()
       .domain([this.options.minValue, this.options.maxValue])
@@ -47,7 +52,10 @@ L.BarChart = L.CircleMarker.extend({
     // Set Position of the container
     var p = this._map.latLngToLayerPoint(this._center);
     this._g.attr("transform", "translate(" + (p.x - this.options.width / 2) + "," + (p.y - x(0)) + ")");
-      
+    
+    // Remove old chart
+    this._g.selectAll("rect").remove();
+    
     var bar = this._g.selectAll("rect")
       .data(this.options.data)
       .enter()
@@ -65,7 +73,7 @@ L.barChart = function(center, size, data, options) {
   return new L.BarChart(center, size, data, options);
 };
 
-window.LeafletWidget.methods.addBarChart = function(options, data, colors) {
+window.LeafletWidget.methods.addBarCharts = function(options, data, colors) {
   for (var i = 0; i < options.lng.length; i++) {
     
     var style = {};
@@ -83,25 +91,22 @@ window.LeafletWidget.methods.addBarChart = function(options, data, colors) {
     if (options.popup) l.bindPopup(options.popup[i]);
     
     var id = options.layerId ? options.layerId[i] : undefined;
-    this.layerManager.addLayer(l, "polarChart", id);
+    this.layerManager.addLayer(l, "barChart", id);
   }
 };
 
 window.LeafletWidget.methods.updateBarCharts = function(options, data, colors) {
   for (var i = 0; i < options.layerId.length; i++) {
-    var l = this.layerManager.getLayer("polarChart", options.layerId[i]);
+    var l = this.layerManager.getLayer("barChart", options.layerId[i]);
     
-    var style = {};
-    if (options.opacity) style.opacity = options.opacity[i];
-    if (options.maxValue) style.maxValue = options.maxValue[i];
-    if (colors) style.colors = colors;
+    var opts = {};
+    if (options.minValue) opts.minValue = options.minValue[i];
+    if (options.maxValue) opts.maxValue = options.maxValue[i];
+    if (colors) opts.colors = colors;
+    if (data) opts.data = data[i];
     
     if (options.popup) l.bindPopup(options.popup[i]);
     
-    l.setStyle(style);
-    
-    if (data) {
-      l.setData(data[i]);
-    }
+    l.setOptions(opts);
   }
 };
