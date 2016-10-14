@@ -44,7 +44,6 @@ L.PolarChart = L.CircleMarker.extend({
     this._container.setAttribute("class", "leaflet-zoom-hide");
     
     this._g = d3.select(this._container).append("g");
-      //.attr("transform", "translate(" + radius + "," + radius + ")");
 
     // add a viewreset event listener for updating layer's position, do the latter
     map.on('viewreset', this._reset, this);

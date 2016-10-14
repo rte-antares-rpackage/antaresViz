@@ -22,6 +22,13 @@
        script = "polarChart.js"
      ),
      
+     barChart = htmlDependency(
+       "barChart",
+       "1.0",
+       src = system.file("leafletPlugins", package = "antaresViz"), 
+       script = "barChart.js"
+     ),
+     
      d3 = htmlDependency(
        "d3",
        "4.2.3",
