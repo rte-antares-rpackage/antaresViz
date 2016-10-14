@@ -315,17 +315,11 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
 #' 
 #' @export
 addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
-                          maxValue = NULL, 
-                          colors = NULL, popup = NULL, layerId = NULL) {
-  
-  options <- .prepareOptions(
-    required = list(lng = lng, lat = lat), 
-    optional = list(size = size, opacity = opacity, maxValue = 1, 
-                    layerId = layerId, popup = popup)
-  )
+                        minValue = NULL, maxValue = NULL, 
+                        colors = NULL, popup = NULL, layerId = NULL) {
   
   # Data preparation
-  if (nrow(options) == 1) data <- matrix(data, nrow = 1)
+  if (max(length(lng), length(lat)) == 1) data <- matrix(data, nrow = 1)
   data <- as.matrix(data)
   
   if (is.null(maxValue)) {
@@ -334,10 +328,30 @@ addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
     if (length(maxValue) == 1 && maxValue == 0) maxValue <- max(data)
     maxValue <- rep_len(maxValue, ncol(data))
   }
+  maxValue <- pmax(maxValue, 0)
+  
+  if (is.null(minValue)) {
+    minValue <- apply(data, 2, min)
+  } else {
+    if (length(minValue) == 1 && minValue == -Inf) minValue <- min(data)
+    minValue <- rep_len(minValue, ncol(data))
+  }
+  minValue <- pmin(minValue, 0)
+  
+  scaleCoef <- pmax(maxValue, abs(minValue))
   
   for (i in 1:ncol(data)) {
-    data[, i] <- data[, i] / maxValue[i]
+    data[, i] <- data[, i] / scaleCoef[i]
   }
+  
+  rangeValues <- range(c(maxValue / scaleCoef, minValue / scaleCoef))
+  
+  options <- .prepareOptions(
+    required = list(lng = lng, lat = lat), 
+    optional = list(size = size, opacity = opacity, 
+                    minValue = rangeValues[1], maxValue = rangeValues[2], 
+                    layerId = layerId, popup = popup)
+  )
   
   map %>% requireDep(c("d3", "barChart")) %>% 
     invokeMethod(leaflet:::getMapData(map), "addBarChart", options, data, colors)
