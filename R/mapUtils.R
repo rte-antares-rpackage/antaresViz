@@ -493,7 +493,7 @@ addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
 
 #' @rdname addPolarChart
 #' @export
-updateBarChart <- function(map, layerId, data, size = 30,
+updateBarChart <- function(map, layerId, data, size = NULL, opacity = NULL,
                            minValue = NULL, maxValue = NULL, 
                            colors = NULL, popup = NULL) {
   
@@ -529,7 +529,8 @@ updateBarChart <- function(map, layerId, data, size = 30,
   
   options <- .prepareOptions(
     required = list(layerId = layerId),
-    optional = list(size = size, minValue = rangeValues[1], maxValue = rangeValues[2], popup = popup)
+    optional = list(size = size, opacity = opacity, minValue = rangeValues[1], 
+                    maxValue = rangeValues[2], popup = popup)
   )
   
   invokeMethod(map, data = NULL, "updateBarCharts", options, data)

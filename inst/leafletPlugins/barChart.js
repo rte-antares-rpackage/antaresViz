@@ -26,6 +26,7 @@ L.BarChart = L.CircleMarker.extend({
     L.CircleMarker.prototype.onAdd.call(this, map);
     this._container.setAttribute("class", "leaflet-zoom-hide");
     this._g = d3.select(this._container).append("g");
+    map.on('viewreset', this._reset, this);
     this._reset();
   },
   
@@ -64,7 +65,8 @@ L.BarChart = L.CircleMarker.extend({
       .attr("y", function(d) {return d > 0? x(d): x(0);})
       .attr("height", function(d) {return Math.abs(x(d) - x(0))})
       .attr("width", barWidth)
-      .attr("fill", function(d, i) {return color(i)});
+      .attr("fill", function(d, i) {return color(i)})
+      .attr("fill-opacity", this.options.opacity);
         
   }
 });
@@ -79,6 +81,7 @@ window.LeafletWidget.methods.addBarCharts = function(options, data, colors) {
     var style = {};
     if (options.minValue) style.minValue = options.minValue[i];
     if (options.maxValue) style.maxValue = options.maxValue[i];
+    if (options.opacity) style.opacity = options.opacity[i];
     if (colors) style.colors = colors;
     
     var l = L.barChart(
@@ -102,6 +105,7 @@ window.LeafletWidget.methods.updateBarCharts = function(options, data, colors) {
     var opts = {};
     if (options.minValue) opts.minValue = options.minValue[i];
     if (options.maxValue) opts.maxValue = options.maxValue[i];
+    if (options.opacity) opts.opacity = options.opacity[i];
     if (colors) opts.colors = colors;
     if (data) opts.data = data[i];
     
