@@ -93,6 +93,10 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #'   are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
 #'   If it is equal to 1 or -1 it is represented by a line with an arrow pointing
 #'   respectively the destination and the origin of the link. 
+#' @param areas
+#'   Should areas be drawn on the map ?
+#' @param links
+#'   Should links be drawn on the map ?
 #' @param ...
 #'   Currently unused.
 #' @inheritParams productionStack
@@ -138,39 +142,47 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #' @export
 plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10, 
                            areaChartType = c("polar", "bar"), colLinks = "#CCCCCC", 
-                           sizeLinks = 3, dirLinks = 0, 
+                           sizeLinks = 3, dirLinks = 0, links = TRUE, areas = TRUE, 
                            width = NULL, height = NULL, ...) {
   
-  areaChartType <- match.arg(areaChartType)
+  map <- leaflet(width = width, height = height) %>% 
+    addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
   
-  if (is.matrix(sizeAreas) && ncol(sizeAreas) > 1) {
-    if (areaChartType == "polar") {
-      addAreas <- function(map) {
-        addPolarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
+  if (links) {
+    map <- addDirectedSegments(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
+                        weight = sizeLinks,
+                        color = colLinks, layerId = x$links$link, popup = x$links$link)
+  }
+  
+  if (areas) {
+    areaChartType <- match.arg(areaChartType)
+    
+    if (is.matrix(sizeAreas) && ncol(sizeAreas) > 1) {
+      if (areaChartType == "polar") {
+        addAreas <- function(map) {
+          addPolarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
+                        popup = x$coords$area, layerId = x$coords$area)
+        }
+      } else {
+        addAreas <- function(map) {
+          addBarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
                       popup = x$coords$area, layerId = x$coords$area)
+        }
       }
+      
     } else {
       addAreas <- function(map) {
-        addBarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                    popup = x$coords$area, layerId = x$coords$area)
+        addCircleMarkers(map, lng = x$coords$x, lat = x$coords$y, 
+                         radius = sizeAreas,
+                         stroke = FALSE, 
+                         fillColor = colAreas, fillOpacity = 1, 
+                         popup = x$coords$area, layerId = x$coords$area)
       }
     }
     
-  } else {
-    addAreas <- function(map) {
-      addCircleMarkers(map, lng = x$coords$x, lat = x$coords$y, 
-                       radius = sizeAreas,
-                       stroke = FALSE, 
-                       fillColor = colAreas, fillOpacity = 1, 
-                       popup = x$coords$area, layerId = x$coords$area)
-    }
+    
+    
+    map <- addAreas(map)
   }
-  
-  leaflet(width = width, height = height) %>% 
-    addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}") %>%
-    addDirectedSegments(x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
-                        weight = sizeLinks,
-                        color = colLinks, layerId = x$links$link, popup = x$links$link) %>% 
-    addAreas() %>% 
-    addShadows()
+  map %>% addShadows()
 }
