@@ -67,12 +67,14 @@
 #' 
 #' @export
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+                    areaChartType = c("polar", "bar"),
                     colLinkVar = "none", sizeLinkVar = "none", 
                     timeId = min(x$areas$timeId),
                     interactive = base::interactive(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
   
+  areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
   
   # Keep only links and areas present in the data
@@ -106,7 +108,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     ml$coords <- optsArea$coords
     ml$links <- optsLink$coords
     
-    map <- plot(ml, optsArea$color, optsArea$size, 
+    map <- plot(ml, optsArea$color, optsArea$size, areaChartType,
                 optsLink$color, optsLink$size, dir = optsLink$dir,
                 width = width, height = height) %>% addAntaresLegend()
     
@@ -133,10 +135,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     
     # Add an invisible layer containing either circleMarkers or polarCharts
     if (length(sizeAreaVars) <= 1) {
-      map <- addPolarChart(map, ml$coords$x, ml$coords$y, 
-                           data = matrix(1, nrow = nrow(ml$coords)),
-                           opacity = 0, layerId = ml$coords$area,
-                           popup = ml$coords$area)
+      addChart <- switch(areaChartType, polar = addPolarChart, bar = addBarChart)
+      
+      map <- addChart(map, ml$coords$x, ml$coords$y, 
+                      data = matrix(1, nrow = nrow(ml$coords)),
+                      opacity = 0, layerId = ml$coords$area,
+                      popup = ml$coords$area)
     } else {
       map <- addCircleMarkers(map, ml$coords$x, ml$coords$y, opacity = 0, 
                               fillOpacity = 0,
@@ -170,7 +174,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   )
   
   args <- runGadget(ui, 
-                    .plotMapServer(x, mapLayout, initialMap, options), 
+                    .plotMapServer(x, mapLayout, initialMap, areaChartType, options), 
                     viewer = browserViewer())
   do.call(plotFun, args)
 }

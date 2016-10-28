@@ -10,13 +10,15 @@
 #'   Object created with function mapLayout
 #' @param initialMap
 #'   Initial map
+#' @param areaChartType
+#'   "bar" or "polar"
 #' @param options
 #' 
 #' @return 
 #' A shiny server function.
 #'
 #' @noRd
-.plotMapServer <- function(x, mapLayout, initialMap, options) {
+.plotMapServer <- function(x, mapLayout, initialMap, areaChartType, options) {
   
   function(input, output, session) {
     # Initialization of the map
@@ -26,8 +28,10 @@
 
     observe({
       # These functions are defined below.
-      .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, input$sizeLinkVar, options)
-      .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, input$sizeAreaVars, options)
+      .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, 
+                   input$sizeLinkVar, options)
+      .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, 
+                     input$sizeAreaVars, areaChartType, options)
     })
     
     # Return a list with the last value of inputs
@@ -44,8 +48,13 @@
 }
 
 # Update the circles or polar charts representing areas
-.redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars, options) {
+.redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars,
+                           areaChartType, options) {
   ml <- copy(mapLayout)
+  
+  updateChart <- switch(areaChartType, 
+                        bar = updateBarChart, 
+                        polar = updatePolarChart)
   
   optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
                               colAreaVar, sizeAreaVars)
@@ -61,13 +70,13 @@
   if (is.matrix(optsArea$size) && ncol(optsArea$size) > 1) {
     map <- map %>% 
       updateCircleMarkers(optsArea$coords$area, opacity = 0, fillOpacity = 0) %>% 
-      updatePolarChart(optsArea$coords$area, opacity = 1, data = optsArea$size)
+      updateChart(optsArea$coords$area, opacity = 1, data = optsArea$size)
   } else {
     map <- map %>% 
       updateCircleMarkers(optsArea$coords$area, fillColor = optsArea$color, 
                           radius = optsArea$size, 
                           opacity = 1, fillOpacity = 1) %>% 
-      updatePolarChart(optsArea$coords$area, opacity = 0)
+      updateChart(optsArea$coords$area, opacity = 0)
   }
   
   if (!is.null(optsArea$pal)) {
@@ -170,9 +179,9 @@
   
   # size
   if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
-    res$size <- abs(as.matrix(coords[, sizeVar, with = FALSE]))
-    res$maxSize <- max(res$size)
-    if (length(sizeVar) == 1) res$size <- res$size / max(res$size)
+    res$size <- as.matrix(coords[, sizeVar, with = FALSE])
+    res$maxSize <- max(abs(res$size))
+    if (length(sizeVar) == 1) res$size <- res$size / max(abs(res$size))
   }
   
   # Direction

@@ -229,6 +229,7 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
                           colors = NULL, popup = NULL, layerId = NULL) {
  
   scale <- match.arg(scale)
+  data <- abs(data)
   
   options <- .prepareOptions(
     required = list(lng = lng, lat = lat), 
@@ -362,6 +363,7 @@ addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
 updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1,
                              scale = c("radius", "area"), maxValue = NULL, popup = NULL) {
   scale <- match.arg(scale)
+  if (!is.null(data)) data <- abs(data)
   
   options <- .prepareOptions(
     required = list(layerId = layerId),
@@ -493,7 +495,7 @@ addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
 
 #' @rdname addPolarChart
 #' @export
-updateBarChart <- function(map, layerId, data, size = NULL, opacity = NULL,
+updateBarChart <- function(map, layerId, data = NULL, size = NULL, opacity = NULL,
                            minValue = NULL, maxValue = NULL, 
                            colors = NULL, popup = NULL) {
   
@@ -525,12 +527,17 @@ updateBarChart <- function(map, layerId, data, size = NULL, opacity = NULL,
     }
     
     rangeValues <- range(c(maxValue / scaleCoef, minValue / scaleCoef))
+    minValue <- rangeValues[1]
+    maxValue <- rangeValues[2]
+  } else {
+    minValue <- NULL
+    maxValue <- NULL
   }
   
   options <- .prepareOptions(
     required = list(layerId = layerId),
-    optional = list(size = size, opacity = opacity, minValue = rangeValues[1], 
-                    maxValue = rangeValues[2], popup = popup)
+    optional = list(size = size, opacity = opacity, minValue = minValue, 
+                    maxValue = maxValue, popup = popup)
   )
   
   invokeMethod(map, data = NULL, "updateBarCharts", options, data)
