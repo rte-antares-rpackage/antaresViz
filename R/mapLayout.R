@@ -139,7 +139,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10, 
                            areaChartType = c("polar", "bar"), colLinks = "#CCCCCC", 
                            sizeLinks = 3, dirLinks = 0, 
-                           width = NULL, height = height, ...) {
+                           width = NULL, height = NULL, ...) {
   
   areaChartType <- match.arg(areaChartType)
   
