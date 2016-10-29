@@ -69,7 +69,7 @@
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     areaChartType = c("polar", "bar"),
                     colLinkVar = "none", sizeLinkVar = "none", 
-                    timeId = min(x$areas$timeId),
+                    timeId = NULL,
                     interactive = base::interactive(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
@@ -77,39 +77,75 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
   
+  # Check that parameters have the good class
+  if (!is(mapLayout, "mapLayout")) stop("Argument 'mapLayout' must be an object of class 'mapLayout' created with function 'mapLayout'.")
+  if (!is(x, "antaresData")) {
+    stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
+  } else {
+    x <- as.antaresDataList(x)
+    if (is.null(x$areas) && is.null(x$links)) stop("Argument 'x' should contain at least area or link data.")
+  }
+  
+  # Should links and/or areas be displayed ?
+  areas <- !is.null(x$areas)
+  links <- !is.null(x$links)
+  
+  # Select first timeId if necessary
+  if (is.null(timeId)) {
+    if (areas) timeId <- min(x$areas$timeId)
+    else timeId <- min(x$links$timeId)
+  } 
+  
   # Keep only links and areas present in the data
-  areaList <- unique(x$areas$area)
-  linkList <- unique(x$links$link)
-  mapLayout$coords <- mapLayout$coords[area %in% areaList]
-  mapLayout$links <- mapLayout$links[link %in% linkList]
+  if (areas) {
+    areaList <- unique(x$areas$area)
+    mapLayout$coords <- mapLayout$coords[area %in% areaList]
+  }
+  if (links) {
+    linkList <- unique(x$links$link)
+    mapLayout$links <- mapLayout$links[link %in% linkList]
+  }
   
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar) {
     
     ml <- copy(mapLayout)
     
-    optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
-                               colAreaVar, sizeAreaVars)
-    
-    if (is.null(optsArea$color)) optsArea$color <- options$colArea
-    
-    if (is.null(optsArea$size)) optsArea$size <- options$sizeArea
-    else if (ncol(optsArea$size) == 1) {
-      optsArea$size <- sqrt(optsArea$size) * options$maxSizeArea
+    if (areas) {
+      optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
+                                 colAreaVar, sizeAreaVars)
+      
+      ml$coords <- optsArea$coords
+      
+      if (is.null(optsArea$color)) optsArea$color <- options$colArea
+      
+      if (is.null(optsArea$size)) optsArea$size <- options$sizeArea
+      else if (ncol(optsArea$size) == 1) {
+        optsArea$size <- sqrt(optsArea$size) * options$maxSizeArea
+      }
+    } else {
+      optsArea <- list()
     }
     
-    optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
-                               colLinkVar, sizeLinkVar)
+    if (links) {
+      optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
+                                 colLinkVar, sizeLinkVar)
+      
+      ml$links <- optsLink$coords
+      
+      if (is.null(optsLink$color)) optsLink$color <- options$colLink
+      if (is.null(optsLink$size)) optsLink$size <- options$sizeLink
+      else optsLink$size <- optsLink$size * options$maxSizeLink
+      
+    } else {
+      optsLink <- list()
+    }
     
-    if (is.null(optsLink$color)) optsLink$color <- options$colLink
-    if (is.null(optsLink$size)) optsLink$size <- options$sizeLink
-    else optsLink$size <- optsLink$size * options$maxSizeLink
     
-    ml$coords <- optsArea$coords
-    ml$links <- optsLink$coords
     
     map <- plot(ml, optsArea$color, optsArea$size, areaChartType,
                 optsLink$color, optsLink$size, dir = optsLink$dir,
+                areas = areas, links = links,
                 width = width, height = height) %>% addAntaresLegend()
     
     # Add legends
@@ -133,19 +169,21 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$maxSizeLink, optsLink$maxSize))
     }
     
-    # Add an invisible layer containing either circleMarkers or polarCharts
-    if (length(sizeAreaVars) <= 1) {
-      addChart <- switch(areaChartType, polar = addPolarChart, bar = addBarChart)
-      
-      map <- addChart(map, ml$coords$x, ml$coords$y, 
-                      data = matrix(1, nrow = nrow(ml$coords)),
-                      opacity = 0, layerId = ml$coords$area,
-                      popup = ml$coords$area)
-    } else {
-      map <- addCircleMarkers(map, ml$coords$x, ml$coords$y, opacity = 0, 
-                              fillOpacity = 0,
-                              layerId = ml$coords$area,
-                              popup = ml$coords$area, stroke = FALSE)
+    if (areas) {
+      # Add an invisible layer containing either circleMarkers or polarCharts
+      if (length(sizeAreaVars) <= 1) {
+        addChart <- switch(areaChartType, polar = addPolarChart, bar = addBarChart)
+        
+        map <- addChart(map, ml$coords$x, ml$coords$y, 
+                        data = matrix(1, nrow = nrow(ml$coords)),
+                        opacity = 0, layerId = ml$coords$area,
+                        popup = ml$coords$area)
+      } else {
+        map <- addCircleMarkers(map, ml$coords$x, ml$coords$y, opacity = 0, 
+                                fillOpacity = 0,
+                                layerId = ml$coords$area,
+                                popup = ml$coords$area, stroke = FALSE)
+      }
     }
     
     map %>% addShadows()
