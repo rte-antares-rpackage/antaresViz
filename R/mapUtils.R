@@ -148,6 +148,8 @@ updateCircleMarkers <- function(map, layerId, radius=NULL, stroke=NULL,
 addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3, 
                                 opacity = 1, dir = 1, popup = NULL, layerId = NULL) {
   
+  weight <- abs(weight)
+  
   options <- .prepareOptions(
     required = list(x0 = x0, y0 = y0, x1 = x1, y1 = y1),
     optional = list(dir = dir, color = color, weight = weight, opacity = opacity, 
@@ -163,6 +165,9 @@ addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3,
 #' @export
 updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL, 
                                    opacity = NULL, dir = NULL, popup = NULL) {
+  
+  weight <- abs(weight)
+  
   options <- .prepareOptions(
     required = list(layerId = layerId),
     optional = list(color = color, weight = weight, opacity = opacity,dir = dir,
