@@ -29,7 +29,7 @@ colorLegend <- function(title, colors, breaks) {
 
 prettyValues <- function(maxValue, n = 3) {
   values <- pretty(c(0, maxValue), n = n+1)
-  c(values[2:n], maxValue)
+  c(values[2:(length(values) - 2)], maxValue)
 }
 
 radiusLegend <- function(title, maxRadius, maxValue) {

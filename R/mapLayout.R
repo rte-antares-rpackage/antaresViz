@@ -142,7 +142,8 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #' }
 #' 
 #' @export
-plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10, 
+plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
+                           areaMaxValues = NULL,
                            areaChartType = c("polar", "bar"), colLinks = "#CCCCCC", 
                            sizeLinks = 3, dirLinks = 0, links = TRUE, areas = TRUE, 
                            width = NULL, height = NULL, ...) {
@@ -163,7 +164,8 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
       if (areaChartType == "polar") {
         addAreas <- function(map) {
           addPolarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                        popup = x$coords$area, layerId = x$coords$area)
+                        popup = x$coords$area, layerId = x$coords$area, 
+                        maxValue = areaMaxValues)
         }
       } else {
         addAreas <- function(map) {

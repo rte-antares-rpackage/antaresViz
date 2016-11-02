@@ -72,7 +72,8 @@
   if (is.matrix(optsArea$size) && ncol(optsArea$size) > 1) {
     map <- map %>% 
       updateCircleMarkers(optsArea$coords$area, opacity = 0, fillOpacity = 0) %>% 
-      updateChart(optsArea$coords$area, opacity = 1, data = optsArea$size)
+      updateChart(optsArea$coords$area, opacity = 1, data = optsArea$size, 
+                  maxValue = optsArea$maxSize)
   } else {
     map <- map %>% 
       updateCircleMarkers(optsArea$coords$area, fillColor = optsArea$color, 
@@ -182,8 +183,8 @@
   # size
   if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
     res$size <- as.matrix(coords[, sizeVar, with = FALSE])
-    res$maxSize <- max(abs(res$size))
-    if (length(sizeVar) == 1) res$size <- res$size / max(abs(res$size))
+    res$maxSize <- apply(abs(as.matrix(data[, sizeVar, with = FALSE])), 2, max)
+    if (length(sizeVar) == 1) res$size <- res$size / res$maxSize
   }
   
   # Direction

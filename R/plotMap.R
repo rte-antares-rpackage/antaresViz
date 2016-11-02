@@ -145,7 +145,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     
     
     
-    map <- plot(ml, optsArea$color, optsArea$size, areaChartType,
+    map <- plot(ml, optsArea$color, optsArea$size, optsArea$maxSize, areaChartType,
                 optsLink$color, optsLink$size, dir = optsLink$dir,
                 areas = areas, links = links,
                 width = width, height = height) %>% addAntaresLegend()
