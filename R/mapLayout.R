@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Place areas of a study on a map
 #' 
 #' This function launches an interactive application that let the user place 

@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Plot an interactive legend for time series plots
 #' 
 #' These functions create a nice looking legend that displays values when the user

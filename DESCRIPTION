@@ -1,12 +1,15 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.3
-Date: 2016-09-28
-Author: Francois Guilem <francois.guillem@rte-france.com>
-Maintainer: Francois Guilem <francois.guillem@rte-france.com>
+Version: 0.4
+Date: 2016-10-06
+Authors@R: c(
+    person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = c("aut", "cre")),
+    person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = "ctb"),
+    person("RTE", role = "cph")
+    )
 Description: Visualize the data extracted from an antares project.
-License: rte
+License: GPL (>= 2) + file LICENSE 
 LazyData: TRUE
 Depends:
     antaresRead (>= 0.13.0),

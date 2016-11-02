@@ -1,3 +1,5 @@
+#Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' show aliases for productionStack
 #'
 #' This function shows aliases for productionStack. These aliases can be used
