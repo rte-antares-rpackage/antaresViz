@@ -30,10 +30,15 @@
 
     observe({
       # These functions are defined below.
-      .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, 
-                   input$sizeLinkVar, options)
-      .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, 
-                     input$sizeAreaVars, areaChartType, options)
+      if (!is.null(x$links)) {
+        .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, 
+                     input$sizeLinkVar, options)
+      }
+      
+      if (!is.null(x$areas)) {
+        .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, 
+                       input$sizeAreaVars, areaChartType, options)
+      }
     })
     
     # Return a list with the last value of inputs

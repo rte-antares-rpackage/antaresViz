@@ -92,11 +92,17 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   areas <- !is.null(x$areas)
   links <- !is.null(x$links)
   
+  
+  # First and last time ids in data
+  if (areas) {
+    timeIdMin <- min(x$areas$timeId)
+    timeIdMax <- max(x$areas$timeId)
+  } else {
+    timeIdMin <- min(x$links$timeId)
+    timeIdMax <- max(x$links$timeId)
+  }
   # Select first timeId if necessary
-  if (is.null(timeId)) {
-    if (areas) timeId <- min(x$areas$timeId)
-    else timeId <- min(x$links$timeId)
-  } 
+  if (is.null(timeId)) timeId <- timeIdMin
   
   # Keep only links and areas present in the data
   if (areas) {
@@ -205,7 +211,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   linkValColums <- setdiff(names(x$links), .idCols(x$links))
   
   ui <- mwUI(
-    timeId = mwSlider(min(x$areas$timeId), max(x$areas$timeId), timeId, step = 1, animate = TRUE),
+    timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
     Areas = list(
       colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
       sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Radius", multiple = TRUE)
