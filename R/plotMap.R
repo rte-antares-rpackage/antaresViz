@@ -198,7 +198,14 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       }
     }
     
-    map %>% addShadows()
+    # Reset the bounds of the map if links are drawn
+    if (links) {
+      rangeX <- range(c(ml$links$x0, ml$links$x1))
+      rangeY <- range(c(ml$links$y0, ml$links$y1))
+      map <- fitBounds(map, rangeX[1], rangeY[1], rangeX[2], rangeY[2])
+    }
+    
+    addShadows(map)
   }
   
   initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar)
