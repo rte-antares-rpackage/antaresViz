@@ -590,7 +590,7 @@ addAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL,
 
 updateAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL, 
                                 htmlLinkColor = NULL, htmlLinkSize = NULL,
-                                onComplete = "") {
+                                onComplete = NULL) {
   options <- list(
     htmlAreaColor = htmlAreaColor,
     htmlAreaSize = htmlAreaSize,
