@@ -104,6 +104,42 @@ lineWidthLegend <- function(title, maxWidth, maxValue) {
   )
 }
 
+barChartLegend <- function(labels, title = "", colors = NULL) {
+  if (is.null(colors)) {
+    colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+                "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf")
+  }
+  
+  colors <- colors[1:length(labels)]
+  
+  colors <- sapply(colors, function(x) {
+    sprintf('<div class="legend-color-cat" style = "background-color:%s;"></div>', x)
+  })
+  colors <- paste(colors, collapse = "\n")
+  
+  labels <- sapply(labels, function(x) {
+    sprintf('<div class="legend-label">%s</div>', x)
+  })
+  labels <- paste(labels, collapse = "\n")
+  
+  sprintf(
+    '
+    <div class="legend-section">
+      <h3>%s</h3>
+      <div class="legend-colors-cat">
+        %s
+      </div>
+      <div class="legend-labels">
+        %s
+      </div>
+      <div style="clear:both;"></div>
+    </div>   
+    ',
+    title, colors, labels
+  )
+  
+}
+
 polarChartLegend <- function(title = "") {
   sprintf(
     '
@@ -118,7 +154,7 @@ polarChartLegend <- function(title = "") {
 
 polarChartLegendJS <- function(labels, colors = NULL) {
   if (is.null(colors)) {
-    colors <- "d3.schemeCategory10"
+    colors <- '["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf"]'
   } else {
     colors <- jsonlite::toJSON(colors)
   }

@@ -157,11 +157,15 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       if (length(sizeAreaVars) == 1) {
         map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
       } else {
-        map <- updateAntaresLegend(
-          map, 
-          htmlAreaSize = polarChartLegend(),
-          onComplete = polarChartLegendJS(sizeAreaVars)
-        )
+        if (areaChartType == "bar") {
+          map <- updateAntaresLegend(map, htmlAreaSize = barChartLegend(sizeAreaVars))
+        } else {
+          map <- updateAntaresLegend(
+            map, 
+            htmlAreaSize = polarChartLegend(),
+            onComplete = polarChartLegendJS(sizeAreaVars)
+          )
+        }
       }
     }
     if (!is.null(optsLink$pal))

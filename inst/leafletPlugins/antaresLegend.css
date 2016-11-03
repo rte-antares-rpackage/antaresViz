@@ -24,7 +24,7 @@ html, body {
   font-weight: normal;
 }
 
-.legend-colors, .legend-labels, .legend-symbols {
+.legend-colors, .legend-colors-cat, .legend-labels, .legend-symbols {
   float:left;
 }
 
@@ -36,6 +36,12 @@ html, body {
 .legend-color {
   width:14px;
   height:14px;
+}
+
+.legend-color-cat {
+  width:14px;
+  height:10px;
+  margin: 2px 0 4px 0;
 }
 
 .legend-label {
