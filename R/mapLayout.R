@@ -143,9 +143,10 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #' 
 #' @export
 plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
-                           areaMaxValues = NULL,
+                           opacityArea = 1, areaMaxValues = NULL,
                            areaChartType = c("polar", "bar"), colLinks = "#CCCCCC", 
-                           sizeLinks = 3, dirLinks = 0, links = TRUE, areas = TRUE, 
+                           sizeLinks = 3, opacityLinks = 1, dirLinks = 0, 
+                           links = TRUE, areas = TRUE, 
                            width = NULL, height = NULL, ...) {
   
   map <- leaflet(width = width, height = height) %>% 
@@ -153,7 +154,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
   
   if (links) {
     map <- addDirectedSegments(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
-                        weight = sizeLinks,
+                        weight = sizeLinks, opacity = opacityLinks,
                         color = colLinks, layerId = x$links$link, popup = x$links$link)
   }
   
@@ -165,12 +166,13 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
         addAreas <- function(map) {
           addPolarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
                         popup = x$coords$area, layerId = x$coords$area, 
-                        maxValue = areaMaxValues)
+                        maxValue = areaMaxValues, opacity = opacityArea)
         }
       } else {
         addAreas <- function(map) {
           addBarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                      popup = x$coords$area, layerId = x$coords$area)
+                      popup = x$coords$area, layerId = x$coords$area, 
+                      opacity = opacityArea)
         }
       }
       
@@ -179,8 +181,9 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
         addCircleMarkers(map, lng = x$coords$x, lat = x$coords$y, 
                          radius = sizeAreas,
                          stroke = FALSE, 
-                         fillColor = colAreas, fillOpacity = 1, 
-                         popup = x$coords$area, layerId = x$coords$area)
+                         fillColor = colAreas, 
+                         popup = x$coords$area, layerId = x$coords$area,
+                         fillOpacity = opacityArea)
       }
     }
     

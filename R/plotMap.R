@@ -116,96 +116,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar) {
+    map <- .initMap(x, mapLayout, areaChartType) %>% 
+      .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, options) %>% 
+      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, areaChartType, options)
     
-    ml <- copy(mapLayout)
-    
-    if (areas) {
-      optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
-                                 colAreaVar, sizeAreaVars)
-      
-      ml$coords <- optsArea$coords
-      
-      if (is.null(optsArea$color)) optsArea$color <- options$colArea
-      
-      if (is.null(optsArea$size)) optsArea$size <- options$sizeArea
-      else if (ncol(optsArea$size) == 1) {
-        optsArea$size <- sqrt(optsArea$size) * options$maxSizeArea
-      }
-    } else {
-      optsArea <- list()
-    }
-    
-    if (links) {
-      optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
-                                 colLinkVar, sizeLinkVar)
-      
-      ml$links <- optsLink$coords
-      
-      if (is.null(optsLink$color)) optsLink$color <- options$colLink
-      if (is.null(optsLink$size)) optsLink$size <- options$sizeLink
-      else optsLink$size <- optsLink$size * options$maxSizeLink
-      
-    } else {
-      optsLink <- list()
-    }
-    
-    
-    
-    map <- plot(ml, optsArea$color, optsArea$size, optsArea$maxSize, areaChartType,
-                optsLink$color, optsLink$size, dir = optsLink$dir,
-                areas = areas, links = links,
-                width = width, height = height) %>% addAntaresLegend()
-    
-    # Add legends
-    if (!is.null(optsArea$pal))
-      map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
-    if (!is.null(optsArea$maxSize)) {
-      if (length(sizeAreaVars) == 1) {
-        map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
-      } else {
-        if (areaChartType == "bar") {
-          map <- updateAntaresLegend(map, htmlAreaSize = barChartLegend(sizeAreaVars))
-        } else {
-          map <- updateAntaresLegend(
-            map, 
-            htmlAreaSize = polarChartLegend(),
-            onComplete = polarChartLegendJS(sizeAreaVars)
-          )
-        }
-      }
-    }
-    if (!is.null(optsLink$pal))
-      map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
-    
-    if (!is.null(optsLink$maxSize)) {
-      map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$maxSizeLink, optsLink$maxSize))
-    }
-    
-    if (areas) {
-      # Add an invisible layer containing either circleMarkers or polarCharts
-      if (length(sizeAreaVars) <= 1) {
-        addChart <- switch(areaChartType, polar = addPolarChart, bar = addBarChart)
-        
-        map <- addChart(map, ml$coords$x, ml$coords$y, 
-                        data = matrix(1, nrow = nrow(ml$coords)),
-                        opacity = 0, layerId = ml$coords$area,
-                        popup = ml$coords$area)
-      } else {
-        map <- addCircleMarkers(map, ml$coords$x, ml$coords$y, opacity = 0, 
-                                fillOpacity = 0,
-                                layerId = ml$coords$area,
-                                popup = ml$coords$area, stroke = FALSE)
-      }
-    }
-    
-    # Reset the bounds of the map if links are drawn
-    if (links) {
-      rangeX <- range(c(ml$links$x0, ml$links$x1))
-      rangeY <- range(c(ml$links$y0, ml$links$y1))
-      map <- fitBounds(map, rangeX[1], rangeY[1], rangeX[2], rangeY[2])
-    }
-    
-    addShadows(map)
+    map
   }
   
   initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar)
@@ -214,6 +129,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     return(initialMap)
   }
   
+  # Create the UI of the gadget
   areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
   linkValColums <- setdiff(names(x$links), .idCols(x$links))
   
