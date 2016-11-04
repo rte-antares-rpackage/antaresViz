@@ -25,12 +25,14 @@
 #' 
 #' @noRd
 #' 
-continuousColorPal <- function(x, n = 5, domain = range(x, na.rm = TRUE),
+continuousColorPal <- function(x, n = 5, domain = NULL,
                                negCol = "#FF0000", zeroCol = "#FFFFFF", posCol = "#0000FF",
                                naCol = "#EEEEEE", zeroTol = NULL) {
   if (is.null(zeroTol)) {
     zeroTol <- signif(diff(domain) * 0.01, 1)
   }
+  
+  if (is.null(domain)) domain <- range(x, na.rm = TRUE)
   
   breaks <- pretty(domain, n)
   breaks <- breaks[!breaks == 0]

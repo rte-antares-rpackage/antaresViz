@@ -23,7 +23,7 @@
 #' * size   : size of elements.
 #' 
 #' @noRd
-.getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar) {
+.getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar, colorScaleOpts) {
   
   coords <- merge(coords, data[timeId == t], by = mergeBy)
   
@@ -39,7 +39,10 @@
       domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
     }
     
-    res$color <- continuousColorPal(coords[[colVar]], domain = domain)
+    colorScaleOpts$x <- coords[[colVar]]
+    colorScaleOpts$domain = domain
+    res$color <- do.call(continuousColorPal, colorScaleOpts)
+    
     res$pal <- attr(res$color, "pal")
     res$colorBreaks <- attr(res$color, "breaks")
   }
@@ -63,7 +66,7 @@
 
 # Initialize a map with all elements invisible: links, circles and bar or polar 
 # charts 
-.initMap <- function(x, ml, areaChartType) {
+.initMap <- function(x, ml, areaChartType, options) {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
               opacityArea = 0, opacityLinks = 0) %>% 
@@ -75,6 +78,7 @@
     map <- addChart(map, ml$coords$x, ml$coords$y,
                     data = matrix(1, nrow = nrow(ml$coords)),
                     opacity = 0, layerId = ml$coords$area,
+                    colors = options$areaChartColors,
                     popup = ml$coords$area)
   }
   
@@ -100,17 +104,19 @@
                         polar = updatePolarChart)
   
   optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
-                             colAreaVar, sizeAreaVars)
+                             colAreaVar, sizeAreaVars, options$areaColorScaleOpts)
   ml$coords <- optsArea$coords
   
-  if (is.null(optsArea$color)) optsArea$color <- options$colArea
+  if (is.null(optsArea$color)) optsArea$color <- options$areaDefaultCol
   
-  if (is.null(optsArea$size)) optsArea$size <- options$sizeArea
+  if (is.null(optsArea$size)) optsArea$size <- options$areaDefaultSize
   else if (ncol(optsArea$size) == 1) {
-    optsArea$size <- sqrt(optsArea$size) * options$maxSizeArea
+    optsArea$size <- sqrt(optsArea$size) * options$areaMaxSize
   }
   
   if (is.matrix(optsArea$size) && ncol(optsArea$size) > 1) {
+    if (options$areaChartUniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
+      
     map <- map %>% 
       updateCircleMarkers(optsArea$coords$area, opacity = 0, fillOpacity = 0) %>% 
       updateChart(optsArea$coords$area, opacity = 1, data = optsArea$size, 
@@ -130,18 +136,18 @@
   }
   if (!is.null(optsArea$maxSize)) {
     if (length(sizeAreaVars) == 1) {
-      map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$maxSizeArea, optsArea$maxSize))
+      map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$areaMaxSize, optsArea$maxSize))
     } else {
       if (areaChartType == "bar") {
         map <- updateAntaresLegend(
           map, 
-          htmlAreaSize = barChartLegend(sizeAreaVars)
+          htmlAreaSize = barChartLegend(sizeAreaVars, colors = options$areaChartColors)
         )
       } else {
         map <- updateAntaresLegend(
           map, 
           htmlAreaSize = polarChartLegend(),
-          onComplete = polarChartLegendJS(sizeAreaVars)
+          onComplete = polarChartLegendJS(sizeAreaVars, colors = options$areaChartColors)
         )
       }
     }
@@ -159,11 +165,11 @@
   ml <- copy(mapLayout)
   
   optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
-                             colLinkVar, sizeLinkVar)
+                             colLinkVar, sizeLinkVar, options$linkColorScaleOpts)
   
-  if (is.null(optsLink$color)) optsLink$color <- options$colLink
-  if (is.null(optsLink$size)) optsLink$size <- options$sizeLink
-  else optsLink$size <- optsLink$size * options$maxSizeLink
+  if (is.null(optsLink$color)) optsLink$color <- options$linkDefaultCol
+  if (is.null(optsLink$size)) optsLink$size <- options$linkDefaultSize
+  else optsLink$size <- optsLink$size * options$linkMaxSize
   
   map <- map %>% updateDirectedSegments(layerId = ml$links$link, 
                                         color = optsLink$color,

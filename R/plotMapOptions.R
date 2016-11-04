@@ -28,14 +28,18 @@
 #' }
 #' 
 #' @export
-plotMapOptions <- function(colArea = "#CCCCCC", sizeArea = 15, maxSizeArea = 15,
-                           colLink = "#CCCCCC", sizeLink = 3, maxSizeLink = 10) {
-  list(
-    colArea = colArea,
-    sizeArea = sizeArea, 
-    maxSizeArea = maxSizeArea,
-    colLink = colLink,
-    sizeLink = sizeLink,
-    maxSizeLink = maxSizeLink
-  )
+plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15, 
+                           areaMaxSize = 15, areaChartColors = NULL,
+                           areaChartUniqueScale = FALSE,
+                           areaColorScaleOpts = colorScaleOptions(),
+                           linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, 
+                           linkMaxSize = 10, linkColorScaleOpts = colorScaleOptions()) {
+  as.list(environment())
+}
+
+#' @export
+colorScaleOptions <- function(n = 5, domain = NULL,
+                              negCol = "#FF0000", zeroCol = "#FFFFFF", posCol = "#0000FF",
+                              naCol = "#EEEEEE", zeroTol = NULL) {
+  as.list(environment())
 }
