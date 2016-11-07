@@ -500,7 +500,7 @@ addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
 }
 
 
-#' @rdname addPolarChart
+#' @rdname addBarChart
 #' @export
 updateBarChart <- function(map, layerId, data = NULL, size = NULL, opacity = NULL,
                            minValue = NULL, maxValue = NULL, 

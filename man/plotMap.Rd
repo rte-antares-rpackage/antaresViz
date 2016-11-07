@@ -5,9 +5,9 @@
 \title{Display results of a simulation on a map}
 \usage{
 plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
-  colLinkVar = "none", sizeLinkVar = "none", timeId = min(x$areas$timeId),
-  interactive = base::interactive(), options = plotMapOptions(),
-  width = NULL, height = NULL)
+  areaChartType = c("polar", "bar"), colLinkVar = "none",
+  sizeLinkVar = "none", timeId = NULL, interactive = base::interactive(),
+  options = plotMapOptions(), width = NULL, height = NULL)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 

@@ -21,6 +21,8 @@
 #' * color  : color of each element
 #' * pal    : color palette used
 #' * size   : size of elements.
+#' * maxSize: vector containing maximal absolute value observed in each column of
+#'            the data
 #' 
 #' @noRd
 .getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar, colorScaleOpts) {
@@ -97,16 +99,20 @@
                            areaChartType, options) {
   if (is.null(x$areas)) return(map)
   
+  # Just in case, we do not want to accidentally modify the original map layout.
   ml <- copy(mapLayout)
   
+  # How to represent multiple size variables ?
   updateChart <- switch(areaChartType, 
                         bar = updateBarChart, 
                         polar = updatePolarChart)
   
-  optsArea <- .getColAndSize(x$areas, mapLayout$coords, "area", t,
+  # Compute color and size of areas for the given time step.
+  optsArea <- .getColAndSize(x$areas, ml$coords, "area", t,
                              colAreaVar, sizeAreaVars, options$areaColorScaleOpts)
   ml$coords <- optsArea$coords
   
+  # Use default values if needed.
   if (is.null(optsArea$color)) optsArea$color <- options$areaDefaultCol
   
   if (is.null(optsArea$size)) optsArea$size <- options$areaDefaultSize
@@ -114,6 +120,7 @@
     optsArea$size <- sqrt(optsArea$size) * options$areaMaxSize
   }
   
+  # Update circle markers and/or polar/bar charts.
   if (is.matrix(optsArea$size) && ncol(optsArea$size) > 1) {
     if (options$areaChartUniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
       
@@ -129,11 +136,16 @@
       updateChart(optsArea$coords$area, opacity = 0)
   }
   
+  # Update the legend
+  #
+  # Color scale legend
   if (!is.null(optsArea$pal)) {
     map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
   } else {
     map <- updateAntaresLegend(map, htmlAreaColor = "")
   }
+  
+  # Size legend (radius, polar or bar chart legend)
   if (!is.null(optsArea$maxSize)) {
     if (length(sizeAreaVars) == 1) {
       map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$areaMaxSize, optsArea$maxSize))
@@ -164,9 +176,11 @@
   
   ml <- copy(mapLayout)
   
+  # Get color and size of links
   optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
                              colLinkVar, sizeLinkVar, options$linkColorScaleOpts)
   
+  # Use default values if needed
   if (is.null(optsLink$color)) optsLink$color <- options$linkDefaultCol
   if (is.null(optsLink$size)) optsLink$size <- options$linkDefaultSize
   else optsLink$size <- optsLink$size * options$linkMaxSize
@@ -177,11 +191,16 @@
                                         dir = optsLink$dir,
                                         opacity = 1)
   
+  # Update the legend
+  
+  # Color scale legend
   if (!is.null(optsLink$pal)) {
     map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
   } else {
     map <- updateAntaresLegend(map, htmlLinkColor = "")
   }
+  
+  # Line width legend
   if (!is.null(optsLink$maxSize)) {
     map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$maxSizeLink, optsLink$maxSize))
   } else {
