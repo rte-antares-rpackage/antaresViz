@@ -88,6 +88,8 @@ button:focus {
 }
 
 .leaflet-container path{ 
-  transition: all .75s;
-  -webkit-transition: all .75s;
+  transition: fill .75s, stroke-width .75s;
+  -webkit-transition: fill .75s, stroke-width .75s;
+  -moz-transition: fill .75s, stroke-width .75s;
+  -o-transition: fill .75s, stroke-width .75s;
 }

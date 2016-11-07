@@ -183,7 +183,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
                          stroke = FALSE, 
                          fillColor = colAreas, 
                          popup = x$coords$area, layerId = x$coords$area,
-                         fillOpacity = opacityArea)
+                         fillOpacity = opacityArea, options = list(className = "leaflet-zoom-hide"))
       }
     }
     
