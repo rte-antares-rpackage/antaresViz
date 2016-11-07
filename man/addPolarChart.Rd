@@ -5,11 +5,11 @@
 \alias{updatePolarChart}
 \title{Add or update polar charts}
 \usage{
-addPolarChart(map, lng, lat, data, radius = 20, opacity = 1,
+addPolarChart(map, lng, lat, data, size = 20, opacity = 1,
   scale = c("radius", "area"), maxValue = NULL, colors = NULL,
   popup = NULL, layerId = NULL)
 
-updatePolarChart(map, layerId, data = NULL, radius = 20, opacity = 1,
+updatePolarChart(map, layerId, data = NULL, size = 20, opacity = 1,
   scale = c("radius", "area"), maxValue = NULL, popup = NULL)
 }
 \arguments{
@@ -22,7 +22,7 @@ updatePolarChart(map, layerId, data = NULL, radius = 20, opacity = 1,
 \item{data}{numeric matrix. Number of rows must equal the number of polar charts. The
 number of columns is equal to the number of sectors in each polar chart.}
 
-\item{radius}{maximal radius of a polar chart}
+\item{size}{maximal radius of a polar chart}
 
 \item{opacity}{Opacity of a polar chart}
 

@@ -81,7 +81,7 @@
                     data = matrix(1, nrow = nrow(ml$coords)),
                     opacity = 0, layerId = ml$coords$area,
                     colors = options$areaChartColors,
-                    popup = ml$coords$area)
+                    popup = ml$coords$area, size = options$areaMaxSize)
   }
   
   # Reset the bounds of the map if links are drawn

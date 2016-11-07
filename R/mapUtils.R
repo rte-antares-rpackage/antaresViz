@@ -188,7 +188,7 @@ updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL,
 #' @param data
 #'   numeric matrix. Number of rows must equal the number of polar charts. The
 #'   number of columns is equal to the number of sectors in each polar chart.
-#' @param radius
+#' @param size
 #'   maximal radius of a polar chart
 #' @param opacity
 #'   Opacity of a polar chart
@@ -231,7 +231,7 @@ updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL,
 #' leaflet() %>% addPolarChart(c(0,30), c(0, 0), mydata, maxValue = 9)
 #' 
 #' @export
-addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
+addPolarChart <- function(map, lng, lat, data, size = 20, opacity = 1,
                           scale = c("radius", "area"), maxValue = NULL, 
                           colors = NULL, popup = NULL, layerId = NULL) {
  
@@ -240,7 +240,7 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
   
   options <- .prepareOptions(
     required = list(lng = lng, lat = lat), 
-    optional = list(radius = radius, opacity = opacity, maxValue = 1, 
+    optional = list(radius = size, opacity = opacity, maxValue = 1, 
                     layerId = layerId, popup = popup)
   )
   
@@ -268,35 +268,25 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
     invokeMethod(leaflet:::getMapData(map), "addPolarChart", options, data, colors)
 }
 
-#' Add or update polar charts
+#' Add or update bar charts
 #' 
-#' These functions add and update polar area charts on a leaflet map. 
+#' These functions add and update bar charts on a leaflet map. 
 #' 
 #' @param lng
-#'   longitude of the polar charts
+#'   longitude of the bar charts
 #' @param lat
-#'   lattitude of the polar charts
+#'   lattitude of the bar charts
 #' @param data
-#'   numeric matrix. Number of rows must equal the number of polar charts. The
-#'   number of columns is equal to the number of sectors in each polar chart.
-#' @param radius
-#'   maximal radius of a polar chart
+#'   numeric matrix. Number of rows must equal the number of bar charts. The
+#'   number of columns is equal to the number of bars in each bar chart.
+#' @param size
+#'   maximal width and height of the bar charts
 #' @param opacity
-#'   Opacity of a polar chart
-#' @param scale
-#'   Should the values be represented by the radius or the area ? Radius by 
-#'   default. This creates a high distorsion of the values, but permits to 
-#'   clearly see differences between different zones.
-#' @param maxValue
-#'   Either a single numeric value, or a vector with length equal to the number
-#'   of columns of data. In the first case (one value), all variable will share
-#'   the same scale while in the second one each variable will have its own scale.
-#'   If it is \code{NULL}, the maximal value of each column is used (so scales
-#'   are different for each column). If it equals to 0, the global maximum of
-#'   the matrix is used and all variables share the same scale.
+#'   Opacity of a bar chart
 #' @param colors
-#'   Vector of colors for the sectors of the polar chart
+#'   Vector of colors for each bar of the bar charts
 #' @inheritParams addDirectedSegments
+#' @inheritParams addPolarChart
 #' 
 #' @return 
 #' The modified map object.
@@ -306,20 +296,20 @@ addPolarChart <- function(map, lng, lat, data, radius = 20, opacity = 1,
 #' require(leaflet)
 #' mydata <- rbind(1:3, 4:6)
 #' 
-#' # Polar chart with distinct scales for each column of mydata. For the second
-#' # polar chart the radius will be equal to 20 (maximal radius) for each sector.
-#' # For the first one radius will be 1/4 * 20, 2/5 * 20 and 3/6 * 20
+#' # Bar chart with distinct scales for each column of mydata. For the second
+#' # bar chart the height will be equal to 20 (maximal size) for each bar.
+#' # For the first one height will be 1/4 * 20, 2/5 * 20 and 3/6 * 20
 #' 
-#' leaflet() %>% addPolarCharts(c(0,30), c(0, 0), mydata) 
+#' leaflet() %>% addBarChart(c(0,30), c(0, 0), mydata) 
 #' 
 #' # Common scale for the three columns
 #' 
-#' leaflet() %>% addPolarCharts(c(0,30), c(0, 0), mydata, maxValue = 0)
+#' leaflet() %>% addBarChart(c(0,30), c(0, 0), mydata, maxValue = 0)
 #' 
 #' # Explicitely provide the maximal value. This is useful for comparison to have
 #' # the same scale on different maps.
 #' 
-#' leaflet() %>% addPolarChart(c(0,30), c(0, 0), mydata, maxValue = 9)
+#' leaflet() %>% addBarChart(c(0,30), c(0, 0), mydata, maxValue = 50)
 #' 
 #' @export
 addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
@@ -367,14 +357,14 @@ addBarChart <- function(map, lng, lat, data, size = 30, opacity = 1,
 
 #' @rdname addPolarChart
 #' @export
-updatePolarChart <- function(map, layerId, data = NULL, radius = 20, opacity = 1,
+updatePolarChart <- function(map, layerId, data = NULL, size = 20, opacity = 1,
                              scale = c("radius", "area"), maxValue = NULL, popup = NULL) {
   scale <- match.arg(scale)
   if (!is.null(data)) data <- abs(data)
   
   options <- .prepareOptions(
     required = list(layerId = layerId),
-    optional = list(radius = radius, opacity = opacity, maxValue = 1, popup = popup)
+    optional = list(radius = size, opacity = opacity, maxValue = 1, popup = popup)
   )
   
   if (!is.null(data)) {

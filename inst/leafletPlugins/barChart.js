@@ -37,6 +37,12 @@ L.BarChart = L.CircleMarker.extend({
   },
   
   setOptions: function(options) {
+    if (options.size) {
+      console.log("glop");
+      this.options.width = options.size;
+      this.options.height = options.size;
+    }
+    
     L.Util.setOptions(this, options);
     this._reset();
   },
@@ -84,9 +90,11 @@ window.LeafletWidget.methods.addBarCharts = function(options, data, colors) {
     if (options.opacity) style.opacity = options.opacity[i];
     if (colors) style.colors = colors;
     
+    style.size = options.size ? options.size[i]: 30;
+    
     var l = L.barChart(
       [options.lat[i], options.lng[i]],
-      30,
+      style.size,
       data[i],
       style
     );
@@ -106,6 +114,7 @@ window.LeafletWidget.methods.updateBarCharts = function(options, data, colors) {
     if (options.minValue) opts.minValue = options.minValue[i];
     if (options.maxValue) opts.maxValue = options.maxValue[i];
     if (options.opacity) opts.opacity = options.opacity[i];
+    if (options.size) opts.size = options.size[i];
     if (colors) opts.colors = colors;
     if (data) opts.data = data[i];
     
