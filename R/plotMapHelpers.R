@@ -117,7 +117,7 @@
   
   if (is.null(optsArea$size)) optsArea$size <- options$areaDefaultSize
   else if (ncol(optsArea$size) == 1) {
-    optsArea$size <- sqrt(optsArea$size) * options$areaMaxSize
+    optsArea$size <- sqrt(abs(optsArea$size)) * options$areaMaxSize
   }
   
   # Update circle markers and/or polar/bar charts.
