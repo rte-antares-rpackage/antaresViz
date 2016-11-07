@@ -164,15 +164,15 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
     if (is.matrix(sizeAreas) && ncol(sizeAreas) > 1) {
       if (areaChartType == "polar") {
         addAreas <- function(map) {
-          addPolarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                        popup = x$coords$area, layerId = x$coords$area, 
-                        maxValue = areaMaxValues, opacity = opacityArea)
+          addPolarCharts(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
+                         popup = x$coords$area, layerId = x$coords$area, 
+                         maxValue = areaMaxValues, opacity = opacityArea)
         }
       } else {
         addAreas <- function(map) {
-          addBarChart(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                      popup = x$coords$area, layerId = x$coords$area, 
-                      opacity = opacityArea)
+          addBarCharts(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
+                       popup = x$coords$area, layerId = x$coords$area, 
+                       opacity = opacityArea)
         }
       }
       

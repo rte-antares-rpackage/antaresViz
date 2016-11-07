@@ -76,7 +76,7 @@
   
   # Add a layer with bar or polar charts
   if (!is.null(x$areas)) {
-    addChart <- switch(areaChartType, bar = addBarChart, polar = addPolarChart)
+    addChart <- switch(areaChartType, bar = addBarCharts, polar = addPolarCharts)
     map <- addChart(map, ml$coords$x, ml$coords$y,
                     data = matrix(1, nrow = nrow(ml$coords)),
                     opacity = 0, layerId = ml$coords$area,
@@ -104,8 +104,8 @@
   
   # How to represent multiple size variables ?
   updateChart <- switch(areaChartType, 
-                        bar = updateBarChart, 
-                        polar = updatePolarChart)
+                        bar = updateBarCharts, 
+                        polar = updatePolarCharts)
   
   # Compute color and size of areas for the given time step.
   optsArea <- .getColAndSize(x$areas, ml$coords, "area", t,
@@ -202,7 +202,7 @@
   
   # Line width legend
   if (!is.null(optsLink$maxSize)) {
-    map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$maxSizeLink, optsLink$maxSize))
+    map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$linkMaxSize, optsLink$maxSize))
   } else {
     map <- updateAntaresLegend(map, htmlLinkSize = "")
   }
