@@ -31,6 +31,8 @@
 #'   the line width of the links on the map.
 #' @param timeId
 #'   A single time id present in the data.
+#' @param main
+#'   Title of the map.
 #' @param options
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
@@ -72,6 +74,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     areaChartType = c("polar", "bar"),
                     colLinkVar = "none", sizeLinkVar = "none", 
                     timeId = NULL,
+                    main = "",
                     interactive = base::interactive(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
@@ -116,7 +119,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar) {
-    map <- .initMap(x, mapLayout, areaChartType, options) %>% 
+    map <- .initMap(x, mapLayout, areaChartType, options) %>%
       .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, options) %>% 
       .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, areaChartType, options)
     
@@ -143,12 +146,13 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       colLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), colLinkVar, label = "Color"),
       sizeLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), sizeLinkVar, label = "Width")
     ),
-    .content = leafletOutput("map", height = "100%")
+    .content = leafletOutput("map", height = "100%"), 
+    .main = main
   )
   
   args <- runGadget(ui, 
                     .plotMapServer(x, mapLayout, initialMap, areaChartType, options), 
-                    viewer = browserViewer())
-  do.call(plotFun, args)
+                    viewer = browserViewer(), )
+  do.call(plotFun, args) %>% addTitle(main)
 }
 

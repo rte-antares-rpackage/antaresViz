@@ -93,3 +93,8 @@ button:focus {
   -moz-transition: fill .75s, stroke-width .75s;
   -o-transition: fill .75s, stroke-width .75s;
 }
+
+.leaflet-container {
+    background: #fff;
+    border: solid 1px #ccc;
+}

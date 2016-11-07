@@ -6,8 +6,9 @@
 \usage{
 plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   areaChartType = c("polar", "bar"), colLinkVar = "none",
-  sizeLinkVar = "none", timeId = NULL, interactive = base::interactive(),
-  options = plotMapOptions(), width = NULL, height = NULL)
+  sizeLinkVar = "none", timeId = NULL, main = "",
+  interactive = base::interactive(), options = plotMapOptions(),
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -34,6 +35,8 @@ the default color is used for all links}
 the line width of the links on the map.}
 
 \item{timeId}{A single time id present in the data.}
+
+\item{main}{Title of the map.}
 
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}

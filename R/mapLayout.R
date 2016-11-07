@@ -146,10 +146,10 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
                            opacityArea = 1, areaMaxValues = NULL,
                            areaChartType = c("polar", "bar"), colLinks = "#CCCCCC", 
                            sizeLinks = 3, opacityLinks = 1, dirLinks = 0, 
-                           links = TRUE, areas = TRUE, 
+                           links = TRUE, areas = TRUE,
                            width = NULL, height = NULL, ...) {
   
-  map <- leaflet(width = width, height = height) %>% 
+  map <- leaflet(width = width, height = height, padding = 10) %>% 
     addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
   
   if (links) {
