@@ -51,6 +51,13 @@ requireDep <- function(map, deps) {
        src = system.file("leafletPlugins", package = "antaresViz"),
        script = "antaresLegend.js",
        style = "antaresLegend.css"
+     ),
+     
+     timeLabel = htmlDependency(
+       "timeLabel",
+       "1.0",
+       src = system.file("leafletPlugins", package = "antaresViz"),
+       script = "timeLabel.js"
      )
      
    )

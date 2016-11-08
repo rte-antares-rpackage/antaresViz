@@ -524,3 +524,40 @@ updateAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL,
   map %>% requireDep("antaresLegend") %>% 
     invokeMethod(data=NULL, "updateAntaresLegend", options)
 }
+
+addTimeLabel <- function(map, timeId = NULL, timeStep, opts) {
+  time <- .timeIdToDate(timeId, timeStep, opts) %>% 
+    as.POSIXct(tz = "UTC") %>% 
+    as.numeric()
+  
+  options <- list(
+    time = time,
+    timeStep = timeStep
+  )
+  
+  map %>% requireDep("timeLabel") %>% 
+    invokeMethod(data=NULL, "addTimeLabel", options)
+}
+
+#' Update legend of a map created with plotMap
+#' 
+#' @noRd
+updateTimeLabel <- function(map, timeId = NULL, timeStep, opts) {
+  if (is.null(timeId)) return(map)
+  
+  time <- .timeIdToDate(timeId, timeStep, opts) %>% 
+    as.POSIXct() %>% 
+    as.numeric() 
+  
+  options <- list(
+    time = time,
+    timeStep = timeStep
+  )
+  
+  # Remove null elements
+  nullOpts <- sapply(options, is.null)
+  options <- options[!nullOpts]
+  
+  map %>% requireDep("timeLabel") %>% 
+    invokeMethod(data=NULL, "updateTimeLabel", options)
+}

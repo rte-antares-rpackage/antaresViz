@@ -33,6 +33,7 @@
                    input$sizeLinkVar, options)
       .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, 
                      input$sizeAreaVars, areaChartType, options)
+      updateTimeLabel(map, input$timeId, attr(x, "timeStep"), simOptions(x))
     })
     
     # Return a list with the last value of inputs
