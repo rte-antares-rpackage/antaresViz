@@ -86,13 +86,6 @@
                     popup = ml$coords$area, size = options$areaMaxSize)
   }
   
-  # Reset the bounds of the map if links are drawn
-  if (!is.null(x$links)) {
-    rangeX <- range(c(ml$links$x0, ml$links$x1))
-    rangeY <- range(c(ml$links$y0, ml$links$y1))
-    map <- fitBounds(map, rangeX[1], rangeY[1], rangeX[2], rangeY[2])
-  }
-  
   addShadows(map)
 }
 

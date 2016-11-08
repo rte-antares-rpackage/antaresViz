@@ -213,6 +213,25 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
     map <- addAreas(map)
   }
   
+  # Set the view of the map to include all data
+  xcoords <- c()
+  ycoords <- c()
+  
+  if (links) {
+    xcoords <- c(x$links$x0, x$links$x1)
+    ycoords <- c(x$links$y0, x$links$y1)
+  }
+  
+  if (areas) {
+    xcoords <- c(xcoords, x$coords$x)
+    ycoords <- c(ycoords, x$coords$y)
+  }
+
+  rangeX <- range(xcoords)
+  rangeY <- range(ycoords)
+  
+  map <- fitBounds(map, rangeX[1], rangeY[1], rangeX[2], rangeY[2])
+  
   # Add shadows to elements
   map %>% addShadows()
 }
