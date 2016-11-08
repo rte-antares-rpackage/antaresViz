@@ -71,7 +71,9 @@
 .initMap <- function(x, ml, areaChartType, options) {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
-              opacityArea = 0, opacityLinks = 0) %>% 
+              opacityArea = 0, opacityLinks = 0, addTiles = options$addTiles,
+              polygons = options$polygons, 
+              polygonOptions = options$polygonOptions) %>% 
     addAntaresLegend()
   
   # Add a layer with bar or polar charts

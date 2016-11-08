@@ -102,6 +102,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #' @param ...
 #'   Currently unused.
 #' @inheritParams productionStack
+#' @inheritParams plotMapOptions
 #'   
 #' @return 
 #'   The function generates an \code{htmlwidget} of class \code{leaflet}. It can
@@ -147,17 +148,39 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
                            areaChartType = c("polar", "bar"), colLinks = "#CCCCCC", 
                            sizeLinks = 3, opacityLinks = 1, dirLinks = 0, 
                            links = TRUE, areas = TRUE,
+                           addTiles = TRUE, background = "white", polygons = NULL,
+                           polygonOptions = list(stroke = TRUE,
+                                                 color = "#bbb",
+                                                 weight = 0.5,
+                                                 opacity = 1,
+                                                 fillOpacity = 0.2),
                            width = NULL, height = NULL, ...) {
   
-  map <- leaflet(width = width, height = height, padding = 10) %>% 
-    addTiles(urlTemplate = "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
+  map <- leaflet(width = width, height = height, padding = 10)
   
-  if (links) {
-    map <- addDirectedSegments(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
-                        weight = sizeLinks, opacity = opacityLinks,
-                        color = colLinks, layerId = x$links$link, popup = x$links$link)
+  # Add a base map
+  if (addTiles) {
+    map %<>% addTiles("http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
   }
   
+  # Add custom polygons
+  if (!is.null(polygons)) {
+    if (!is(polygons, "SpatialPolygonsDataFrame") || !is(polygons, "SpatialPolygons")) {
+      stop("Parameter 'polygons' should be an object of class 'SpatialPolygonsDataFrame'.")
+    }
+    polygonOptions$map <- map
+    polygonOptions$data <- polygons
+    map <- do.call(addPolygons, polygonOptions)
+  }
+  
+  # Add links
+  if (links) {
+    map %<>% addDirectedSegments(x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
+                                 weight = sizeLinks, opacity = opacityLinks,
+                                 color = colLinks, layerId = x$links$link, popup = x$links$link)
+  }
+  
+  # Add areas
   if (areas) {
     areaChartType <- match.arg(areaChartType)
     
@@ -187,9 +210,9 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
       }
     }
     
-    
-    
     map <- addAreas(map)
   }
+  
+  # Add shadows to elements
   map %>% addShadows()
 }

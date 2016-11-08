@@ -7,8 +7,10 @@
 \method{plot}{mapLayout}(x, colAreas = x$coords$color, sizeAreas = 10,
   opacityArea = 1, areaMaxValues = NULL, areaChartType = c("polar",
   "bar"), colLinks = "#CCCCCC", sizeLinks = 3, opacityLinks = 1,
-  dirLinks = 0, links = TRUE, areas = TRUE, width = NULL,
-  height = NULL, ...)
+  dirLinks = 0, links = TRUE, areas = TRUE, addTiles = TRUE,
+  background = "white", polygons = NULL, polygonOptions = list(stroke =
+  TRUE, color = "#bbb", weight = 0.5, opacity = 1, fillOpacity = 0.2),
+  width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}
@@ -34,6 +36,19 @@ respectively the destination and the origin of the link.}
 \item{links}{Should links be drawn on the map ?}
 
 \item{areas}{Should areas be drawn on the map ?}
+
+\item{addTiles}{Should a base map be downloaded on the internet and displayed ?}
+
+\item{polygons}{An object of class \code{SpatialPolygonsDataFrame} created by package 
+\code{sp} or related packages. These polygons will be displayed above the 
+base map (if any) and under the layer containing areas and links. It can
+be useful to create maps that do not require an internet connection to be
+correctly displayed or to display custom geographic area boundaries.}
+
+\item{polygonOptions}{A list of options that are accepted by function 
+\code{\link[leaflet]{addPolygons}}. When parameter \code{polygons} is 
+provided, these options control how they are drawn on the map (color, 
+opacity, etc.).}
 
 \item{width}{Width of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}

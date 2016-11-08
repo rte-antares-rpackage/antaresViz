@@ -30,6 +30,19 @@
 #' @param linkColorScaleOpts
 #'   List of options used to construct a continuous color scale. This list should
 #'   be generated with function \code{colorScaleOptions}.
+#' @param addTiles
+#'   Should a base map be downloaded on the internet and displayed ?
+#' @param polygons
+#'   An object of class \code{SpatialPolygonsDataFrame} created by package 
+#'   \code{sp} or related packages. These polygons will be displayed above the 
+#'   base map (if any) and under the layer containing areas and links. It can
+#'   be useful to create maps that do not require an internet connection to be
+#'   correctly displayed or to display custom geographic area boundaries.
+#' @param polygonOptions
+#'   A list of options that are accepted by function 
+#'   \code{\link[leaflet]{addPolygons}}. When parameter \code{polygons} is 
+#'   provided, these options control how they are drawn on the map (color, 
+#'   opacity, etc.).
 #'   
 #' @return 
 #'   A list with the values of the different graphical parameters.
@@ -46,7 +59,13 @@ plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
                            areaChartUniqueScale = FALSE,
                            areaColorScaleOpts = colorScaleOptions(),
                            linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, 
-                           linkMaxSize = 10, linkColorScaleOpts = colorScaleOptions()) {
+                           linkMaxSize = 10, linkColorScaleOpts = colorScaleOptions(),
+                           addTiles = TRUE, background = "white", polygons = NULL,
+                           polygonOptions = list(stroke = TRUE,
+                                                 color = "#999",
+                                                 weight = 0.5,
+                                                 opacity = 1,
+                                                 fillOpacity = 0.2)) {
   as.list(environment())
 }
 

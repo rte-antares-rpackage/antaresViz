@@ -129,7 +129,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar)
   
   if (!interactive) {
-    return(initialMap)
+    return(initialMap %>% addTitle(main))
   }
   
   # Create the UI of the gadget
