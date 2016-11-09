@@ -24,8 +24,12 @@ L.BarChart = L.CircleMarker.extend({
   
   onAdd: function(map) {
     L.CircleMarker.prototype.onAdd.call(this, map);
-    this._container.setAttribute("class", "leaflet-zoom-hide");
+    this._container.setAttribute("class", "leaflet-zoom-hide no-shadow");
     this._g = d3.select(this._container).append("g");
+    this._g.append("line")
+      .attr("x2", this.options.width)
+      .attr("style", "stroke:#999;stroke-width:1;");
+    
     map.on('viewreset', this._reset, this);
     this._reset();
   },
@@ -58,21 +62,40 @@ L.BarChart = L.CircleMarker.extend({
       
     // Set Position of the container
     var p = this._map.latLngToLayerPoint(this._center);
-    this._g.attr("transform", "translate(" + (p.x - this.options.width / 2) + "," + (p.y - x(0)) + ")");
+    this._g
+      .attr("transform", "translate(" + (p.x - this.options.width / 2) + "," + (p.y) + ")")
+      .transition()
+      .duration(750)
+      .attr("opacity", this.options.opacity);
+      
+    // Position the chart inside the container in such way the 0 is always aligned
+    // with the geographic coordinates
+
+    // Display/ update data
+    var bar = this._g.selectAll("rect").data(this.options.data);
     
-    // Remove old chart
-    this._g.selectAll("rect").remove();
-    
-    var bar = this._g.selectAll("rect")
-      .data(this.options.data)
-      .enter()
+    bar.enter()
       .append("rect")
-      .attr("x", function(d, i) {return i * barWidth})
-      .attr("y", function(d) {return d > 0? x(d): x(0);})
-      .attr("height", function(d) {return Math.abs(x(d) - x(0))})
+      .attr("x", function(d, i) {return (i + 1) * barWidth})
+      .attr("y", function(d) {return 0})
       .attr("width", barWidth)
-      .attr("fill", function(d, i) {return color(i)})
-      .attr("fill-opacity", this.options.opacity);
+      .merge(bar)
+      .transition()
+      .duration(750)
+      .attr("width", barWidth)
+      .attr("x", function(d, i) {return i * barWidth})
+      .attr("y", function(d) {return d >= 0? x(d) - x(0): 0;})
+      .attr("height", function(d) {return Math.abs(x(d) - x(0))})
+      .attr("fill", function(d, i) {return color(i)});
+      
+      bar.exit()
+      .transition()
+      .duration(750)
+      .attr("x", function(d, i) {return i * barWidth})
+      .attr("y", 0)
+      .attr("width", 0)
+      .attr("height", 0)
+      .remove();
         
   }
 });

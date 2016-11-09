@@ -19,6 +19,10 @@ window.LeafletWidget.methods.addShadows = function() {
   svg.appendChild(svg.ownerDocument.importNode(filter.documentElement, true));
   
   for (var i = 0; i < els.length - 1; i++) {
-    els[i].setAttribute("filter", "url(#dropShadow)");
+    var cl = els[i].getAttribute("class");
+    console.log(cl);
+    if (!cl || cl.indexOf("no-shadow") == -1) {
+      els[i].setAttribute("filter", "url(#dropShadow)");
+    }
   }
 };

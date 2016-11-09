@@ -80,7 +80,7 @@
   if (!is.null(x$areas)) {
     addChart <- switch(areaChartType, bar = addBarCharts, polar = addPolarCharts)
     map <- addChart(map, ml$coords$x, ml$coords$y,
-                    data = matrix(1, nrow = nrow(ml$coords)),
+                    data = matrix(0, nrow = nrow(ml$coords)),
                     opacity = 0, layerId = ml$coords$area,
                     colors = options$areaChartColors,
                     popup = ml$coords$area, size = options$areaMaxSize)
