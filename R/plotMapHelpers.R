@@ -68,13 +68,14 @@
 
 # Initialize a map with all elements invisible: links, circles and bar or polar 
 # charts 
-.initMap <- function(x, ml, options) {
+.initMap <- function(x, ml, options, width, height) {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
               opacityArea = 0, opacityLinks = 0, addTiles = options$addTiles,
               polygons = options$polygons, 
-              polygonOptions = options$polygonOptions) %>% 
-    addAntaresLegend()
+              polygonOptions = options$polygonOptions,
+              width = width, height = height) %>% 
+    addAntaresLegend(display = options$legend)
   
   # Add a layer with bar or polar charts
   if (!is.null(x$areas)) {

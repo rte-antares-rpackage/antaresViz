@@ -6,13 +6,13 @@ L.AntaresLegend = L.Control.extend({
     htmlLinkColor: null,
     htmlLinkSize: null,
     onComplete:null,
+    display: "choose",
     collapsed: true
   },
   
   initialize: function(options) {
     var createEl = L.DomUtil.create;
-    var container = createEl('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-    container.style.backgroundColor = 'white';
+    var container = createEl('div');
     container.style.padding = "5px";
     
     var content = createEl("div", "", container);
@@ -58,6 +58,25 @@ L.AntaresLegend = L.Control.extend({
   },
   
   _reset: function() {
+    if (this.options.display == "hidden") {
+      console.log(this._container);
+      this._container.className = "";
+      this._container.style.display = "none";
+      this._content.style.display = "none";
+      this._btn.style.display = "none";
+    } else {
+      this._container.className = 'leaflet-bar leaflet-control leaflet-control-custom';
+      this._container.style.display = "block";
+      this._container.style.backgroundColor = 'white';
+      this._content.style.display = "block";
+      this._btn.style.display = "block";
+    }
+    
+    if (this.options.display == "visible") {
+      this.options.collapsed = false;
+      this._btn.style.display = "none";
+    }
+    
     var legAreas = this._content.querySelector("#legend-area");
     var legLinks = this._content.querySelector("#legend-link");
     var o = this.options;

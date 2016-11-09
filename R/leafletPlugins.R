@@ -490,13 +490,14 @@ addShadows <- function(map) {
 #' @noRd
 addAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL, 
                              htmlLinkColor = NULL, htmlLinkSize = NULL,
-                             onComplete = "") {
+                             onComplete = "", display = "choose") {
   options <- list(
     htmlAreaColor = htmlAreaColor,
     htmlAreaSize = htmlAreaSize,
     htmlLinkColor = htmlLinkColor,
     htmlLinkSize = htmlLinkSize,
-    onComplete = onComplete
+    onComplete = onComplete,
+    display = display
   )
   
   map %>% requireDep("antaresLegend") %>% 
@@ -508,13 +509,14 @@ addAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL,
 #' @noRd
 updateAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL, 
                                 htmlLinkColor = NULL, htmlLinkSize = NULL,
-                                onComplete = NULL) {
+                                onComplete = NULL, display = NULL) {
   options <- list(
     htmlAreaColor = htmlAreaColor,
     htmlAreaSize = htmlAreaSize,
     htmlLinkColor = htmlLinkColor,
     htmlLinkSize = htmlLinkSize,
-    onComplete = onComplete
+    onComplete = onComplete,
+    display = display
   )
   
   # Remove null elements

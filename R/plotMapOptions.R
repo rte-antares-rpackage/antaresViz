@@ -28,6 +28,10 @@
 #' @param linkColorScaleOpts
 #'   List of options used to construct a continuous color scale. This list should
 #'   be generated with function \code{colorScaleOptions}.
+#' @param legend
+#'   Should the legend be displayed or not ? Default is to mask the legend but
+#'   add a button to display it. Other values are "visible" to make the legend
+#'   always visible and "hidden" to mask it.
 #' @param addTiles
 #'   Should a base map be downloaded on the internet and displayed ?
 #' @param polygons
@@ -58,6 +62,7 @@ plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
                            areaColorScaleOpts = colorScaleOptions(),
                            linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, 
                            linkMaxSize = 10, linkColorScaleOpts = colorScaleOptions(),
+                           legend = c("choose", "visible", "hidden"),
                            addTiles = TRUE, background = "white", polygons = NULL,
                            polygonOptions = list(stroke = TRUE,
                                                  color = "#999",
@@ -65,6 +70,10 @@ plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
                                                  opacity = 1,
                                                  fillOpacity = 0.2)) {
   areaChartType <- match.arg(areaChartType)
+  legend <- match.arg(legend)
+  areaColorScaleOpts <- do.call(colorScaleOptions, areaColorScaleOpts)
+  linkColorScaleOpts <- do.call(colorScaleOptions, linkColorScaleOpts)
+  
   as.list(environment())
 }
 

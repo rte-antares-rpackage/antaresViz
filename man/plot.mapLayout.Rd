@@ -24,6 +24,9 @@ a matrix with as many rows as the number of areas. In the last case, areas
 are represented by polar area charts and each column is represented by one
 section of the polar charts.}
 
+\item{areaChartType}{Type of chart to use to represent multiple values. Possible values are "bar"
+for bar charts and "polar" for polar area charts.}
+
 \item{colLinks}{Vector of colors for links.}
 
 \item{sizeLinks}{Line width of the links, in pixels.}
