@@ -13,11 +13,9 @@
 #'   maximal size of an area when it represents the value of some variable.
 #' @param areaChartColors
 #'   Vector of colors to use in polar area charts and bar charts
-#' @param areaChartUniqueScale
-#'   If the map contains polar or bar charts, should the different variables 
-#'   represented use the same scale or should each variable have its own scale ?
-#'   This parameter should be TRUE only if the variables have the same unit and 
-#'   are comparable : for instance production variables.  
+#' @param areaChartType
+#'   Type of chart to use to represent multiple values. Possible values are "bar"
+#'   for bar charts and "polar" for polar area charts. 
 #' @param areaColorScaleOpts
 #'   List of options used to construct a continuous color scale. This list should
 #'   be generated with function \code{colorScaleOptions}.
@@ -56,7 +54,7 @@
 #' @export
 plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15, 
                            areaMaxSize = 15, areaChartColors = NULL,
-                           areaChartUniqueScale = FALSE,
+                           areaChartType = c("bar", "polar"),
                            areaColorScaleOpts = colorScaleOptions(),
                            linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, 
                            linkMaxSize = 10, linkColorScaleOpts = colorScaleOptions(),
@@ -66,6 +64,7 @@ plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
                                                  weight = 0.5,
                                                  opacity = 1,
                                                  fillOpacity = 0.2)) {
+  areaChartType <- match.arg(areaChartType)
   as.list(environment())
 }
 

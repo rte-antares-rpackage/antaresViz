@@ -68,7 +68,7 @@
 
 # Initialize a map with all elements invisible: links, circles and bar or polar 
 # charts 
-.initMap <- function(x, ml, areaChartType, options) {
+.initMap <- function(x, ml, options) {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
               opacityArea = 0, opacityLinks = 0, addTiles = options$addTiles,
@@ -78,7 +78,7 @@
   
   # Add a layer with bar or polar charts
   if (!is.null(x$areas)) {
-    addChart <- switch(areaChartType, bar = addBarCharts, polar = addPolarCharts)
+    addChart <- switch(options$areaChartType, bar = addBarCharts, polar = addPolarCharts)
     map <- addChart(map, ml$coords$x, ml$coords$y,
                     data = matrix(0, nrow = nrow(ml$coords)),
                     opacity = 0, layerId = ml$coords$area,
@@ -91,14 +91,15 @@
 
 # Update the circles or polar charts representing areas in an existing map
 .redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars,
-                           areaChartType, options) {
+                           uniqueScale,
+                           options) {
   if (is.null(x$areas)) return(map)
   
   # Just in case, we do not want to accidentally modify the original map layout.
   ml <- copy(mapLayout)
   
   # How to represent multiple size variables ?
-  updateChart <- switch(areaChartType, 
+  updateChart <- switch(options$areaChartType, 
                         bar = updateBarCharts, 
                         polar = updatePolarCharts)
   
@@ -117,7 +118,7 @@
   
   # Update circle markers and/or polar/bar charts.
   if (is.matrix(optsArea$size) && ncol(optsArea$size) > 1) {
-    if (options$areaChartUniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
+    if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
       
     map <- map %>% 
       updateCircleMarkers(optsArea$coords$area, opacity = 0, fillOpacity = 0) %>% 
@@ -145,7 +146,7 @@
     if (length(sizeAreaVars) == 1) {
       map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$areaMaxSize, optsArea$maxSize))
     } else {
-      if (areaChartType == "bar") {
+      if (options$areaChartType == "bar") {
         map <- updateAntaresLegend(
           map, 
           htmlAreaSize = barChartLegend(sizeAreaVars, colors = options$areaChartColors)

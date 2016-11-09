@@ -160,7 +160,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
   
   # Add a base map
   if (addTiles) {
-    map %<>% addTiles("http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
+    map <- addTiles(map, "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
   }
   
   # Add custom polygons
@@ -175,9 +175,9 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
   
   # Add links
   if (links) {
-    map %<>% addDirectedSegments(x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
-                                 weight = sizeLinks, opacity = opacityLinks,
-                                 color = colLinks, layerId = x$links$link, popup = x$links$link)
+    map <- addDirectedSegments(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
+                               weight = sizeLinks, opacity = opacityLinks,
+                               color = colLinks, layerId = x$links$link, popup = x$links$link)
   }
   
   # Add areas

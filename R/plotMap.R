@@ -22,6 +22,11 @@
 #'   depending on the values of the variable choosen. If it has length greater than
 #'   1 then areas are represented by a polar area chart where the size of each section
 #'   depends on the values of each variable.
+#' @param uniqueScale
+#'   If the map contains polar or bar charts, should the different variables 
+#'   represented use the same scale or should each variable have its own scale ?
+#'   This parameter should be TRUE only if the variables have the same unit and 
+#'   are comparable : for instance production variables. 
 #' @param colLinkVar
 #'   Name of a variable present in \code{x$links}. The values of this variable
 #'   are represented by the color of the links on the map. If \code{"none"}, then
@@ -71,7 +76,7 @@
 #' 
 #' @export
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
-                    areaChartType = c("polar", "bar"),
+                    uniqueScale = FALSE,
                     colLinkVar = "none", sizeLinkVar = "none", 
                     timeId = NULL,
                     main = "",
@@ -79,7 +84,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
   
-  areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
   
   # Check that parameters have the good class
@@ -119,9 +123,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar) {
-    map <- .initMap(x, mapLayout, areaChartType, options) %>%
+    map <- .initMap(x, mapLayout, options) %>%
       .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, options) %>% 
-      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, areaChartType, options) %>% 
+      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, uniqueScale, options) %>% 
       addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
     
     map
@@ -141,7 +145,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
     Areas = list(
       colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
-      sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Radius", multiple = TRUE)
+      sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Radius", multiple = TRUE),
+      uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale")
     ),
     Links = list(
       colLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), colLinkVar, label = "Color"),
@@ -152,7 +157,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   )
   
   args <- runGadget(ui, 
-                    .plotMapServer(x, mapLayout, initialMap, areaChartType, options, sizeAreaVars), 
+                    .plotMapServer(x, mapLayout, initialMap, options, sizeAreaVars), 
                     viewer = browserViewer())
   do.call(plotFun, args) %>% addTitle(main)
 }

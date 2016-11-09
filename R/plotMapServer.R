@@ -20,7 +20,7 @@
 #' A shiny server function.
 #'
 #' @noRd
-.plotMapServer <- function(x, mapLayout, initialMap, areaChartType, options, sizeAreaVars) {
+.plotMapServer <- function(x, mapLayout, initialMap, options, sizeAreaVars) {
   
   function(input, output, session) {
     # Initialization of the map
@@ -35,7 +35,7 @@
       .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, 
                    input$sizeLinkVar, options)
       .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, 
-                     input$sizeAreaVars, areaChartType, options)
+                     input$sizeAreaVars, input$uniqueScale, options)
       updateTimeLabel(map, input$timeId, attr(x, "timeStep"), simOptions(x))
     })
     

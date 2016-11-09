@@ -10,8 +10,8 @@ L.BarChart = L.CircleMarker.extend({
   },
   
   initialize: function(center, size, data, options) {
-    this.options.width = size;
-    this.options.height = size;
+    this.options.width = size * 2;
+    this.options.height = size * 2;
     this.options.data = data;
     this._center = center;
     L.Util.setOptions(this, options);
@@ -43,8 +43,8 @@ L.BarChart = L.CircleMarker.extend({
   setOptions: function(options) {
     if (options.size) {
       console.log("glop");
-      this.options.width = options.size;
-      this.options.height = options.size;
+      this.options.width = options.size * 2;
+      this.options.height = options.size * 2;
     }
     
     L.Util.setOptions(this, options);
