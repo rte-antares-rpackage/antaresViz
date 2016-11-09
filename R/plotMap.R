@@ -152,8 +152,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   )
   
   args <- runGadget(ui, 
-                    .plotMapServer(x, mapLayout, initialMap, areaChartType, options), 
-                    viewer = browserViewer(), )
+                    .plotMapServer(x, mapLayout, initialMap, areaChartType, options, sizeAreaVars), 
+                    viewer = browserViewer())
   do.call(plotFun, args) %>% addTitle(main)
 }
 

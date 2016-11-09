@@ -20,11 +20,14 @@
 #' A shiny server function.
 #'
 #' @noRd
-.plotMapServer <- function(x, mapLayout, initialMap, areaChartType, options) {
+.plotMapServer <- function(x, mapLayout, initialMap, areaChartType, options, sizeAreaVars) {
   
   function(input, output, session) {
     # Initialization of the map
     output$map <- renderLeaflet(initialMap)
+    
+    # selectInput changes the order of the selected choices. This line prevents this
+    updateSelectInput(session, "sizeAreaVars", selected = sizeAreaVars)
     
     map <- leafletProxy("map", session)
 
