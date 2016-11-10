@@ -63,7 +63,42 @@
     res$dir <- 0
   }
   
+  # Pop-up
+  res$popup <- .valuesToPopup(coords, union(colVar, sizeVar), coords[[mergeBy]])
+  
   res
+}
+
+.valuesToPopup <- function(x, var, title) {
+  var <- var[var %in% names(x)]
+  if (length(var) == 0) return(title)
+  
+  popupTemplate <- '
+  <div class = "popup">
+  <h2>%s</h2>
+  <hr/>
+  <table class="">
+    <tbody>
+      %s
+    </tbody>
+  </table>
+  </div>
+  '
+  
+  rowTemplate <- '
+      <tr>
+        <td class="key">%s</td>
+        <td class ="value">%s</td>
+      </tr>
+  '
+  
+  x <- as.matrix(x[, var, with = FALSE])
+  rows <- apply(x, 1, function(x) {
+    sprintf(rowTemplate, var, x) %>% 
+      paste(collapse = "")
+  })
+  
+  sprintf(popupTemplate, title, rows)
 }
 
 # Initialize a map with all elements invisible: links, circles and bar or polar 
@@ -90,7 +125,7 @@
   addShadows(map)
 }
 
-# Update the circles or polar charts representing areas in an existing map
+# Update the circles and polar charts representing areas in an existing map
 .redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars,
                            uniqueScale,
                            options) {
@@ -122,15 +157,15 @@
     if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
       
     map <- map %>% 
-      updateCircleMarkers(optsArea$coords$area, opacity = 0, fillOpacity = 0) %>% 
+      updateCircleMarkers(optsArea$coords$area, opacity = 0, fillOpacity = 0, popup = optsArea$popup) %>% 
       updateChart(optsArea$coords$area, opacity = 1, data = optsArea$size, 
-                  maxValue = optsArea$maxSize)
+                  maxValue = optsArea$maxSize, popup = optsArea$popup)
   } else {
     map <- map %>% 
       updateCircleMarkers(optsArea$coords$area, fillColor = optsArea$color, 
-                          radius = optsArea$size, 
+                          radius = optsArea$size, popup = optsArea$popup,
                           opacity = 1, fillOpacity = 1) %>% 
-      updateChart(optsArea$coords$area, opacity = 0)
+      updateChart(optsArea$coords$area, opacity = 0, popup = optsArea$popup)
   }
   
   # Update the legend
@@ -186,6 +221,7 @@
                                         color = optsLink$color,
                                         weight = optsLink$size,
                                         dir = optsLink$dir,
+                                        popup = optsLink$popup,
                                         opacity = 1)
   
   # Update the legend

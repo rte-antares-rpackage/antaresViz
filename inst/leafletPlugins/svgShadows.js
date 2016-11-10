@@ -20,7 +20,6 @@ window.LeafletWidget.methods.addShadows = function() {
   
   for (var i = 0; i < els.length - 1; i++) {
     var cl = els[i].getAttribute("class");
-    console.log(cl);
     if (!cl || cl.indexOf("no-shadow") == -1) {
       els[i].setAttribute("filter", "url(#dropShadow)");
     }

@@ -42,7 +42,6 @@ L.BarChart = L.CircleMarker.extend({
   
   setOptions: function(options) {
     if (options.size) {
-      console.log("glop");
       this.options.width = options.size * 2;
       this.options.height = options.size * 2;
     }

@@ -59,7 +59,6 @@ L.AntaresLegend = L.Control.extend({
   
   _reset: function() {
     if (this.options.display == "hidden") {
-      console.log(this._container);
       this._container.className = "";
       this._container.style.display = "none";
       this._content.style.display = "none";

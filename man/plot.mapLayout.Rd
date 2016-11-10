@@ -5,12 +5,13 @@
 \title{Plot method for map layout}
 \usage{
 \method{plot}{mapLayout}(x, colAreas = x$coords$color, sizeAreas = 10,
-  opacityArea = 1, areaMaxValues = NULL, areaChartType = c("polar",
-  "bar"), colLinks = "#CCCCCC", sizeLinks = 3, opacityLinks = 1,
-  dirLinks = 0, links = TRUE, areas = TRUE, addTiles = TRUE,
+  opacityArea = 1, areaMaxValues = NULL, areaChartType = c("bar",
+  "polar"), popupArea = x$coords$area, colLinks = "#CCCCCC",
+  sizeLinks = 3, opacityLinks = 1, dirLinks = 0,
+  popupLink = x$links$link, links = TRUE, areas = TRUE, addTiles = TRUE,
   background = "white", polygons = NULL, polygonOptions = list(stroke =
-  TRUE, color = "#bbb", weight = 0.5, opacity = 1, fillOpacity = 0.2),
-  width = NULL, height = NULL, ...)
+  TRUE, color = "#bbb", weight = 0.5, opacity = 1, fillOpacity = 0.2, options =
+  list(clickable = FALSE)), width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}
@@ -27,6 +28,9 @@ section of the polar charts.}
 \item{areaChartType}{Type of chart to use to represent multiple values. Possible values are "bar"
 for bar charts and "polar" for polar area charts.}
 
+\item{popupArea}{Character vector containing the html to display when the user clicks on an
+area.}
+
 \item{colLinks}{Vector of colors for links.}
 
 \item{sizeLinks}{Line width of the links, in pixels.}
@@ -35,6 +39,9 @@ for bar charts and "polar" for polar area charts.}
 are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
 If it is equal to 1 or -1 it is represented by a line with an arrow pointing
 respectively the destination and the origin of the link.}
+
+\item{popupLink}{Character vector containing the html to display when the user clicks on a 
+link.}
 
 \item{links}{Should links be drawn on the map ?}
 

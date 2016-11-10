@@ -6,7 +6,7 @@
 \usage{
 updateCircleMarkers(map, layerId, radius = NULL, stroke = NULL,
   color = NULL, weight = NULL, opacity = NULL, fill = NULL,
-  fillColor = NULL, fillOpacity = NULL)
+  fillColor = NULL, fillOpacity = NULL, popup = NULL)
 }
 \arguments{
 \item{map}{A map object created with \code{\link[leaflet]{leaflet()}}}

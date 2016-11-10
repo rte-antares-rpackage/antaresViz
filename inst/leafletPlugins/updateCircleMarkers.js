@@ -7,6 +7,8 @@ Update the style of circle markers
   
 */
 window.LeafletWidget.methods.updateCircleMarkers = function(data) {
+  console.log(data);
+  
   for (var i = 0; i < data.layerId.length; i++) {
     var l = this.layerManager.getLayer("marker", data.layerId[i]);
     
@@ -22,6 +24,8 @@ window.LeafletWidget.methods.updateCircleMarkers = function(data) {
     l.setStyle(style);
     
     if(data.radius) l.setRadius(data.radius[i]);
-    if (data.popup) l.bindPopup(data.popup[i]);
+    if (data.popup) {
+      l.bindPopup(data.popup[i]);
+    }
   }
 };

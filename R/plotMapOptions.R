@@ -68,7 +68,8 @@ plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
                                                  color = "#999",
                                                  weight = 0.5,
                                                  opacity = 1,
-                                                 fillOpacity = 0.2)) {
+                                                 fillOpacity = 0.2,
+                                                 options = list(clickable = FALSE))) {
   areaChartType <- match.arg(areaChartType)
   legend <- match.arg(legend)
   areaColorScaleOpts <- do.call(colorScaleOptions, areaColorScaleOpts)

@@ -12,7 +12,7 @@ plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
   linkColorScaleOpts = colorScaleOptions(), legend = c("choose", "visible",
   "hidden"), addTiles = TRUE, background = "white", polygons = NULL,
   polygonOptions = list(stroke = TRUE, color = "#999", weight = 0.5, opacity =
-  1, fillOpacity = 0.2))
+  1, fillOpacity = 0.2, options = list(clickable = FALSE)))
 
 colorScaleOptions(n = 5, domain = NULL, negCol = "#FF0000",
   zeroCol = "#FFFFFF", posCol = "#0000FF", naCol = "#EEEEEE",

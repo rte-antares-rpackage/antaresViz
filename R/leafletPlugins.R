@@ -87,12 +87,13 @@
 updateCircleMarkers <- function(map, layerId, radius=NULL, stroke=NULL, 
                                 color=NULL, weight=NULL, 
                                 opacity=NULL, fill=NULL, fillColor=NULL, 
-                                fillOpacity= NULL) {
+                                fillOpacity= NULL, popup = NULL) {
   options <- .prepareOptions(
     required = list(layerId = layerId),
     optional = list(radius = radius, stroke = stroke, color = color, 
                     weight = weight, opacity = opacity, fill = fill, 
-                    fillColor = fillColor, fillOpacity = fillOpacity)
+                    fillColor = fillColor, fillOpacity = fillOpacity,
+                    popup = popup)
   )
   
   map %>% requireDep("updateCircleMarkers") %>% 

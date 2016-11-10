@@ -86,6 +86,9 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #'   a matrix with as many rows as the number of areas. In the last case, areas 
 #'   are represented by polar area charts and each column is represented by one
 #'   section of the polar charts.
+#' @param popupArea
+#'   Character vector containing the html to display when the user clicks on an
+#'   area.
 #' @param colLinks
 #'   Vector of colors for links.
 #' @param sizeLinks
@@ -95,6 +98,9 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #'   are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
 #'   If it is equal to 1 or -1 it is represented by a line with an arrow pointing
 #'   respectively the destination and the origin of the link. 
+#' @param popupLink
+#'   Character vector containing the html to display when the user clicks on a 
+#'   link.
 #' @param areas
 #'   Should areas be drawn on the map ?
 #' @param links
@@ -145,16 +151,22 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #' @export
 plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
                            opacityArea = 1, areaMaxValues = NULL,
-                           areaChartType = c("polar", "bar"), colLinks = "#CCCCCC", 
-                           sizeLinks = 3, opacityLinks = 1, dirLinks = 0, 
+                           areaChartType = c("bar", "polar"), 
+                           popupArea = x$coords$area, 
+                           colLinks = "#CCCCCC", sizeLinks = 3, 
+                           opacityLinks = 1, dirLinks = 0, 
+                           popupLink = x$links$link,
                            links = TRUE, areas = TRUE,
                            addTiles = TRUE, background = "white", polygons = NULL,
                            polygonOptions = list(stroke = TRUE,
                                                  color = "#bbb",
                                                  weight = 0.5,
                                                  opacity = 1,
-                                                 fillOpacity = 0.2),
+                                                 fillOpacity = 0.2,
+                                                 options = list(clickable = FALSE)),
                            width = NULL, height = NULL, ...) {
+  
+  areaChartType <- match.arg(areaChartType)
   
   map <- leaflet(width = width, height = height, padding = 10)
   
@@ -177,7 +189,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
   if (links) {
     map <- addDirectedSegments(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
                                weight = sizeLinks, opacity = opacityLinks,
-                               color = colLinks, layerId = x$links$link, popup = x$links$link)
+                               color = colLinks, layerId = x$links$link, popup = popupLink)
   }
   
   # Add areas
@@ -188,13 +200,13 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
       if (areaChartType == "polar") {
         addAreas <- function(map) {
           addPolarCharts(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                         popup = x$coords$area, layerId = x$coords$area, 
+                         popup = popupArea, layerId = x$coords$area, 
                          maxValue = areaMaxValues, opacity = opacityArea)
         }
       } else {
         addAreas <- function(map) {
           addBarCharts(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                       popup = x$coords$area, layerId = x$coords$area, 
+                       popup = popupArea, layerId = x$coords$area, 
                        opacity = opacityArea)
         }
       }
@@ -205,7 +217,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
                          radius = sizeAreas,
                          stroke = FALSE, 
                          fillColor = colAreas, 
-                         popup = x$coords$area, layerId = x$coords$area,
+                         popup = popupArea, layerId = x$coords$area,
                          fillOpacity = opacityArea, options = list(className = "leaflet-zoom-hide"))
       }
     }

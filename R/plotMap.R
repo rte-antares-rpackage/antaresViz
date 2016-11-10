@@ -145,7 +145,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
     Areas = list(
       colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
-      sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Radius", multiple = TRUE),
+      sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
       uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale")
     ),
     Links = list(
