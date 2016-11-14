@@ -1,8 +1,22 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+Changes in version 0.5 (2016-11-14)
+
+NEW FEATURES:
+* plotMap() can now represent only areas and/or links. It is not necessary anymore to import both to create a map.
+* plotMap() can now represent multiple variables with barcharts. A new option is available to choose whether to use the same scale for different variables or one scale per variable.
+* plotMap() now displays a nice and clear legend. 
+* It is now possible to add a title to a map.
+* plotMap() has a new parameter "options". With this parameter, user can modify many graphical parameters like colors, size of elements, parameters to construct color scales, etc. 
+* It is now possible to use a custom base map imported with package "sp". So an internet connection is not necesary anymore to display a nice map.
+* When user clicks on a link or an area in a map, a popup appears and display values of the variables represented.
+
+
 Changes in version 0.4 (2016-10-06)
+
 BREAKING CHANGES:
 * add a file LICENSE and copyright to sources files
+
 
 Changes in version 0.3 (2016-09-27)
 
