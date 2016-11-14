@@ -1,4 +1,4 @@
-#Copyright © 2016 RTE Réseau de transport d’électricité
+# Copyright © 2016 RTE Réseau de transport d’électricité
 
 #' Private function used by plotMap as the server function of the shiny gadget
 #' it launches.

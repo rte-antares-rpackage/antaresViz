@@ -1,3 +1,5 @@
+# Copyright © 2016 RTE Réseau de transport d’électricité
+
 colorLegend <- function(title, colors, breaks) {
   options(scipen = 6)
   colors <- sapply(rev(colors), function(x) {

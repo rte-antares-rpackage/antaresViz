@@ -1,3 +1,4 @@
+// Copyright © 2016 RTE Réseau de transport d’électricité
 /*
 Update the style of circle markers
 

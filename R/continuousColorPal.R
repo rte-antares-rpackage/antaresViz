@@ -1,3 +1,5 @@
+# Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Function that maps numeric variable to colors
 #'
 #' @param x       

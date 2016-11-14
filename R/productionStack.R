@@ -1,4 +1,4 @@
-#Copyright © 2016 RTE Réseau de transport d’électricité
+# Copyright © 2016 RTE Réseau de transport d’électricité
 
 #' Visualize the production stack of an area
 #' 

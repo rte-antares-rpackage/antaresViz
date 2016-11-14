@@ -1,3 +1,5 @@
+# Copyright © 2016 RTE Réseau de transport d’électricité
+
 addTitle <- function(map, main = "") {
   if (is.null(main) || is.na(main) || main == "") return(map)
   

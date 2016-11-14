@@ -1,3 +1,4 @@
+/* Copyright © 2016 RTE Réseau de transport d’électricité */
 L.BarChart = L.CircleMarker.extend({
   options: {
     data: null,

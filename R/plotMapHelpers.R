@@ -1,3 +1,5 @@
+# Copyright © 2016 RTE Réseau de transport d’électricité
+
 #' Private function that binds data with map layout and returns colors and sizes
 #' for each element
 #' 

@@ -1,4 +1,4 @@
-#Copyright © 2016 RTE Réseau de transport d’électricité
+# Copyright © 2016 RTE Réseau de transport d’électricité
 
 #' Display results of a simulation on a map
 #' 

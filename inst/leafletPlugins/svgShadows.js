@@ -1,3 +1,4 @@
+// Copyright © 2016 RTE Réseau de transport d’électricité
 window.LeafletWidget.methods.addShadows = function() {
   var svg = this._panes.overlayPane.children[0];
   var els = svg.childNodes;
