@@ -78,7 +78,7 @@
 #'
 #' @export
 plot.antaresDataTable <- function(x, variable = NULL, elements = NULL, 
-                                  type = c("ts", "barplot", "monotone"),
+                                  type = c("ts", "barplot", "monotone", "density"),
                                   dateRange = NULL,
                                   confInt = 0,
                                   interactive = base::interactive(),
@@ -130,6 +130,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                 "ts" = .plotTS,
                 "barplot" = .barplot,
                 "monotone" = .plotMonotone,
+                "density" = .density,
                 stop("Invalid type")
     )
     f(dt, timeStep, variable, confInt = confInt, colors, main, ylab, legend, 
@@ -151,7 +152,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   manipulateWidget(
     plotFun(dt, variable, elements, type, confInt, dateRange),
     variable = mwSelect(valueCols, variable),
-    type = mwSelect(c("time series" = "ts", "barplot", "monotone"), type),
+    type = mwSelect(c("time series" = "ts", "barplot", "monotone", "density"), type),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
@@ -374,6 +375,65 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
       g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
     }
   }
+  
+  if (!legend) return(g)
+  
+  l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
+                 colors = colors, legendId = legendId, legendItemsPerRow = legendItemsPerRow)
+  g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
+                                                 html = htmltools::doRenderTags(l)))
+  
+}
+
+.density <- function(dt, timeStep, variable, confInt = 0, colors = NULL,
+                     main = NULL,
+                     ylab = NULL,
+                     legend = TRUE,
+                     legendItemsPerRow = 5,
+                     width = NULL, height = NULL) {
+  
+  uniqueElement <- sort(unique(dt$element))
+  rangeValues <- range(dt$value)
+  
+  # Get the correct number of significant digits
+  x <- seq(rangeValues[1]* 0.9, rangeValues[2] * 1.1, length.out = 512)
+  nsignif <- 3
+  
+  while(any(duplicated(signif(x, nsignif)))) nsignif <- nsignif + 1
+    
+  .getDensity <- function(x) {
+    dens <- density(x, from = rangeValues[1] * 0.9, to = rangeValues[2] * 1.1)
+    data.table(value = signif(dens$x, nsignif), density = dens$y)
+  }
+  
+  dt <- dt[, .getDensity(value), by = element]
+  dt <- dcast(dt, value ~ element, value.var = "density")
+  
+  if (is.null(ylab)) ylab <- "Density"
+  if (is.null(main)) main <- paste("Density of", variable)
+  if (is.null(colors)) {
+    colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
+  } else {
+    colors <- rep(colors, length.out = length(uniqueElement))
+  }
+  
+  legendId <- sample(1e9, 1)
+  
+  g <- dygraph(dt, main = main, group = legendId, width = width, height = height) %>% 
+    dyOptions(
+      includeZero = TRUE, 
+      colors = colors,
+      gridLineColor = gray(0.8), 
+      axisLineColor = gray(0.6), 
+      axisLabelColor = gray(0.6), 
+      labelsKMB = TRUE
+    ) %>% 
+    dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
+    dyLegend(show = "never") %>% 
+    dyCallbacks(
+      highlightCallback = JS_updateLegend(legendId, timeStep = "none"),
+      unhighlightCallback = JS_resetLegend(legendId)
+    )
   
   if (!legend) return(g)
   

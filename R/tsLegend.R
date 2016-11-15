@@ -225,7 +225,13 @@ function(e, timestamp, data) {
   for (k in values) {
     if (!values.hasOwnProperty(k)) continue; 
     var el = document.getElementById(k + '%s');
-    if (el) el.innerHTML = Math.round(values[k]);
+    if (el) {
+      if (values[k] > 100) {
+        el.innerHTML = Math.round(values[k]);
+      } else {
+        el.innerHTML = values[k].toPrecision(3);
+      }
+    }
   }
 }"
   
