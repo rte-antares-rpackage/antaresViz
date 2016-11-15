@@ -78,7 +78,7 @@
 #'
 #' @export
 plot.antaresDataTable <- function(x, variable = NULL, elements = NULL, 
-                                  type = c("ts", "barplot", "monotone", "density"),
+                                  type = c("ts", "barplot", "monotone", "density", "cdf"),
                                   dateRange = NULL,
                                   confInt = 0,
                                   interactive = base::interactive(),
@@ -131,6 +131,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                 "barplot" = .barplot,
                 "monotone" = .plotMonotone,
                 "density" = .density,
+                "cdf" = .cdf,
                 stop("Invalid type")
     )
     f(dt, timeStep, variable, confInt = confInt, colors, main, ylab, legend, 
@@ -152,7 +153,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   manipulateWidget(
     plotFun(dt, variable, elements, type, confInt, dateRange),
     variable = mwSelect(valueCols, variable),
-    type = mwSelect(c("time series" = "ts", "barplot", "monotone", "density"), type),
+    type = mwSelect(c("time series" = "ts", "barplot", "monotone", "density", "cdf"), type),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
@@ -411,6 +412,67 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
   if (is.null(ylab)) ylab <- "Density"
   if (is.null(main)) main <- paste("Density of", variable)
+  if (is.null(colors)) {
+    colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
+  } else {
+    colors <- rep(colors, length.out = length(uniqueElement))
+  }
+  
+  legendId <- sample(1e9, 1)
+  
+  g <- dygraph(dt, main = main, group = legendId, width = width, height = height) %>% 
+    dyOptions(
+      includeZero = TRUE, 
+      colors = colors,
+      gridLineColor = gray(0.8), 
+      axisLineColor = gray(0.6), 
+      axisLabelColor = gray(0.6), 
+      labelsKMB = TRUE
+    ) %>% 
+    dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
+    dyLegend(show = "never") %>% 
+    dyCallbacks(
+      highlightCallback = JS_updateLegend(legendId, timeStep = "none"),
+      unhighlightCallback = JS_resetLegend(legendId)
+    )
+  
+  if (!legend) return(g)
+  
+  l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
+                 colors = colors, legendId = legendId, legendItemsPerRow = legendItemsPerRow)
+  g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
+                                                 html = htmltools::doRenderTags(l)))
+  
+}
+
+.cdf <- function(dt, timeStep, variable, confInt = 0, colors = NULL,
+                    main = NULL,
+                    ylab = NULL,
+                    legend = TRUE,
+                    legendItemsPerRow = 5,
+                    width = NULL, height = NULL) {
+  
+  uniqueElement <- sort(unique(dt$element))
+  
+  # Get the correct number of significant digits
+  xbins <- unique(quantile(dt$value, seq(0, 1, length.out = 512)))
+  nsignif <- 3
+  
+  while(any(duplicated(signif(xbins, nsignif)))) nsignif <- nsignif + 1
+  
+  xbins <- signif(xbins, nsignif)
+  print(xbins)
+  
+  .getCDF <- function(x) {
+    cdf <- sapply(xbins, function(y) mean(x <= y))
+    data.table(value = xbins, cdf = cdf)
+  }
+  
+  dt <- dt[, .getCDF(value), by = element]
+  dt <- dcast(dt, value ~ element, value.var = "cdf")
+  
+  if (is.null(ylab)) ylab <- "Proportion of time steps"
+  if (is.null(main)) main <- paste("Cumulated distribution of", variable)
   if (is.null(colors)) {
     colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
   } else {
