@@ -52,6 +52,7 @@ help'(package="antaresViz")
 mydata <- readAntares(areas = "all")
 plot(mydata, variable = "MRG. PRICE")
 ```
+![Distribution of marginal price](https://rte-antares-rpackage.github.io/antares-rpackageViz/images/plot_antaresDataTable.png)
 
 For more information, run:
 
@@ -63,7 +64,11 @@ For more information, run:
 
 Function `productionStack` generates a production stack for a set of areas. Different stacks have been defined. One can see their definition with command `productionStackAliases()`.
 
+![Example of production stack](https://rte-antares-rpackage.github.io/antares-rpackageViz/images/productionStack.png)
+
 With function `exchangesStack`, one can visualize the eovlution and origin/destination of imports and exports for a given area.
+
+![Distribution of marginal price](https://rte-antares-rpackage.github.io/antares-rpackageViz/images/exchangesStack.png)
 
 # Maps
 
@@ -87,3 +92,4 @@ Then map can be generated with function `plotMap`:
 myData <- readAntares(areas = "all", links = "all")
 plotMap(myData, myMapLayout)
 ```
+![Distribution of marginal price](https://rte-antares-rpackage.github.io/antares-rpackageViz/images/plotMap.png)
