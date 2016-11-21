@@ -150,6 +150,13 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     if (length(elements) > 5) elements <- elements[1:5]
   }
   
+  if (timeStep == "annual") {
+    type <- "barplot"
+    typeChoices <- "barplot"
+  } else {
+    typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf")
+  }
+  
   manipulateWidget(
     plotFun(dt, variable, elements, type, confInt, dateRange),
     variable = mwSelect(valueCols, variable),
@@ -158,7 +165,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
     .main = dataname,
-    .display = list(confInt = showConfInt)
+    .display = list(confInt = showConfInt,
+                    dateRange = timeStep != "annual",
+                    type = timeStep != "annual")
   )
   
 }
