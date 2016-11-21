@@ -31,6 +31,12 @@
 #'   display. If it equals to 0, then confidence interval is not computed nor
 #'   displayed. Used only when multiple Monte Carlo scenarios are present in 
 #'   the input data.
+#' @param maxValue
+#'   Only used if parameter \code{type} is "density" or "cdf". If this parameter 
+#'   is set, all values not in [-maxValue, maxValue] are removed from the graphic.
+#'   This is useful to deal with variables containing a few extreme values
+#'   (generally cost and price variables). If \code{maxValue} is 0 or unset, all
+#'   values are displayed.
 #' @param colors
 #'   Vector of colors
 #' @param ylab
@@ -81,6 +87,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                                   type = c("ts", "barplot", "monotone", "density", "cdf"),
                                   dateRange = NULL,
                                   confInt = 0,
+                                  maxValue = 0,
                                   interactive = base::interactive(),
                                   colors = NULL,
                                   main = NULL,
@@ -121,7 +128,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
   
   # Function that generates the desired graphic.
-  plotFun <- function(dt, variable, elements, type, confInt, dateRange) {
+  plotFun <- function(dt, variable, elements, type, confInt, dateRange, maxValue) {
     if (is.null(variable)) variable <- valueCols[1]
     dt$value <- x[, get(variable)]
     if (length(elements) > 0 & !"all" %in% elements) dt <- dt[element %in% elements]
@@ -134,7 +141,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                 "cdf" = .cdf,
                 stop("Invalid type")
     )
-    f(dt, timeStep, variable, confInt = confInt, colors, main, ylab, legend, 
+    f(dt, timeStep, variable, confInt = confInt, maxValue, colors, main, ylab, legend, 
       legendItemsPerRow, width = width, height = height)
   }
   
@@ -158,14 +165,16 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   }
   
   manipulateWidget(
-    plotFun(dt, variable, elements, type, confInt, dateRange),
+    plotFun(dt, variable, elements, type, confInt, dateRange, maxValue),
     variable = mwSelect(valueCols, variable),
     type = mwSelect(c("time series" = "ts", "barplot", "monotone", "density", "cdf"), type),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
+    maxValue = mwNumeric(0, "max value"),
     elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
     .main = dataname,
     .display = list(confInt = showConfInt,
+                    maxValue = type %in% c("density", "cdf", "monotone"),
                     dateRange = timeStep != "annual",
                     type = timeStep != "annual")
   )
@@ -190,7 +199,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #' 
 #' @noRd
 #' 
-.plotTS <- function(dt, timeStep, variable, confInt = 0, colors = NULL,
+.plotTS <- function(dt, timeStep, variable, confInt = 0, maxValue, 
+                    colors = NULL,
                     main = NULL,
                     ylab = NULL,
                     legend = TRUE,
@@ -270,7 +280,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 #' 
 #' @noRd 
 #'  
-.barplot <- function(dt, timeStep, variable, confInt = 0, colors = NULL,
+.barplot <- function(dt, timeStep, variable, confInt = 0, maxValue,
+                     colors = NULL,
                      main = NULL,
                      ylab = NULL,
                      legend = TRUE,
@@ -317,7 +328,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   g
 }
 
-.plotMonotone <- function(dt, timeStep, variable, confInt = NULL, colors = NULL,
+.plotMonotone <- function(dt, timeStep, variable, confInt = NULL, maxValue,
+                          colors = NULL,
                           main = NULL,
                           ylab = NULL,
                           legend = TRUE,
@@ -395,7 +407,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
 }
 
-.density <- function(dt, timeStep, variable, confInt = 0, colors = NULL,
+.density <- function(dt, timeStep, variable, confInt = 0, maxValue, 
+                     colors = NULL,
                      main = NULL,
                      ylab = NULL,
                      legend = TRUE,
@@ -403,7 +416,21 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                      width = NULL, height = NULL) {
   
   uniqueElement <- sort(unique(dt$element))
-  rangeValues <- range(dt$value)
+  
+  if(is.null(maxValue) || is.na(maxValue) || maxValue == 0) {
+    values <- dt$value
+  } else {
+    values <- dt$value[dt$value %between% c(-maxValue, maxValue)]
+    if (length(values) == 0) {
+      return("No value to display. Please choose a larger max value or set it to 0 to display all values")
+    }
+  }
+  
+  if (min(values) == max(values)) {
+    return("Impossible to display a density because all values are equal")
+  }
+  
+  rangeValues <- range(values)
   
   # Get the correct number of significant digits
   x <- seq(rangeValues[1]* 0.9, rangeValues[2] * 1.1, length.out = 512)
@@ -454,23 +481,36 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   
 }
 
-.cdf <- function(dt, timeStep, variable, confInt = 0, colors = NULL,
-                    main = NULL,
-                    ylab = NULL,
-                    legend = TRUE,
-                    legendItemsPerRow = 5,
-                    width = NULL, height = NULL) {
+.cdf <- function(dt, timeStep, variable, confInt = 0, maxValue,
+                 colors = NULL,
+                 main = NULL,
+                 ylab = NULL,
+                 legend = TRUE,
+                 legendItemsPerRow = 5,
+                 width = NULL, height = NULL) {
   
   uniqueElement <- sort(unique(dt$element))
   
+  if(is.null(maxValue) || is.na(maxValue) || maxValue == 0) {
+    values <- dt$value
+  } else {
+    values <- dt$value[dt$value %between% c(-maxValue, maxValue)]
+    if (length(values) == 0) {
+      return("No value to display. Please choose a larger max value or set it to 0 to display all values")
+    }
+  }
+  
+  if (min(values) == max(values)) {
+    return("Impossible to display a density because all values are equal")
+  }
+  
+  rangeValues <- range(values)
+  
   # Get the correct number of significant digits
-  xbins <- unique(quantile(dt$value, seq(0, 1, length.out = 512)))
+  xbins <- seq(rangeValues[1]* 0.9, rangeValues[2] * 1.1, length.out = 512)
   nsignif <- 3
   
   while(any(duplicated(signif(xbins, nsignif)))) nsignif <- nsignif + 1
-  
-  xbins <- signif(xbins, nsignif)
-  print(xbins)
   
   .getCDF <- function(x) {
     cdf <- sapply(xbins, function(y) mean(x <= y))
