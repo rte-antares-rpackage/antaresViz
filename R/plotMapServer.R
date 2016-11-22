@@ -33,9 +33,9 @@
 
     observe({
       .redrawLinks(map, x, mapLayout, input$timeId, input$colLinkVar, 
-                   input$sizeLinkVar, options)
+                   input$sizeLinkVar, input$popupLinkVars, options)
       .redrawCircles(map, x, mapLayout, input$timeId, input$colAreaVar, 
-                     input$sizeAreaVars, input$uniqueScale, options)
+                     input$sizeAreaVars, input$popupAreaVars, input$uniqueScale, options)
       updateTimeLabel(map, input$timeId, attr(x, "timeStep"), simOptions(x))
     })
     
@@ -45,8 +45,10 @@
         t = input$timeId, 
         colAreaVar = input$colAreaVar, 
         sizeAreaVars = input$sizeAreaVars,
+        popupAreaVars = input$popupAreaVars,
         colLinkVar = input$colLinkVar,
-        sizeLinkVar = input$sizeLinkVar
+        sizeLinkVar = input$sizeLinkVar,
+        popupLinkVars = input$popupLinkVars
       ))
     })
   }

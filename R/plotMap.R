@@ -16,7 +16,7 @@
 #'   are represented by the color of the areas on the map. If \code{"none"}, then
 #'   the default color is used for all areas. 
 #' @param sizeAreaVars
-#'   vector of variables present in \code{x$areas} to associate with the size of 
+#'   Vector of variables present in \code{x$areas} to associate with the size of 
 #'   areas on the map. If this parameter has length equal to 0, all areas have the
 #'   same size. If it has length equal to one, then the radius of the areas change
 #'   depending on the values of the variable choosen. If it has length greater than
@@ -27,6 +27,8 @@
 #'   represented use the same scale or should each variable have its own scale ?
 #'   This parameter should be TRUE only if the variables have the same unit and 
 #'   are comparable : for instance production variables. 
+#' @param popupAreaVars
+#'   Vector of variables to display when user clicks on an area.
 #' @param colLinkVar
 #'   Name of a variable present in \code{x$links}. The values of this variable
 #'   are represented by the color of the links on the map. If \code{"none"}, then
@@ -34,6 +36,8 @@
 #' @param sizeLinkVar
 #'   Name of a variable present in \code{x$links}. Its values are represented by
 #'   the line width of the links on the map.
+#' @param popupLinkVar
+#'   Vector of variables to display when user clicks on a link.
 #' @param timeId
 #'   A single time id present in the data.
 #' @param main
@@ -77,7 +81,8 @@
 #' @export
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     uniqueScale = FALSE,
-                    colLinkVar = "none", sizeLinkVar = "none", 
+                    popupAreaVars = c(),
+                    colLinkVar = "none", sizeLinkVar = "none", popupLinkVars = c(),
                     timeId = NULL,
                     main = "",
                     interactive = base::interactive(),
@@ -124,8 +129,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar) {
     map <- .initMap(x, mapLayout, options, width, height) %>%
-      .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, options) %>% 
-      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, uniqueScale, options) %>% 
+      .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
+      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale, options) %>% 
       addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
     
     map
@@ -146,11 +151,13 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     Areas = list(
       colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
       sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
-      uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale")
+      uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale"),
+      popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE)
     ),
     Links = list(
-      colLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), colLinkVar, label = "Color"),
-      sizeLinkVar = mwSelect(c("none", setdiff(names(x$links), .idCols(x$links))), sizeLinkVar, label = "Width")
+      colLinkVar = mwSelect(c("none", linkValColums), colLinkVar, label = "Color"),
+      sizeLinkVar = mwSelect(c("none", linkValColums), sizeLinkVar, label = "Width"),
+      popupLinkVars = mwSelect(linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
     ),
     .content = leafletOutput("map", height = "100%"), 
     .main = main

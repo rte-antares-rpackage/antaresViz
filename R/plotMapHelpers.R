@@ -27,7 +27,8 @@
 #'            the data
 #' 
 #' @noRd
-.getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar, colorScaleOpts) {
+.getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar, 
+                           popupVars, colorScaleOpts) {
   
   coords <- merge(coords, data[timeId == t], by = mergeBy)
   
@@ -66,7 +67,7 @@
   }
   
   # Pop-up
-  res$popup <- .valuesToPopup(coords, union(colVar, sizeVar), coords[[mergeBy]])
+  res$popup <- .valuesToPopup(coords, union(colVar, union(sizeVar, popupVars)), coords[[mergeBy]])
   
   res
 }
@@ -129,7 +130,7 @@
 
 # Update the circles and polar charts representing areas in an existing map
 .redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars,
-                           uniqueScale,
+                           popupAreaVars, uniqueScale,
                            options) {
   if (is.null(x$areas)) return(map)
   
@@ -143,7 +144,8 @@
   
   # Compute color and size of areas for the given time step.
   optsArea <- .getColAndSize(x$areas, ml$coords, "area", t,
-                             colAreaVar, sizeAreaVars, options$areaColorScaleOpts)
+                             colAreaVar, sizeAreaVars, popupAreaVars,
+                             options$areaColorScaleOpts)
   ml$coords <- optsArea$coords
   
   # Use default values if needed.
@@ -205,14 +207,16 @@
 }
 
 # Update the links in an existing map
-.redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar, options) {
+.redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar, 
+                         popupLinkVars, options) {
   if (is.null(x$links)) return(map)
   
   ml <- copy(mapLayout)
   
   # Get color and size of links
   optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
-                             colLinkVar, sizeLinkVar, options$linkColorScaleOpts)
+                             colLinkVar, sizeLinkVar, popupLinkVars,  
+                             options$linkColorScaleOpts)
   
   # Use default values if needed
   if (is.null(optsLink$color)) optsLink$color <- options$linkDefaultCol
