@@ -141,8 +141,20 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                 "cdf" = .cdf,
                 stop("Invalid type")
     )
-    f(dt, timeStep, variable, confInt = confInt, maxValue, colors, main, ylab, legend, 
-      legendItemsPerRow, width = width, height = height)
+    f(
+      dt, 
+      timeStep = timeStep, 
+      variable = variable, 
+      confInt = confInt, 
+      maxValue = maxValue, 
+      colors = colors, 
+      main = main, 
+      ylab = ylab, 
+      legend = legend, 
+      legendItemsPerRow = legendItemsPerRow, 
+      width = width, 
+      height = height
+    )
   }
   
   # If not in interactive mode, generate a simple graphic, else create a GUI
@@ -205,9 +217,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                     ylab = NULL,
                     legend = TRUE,
                     legendItemsPerRow = 5,
-                    width = NULL, height = NULL) {
+                    width = NULL, height = NULL, ...) {
   
-  uniqueElement <- sort(unique(dt$element))
+  uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
   
   # If dt contains several Monte-Carlo scenario, compute aggregate statistics
@@ -233,9 +245,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Evolution of", variable)
   if (is.null(colors)) {
-    colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
+    colors <- substring(rainbow(length(uniqueElements), s = 0.7, v = 0.7), 1, 7)
   } else {
-    colors <- rep(colors, length.out = length(uniqueElement))
+    colors <- rep(colors, length.out = length(uniqueElements))
   }
   
   legendId <- sample(1e9, 1)
@@ -259,14 +271,14 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     )
   
   if (plotConfInt) {
-    for (v in uniqueElement) {
+    for (v in uniqueElements) {
       g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
     }
   }
   
   if (!legend) return(g)
   
-  l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
+  l <-  tsLegend(uniqueElements, types = rep("line", length(uniqueElements)), 
                  colors = colors, legendId = legendId, legendItemsPerRow = legendItemsPerRow)
   g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
                                                  html = htmltools::doRenderTags(l)))
@@ -286,7 +298,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                      ylab = NULL,
                      legend = TRUE,
                      legendItemsPerRow = 5,
-                     width = NULL, height = NULL) {
+                     width = NULL, height = NULL, ...) {
   
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(value = mean(value)), by = element] 
@@ -296,7 +308,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     if (confInt == 0) {
       dt <- dt[, .(value = mean(value)), by = .(element)]
     } else {
-      uniqueElement <- sort(unique(dt$element))
+      uniqueElements <- sort(unique(dt$element))
       
       alpha <- (1 - confInt) / 2
       dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
@@ -329,49 +341,117 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 }
 
 .plotMonotone <- function(dt, timeStep, variable, confInt = NULL, maxValue,
-                          colors = NULL,
-                          main = NULL,
-                          ylab = NULL,
-                          legend = TRUE,
-                          legendItemsPerRow = 5,
-                          width = NULL, height = NULL) {
+                          main = NULL, ylab = NULL, ...) {
   
-  uniqueElement <- sort(unique(dt$element))
+  uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
   # If dt contains several Monte-Carlo scenario, compute aggregate statistics
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(
-      rank = 1:length(value),
-      value = sort(value, decreasing = TRUE)
+      x = 1:length(value),
+      y = sort(value, decreasing = TRUE)
     ), by = element]
   } else {
     dt <- dt[, .(
-      rank = 1:length(value),
-      value = sort(value, decreasing = TRUE)
+      x = 1:length(value),
+      y = sort(value, decreasing = TRUE)
     ), by = .(element, mcYear)]
     
     if (confInt == 0) {
-      dt <- dt[, .(value = mean(value)), by = .(element, rank)]
+      dt <- dt[, .(y = mean(y)), by = .(element, x)]
     } else {
       plotConfInt <- TRUE
-      uniqueElement <- sort(unique(dt$element))
+      uniqueElements <- sort(unique(dt$element))
       
       alpha <- (1 - confInt) / 2
-      dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
+      dt <- dt[, .(y = c(mean(y), quantile(y, c(alpha, 1 - alpha))),
                    suffix = c("", "_l", "_u")), 
-               by = .(rank, element)]
+               by = .(x, element)]
       dt[, element := paste0(element, suffix)]
     }
   }
   
-  dt <- dcast(dt, rank ~ element, value.var = "value")
-  
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Monotone of", variable)
+  
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  
+}
+
+.density <- function(dt, timeStep, variable, confInt = 0, maxValue, 
+                     main = NULL, ylab = NULL, ...) {
+  
+  uniqueElements <- sort(unique(dt$element))
+  
+  xbins <- .getXBins(dt$value, maxValue)
+  
+  .getDensity <- function(x) {
+    dens <- density(x, from = xbins$rangeValues[1] * 0.9, to = xbins$rangeValues[2] * 1.1)
+    data.table(x = signif(dens$x, xbins$nsignif), y = dens$y)
+  }
+  
+  dt <- dt[, .getDensity(value), by = element]
+  
+  if (is.null(ylab)) ylab <- "Density"
+  if (is.null(main)) main <- paste("Density of", variable)
+  
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  
+}
+
+.cdf <- function(dt, timeStep, variable, confInt = 0, maxValue,
+                 main = NULL, ylab = NULL, ...) {
+  
+  uniqueElements <- sort(unique(dt$element))
+  
+  xbins <- .getXBins(dt$value, maxValue)$xbins
+  
+  .getCDF <- function(x) {
+    cdf <- sapply(xbins, function(y) mean(x <= y))
+    data.table(x = xbins, y = cdf)
+  }
+  
+  dt <- dt[, .getCDF(value), by = element]
+  
+  if (is.null(ylab)) ylab <- "Proportion of time steps"
+  if (is.null(main)) main <- paste("Cumulated distribution of", variable)
+  
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  
+}
+
+.getXBins <- function(values, maxValue, size = 512) {
+  if(!is.null(maxValue) && !is.na(maxValue) && maxValue != 0) {
+    values <- dt$value[dt$value %between% c(-maxValue, maxValue)]
+    if (length(values) == 0) {
+      return("No value to display. Please choose a larger max value or set it to 0 to display all values")
+    }
+  }
+  
+  if (min(values) == max(values)) {
+    return("Impossible to display a density because all values are equal")
+  }
+  
+  rangeValues <- range(values)
+  
+  # Get the correct number of significant digits
+  xbins <- seq(rangeValues[1]* 0.9, rangeValues[2] * 1.1, length.out = 512)
+  nsignif <- 3
+  
+  while(any(duplicated(signif(xbins, nsignif)))) nsignif <- nsignif + 1
+  
+  list(xbins = signif(xbins, nsignif), nsignif = nsignif, rangeValues = rangeValues)
+}
+
+.plotStat <- function(dt, ylab, main, colors, uniqueElements, 
+                      legend, legendItemsPerRow, width, height,
+                      plotConfInt = FALSE) {
+  dt <- dcast(dt, x ~ element, value.var = "y")
+  
   if (is.null(colors)) {
-    colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
+    colors <- substring(rainbow(length(uniqueElements), s = 0.7, v = 0.7), 1, 7)
   } else {
-    colors <- rep(colors, length.out = length(uniqueElement))
+    colors <- rep(colors, length.out = length(uniqueElements))
   }
   
   legendId <- sample(1e9, 1)
@@ -393,164 +473,15 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     )
   
   if (plotConfInt) {
-    for (v in uniqueElement) {
+    for (v in uniqueElements) {
       g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
     }
   }
   
   if (!legend) return(g)
   
-  l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
+  l <-  tsLegend(uniqueElements, types = rep("line", length(uniqueElements)), 
                  colors = colors, legendId = legendId, legendItemsPerRow = legendItemsPerRow)
   g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
                                                  html = htmltools::doRenderTags(l)))
-  
-}
-
-.density <- function(dt, timeStep, variable, confInt = 0, maxValue, 
-                     colors = NULL,
-                     main = NULL,
-                     ylab = NULL,
-                     legend = TRUE,
-                     legendItemsPerRow = 5,
-                     width = NULL, height = NULL) {
-  
-  uniqueElement <- sort(unique(dt$element))
-  
-  if(is.null(maxValue) || is.na(maxValue) || maxValue == 0) {
-    values <- dt$value
-  } else {
-    values <- dt$value[dt$value %between% c(-maxValue, maxValue)]
-    if (length(values) == 0) {
-      return("No value to display. Please choose a larger max value or set it to 0 to display all values")
-    }
-  }
-  
-  if (min(values) == max(values)) {
-    return("Impossible to display a density because all values are equal")
-  }
-  
-  rangeValues <- range(values)
-  
-  # Get the correct number of significant digits
-  x <- seq(rangeValues[1]* 0.9, rangeValues[2] * 1.1, length.out = 512)
-  nsignif <- 3
-  
-  while(any(duplicated(signif(x, nsignif)))) nsignif <- nsignif + 1
-    
-  .getDensity <- function(x) {
-    dens <- density(x, from = rangeValues[1] * 0.9, to = rangeValues[2] * 1.1)
-    data.table(value = signif(dens$x, nsignif), density = dens$y)
-  }
-  
-  dt <- dt[, .getDensity(value), by = element]
-  dt <- dcast(dt, value ~ element, value.var = "density")
-  
-  if (is.null(ylab)) ylab <- "Density"
-  if (is.null(main)) main <- paste("Density of", variable)
-  if (is.null(colors)) {
-    colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
-  } else {
-    colors <- rep(colors, length.out = length(uniqueElement))
-  }
-  
-  legendId <- sample(1e9, 1)
-  
-  g <- dygraph(dt, main = main, group = legendId, width = width, height = height) %>% 
-    dyOptions(
-      includeZero = TRUE, 
-      colors = colors,
-      gridLineColor = gray(0.8), 
-      axisLineColor = gray(0.6), 
-      axisLabelColor = gray(0.6), 
-      labelsKMB = TRUE
-    ) %>% 
-    dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
-    dyLegend(show = "never") %>% 
-    dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId, timeStep = "none"),
-      unhighlightCallback = JS_resetLegend(legendId)
-    )
-  
-  if (!legend) return(g)
-  
-  l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
-                 colors = colors, legendId = legendId, legendItemsPerRow = legendItemsPerRow)
-  g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
-                                                 html = htmltools::doRenderTags(l)))
-  
-}
-
-.cdf <- function(dt, timeStep, variable, confInt = 0, maxValue,
-                 colors = NULL,
-                 main = NULL,
-                 ylab = NULL,
-                 legend = TRUE,
-                 legendItemsPerRow = 5,
-                 width = NULL, height = NULL) {
-  
-  uniqueElement <- sort(unique(dt$element))
-  
-  if(is.null(maxValue) || is.na(maxValue) || maxValue == 0) {
-    values <- dt$value
-  } else {
-    values <- dt$value[dt$value %between% c(-maxValue, maxValue)]
-    if (length(values) == 0) {
-      return("No value to display. Please choose a larger max value or set it to 0 to display all values")
-    }
-  }
-  
-  if (min(values) == max(values)) {
-    return("Impossible to display a density because all values are equal")
-  }
-  
-  rangeValues <- range(values)
-  
-  # Get the correct number of significant digits
-  xbins <- seq(rangeValues[1]* 0.9, rangeValues[2] * 1.1, length.out = 512)
-  nsignif <- 3
-  
-  while(any(duplicated(signif(xbins, nsignif)))) nsignif <- nsignif + 1
-  
-  .getCDF <- function(x) {
-    cdf <- sapply(xbins, function(y) mean(x <= y))
-    data.table(value = xbins, cdf = cdf)
-  }
-  
-  dt <- dt[, .getCDF(value), by = element]
-  dt <- dcast(dt, value ~ element, value.var = "cdf")
-  
-  if (is.null(ylab)) ylab <- "Proportion of time steps"
-  if (is.null(main)) main <- paste("Cumulated distribution of", variable)
-  if (is.null(colors)) {
-    colors <- substring(rainbow(length(uniqueElement), s = 0.7, v = 0.7), 1, 7)
-  } else {
-    colors <- rep(colors, length.out = length(uniqueElement))
-  }
-  
-  legendId <- sample(1e9, 1)
-  
-  g <- dygraph(dt, main = main, group = legendId, width = width, height = height) %>% 
-    dyOptions(
-      includeZero = TRUE, 
-      colors = colors,
-      gridLineColor = gray(0.8), 
-      axisLineColor = gray(0.6), 
-      axisLabelColor = gray(0.6), 
-      labelsKMB = TRUE
-    ) %>% 
-    dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
-    dyLegend(show = "never") %>% 
-    dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId, timeStep = "none"),
-      unhighlightCallback = JS_resetLegend(legendId)
-    )
-  
-  if (!legend) return(g)
-  
-  l <-  tsLegend(uniqueElement, types = rep("line", length(uniqueElement)), 
-                 colors = colors, legendId = legendId, legendItemsPerRow = legendItemsPerRow)
-  g %>% htmlwidgets::onRender(JS_addLegend, list(size = l$attribs$height, 
-                                                 html = htmltools::doRenderTags(l)))
-  
 }
