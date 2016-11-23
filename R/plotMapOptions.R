@@ -78,9 +78,11 @@ plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
   as.list(environment())
 }
 
-#' @param n
-#'   Approximate number of colors to use. The function tries to cut the data 
-#'   nicely, so the real number of colors used may vary.
+#' @param breaks
+#'   Either a single number indicating the approximate number of colors to use, or
+#'   a vector of values at which values to change color. 
+#'   In the first case, the function tries to cut the data nicely, so the real 
+#'   number of colors used may vary.
 #' @param domain
 #'   Range of the data, ie. the range of possible values. If \code{NULL}, the
 #'   the range of the data is used
@@ -99,7 +101,7 @@ plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
 #'
 #' @rdname plotMapOptions
 #' @export
-colorScaleOptions <- function(n = 5, domain = NULL,
+colorScaleOptions <- function(breaks = 5, domain = NULL,
                               negCol = "#FF0000", zeroCol = "#FFFFFF", posCol = "#0000FF",
                               naCol = "#EEEEEE", zeroTol = NULL) {
   as.list(environment())

@@ -27,7 +27,7 @@
 #' 
 #' @noRd
 #' 
-continuousColorPal <- function(x, n = 5, domain = NULL,
+continuousColorPal <- function(x, breaks = 5, domain = NULL,
                                negCol = "#FF0000", zeroCol = "#FFFFFF", posCol = "#0000FF",
                                naCol = "#EEEEEE", zeroTol = NULL) {
   if (is.null(zeroTol)) {
@@ -36,30 +36,53 @@ continuousColorPal <- function(x, n = 5, domain = NULL,
   
   if (is.null(domain)) domain <- range(x, na.rm = TRUE)
   
-  breaks <- pretty(domain, n)
-  breaks <- breaks[!breaks == 0]
-  breaks <- sort(c(breaks, -zeroTol, + zeroTol))
+  if (length(breaks) == 1) {
+    # Automatically choose approximatelly 'length(breaks)' break points
+    breaks <- pretty(domain, breaks)
+    
+    if (zeroTol > 0) {
+      breaks <- breaks[breaks != 0]
+      breaks <- sort(c(breaks, -zeroTol, + zeroTol))
+    }
+    
+    # Replace the first and last break by the bounds of the domain
+    breaks[1] <- domain[1]
+    breaks[length(breaks)] <- domain[2]
+  } else {
+    # Use the break points specified by user.
+    breaks <- sort(unique(breaks))
+    # If breaks do not enclose the domain, we add domain bounds as break points
+    if (min(breaks) > domain[1]) breaks <- c(domain[1], breaks)
+    if (max(breaks) < domain[2]) breaks <- c(breaks, domain[2])
+  }
   
+  # Ensure that extreme values are contained in the first or the last interval.
   breaks2 <- breaks
   breaks2[1] <- -Inf
   breaks2[length(breaks2)] <- Inf
   
-  negPal <- colorRampPalette(c(negCol, zeroCol))(sum(breaks2 < 0))
-  posPal <- colorRampPalette(c(zeroCol, posCol))(sum(breaks2 > 0))
+  # Choose colors for positive and negative values
+  negPal <- colorRampPalette(c(negCol, zeroCol), space = "Lab")(sum(breaks <= 0))
+  posPal <- colorRampPalette(c(zeroCol, posCol), space = "Lab")(sum(breaks >= 0))
   
-  pal <- c(negPal[-length(negPal)], zeroCol, posPal[-1])
+  # Create the color palette
+  # We include the zero color only if some interval contains 0
+  changeSign <- any(diff(sign(breaks)) == 2)
+  if (changeSign) {
+    pal <- c(negPal[-length(negPal)], zeroCol, posPal[-1])
+  } else {
+    pal <- c(negPal[-length(negPal)], posPal[-1])
+  }
+  
+  # Map values to colors
   colId <- as.numeric(cut(x, breaks2))
   
+  # NA values and values outside the domain are mapped to the naCol
   res <- pal[colId]
-  res[is.na(res)] <- naCol
+  res[is.na(res) | x < domain[1] | x > domain[2]] <- naCol
   
-  breaks[1] <- domain[1]
-  breaks[length(breaks)] <- domain[2]
-  if (any(breaks < domain[1])) {
-    pal <- pal[-(1:sum(breaks < domain[1]))]
-    breaks <- breaks[breaks >= domain[1]]
-  }
   attr(res, "breaks") <- breaks 
   attr(res, "pal") <- pal
+  
   res
 }
