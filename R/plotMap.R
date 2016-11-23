@@ -127,7 +127,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   # Function that draws the final map when leaving the shiny gadget.
-  plotFun <- function(t, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar) {
+  plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, 
+                      colLinkVar, sizeLinkVar, popupLinkVars) {
     map <- .initMap(x, mapLayout, options, width, height) %>%
       .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
       .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale, options) %>% 
@@ -136,7 +137,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     map
   }
   
-  initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, colLinkVar, sizeLinkVar)
+  initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
+                        colLinkVar, sizeLinkVar, popupLinkVars)
   
   if (!interactive) {
     return(initialMap %>% addTitle(main))
