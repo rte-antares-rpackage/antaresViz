@@ -384,9 +384,10 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   uniqueElements <- sort(unique(dt$element))
   
   xbins <- .getXBins(dt$value, maxValue)
+  if (is.character(xbins)) return(xbins)
   
   .getDensity <- function(x) {
-    dens <- density(x, from = xbins$rangeValues[1] * 0.9, to = xbins$rangeValues[2] * 1.1)
+    dens <- density(x, from = xbins$rangeValues[1], to = xbins$rangeValues[2])
     data.table(x = signif(dens$x, xbins$nsignif), y = dens$y)
   }
   
@@ -422,7 +423,7 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 
 .getXBins <- function(values, maxValue, size = 512) {
   if(!is.null(maxValue) && !is.na(maxValue) && maxValue != 0) {
-    values <- dt$value[dt$value %between% c(-maxValue, maxValue)]
+    values <- values[values %between% c(-maxValue, maxValue)]
     if (length(values) == 0) {
       return("No value to display. Please choose a larger max value or set it to 0 to display all values")
     }
@@ -435,7 +436,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   rangeValues <- range(values)
   
   # Get the correct number of significant digits
-  xbins <- seq(rangeValues[1]* 0.9, rangeValues[2] * 1.1, length.out = 512)
+  offset <- diff(rangeValues) * 0.1
+  rangeValues <- c(rangeValues[1] - offset, rangeValues[2] + offset)
+  xbins <- seq(rangeValues[1], rangeValues[2], length.out = 512)
   nsignif <- 3
   
   while(any(duplicated(signif(xbins, nsignif)))) nsignif <- nsignif + 1
