@@ -5,9 +5,10 @@
 \title{Display results of a simulation on a map}
 \usage{
 plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
-  uniqueScale = FALSE, colLinkVar = "none", sizeLinkVar = "none",
-  timeId = NULL, main = "", interactive = base::interactive(),
-  options = plotMapOptions(), width = NULL, height = NULL)
+  uniqueScale = FALSE, popupAreaVars = c(), colLinkVar = "none",
+  sizeLinkVar = "none", popupLinkVars = c(), timeId = NULL, main = "",
+  interactive = base::interactive(), options = plotMapOptions(),
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -19,7 +20,7 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
 are represented by the color of the areas on the map. If \code{"none"}, then
 the default color is used for all areas.}
 
-\item{sizeAreaVars}{vector of variables present in \code{x$areas} to associate with the size of 
+\item{sizeAreaVars}{Vector of variables present in \code{x$areas} to associate with the size of 
 areas on the map. If this parameter has length equal to 0, all areas have the
 same size. If it has length equal to one, then the radius of the areas change
 depending on the values of the variable choosen. If it has length greater than
@@ -30,6 +31,8 @@ depends on the values of each variable.}
 represented use the same scale or should each variable have its own scale ?
 This parameter should be TRUE only if the variables have the same unit and 
 are comparable : for instance production variables.}
+
+\item{popupAreaVars}{Vector of variables to display when user clicks on an area.}
 
 \item{colLinkVar}{Name of a variable present in \code{x$links}. The values of this variable
 are represented by the color of the links on the map. If \code{"none"}, then
@@ -53,6 +56,8 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{popupLinkVar}{Vector of variables to display when user clicks on a link.}
 }
 \value{
 An htmlwidget of class "leaflet". It can be modified with package 

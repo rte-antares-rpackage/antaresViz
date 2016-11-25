@@ -14,7 +14,7 @@ plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
   polygonOptions = list(stroke = TRUE, color = "#999", weight = 0.5, opacity =
   1, fillOpacity = 0.2, options = list(clickable = FALSE)))
 
-colorScaleOptions(n = 5, domain = NULL, negCol = "#FF0000",
+colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
   zeroCol = "#FFFFFF", posCol = "#0000FF", naCol = "#EEEEEE",
   zeroTol = NULL)
 }
@@ -59,8 +59,10 @@ correctly displayed or to display custom geographic area boundaries.}
 provided, these options control how they are drawn on the map (color, 
 opacity, etc.).}
 
-\item{n}{Approximate number of colors to use. The function tries to cut the data 
-nicely, so the real number of colors used may vary.}
+\item{breaks}{Either a single number indicating the approximate number of colors to use, or
+a vector of values at which values to change color. 
+In the first case, the function tries to cut the data nicely, so the real 
+number of colors used may vary.}
 
 \item{domain}{Range of the data, ie. the range of possible values. If \code{NULL}, the
 the range of the data is used}

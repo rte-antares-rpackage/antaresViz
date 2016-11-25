@@ -26,5 +26,6 @@ Imports:
     manipulateWidget (>= 0.2.0),
     mapStudio,
     leaflet (>= 1.0),
-    sp
+    sp,
+    webshot
 RoxygenNote: 5.0.1

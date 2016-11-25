@@ -6,9 +6,9 @@
 \usage{
 \method{plot}{antaresDataTable}(x, variable = NULL, elements = NULL,
   type = c("ts", "barplot", "monotone", "density", "cdf"), dateRange = NULL,
-  confInt = 0, interactive = base::interactive(), colors = NULL,
-  main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
-  width = NULL, height = NULL, ...)
+  confInt = 0, maxValue = 0, interactive = base::interactive(),
+  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
+  legendItemsPerRow = 5, width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataTable}.}
@@ -37,6 +37,12 @@ displayed. If NULL, then all data is displayed.}
 display. If it equals to 0, then confidence interval is not computed nor
 displayed. Used only when multiple Monte Carlo scenarios are present in 
 the input data.}
+
+\item{maxValue}{Only used if parameter \code{type} is "density" or "cdf". If this parameter 
+is set, all values not in [-maxValue, maxValue] are removed from the graphic.
+This is useful to deal with variables containing a few extreme values
+(generally cost and price variables). If \code{maxValue} is 0 or unset, all
+values are displayed.}
 
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}
