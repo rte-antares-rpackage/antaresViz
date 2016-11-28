@@ -23,7 +23,7 @@ Imports:
     tibble,
     htmltools,
     htmlwidgets (>= 0.7.0),
-    manipulateWidget (>= 0.2.0),
+    manipulateWidget (>= 0.4.0),
     mapStudio,
     leaflet (>= 1.0),
     sp,

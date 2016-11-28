@@ -128,46 +128,50 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, 
-                      colLinkVar, sizeLinkVar, popupLinkVars) {
-    map <- .initMap(x, mapLayout, options, width, height) %>%
+                      colLinkVar, sizeLinkVar, popupLinkVars, 
+                      initial = TRUE, session = NULL) {
+    if (initial) {
+      map <- .initMap(x, mapLayout, options, width, height)
+    } else {
+      map <- leafletProxy("output", session)
+    }
+     map %>%
       .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
       .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale, options) %>% 
       addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
-    
-    map
   }
   
   initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
                         colLinkVar, sizeLinkVar, popupLinkVars)
   
   if (!interactive) {
-    return(initialMap %>% addTitle(main))
+    map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
+                    colLinkVar, sizeLinkVar, popupLinkVars)
+  } else {
+    areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
+    linkValColums <- setdiff(names(x$links), .idCols(x$links))
+    
+    map <- manipulateWidget(
+      {
+        plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
+                colLinkVar, sizeLinkVar, popupLinkVars, .initial, .session)
+      },
+      timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
+      Areas = list(
+        colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
+        sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
+        uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale"),
+        popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE)
+      ),
+      Links = list(
+        colLinkVar = mwSelect(c("none", linkValColums), colLinkVar, label = "Color"),
+        sizeLinkVar = mwSelect(c("none", linkValColums), sizeLinkVar, label = "Width"),
+        popupLinkVars = mwSelect(linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
+      ),
+      .main = main
+    )
   }
-  
-  # Create the UI of the gadget
-  areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
-  linkValColums <- setdiff(names(x$links), .idCols(x$links))
-  
-  ui <- mwUI(
-    timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
-    Areas = list(
-      colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
-      sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
-      uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale"),
-      popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE)
-    ),
-    Links = list(
-      colLinkVar = mwSelect(c("none", linkValColums), colLinkVar, label = "Color"),
-      sizeLinkVar = mwSelect(c("none", linkValColums), sizeLinkVar, label = "Width"),
-      popupLinkVars = mwSelect(linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
-    ),
-    .content = leafletOutput("map", height = "100%"), 
-    .main = main
-  )
-  
-  args <- runGadget(ui, 
-                    .plotMapServer(x, mapLayout, initialMap, options, sizeAreaVars), 
-                    viewer = browserViewer())
-  do.call(plotFun, args) %>% addTitle(main)
+
+  map %>% addTitle(main)
 }
 
