@@ -6,9 +6,9 @@
 \usage{
 plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   uniqueScale = FALSE, popupAreaVars = c(), colLinkVar = "none",
-  sizeLinkVar = "none", popupLinkVars = c(), timeId = NULL, main = "",
-  interactive = base::interactive(), options = plotMapOptions(),
-  width = NULL, height = NULL)
+  sizeLinkVar = "none", popupLinkVars = c(), type = c("detail", "avg"),
+  timeId = NULL, main = "", interactive = base::interactive(),
+  options = plotMapOptions(), width = NULL, height = NULL)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -40,6 +40,11 @@ the default color is used for all links}
 
 \item{sizeLinkVar}{Name of a variable present in \code{x$links}. Its values are represented by
 the line width of the links on the map.}
+
+\item{type}{If \code{type="avg"}, the data is averaged by area/and or link and
+represented on the map. If it is equal to \code{"detail"}, only one time
+step at a time. In interactive mode, an input control permits to choose the
+time step shown.}
 
 \item{timeId}{A single time id present in the data.}
 

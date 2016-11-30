@@ -6,9 +6,10 @@
 \usage{
 \method{plot}{antaresDataTable}(x, variable = NULL, elements = NULL,
   type = c("ts", "barplot", "monotone", "density", "cdf"), dateRange = NULL,
-  confInt = 0, maxValue = 0, interactive = base::interactive(),
-  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
-  legendItemsPerRow = 5, width = NULL, height = NULL, ...)
+  confInt = 0, minValue = NULL, maxValue = NULL,
+  interactive = base::interactive(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5, width = NULL,
+  height = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataTable}.}

@@ -38,8 +38,13 @@
 #'   the line width of the links on the map.
 #' @param popupLinkVar
 #'   Vector of variables to display when user clicks on a link.
+#' @param type
+#'   If \code{type="avg"}, the data is averaged by area/and or link and
+#'   represented on the map. If it is equal to \code{"detail"}, only one time
+#'   step at a time. In interactive mode, an input control permits to choose the
+#'   time step shown.
 #' @param timeId
-#'   A single time id present in the data.
+#'   A single time id present in the data. Only used if \code{type="detail"}
 #' @param main
 #'   Title of the map.
 #' @param options
@@ -83,12 +88,14 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     uniqueScale = FALSE,
                     popupAreaVars = c(),
                     colLinkVar = "none", sizeLinkVar = "none", popupLinkVars = c(),
+                    type = c("detail", "avg"),
                     timeId = NULL,
                     main = "",
                     interactive = base::interactive(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
   
+  type <- match.arg(type)
   options <- do.call(plotMapOptions, options)
   
   # Check that parameters have the good class
@@ -129,7 +136,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, 
                       colLinkVar, sizeLinkVar, popupLinkVars, 
+                      type = c("detail", "avg"), 
                       initial = TRUE, session = NULL) {
+    
+    type <- match.arg(type)
+    if (type == "avg") t <- NULL
+    
     if (initial) {
       map <- .initMap(x, mapLayout, options, width, height)
     } else {
@@ -148,14 +160,18 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
                     colLinkVar, sizeLinkVar, popupLinkVars)
   } else {
+    # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
     linkValColums <- setdiff(names(x$links), .idCols(x$links))
+    # We don't want to show the time id slider if there is only one time id
+    hideTimeIdSlider <- timeIdMin == timeIdMax
     
     map <- manipulateWidget(
       {
         plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
-                colLinkVar, sizeLinkVar, popupLinkVars, .initial, .session)
+                colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session)
       },
+      type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = "detail"),
       timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
       Areas = list(
         colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
@@ -168,7 +184,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         sizeLinkVar = mwSelect(c("none", linkValColums), sizeLinkVar, label = "Width"),
         popupLinkVars = mwSelect(linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
       ),
-      .main = main
+      .main = main,
+      .display = list(
+        timeId = !hideTimeIdSlider && type =="detail"
+      )
     )
   }
 

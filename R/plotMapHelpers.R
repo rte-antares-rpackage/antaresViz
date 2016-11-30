@@ -8,13 +8,13 @@
 #' @param coords
 #'   element of a map layout corresponding to data (coordinates of areas or links)
 #' @param mergeBy
-#'   name of the variable to merge data and coords by ("area" or "link")
+#'   name of the variable to merge data and coords by ("area" or "link").
 #' @param t
 #'   timeStep
 #' @param colVar
-#'   variable to map with colors. "none" for no mapping
+#'   variable to map with colors. "none" for no mapping.
 #' @param sizeVar
-#'   variables to map with sizes. "none", NULL or c() for no mapping
+#'   variables to map with sizes. "none", NULL or c() for no mapping.
 #' 
 #' @return 
 #' A list with the following elements:
@@ -30,7 +30,25 @@
 .getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar, 
                            popupVars, colorScaleOpts) {
   
-  coords <- merge(coords, data[timeId == t], by = mergeBy)
+  neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars)), "none")
+  if (is.null(t)) {
+    if (length(neededVars) == 0) {
+      data <- unique(data[, mergeBy, with = FALSE])
+    } else {
+      data <- data[, lapply(.SD, mean), 
+                   keyby = mergeBy, 
+                   .SDcols = neededVars]
+    }
+    dataFiltered <- data
+  } else {
+    if (!is.null(data$mcYear) & length(unique(data$mcYear)) > 1 & length(neededVars) > 0) {
+      data <- data[, lapply(.SD, mean), 
+                   keyby = c("timeId", mergeBy),
+                   .SDcols = neededVars]
+    }
+    dataFiltered <- data[timeId == t]
+  }
+  coords <- merge(coords, dataFiltered, by = mergeBy)
   
   # Initialize the object returned by the function
   res <- list(coords = coords, dir = 0)
