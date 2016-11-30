@@ -23,7 +23,8 @@ L.TimeLabel = L.Control.extend({
   },
   
   onRemove: function() {
-    this._container.parentNode.removeChild(this._container);
+    console.log(this._label.parentNode);
+    this._label.parentNode.removeChild(this._label);
   },
   
   setOptions: function(options) {
@@ -50,7 +51,7 @@ L.TimeLabel = L.Control.extend({
         this._label.innerHTML = date.toUTCString().slice(7, 11);
         break;
       default:
-        this._label.innerHTML = date.toString();
+        this._label.innerHTML = this.options.time;
         break;
     }
   }

@@ -143,14 +143,16 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (type == "avg") t <- NULL
     
     if (initial) {
-      map <- .initMap(x, mapLayout, options, width, height)
+      map <- .initMap(x, mapLayout, options, width, height) %>% 
+        addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
     } else {
       map <- leafletProxy("output", session)
     }
-     map %>%
+     map <- map %>%
       .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
-      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale, options) %>% 
-      addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
+      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale, options)
+     if (is.null(t)) map %>% updateTimeLabel("", "none", simOptions(x))
+     else map %>% updateTimeLabel(t, attr(x, "timeStep"), simOptions(x))
   }
   
   initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,

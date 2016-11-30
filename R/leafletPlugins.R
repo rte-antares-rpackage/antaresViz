@@ -547,10 +547,13 @@ addTimeLabel <- function(map, timeId = NULL, timeStep, opts) {
 #' @noRd
 updateTimeLabel <- function(map, timeId = NULL, timeStep, opts) {
   if (is.null(timeId)) return(map)
-  
-  time <- .timeIdToDate(timeId, timeStep, opts) %>% 
-    as.POSIXct() %>% 
-    as.numeric() 
+  if (timeStep == "none") {
+    time <- timeId
+  } else {
+    time <- .timeIdToDate(timeId, timeStep, opts) %>% 
+      as.POSIXct() %>% 
+      as.numeric() 
+  }
   
   options <- list(
     time = time,
