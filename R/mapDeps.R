@@ -58,6 +58,20 @@ requireDep <- function(map, deps) {
        "1.0",
        src = system.file("leafletPlugins", package = "antaresViz"),
        script = "timeLabel.js"
+     ),
+     
+     d3chart = htmlDependency(
+       "d3chart",
+       "1.0",
+       src = system.file("leafletPlugins", package = "antaresViz"),
+       script = "d3chart.js"
+     ),
+     
+     d3chart_bindings = htmlDependency(
+       "d3chart_bindings",
+       "1.0",
+       src = system.file("leafletPlugins", package = "antaresViz"),
+       script = "d3chart_bindings.js"
      )
      
    )
