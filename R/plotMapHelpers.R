@@ -217,7 +217,7 @@
   # Use default values if needed
   if (is.null(optsLink$color)) optsLink$color <- options$linkDefaultCol
   if (is.null(optsLink$size)) optsLink$size <- options$linkDefaultSize
-  else optsLink$size <- optsLink$size * options$linkMaxSize
+  else optsLink$size <- optsLink$size /optsLink$ maxSize * options$linkMaxSize
   
   map <- map %>% updateDirectedSegments(layerId = ml$links$link, 
                                         color = optsLink$color,
