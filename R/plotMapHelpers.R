@@ -74,7 +74,6 @@
   if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
     res$size <- as.matrix(coords[, sizeVar, with = FALSE])
     res$maxSize <- apply(abs(as.matrix(data[, sizeVar, with = FALSE])), 2, max)
-    if (length(sizeVar) == 1) res$size <- res$size / res$maxSize
   }
   
   # Direction
@@ -127,21 +126,11 @@
 .initMap <- function(x, ml, options, width, height) {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
-              opacityArea = 0, opacityLinks = 0, addTiles = options$addTiles,
+              opacityArea = 1, opacityLinks = 1, addTiles = options$addTiles,
               polygons = options$polygons, 
               polygonOptions = options$polygonOptions,
               width = width, height = height) %>% 
     addAntaresLegend(display = options$legend)
-  
-  # Add a layer with bar or polar charts
-  if (!is.null(x$areas)) {
-    addChart <- switch(options$areaChartType, bar = addBarCharts, polar = addPolarCharts)
-    map <- addChart(map, ml$coords$x, ml$coords$y,
-                    data = matrix(0, nrow = nrow(ml$coords)),
-                    opacity = 0, layerId = ml$coords$area,
-                    colors = options$areaChartColors,
-                    popup = ml$coords$area, size = options$areaMaxSize)
-  }
   
   addShadows(map)
 }
@@ -155,11 +144,6 @@
   # Just in case, we do not want to accidentally modify the original map layout.
   ml <- copy(mapLayout)
   
-  # How to represent multiple size variables ?
-  updateChart <- switch(options$areaChartType, 
-                        bar = updateBarCharts, 
-                        polar = updatePolarCharts)
-  
   # Compute color and size of areas for the given time step.
   optsArea <- .getColAndSize(x$areas, ml$coords, "area", t,
                              colAreaVar, sizeAreaVars, popupAreaVars,
@@ -169,26 +153,20 @@
   # Use default values if needed.
   if (is.null(optsArea$color)) optsArea$color <- options$areaDefaultCol
   
-  if (is.null(optsArea$size)) optsArea$size <- options$areaDefaultSize
-  else if (ncol(optsArea$size) == 1) {
-    optsArea$size <- sqrt(abs(optsArea$size)) * options$areaMaxSize
+  if (is.null(optsArea$size)) {
+    optsArea$size <- 1
+    optsArea$maxSize <- 1
+    areaWidth <- options$areaDefaultSize
+  } else {
+    areaWidth <- options$areaMaxSize
   }
   
-  # Update circle markers and/or polar/bar charts.
-  if (is.matrix(optsArea$size) && ncol(optsArea$size) > 1) {
-    if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
-      
-    map <- map %>% 
-      updateCircleMarkers(optsArea$coords$area, opacity = 0, fillOpacity = 0, popup = optsArea$popup) %>% 
-      updateChart(optsArea$coords$area, opacity = 1, data = optsArea$size, 
-                  maxValue = optsArea$maxSize, popup = optsArea$popup)
-  } else {
-    map <- map %>% 
-      updateCircleMarkers(optsArea$coords$area, fillColor = optsArea$color, 
-                          radius = optsArea$size, popup = optsArea$popup,
-                          opacity = 1, fillOpacity = 1) %>% 
-      updateChart(optsArea$coords$area, opacity = 0, popup = optsArea$popup)
-  }
+  if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
+  
+  # Update areas
+  map <- updateD3charts(map, optsArea$coords$area, data = optsArea$size,
+                        maxValues = optsArea$maxSize, width = areaWidth,
+                        fillColor = optsArea$color, popup = optsArea$popup)
   
   # Update the legend
   #

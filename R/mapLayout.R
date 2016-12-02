@@ -149,10 +149,11 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #' }
 #' 
 #' @export
-plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
-                           opacityArea = 1, areaMaxValues = NULL,
-                           areaChartType = c("bar", "polar"), 
+plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
+                           opacityArea = 1, areaMaxWidth = 20,
+                           areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"), 
                            popupArea = x$coords$area, 
+                           labelArea = NULL,
                            colLinks = "#CCCCCC", sizeLinks = 3, 
                            opacityLinks = 1, dirLinks = 0, 
                            popupLink = x$links$link,
@@ -196,33 +197,12 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, sizeAreas = 10,
   if (areas) {
     areaChartType <- match.arg(areaChartType)
     
-    if (is.matrix(sizeAreas) && ncol(sizeAreas) > 1) {
-      if (areaChartType == "polar") {
-        addAreas <- function(map) {
-          addPolarCharts(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                         popup = popupArea, layerId = x$coords$area, 
-                         maxValue = areaMaxValues, opacity = opacityArea)
-        }
-      } else {
-        addAreas <- function(map) {
-          addBarCharts(map, lng = x$coords$x, lat = x$coords$y, data = sizeAreas,
-                       popup = popupArea, layerId = x$coords$area, 
-                       opacity = opacityArea)
-        }
-      }
-      
-    } else {
-      addAreas <- function(map) {
-        addCircleMarkers(map, lng = x$coords$x, lat = x$coords$y, 
-                         radius = sizeAreas,
-                         stroke = FALSE, 
-                         fillColor = colAreas, 
-                         popup = popupArea, layerId = x$coords$area,
-                         fillOpacity = opacityArea, options = list(className = "leaflet-zoom-hide"))
-      }
-    }
-    
-    map <- addAreas(map)
+    map <- addD3charts(map, lng = x$coords$x, lat = x$coords$y, 
+                       data = dataAreas, fillColor = colAreas,
+                       showLabels = !is.null(labelArea),
+                       labelText = labelArea,
+                       width = areaMaxWidth,
+                       popup = popupArea, layerId = x$coords$area, opacity = opacityArea)
   }
   
   # Set the view of the map to include all data

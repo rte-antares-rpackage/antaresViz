@@ -46,7 +46,7 @@ represented on the map. If it is equal to \code{"detail"}, only one time
 step at a time. In interactive mode, an input control permits to choose the
 time step shown.}
 
-\item{timeId}{A single time id present in the data.}
+\item{timeId}{A single time id present in the data. Only used if \code{type="detail"}}
 
 \item{main}{Title of the map.}
 

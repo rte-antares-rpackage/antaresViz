@@ -57,7 +57,7 @@
 #' 
 #' @export
 plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15, 
-                           areaMaxSize = 15, areaChartColors = NULL,
+                           areaMaxSize = 30, areaChartColors = NULL,
                            areaChartType = c("bar", "polar"),
                            areaColorScaleOpts = colorScaleOptions(),
                            linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, 

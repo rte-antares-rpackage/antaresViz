@@ -1,6 +1,6 @@
 addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto", 
                         fillColor = NULL, colorPalette = NULL,
-                        width = 60, height = 60, opacity = 1, showLabels = FALSE,
+                        width = 30, height = 30, opacity = 1, showLabels = FALSE,
                         labelStyle = "fill:white;font-size:8px;", 
                         labelPrecision = 0, labelText = NULL,
                         transitionTime = 750, popup = NULL, layerId = NULL) {
@@ -19,7 +19,7 @@ addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto"
     }
   }
   
-  data <- as.matrix(data)
+  data <- unname(as.matrix(data))
   
   # If maxValues is not set, explicitely, we use the maximal observed value
   if (is.null(maxValues)) maxValues <- max(abs(data))
@@ -41,7 +41,7 @@ addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto"
   
   map %>% requireDep(c("d3", "d3chart", "d3chart_bindings")) %>% 
     invokeMethod(leaflet:::getMapData(map), "addD3charts", 
-                 options, data, maxValues, colorPalette)
+                 options, data, unname(maxValues), colorPalette)
 }
 
 updateD3charts <- function(map, layerId, data = NULL, maxValues = NULL, type = NULL, 
@@ -63,7 +63,7 @@ updateD3charts <- function(map, layerId, data = NULL, maxValues = NULL, type = N
       }
     }
     
-    data <- as.matrix(data)
+    data <- unname(as.matrix(data))
     
     if (type == "auto") {
       type <- ifelse (ncol(data) == 1, "polar-area", "bar")
@@ -84,6 +84,6 @@ updateD3charts <- function(map, layerId, data = NULL, maxValues = NULL, type = N
   
   map %>% requireDep(c("d3", "d3chart", "d3chart_bindings")) %>% 
     invokeMethod(leaflet:::getMapData(map), "updateD3charts", 
-                 options, data, maxValues, colorPalette)
+                 options, data, unname(maxValues), colorPalette)
   
 }

@@ -3,32 +3,11 @@
 requireDep <- function(map, deps) {
    mapDeps <- list(
      
-     updateCircleMarkers = htmlDependency(
-       "updateCircleMarkers",
-       "1.0",
-       src = system.file("leafletPlugins", package = "antaresViz"), 
-       script = "updateCircleMarkers.js"
-     ),
-     
      directedSegment = htmlDependency(
        "directedSegment", 
        "1.0",
        src = system.file("leafletPlugins", package = "antaresViz"), 
        script = "directedSegment.js"
-     ),
-     
-     polarChart = htmlDependency(
-       "polarChart",
-       "1.0",
-       src = system.file("leafletPlugins", package = "antaresViz"), 
-       script = "polarChart.js"
-     ),
-     
-     barChart = htmlDependency(
-       "barChart",
-       "1.0",
-       src = system.file("leafletPlugins", package = "antaresViz"), 
-       script = "barChart.js"
      ),
      
      d3 = htmlDependency(

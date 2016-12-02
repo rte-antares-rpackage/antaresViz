@@ -6,7 +6,7 @@
 \title{Graphical options for plotMap}
 \usage{
 plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
-  areaMaxSize = 15, areaChartColors = NULL, areaChartType = c("bar",
+  areaMaxSize = 30, areaChartColors = NULL, areaChartType = c("bar",
   "polar"), areaColorScaleOpts = colorScaleOptions(),
   linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, linkMaxSize = 10,
   linkColorScaleOpts = colorScaleOptions(), legend = c("choose", "visible",

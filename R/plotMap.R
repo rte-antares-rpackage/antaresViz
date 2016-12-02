@@ -134,7 +134,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   # Function that draws the final map when leaving the shiny gadget.
-  plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, 
+  plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
                       colLinkVar, sizeLinkVar, popupLinkVars, 
                       type = c("detail", "avg"), 
                       initial = TRUE, session = NULL) {
@@ -155,11 +155,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
      else map %>% updateTimeLabel(t, attr(x, "timeStep"), simOptions(x))
   }
   
-  initialMap <- plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
-                        colLinkVar, sizeLinkVar, popupLinkVars)
-  
   if (!interactive) {
-    map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
+    map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
                     colLinkVar, sizeLinkVar, popupLinkVars)
   } else {
     # Create the interactive widget
@@ -170,7 +167,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     
     map <- manipulateWidget(
       {
-        plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars,
+        plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session)
       },
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = "detail"),

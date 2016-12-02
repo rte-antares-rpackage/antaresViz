@@ -4,26 +4,21 @@
 \alias{plot.mapLayout}
 \title{Plot method for map layout}
 \usage{
-\method{plot}{mapLayout}(x, colAreas = x$coords$color, sizeAreas = 10,
-  opacityArea = 1, areaMaxValues = NULL, areaChartType = c("bar",
-  "polar"), popupArea = x$coords$area, colLinks = "#CCCCCC",
-  sizeLinks = 3, opacityLinks = 1, dirLinks = 0,
-  popupLink = x$links$link, links = TRUE, areas = TRUE, addTiles = TRUE,
-  background = "white", polygons = NULL, polygonOptions = list(stroke =
-  TRUE, color = "#bbb", weight = 0.5, opacity = 1, fillOpacity = 0.2, options =
-  list(clickable = FALSE)), width = NULL, height = NULL, ...)
+\method{plot}{mapLayout}(x, colAreas = x$coords$color, dataAreas = 1,
+  opacityArea = 1, areaMaxWidth = 20, areaChartType = c("auto", "bar",
+  "pie", "polar-area", "polar-radius"), popupArea = x$coords$area,
+  labelArea = NULL, colLinks = "#CCCCCC", sizeLinks = 3,
+  opacityLinks = 1, dirLinks = 0, popupLink = x$links$link,
+  links = TRUE, areas = TRUE, addTiles = TRUE, background = "white",
+  polygons = NULL, polygonOptions = list(stroke = TRUE, color = "#bbb",
+  weight = 0.5, opacity = 1, fillOpacity = 0.2, options = list(clickable =
+  FALSE)), width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}
 
 \item{colAreas}{Vector of colors for areas. By default, the colors used in the Antares
 software are used.}
-
-\item{sizeAreas}{Either a single numeric value indicating the radius of the areas on the 
-map or a vector with as many values as the number of areas of the study or
-a matrix with as many rows as the number of areas. In the last case, areas 
-are represented by polar area charts and each column is represented by one
-section of the polar charts.}
 
 \item{areaChartType}{Type of chart to use to represent multiple values. Possible values are "bar"
 for bar charts and "polar" for polar area charts.}
@@ -67,6 +62,12 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{...}{Currently unused.}
+
+\item{sizeAreas}{Either a single numeric value indicating the radius of the areas on the 
+map or a vector with as many values as the number of areas of the study or
+a matrix with as many rows as the number of areas. In the last case, areas 
+are represented by polar area charts and each column is represented by one
+section of the polar charts.}
 }
 \value{
 The function generates an \code{htmlwidget} of class \code{leaflet}. It can
