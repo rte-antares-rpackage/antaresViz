@@ -1,4 +1,4 @@
-addD3charts <- function(map, lng, lat, data = 1, maxValues = 1, type = "auto", 
+addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto", 
                         fillColor = NULL, colorPalette = NULL,
                         width = 60, height = 60, opacity = 1, showLabels = FALSE,
                         labelStyle = "fill:white;font-size:8px;", 
@@ -20,6 +20,9 @@ addD3charts <- function(map, lng, lat, data = 1, maxValues = 1, type = "auto",
   }
   
   data <- as.matrix(data)
+  
+  # If maxValues is not set, explicitely, we use the maximal observed value
+  if (is.null(maxValues)) maxValues <- max(abs(data))
   
   # If there is only one variable in data, we draw circles with different radius
   # else we draw bar charts by default.
