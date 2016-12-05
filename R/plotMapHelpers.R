@@ -28,9 +28,9 @@
 #' 
 #' @noRd
 .getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar, 
-                           popupVars, colorScaleOpts) {
+                           popupVars, colorScaleOpts, labelVar = NULL) {
   
-  neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars)), "none")
+  neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars, labelVar)), "none")
   if (is.null(t)) {
     if (length(neededVars) == 0) {
       data <- unique(data[, mergeBy, with = FALSE])
@@ -137,7 +137,7 @@
 
 # Update the circles and polar charts representing areas in an existing map
 .redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars,
-                           popupAreaVars, uniqueScale,
+                           popupAreaVars, uniqueScale, showLabels, labelAreaVar,
                            options) {
   if (is.null(x$areas)) return(map)
   
@@ -147,7 +147,7 @@
   # Compute color and size of areas for the given time step.
   optsArea <- .getColAndSize(x$areas, ml$coords, "area", t,
                              colAreaVar, sizeAreaVars, popupAreaVars,
-                             options$areaColorScaleOpts)
+                             options$areaColorScaleOpts, labelVar = labelAreaVar)
   ml$coords <- optsArea$coords
   
   # Use default values if needed.
@@ -161,11 +161,25 @@
     areaWidth <- options$areaMaxSize
   }
   
+  # Chart options
   if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
+  
+  # Labels
+  labels <- NULL
+  if (length(sizeAreaVars) < 2) {
+    if (labelAreaVar == "none") {
+      showLabels <- FALSE
+    } else {
+      showLabels <- TRUE
+      labels <- optsArea$coords[[labelAreaVar]]
+    }
+    
+  }
   
   # Update areas
   map <- updateD3charts(map, optsArea$coords$area, data = optsArea$size,
                         maxValues = optsArea$maxSize, width = areaWidth,
+                        showLabels = showLabels, labelText = labels,
                         fillColor = optsArea$color, popup = optsArea$popup)
   
   # Update the legend

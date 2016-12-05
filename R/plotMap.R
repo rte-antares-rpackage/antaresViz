@@ -29,6 +29,8 @@
 #'   are comparable : for instance production variables. 
 #' @param popupAreaVars
 #'   Vector of variables to display when user clicks on an area.
+#' @param labelAreaVar
+#'   Variable to display in the areas.
 #' @param colLinkVar
 #'   Name of a variable present in \code{x$links}. The values of this variable
 #'   are represented by the color of the links on the map. If \code{"none"}, then
@@ -86,7 +88,9 @@
 #' @export
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     uniqueScale = FALSE,
+                    showLabels = FALSE,
                     popupAreaVars = c(),
+                    labelAreaVar = "none",
                     colLinkVar = "none", sizeLinkVar = "none", popupLinkVars = c(),
                     type = c("detail", "avg"),
                     timeId = NULL,
@@ -135,7 +139,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
-                      colLinkVar, sizeLinkVar, popupLinkVars, 
+                      showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
+                      popupLinkVars, 
                       type = c("detail", "avg"), 
                       initial = TRUE, session = NULL) {
     
@@ -150,14 +155,15 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     }
      map <- map %>%
       .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
-      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale, options)
+      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, 
+                     uniqueScale, showLabels, labelAreaVar, options)
      if (is.null(t)) map %>% updateTimeLabel("", "none", simOptions(x))
      else map %>% updateTimeLabel(t, attr(x, "timeStep"), simOptions(x))
   }
   
   if (!interactive) {
     map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
-                    colLinkVar, sizeLinkVar, popupLinkVars)
+                    showLabels, labelAreaVar, colLinkVar, sizeLinkVar, popupLinkVars)
   } else {
     # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
@@ -168,6 +174,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     map <- manipulateWidget(
       {
         plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
+                showLabels, labelAreaVar,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session)
       },
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = "detail"),
@@ -176,7 +183,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
         sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
         uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale"),
-        popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE)
+        showLabels = mwCheckbox(showLabels, label = "Show labels"),
+        popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE),
+        labelAreaVar = mwSelect(c("none", areaValColums), labelAreaVar, label = "Label")
       ),
       Links = list(
         colLinkVar = mwSelect(c("none", linkValColums), colLinkVar, label = "Color"),
@@ -185,7 +194,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       ),
       .main = main,
       .display = list(
-        timeId = !hideTimeIdSlider && type =="detail"
+        timeId = !hideTimeIdSlider && type =="detail",
+        uniqueScale = length(sizeAreaVars) >= 2,
+        showLabels = length(sizeAreaVars) >= 2,
+        labelAreaVar = length(sizeAreaVars) < 2
       )
     )
   }
