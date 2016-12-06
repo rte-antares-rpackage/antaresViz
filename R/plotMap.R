@@ -91,6 +91,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     showLabels = FALSE,
                     popupAreaVars = c(),
                     labelAreaVar = "none",
+                    areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
                     colLinkVar = "none", sizeLinkVar = "none", popupLinkVars = c(),
                     type = c("detail", "avg"),
                     timeId = NULL,
@@ -100,6 +101,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     width = NULL, height = NULL) {
   
   type <- match.arg(type)
+  areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
   
   # Check that parameters have the good class
@@ -138,8 +140,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   # Function that draws the final map when leaving the shiny gadget.
-  plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
-                      showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
+  plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
+                      uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
                       popupLinkVars, 
                       type = c("detail", "avg"), 
                       initial = TRUE, session = NULL) {
@@ -156,14 +158,15 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
      map <- map %>%
       .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
       .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, 
-                     uniqueScale, showLabels, labelAreaVar, options)
+                     uniqueScale, showLabels, labelAreaVar, areaChartType, options)
      if (is.null(t)) map %>% updateTimeLabel("", "none", simOptions(x))
      else map %>% updateTimeLabel(t, attr(x, "timeStep"), simOptions(x))
   }
   
   if (!interactive) {
-    map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
-                    showLabels, labelAreaVar, colLinkVar, sizeLinkVar, popupLinkVars)
+    map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
+                    uniqueScale, showLabels, labelAreaVar, colLinkVar, 
+                    sizeLinkVar, popupLinkVars)
   } else {
     # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
@@ -173,8 +176,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     
     map <- manipulateWidget(
       {
-        plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, uniqueScale,
-                showLabels, labelAreaVar,
+        plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
+                uniqueScale, showLabels, labelAreaVar,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session)
       },
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = "detail"),
@@ -182,6 +185,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       Areas = list(
         colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
         sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
+        areaChartType = mwSelect(list("bar chart" = "bar", 
+                                      "pie chart" = "pie",
+                                      "polar (area)" = "polar-area",
+                                      "polar (radius)" = "polar-radius")),
         uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale"),
         showLabels = mwCheckbox(showLabels, label = "Show labels"),
         popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE),
@@ -195,7 +202,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .main = main,
       .display = list(
         timeId = !hideTimeIdSlider && type =="detail",
-        uniqueScale = length(sizeAreaVars) >= 2,
+        uniqueScale = length(sizeAreaVars) >= 2 && areaChartType != "pie",
+        areaChartType = length(sizeAreaVars) >= 2,
         showLabels = length(sizeAreaVars) >= 2,
         labelAreaVar = length(sizeAreaVars) < 2
       )

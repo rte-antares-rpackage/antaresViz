@@ -138,6 +138,7 @@
 # Update the circles and polar charts representing areas in an existing map
 .redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars,
                            popupAreaVars, uniqueScale, showLabels, labelAreaVar,
+                           areaChartType,
                            options) {
   if (is.null(x$areas)) return(map)
   
@@ -162,6 +163,7 @@
   }
   
   # Chart options
+  if (length(sizeAreaVars) < 2) areaChartType <- "polar-area"
   if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
   
   # Labels
@@ -179,7 +181,8 @@
   # Update areas
   map <- updateD3charts(map, optsArea$coords$area, data = optsArea$size,
                         maxValues = optsArea$maxSize, width = areaWidth,
-                        showLabels = showLabels, labelText = labels,
+                        showLabels = showLabels, labelText = labels, 
+                        type = areaChartType[[1]],
                         fillColor = optsArea$color, popup = optsArea$popup)
   
   # Update the legend
