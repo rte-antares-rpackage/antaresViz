@@ -10,13 +10,6 @@ requireDep <- function(map, deps) {
        script = "directedSegment.js"
      ),
      
-     d3 = htmlDependency(
-       "d3",
-       "4.2.3",
-       src = system.file("leafletPlugins", package = "antaresViz"), 
-       script = "d3.min.js"
-     ),
-     
      shadows = htmlDependency(
        "shadows",
        "1.0",
@@ -43,7 +36,7 @@ requireDep <- function(map, deps) {
        "d3chart",
        "1.0",
        src = system.file("leafletPlugins", package = "antaresViz"),
-       script = "d3chart.js"
+       script = "d3chart.min.js"
      ),
      
      d3chart_bindings = htmlDependency(
