@@ -48,22 +48,33 @@ continuousColorPal <- function(x, breaks = 5, domain = NULL,
     # Replace the first and last break by the bounds of the domain
     breaks[1] <- domain[1]
     breaks[length(breaks)] <- domain[2]
+    
+    breaks <- breaks[breaks >= domain[1] & breaks <= domain[2]]
   } else {
-    # Use the break points specified by user.
-    breaks <- sort(unique(breaks))
     # If breaks do not enclose the domain, we add domain bounds as break points
     if (min(breaks) > domain[1]) breaks <- c(domain[1], breaks)
     if (max(breaks) < domain[2]) breaks <- c(breaks, domain[2])
   }
   
+  breaks <- sort(unique(breaks))
   # Ensure that extreme values are contained in the first or the last interval.
   breaks2 <- breaks
   breaks2[1] <- -Inf
   breaks2[length(breaks2)] <- Inf
   
   # Choose colors for positive and negative values
-  negPal <- colorRampPalette(c(negCol, zeroCol), space = "Lab")(sum(breaks <= 0))
-  posPal <- colorRampPalette(c(zeroCol, posCol), space = "Lab")(sum(breaks >= 0))
+  if (any(breaks <= 0)) {
+    negPal <- colorRampPalette(c(negCol, zeroCol), space = "Lab")(sum(breaks <= 0))
+  } else {
+    negPal <- character(0)
+  }
+  
+  if (any(breaks >= 0)) {
+    posPal <- colorRampPalette(c(zeroCol, posCol), space = "Lab")(sum(breaks >= 0))
+  } else {
+    posPal <- character(0)
+  }
+  
   
   # Create the color palette
   # We include the zero color only if some interval contains 0
