@@ -102,6 +102,9 @@ prodStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
                       width = NULL, height = NULL) {
   
   unit <- match.arg(unit)
+  if (is.null(areas)) {
+    areas <- unique(x$area)[1]
+  }
   
   # If parameter "variables" is an alias, then use the variables and colors 
   # corresponding to that alias
