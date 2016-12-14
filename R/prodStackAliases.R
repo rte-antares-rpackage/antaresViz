@@ -1,23 +1,13 @@
 # Copyright © 2016 RTE Réseau de transport d’électricité
 
-#' Aliases of production stacks
-#'
-#' This function shows aliases for \code{\link{prodStack}}. These aliases can be used
-#' in the \code{\link{prodStack}} function in the \code{variables} argument
-#' 
-#' @return
-#' Print aliases. 
-#' 
-#' @examples 
-#' prodStackAliases()
-#' 
+#' @rdname prodStack 
 #' @export
 #' 
 prodStackAliases <- function() {
   for (n in names(pkgEnv$prodStackAliases)) {
     alias <- pkgEnv$prodStackAliases[[n]]
     
-    cat("\n", n, "\n===========\n")
+    cat("\n", n, "\n===========\n", sep = "")
     cat(alias$description, "\n")
     
     # Stacks definition
@@ -54,4 +44,31 @@ prodStackAliases <- function() {
     }
     cat("\n")
   }
+}
+
+#' @rdname prodStack
+#' @export
+setProdStackAlias <- function(name, variables, colors, lines = NULL, 
+                              lineColors = NULL, description = NULL) {
+  if (is.null(description)) description <- name
+  
+  if (length(variables) != length(colors)) {
+    stop("Number of colors and number of variables should be equal.")
+  }
+  
+  if (length(lines) != length(lineColors)) {
+    stop("Number of line colors and number of lines should be equal.")
+  }
+  
+  pkgEnv$prodStackAliases[[name]] <- list(
+    description = description,
+    variables = variables,
+    colors = colors
+  )
+  
+  if (!is.null(lines)) {
+    pkgEnv$prodStackAliases[[name]]$lines <- lines
+    pkgEnv$prodStackAliases[[name]]$lineColors <- lineColors
+  }
+  
 }

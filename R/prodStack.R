@@ -9,24 +9,11 @@
 #'   An object of class \code{antaresData} created with function 
 #'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
 #'   districts.
-#' @param variables
+#' @param stack
 #'   Either a character string containing an alias or a named list of expressions 
 #'   created with \code{\link[base]{alist}}. The name of each element is the name
 #'   of the variable to draw in the stacked graph. The element itself is an
 #'   expression explaining how to compute the variable (see examples).
-#' @param colors
-#'   Vector of colors with same length as parameter \code{variables}. If 
-#'   \code{variables} is an alias, then this argument should be \code{NULL} in 
-#'   order to use default colors.
-#' @param lines
-#'   A named list of expressions created with \code{\link[base]{alist}}
-#'   indicating how to compute the curves to display on top of the stacked graph.
-#'   It should be \code{NULL} if there is no curve to trace or if parameter
-#'   \code{variables} is an alias.
-#' @param lineColors
-#'   Vector of colors with same length as parameter \code{lines}. This argument
-#'   should be \code{NULL} if there is no curve to trace or if parameter
-#'   \code{variables} is an alias.
 #' @param areas
 #'   Vector of area or district names. The data of these areas or districts is
 #'   aggregated by the function to construct the production stack.
@@ -91,8 +78,7 @@
 #' }
 #' 
 #' @export
-prodStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
-                      lineColors = NULL,
+prodStack <- function(x, stack = "eco2mix",
                       areas = NULL, 
                       dateRange = NULL,
                       main = "Production stack", unit = c("MWh", "GWh", "TWh"),
@@ -106,24 +92,7 @@ prodStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
     areas <- unique(x$area)[1]
   }
   
-  # If parameter "variables" is an alias, then use the variables and colors 
-  # corresponding to that alias
-  if (is.character(variables)) { # variables is an alias
-    .stack <- variables
-  } else {
-    .stack <- NULL
-    if (is.null(colors)) stop("Colors need to be specified when using custom variables.")
-    if (!is.null(lines) && is.null(lineColors)) {
-      stop("lineColors need to be specified when using custom lineCurves.")
-    }
-    # Check that there are as much colors as variables
-    if (length(colors) != length(variables)) {
-      stop("Number of colors and number of variables should be equal.")
-    }
-    if (length(lineColors) != length(lines)) {
-      stop("Number of line colors and number of lines should be equal.")
-    }
-  }
+  .stack <- stack
   
   # Check that input contains area or district data
   if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
@@ -147,17 +116,7 @@ prodStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
   
   plotWithLegend <- function(areas, main = "", unit, .stack, dateRange) {
     if (length(areas) == 0) return ("Please choose an area")
-    
-    # If user has provided an alias, then stack contains this alias and
-    # the corresponding options are retrieved. Else use the options
-    # provided by the user.
-    if (!is.null(.stack)) {
-      stackOptions <- .aliasToStackOptions(.stack)
-      variables <- stackOptions$variables
-      colors <- stackOptions$colors
-      lines <- stackOptions$lines
-      lineColors <- stackOptions$lineColors
-    }
+    stackOpts <- .aliasToStackOptions(.stack)
     
     dt <- x[area %in% areas]
     if (!is.null(dateRange)) {
@@ -165,16 +124,15 @@ prodStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
     }
     
     p <- .plotProdStack(dt, 
-                              variables, 
-                              colors,
-                              lines,
-                              lineColors,
-                              main = main,
-                              unit = unit,
-                              legendId = legendId)
+                        stackOpts$variables, 
+                        stackOpts$colors,
+                        stackOpts$lines,
+                        stackOpts$lineColors,
+                        main = main,
+                        unit = unit,
+                        legendId = legendId)
     if (legend) {
-      l <- prodStackLegend(variables, colors, lines, lineColors, 
-                           legendItemsPerRow, legendId = legendId)
+      l <- prodStackLegend(.stack, legendItemsPerRow, legendId = legendId)
     } else {
       l <- NULL
     }
@@ -277,23 +235,15 @@ prodStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
 
 #' @rdname tsLegend
 #' @export
-prodStackLegend <- function(variables = "eco2mix", colors = NULL, lines = NULL, 
-                                  lineColors = NULL, 
+prodStackLegend <- function(stack = "eco2mix", 
                                   legendItemsPerRow = 5, legendId = "") {
-  if (is.character(variables)) { # variables is an alias
-    
-    stackOptions <- .aliasToStackOptions(variables)
-    variables <- stackOptions$variables
-    if (is.null(colors)) colors <- stackOptions$colors
-    if (is.null(lines)) lines <- stackOptions$lines
-    if (is.null(lineColors)) lineColors <- stackOptions$lineColors
-    
-  }
+
+  stackOpts <- .aliasToStackOptions(stack)
   
   tsLegend(
-    labels = c(names(variables), names(lines)), 
-    colors = c(colors, lineColors),
-    type = c(rep("area", length(variables)), rep("line", length(lines))),
+    labels = c(names(stackOpts$variables), names(stackOpts$lines)), 
+    colors = c(stackOpts$colors, stackOpts$lineColors),
+    type = c(rep("area", length(stackOpts$variables)), rep("line", length(stackOpts$lines))),
     legendItemsPerRow = legendItemsPerRow,
     legendId = legendId
   )
