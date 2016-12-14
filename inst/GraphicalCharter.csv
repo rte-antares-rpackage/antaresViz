@@ -1,6 +1,6 @@
 name	red	green	blue	formula
 pumpedStorage	17	71	185	PSP
-minusBalance	150	150	150	-(BALANCE + `ROW BAL.`)
+"import/export"	150	150	150	-(BALANCE + `ROW BAL.`)
 mustRunTotal	120	136	194	mustRunTotal
 mustRunPartial	120	236	194	mustRunPartial
 mustRun	220	236	94	mustRun
