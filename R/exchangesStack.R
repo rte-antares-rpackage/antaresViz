@@ -11,7 +11,7 @@
 #' @param area
 #'   Name of a single area. The flows from/to this area will be drawn by the
 #'   function.
-#' @inheritParams productionStack
+#' @inheritParams prodStack
 #' 
 #' @return 
 #' A htmlwidget of class \code{dygraph}. It can be modified with functions from

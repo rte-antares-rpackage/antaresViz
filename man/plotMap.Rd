@@ -5,9 +5,11 @@
 \title{Display results of a simulation on a map}
 \usage{
 plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
-  uniqueScale = FALSE, popupAreaVars = c(), colLinkVar = "none",
-  sizeLinkVar = "none", popupLinkVars = c(), type = c("detail", "avg"),
-  timeId = NULL, main = "", interactive = base::interactive(),
+  uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
+  labelAreaVar = "none", areaChartType = c("bar", "pie", "polar-area",
+  "polar-radius"), colLinkVar = "none", sizeLinkVar = "none",
+  popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
+  main = "", interactive = base::interactive(),
   options = plotMapOptions(), width = NULL, height = NULL)
 }
 \arguments{
@@ -33,6 +35,8 @@ This parameter should be TRUE only if the variables have the same unit and
 are comparable : for instance production variables.}
 
 \item{popupAreaVars}{Vector of variables to display when user clicks on an area.}
+
+\item{labelAreaVar}{Variable to display in the areas.}
 
 \item{colLinkVar}{Name of a variable present in \code{x$links}. The values of this variable
 are represented by the color of the links on the map. If \code{"none"}, then

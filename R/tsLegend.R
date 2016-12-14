@@ -11,14 +11,14 @@
 #'   vector containing the names of the times series
 #' @param colors
 #'   vector of colors. for function \code{tsLegend} it must have the same length
-#'   as parameter \code{labels}. For function \code{productionStackLegend}, it 
+#'   as parameter \code{labels}. For function \code{prodStackLegend}, it 
 #'   must have same length as parameter \code{variables}. If \code{variables} is
 #'   an alias, then this argument should be \code{NULL} in order to use default
 #'   colors.
 #' @param types
 #'   "line" or "area" or a vector with same length as \code{labels} containing 
 #'   these two values.
-#' @inheritParams productionStack
+#' @inheritParams prodStack
 #' 
 #' @details 
 #' Thes functions can be used to create a legend shared by multiple plots 
@@ -29,26 +29,22 @@
 #' 
 #' \preformatted{
 #' ```{R, echo = FALSE}
-#' library(shiny)
+#' library(manipulateWidget)
 #' 
-#' fillCol(height = "600px", flex = c(1, 1, NA),
-#'   fillRow(
-#'     productionStack(mydata, areas = "fr", 
-#'                     main = "Production stack in France", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
-#'     productionStack(mydata, areas = "de", 
-#'                     main = "Production stack in Germany", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
-#'   ),
-#'   fillRow(
-#'     productionStack(mydata, areas = "es", 
-#'                     main = "Production stack in Spain", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
-#'     productionStack(mydata, areas = "be", 
-#'                     main = "Production stack in Belgium", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
-#'   ),
-#'   productionStackLegend(legendId = 1)
+#' combineWidgets(
+#'   prodStack(mydata, areas = "fr", 
+#'             main = "Production stack in France", unit = "GWh", 
+#'             legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
+#'   prodStack(mydata, areas = "de", 
+#'             main = "Production stack in Germany", unit = "GWh", 
+#'             legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
+#'   prodStack(mydata, areas = "es", 
+#'             main = "Production stack in Spain", unit = "GWh", 
+#'             legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
+#'   prodStack(mydata, areas = "be", 
+#'             main = "Production stack in Belgium", unit = "GWh", 
+#'             legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
+#'   footer = prodStackLegend(legendId = 1)
 #' )
 #' ```
 #' }

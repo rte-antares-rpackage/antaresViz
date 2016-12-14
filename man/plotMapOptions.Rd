@@ -5,7 +5,7 @@
 \alias{plotMapOptions}
 \title{Graphical options for plotMap}
 \usage{
-plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
+plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 30,
   areaMaxSize = 30, areaChartColors = NULL, areaChartType = c("bar",
   "polar"), areaColorScaleOpts = colorScaleOptions(),
   linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, linkMaxSize = 10,

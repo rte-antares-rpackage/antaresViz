@@ -52,7 +52,7 @@
 #' @param options
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
-#' @inheritParams productionStack
+#' @inheritParams prodStack
 #'   
 #' @return 
 #' An htmlwidget of class "leaflet". It can be modified with package 

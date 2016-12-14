@@ -6,7 +6,7 @@
 # Private variables accessible only by functions from the package
 pkgEnv <- antaresRead:::pkgEnv
 
-# Generate the list of aliases for function productionStack()
+# Generate the list of aliases for function prodStack()
 #
 # The definition of the variables used in aliases is stored in file 
 # "GraphicalCharter.csv"
@@ -31,7 +31,7 @@ names(colors) <- graphicalCharter$name
   )
 }
 
-# List of aliases for parameter "variables" in function productionStack()
+# List of aliases for parameter "variables" in function prodStack()
 #
 # Each element has five elements:
 # - description: A concise description of the production stack.

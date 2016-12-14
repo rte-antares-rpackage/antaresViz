@@ -61,7 +61,7 @@ For more information, run:
 
 # Stacks
 
-Function `productionStack` generates a production stack for a set of areas. Different stacks have been defined. One can see their definition with command `productionStackAliases()`.
+Function `prodStack` generates a production stack for a set of areas. Different stacks have been defined. One can see their definition with command `productionStackAliases()`.
 
 With function `exchangesStack`, one can visualize the evolution and origin/destination of imports and exports for a given area.
 

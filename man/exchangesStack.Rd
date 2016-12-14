@@ -33,11 +33,11 @@ the user interactively choose the areas or districts to display.}
 
 \item{legend}{Logical value indicating if a legend should be drawn. This argument is 
 usefull when one wants to create a shared legend with
-\code{\link{productionStackLegend}}}
+\code{\link{prodStackLegend}}}
 
 \item{legendId}{Id of the legend linked to the graph. This argument is 
 usefull when one wants to create a shared legend with
-\code{\link{productionStackLegend}}}
+\code{\link{prodStackLegend}}}
 
 \item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
 
