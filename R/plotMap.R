@@ -150,7 +150,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (type == "avg") t <- NULL
     
     if (initial) {
-      map <- .initMap(x, mapLayout, options, width, height) %>% 
+      map <- .initMap(x, mapLayout, options) %>% 
         addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
     } else {
       map <- leafletProxy("output", session)
@@ -210,6 +210,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     )
   }
 
-  map %>% addTitle(main)
+  combineWidgets(map, title = main, width = width, height = height)
 }
 

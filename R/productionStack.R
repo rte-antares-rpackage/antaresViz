@@ -168,15 +168,15 @@ productionStack <- function(x, variables = "eco2mix", colors = NULL, lines = NUL
                               lineColors,
                               main = main,
                               unit = unit,
-                              legendId = legendId,
-                              width = width, height = height)
+                              legendId = legendId)
     if (legend) {
-      l <- productionStackLegend(variables, colors, lines, lineColors, legendItemsPerRow, legendId = legendId)
-      p <- htmlwidgets::onRender(p, JS_addLegend, list(size = l$attribs$height, 
-                                                       html = htmltools::doRenderTags(l)))
+      l <- productionStackLegend(variables, colors, lines, lineColors, 
+                                 legendItemsPerRow, legendId = legendId)
+    } else {
+      l <- NULL
     }
     
-    p
+    combineWidgets(p, footer = l, width = width, height = height)
   }
   
   if (!interactive) {

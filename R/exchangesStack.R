@@ -68,20 +68,17 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     
     # Stack
     g <- .plotStack(dt, timeStep, opts, colors,
-                    legendId = legendId, main = main, ylab = ylab,
-                    width = width, height = height)
+                    legendId = legendId, main = main, ylab = ylab)
     
-    if (!legend) {
-      return(g)
-    }
+    if (legend) {
+      # Add a nice legend
+      legend <- tsLegend(names(dt)[-1], colors, types = "area", 
+                         legendItemsPerRow = legendItemsPerRow, 
+                         legendId = legendId)
+    } else legend <- NULL
     
-    # Add a nice legend
-    legend <- tsLegend(names(dt)[-1], colors, types = "area", 
-                       legendItemsPerRow = legendItemsPerRow, 
-                       legendId = legendId)
     
-    g %>%  htmlwidgets::onRender(JS_addLegend, list(size = legend$attribs$height, 
-                                       html = htmltools::doRenderTags(legend)))
+    combineWidgets(g, footer = legend, width = width, height = height)
     
   }
   
