@@ -191,7 +191,7 @@ function(e, timestamp, data) {
     if (!values.hasOwnProperty(k)) continue; 
     var el = document.getElementById(k + '%s');
     if (el) {
-      if (values[k] > 100) {
+      if (Math.abs(values[k]) > 100) {
         el.innerHTML = Math.round(values[k]);
       } else {
         el.innerHTML = values[k].toPrecision(3);
