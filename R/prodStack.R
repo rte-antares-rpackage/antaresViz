@@ -158,7 +158,7 @@ prodStack <- function(x, variables = "eco2mix", colors = NULL, lines = NULL,
     
     dt <- x[area %in% areas]
     if (!is.null(dateRange)) {
-      dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep)) %between% dateRange]
+      dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = simOptions(x))) %between% dateRange]
     }
     
     p <- .plotProdStack(dt, 

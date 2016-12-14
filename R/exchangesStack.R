@@ -49,7 +49,7 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     # Prepare data for stack creation
     linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
                          withDirection = TRUE)
-    dt <- merge(x[as.Date(.timeIdToDate(timeId, timeStep)) %between% dateRange,
+    dt <- merge(x[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                   .(link, timeId, flow = `FLOW LIN.`)],
                 linksDef,
                 by = "link")
