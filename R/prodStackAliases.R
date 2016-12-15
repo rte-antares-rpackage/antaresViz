@@ -71,4 +71,5 @@ setProdStackAlias <- function(name, variables, colors, lines = NULL,
     pkgEnv$prodStackAliases[[name]]$lineColors <- lineColors
   }
   
+  invisible(NULL)
 }

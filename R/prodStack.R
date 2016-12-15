@@ -2,18 +2,17 @@
 
 #' Visualize the production stack of an area
 #' 
-#' This function draws the production stack for a set of areas or districts. User
-#' can choose predefined stacks or define its own stacks. 
+#' \code{prodStack} draws the production stack for a set of areas or districts.
+#' User can see available stacks with \code{prodStackAliases} and create new ones
+#' with \code{setProdStackAlias}.
 #' 
 #' @param x
 #'   An object of class \code{antaresData} created with function 
 #'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
 #'   districts.
 #' @param stack
-#'   Either a character string containing an alias or a named list of expressions 
-#'   created with \code{\link[base]{alist}}. The name of each element is the name
-#'   of the variable to draw in the stacked graph. The element itself is an
-#'   expression explaining how to compute the variable (see examples).
+#'   Name of the stack to use. One can visualize available stacks with 
+#'   \code{prodStackAliases}
 #' @param areas
 #'   Vector of area or district names. The data of these areas or districts is
 #'   aggregated by the function to construct the production stack.
@@ -43,11 +42,39 @@
 #'   \code{\link{prodStackLegend}}
 #' @param legendItemsPerRow
 #'   Number of elements to put in each row of the legend.
-#'   
+#' @param name
+#'   name of the stack to create or update
+#' @param variables
+#'   A named list of expressions created with \code{\link[base]{alist}}. The
+#'   name of each element is the name of the variable to draw in the stacked
+#'   graph. The element itself is an expression explaining how to compute the
+#'   variable (see examples).
+#' @param colors
+#'   Vector of colors with same length as parameter \code{variables}. If 
+#'   \code{variables} is an alias, then this argument should be \code{NULL} in 
+#'   order to use default colors.
+#' @param lines
+#'   A named list of expressions created with \code{\link[base]{alist}}
+#'   indicating how to compute the curves to display on top of the stacked graph.
+#'   It should be \code{NULL} if there is no curve to trace or if parameter
+#'   \code{variables} is an alias.
+#' @param lineColors
+#'   Vector of colors with same length as parameter \code{lines}. This argument
+#'   should be \code{NULL} if there is no curve to trace or if parameter
+#'   \code{variables} is an alias.
+#' @param description
+#'   Description of the stack. It is displayed by function 
+#'   \code{prodStackAliases}.
+#'  
 #' @return 
-#' An interactive html graphic. If argument \code{interactive} is \code{TRUE},
-#' then a shiny gadget is started and the function returns an interactive html
-#' graphic when the user clicks on button "Done".
+#' \code{prodStackAliases} returns an interactive html graphic. If argument
+#' \code{interactive} is \code{TRUE}, then a shiny gadget is started and the
+#' function returns an interactive html graphic when the user clicks on button
+#' "Done".
+#' 
+#' \code{prodStackAliases} displays the list of available aliases.
+#' 
+#' \code{setProdStackAlias} creates or updates a stack alias.
 #' 
 #' @seealso \code{\link{prodStackLegend}}
 #' 
@@ -56,25 +83,34 @@
 #' mydata <- readAntares(areas = "all", timeStep = "daily")
 #' 
 #' # Start a shiny gadget that permits to choose areas to display.
-#' prodStack(mydata, unit = "GWh", height="100%")
+#' prodStack(mydata, unit = "GWh")
 #' 
 #' # Use in a non-interactive way
-#' prodStack(mydata, unit = "GWh", height="100%", areas = "fr", interactive = FALSE)
+#' prodStack(mydata, unit = "GWh", areas = "fr", interactive = FALSE)
 #' 
 #' # Define a custom stack
-#' prodStack(mydata, unit = "GWh", height="100%", 
-#'                 variables = alist(wind = WIND, solar = SOLAR),
-#'                 colors = c("green", "orange"))
+#' setProdStackAlias(
+#'   name = "Wind and solar",
+#'   variables = alist(wind = WIND, solar = SOLAR),
+#'   colors = c("green", "orange")
+#' )
+#' 
+#' prodStack(mydata, unit = "GWh", stack = "Wind and solar")
 #'                 
 #' # In a custom stack it is possible to use computed values
-#' prodStack(mydata, unit = "GWh", height="100%", 
-#'                 variables = alist(
-#'                   renewable = WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`, 
-#'                   thermal = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`
-#'                 ),
-#'                 colors = c("green", gray(0.3)),
-#'                 lines = alist(goalRenewable = LOAD * 0.23),
-#'                 lineColors = "#42EB09")
+#' setProdStackAlias(
+#'   name = "Renewable",
+#'   variables = alist(
+#'     renewable = WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`, 
+#'     thermal = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`
+#'   ),
+#'   colors = c("green", gray(0.3)),
+#'   lines = alist(goalRenewable = LOAD * 0.23),
+#'   lineColors = "#42EB09"
+#' )
+#' 
+#' prodStack(mydata, unit = "GWh", stack = "renewable")
+#'                 
 #' }
 #' 
 #' @export
@@ -88,17 +124,10 @@ prodStack <- function(x, stack = "eco2mix",
                       width = NULL, height = NULL) {
   
   unit <- match.arg(unit)
-  if (is.null(areas)) {
-    areas <- unique(x$area)[1]
-  }
-  
-  .stack <- stack
   
   # Check that input contains area or district data
   if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
-  if (is(x, "antaresDataTable")) {
-    if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
-  }
+
   if (is(x, "antaresDataTable")) {
     if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
   } else if (is(x, "antaresDataList")) {
@@ -110,13 +139,16 @@ prodStack <- function(x, stack = "eco2mix",
   if (is.null(x$area)) x$area <- x$district
   timeStep <- attr(x, "timeStep")
   opts <- simOptions(x)
+  if (is.null(areas)) {
+    areas <- unique(x$area)[1]
+  }
   
   dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
   if (length(dateRange) < 2) dateRange <- dataDateRange
   
-  plotWithLegend <- function(areas, main = "", unit, .stack, dateRange) {
+  plotWithLegend <- function(areas, main = "", unit, stack, dateRange) {
     if (length(areas) == 0) return ("Please choose an area")
-    stackOpts <- .aliasToStackOptions(.stack)
+    stackOpts <- .aliasToStackOptions(stack)
     
     dt <- x[area %in% areas]
     if (!is.null(dateRange)) {
@@ -132,7 +164,7 @@ prodStack <- function(x, stack = "eco2mix",
                         unit = unit,
                         legendId = legendId)
     if (legend) {
-      l <- prodStackLegend(.stack, legendItemsPerRow, legendId = legendId)
+      l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId)
     } else {
       l <- NULL
     }
@@ -141,18 +173,17 @@ prodStack <- function(x, stack = "eco2mix",
   }
   
   if (!interactive) {
-    return(plotWithLegend(areas, main, unit, .stack, dateRange))
+    return(plotWithLegend(areas, main, unit, stack, dateRange))
   }
   
   manipulateWidget(
     plotWithLegend(areas, main, unit, stack, dateRange),
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
-    stack = mwSelect(names(pkgEnv$prodStackAliases), .stack),
+    stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     areas = mwSelect(as.character(unique(x$area)), areas, multiple = TRUE),
-    .main = "Production stack",
-    .display = list(stack = !is.null(.stack))
+    .main = "Production stack"
   )
 }
 

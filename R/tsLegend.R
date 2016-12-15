@@ -7,17 +7,11 @@
 #' default, the different functions already output a legend. This function
 #' is mostly useful to share a unique legend between two or more time series plots.
 #' 
-#' @param labels
-#'   vector containing the names of the times series
-#' @param colors
-#'   vector of colors. for function \code{tsLegend} it must have the same length
-#'   as parameter \code{labels}. For function \code{prodStackLegend}, it 
-#'   must have same length as parameter \code{variables}. If \code{variables} is
-#'   an alias, then this argument should be \code{NULL} in order to use default
-#'   colors.
-#' @param types
-#'   "line" or "area" or a vector with same length as \code{labels} containing 
-#'   these two values.
+#' @param labels vector containing the names of the times series
+#' @param colors vector of colors. It must have the same length as parameter
+#'   \code{labels}.
+#' @param types "line" or "area" or a vector with same length as \code{labels}
+#'   containing these two values.
 #' @inheritParams prodStack
 #' 
 #' @details 
