@@ -194,22 +194,14 @@
   }
   
   # Size legend (radius, polar or bar chart legend)
-  if (!is.null(optsArea$maxSize)) {
+  if (length(sizeAreaVars) > 0) {
     if (length(sizeAreaVars) == 1) {
       map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$areaMaxSize, optsArea$maxSize))
     } else {
-      if (options$areaChartType == "bar") {
-        map <- updateAntaresLegend(
-          map, 
-          htmlAreaSize = barChartLegend(sizeAreaVars, colors = options$areaChartColors)
-        )
-      } else {
-        map <- updateAntaresLegend(
-          map, 
-          htmlAreaSize = polarChartLegend(),
-          onComplete = polarChartLegendJS(sizeAreaVars, colors = options$areaChartColors)
-        )
-      }
+      map <- updateAntaresLegend(
+        map, 
+        htmlAreaSize = barChartLegend(sizeAreaVars, colors = options$areaChartColors)
+      )
     }
   } else {
     map <- updateAntaresLegend(map, htmlAreaSize = "")
