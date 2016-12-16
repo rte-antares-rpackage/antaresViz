@@ -13,9 +13,6 @@
 #'   maximal size of an area when it represents the value of some variable.
 #' @param areaChartColors
 #'   Vector of colors to use in polar area charts and bar charts
-#' @param areaChartType
-#'   Type of chart to use to represent multiple values. Possible values are "bar"
-#'   for bar charts and "polar" for polar area charts. 
 #' @param areaColorScaleOpts
 #'   List of options used to construct a continuous color scale. This list should
 #'   be generated with function \code{colorScaleOptions}.
@@ -57,8 +54,7 @@
 #' 
 #' @export
 plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 30, 
-                           areaMaxSize = 30, areaChartColors = NULL,
-                           areaChartType = c("bar", "polar"),
+                           areaMaxSize = 30, areaMaxWidth = 30, areaChartColors = NULL,
                            areaColorScaleOpts = colorScaleOptions(),
                            linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, 
                            linkMaxSize = 10, linkColorScaleOpts = colorScaleOptions(),
@@ -70,7 +66,6 @@ plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 30,
                                                  opacity = 1,
                                                  fillOpacity = 0.2,
                                                  options = list(clickable = FALSE))) {
-  areaChartType <- match.arg(areaChartType)
   legend <- match.arg(legend)
   areaColorScaleOpts <- do.call(colorScaleOptions, areaColorScaleOpts)
   linkColorScaleOpts <- do.call(colorScaleOptions, linkColorScaleOpts)

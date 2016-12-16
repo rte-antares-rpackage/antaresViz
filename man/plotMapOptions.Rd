@@ -5,10 +5,10 @@
 \alias{plotMapOptions}
 \title{Graphical options for plotMap}
 \usage{
-plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 15,
-  areaMaxSize = 30, areaChartColors = NULL, areaChartType = c("bar",
-  "polar"), areaColorScaleOpts = colorScaleOptions(),
-  linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, linkMaxSize = 10,
+plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 30,
+  areaMaxSize = 30, areaMaxWidth = 30, areaChartColors = NULL,
+  areaColorScaleOpts = colorScaleOptions(), linkDefaultCol = "#CCCCCC",
+  linkDefaultSize = 3, linkMaxSize = 10,
   linkColorScaleOpts = colorScaleOptions(), legend = c("choose", "visible",
   "hidden"), addTiles = TRUE, background = "white", polygons = NULL,
   polygonOptions = list(stroke = TRUE, color = "#999", weight = 0.5, opacity =
@@ -26,9 +26,6 @@ colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
 \item{areaMaxSize}{maximal size of an area when it represents the value of some variable.}
 
 \item{areaChartColors}{Vector of colors to use in polar area charts and bar charts}
-
-\item{areaChartType}{Type of chart to use to represent multiple values. Possible values are "bar"
-for bar charts and "polar" for polar area charts.}
 
 \item{areaColorScaleOpts}{List of options used to construct a continuous color scale. This list should
 be generated with function \code{colorScaleOptions}.}

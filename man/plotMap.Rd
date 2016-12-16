@@ -5,9 +5,11 @@
 \title{Display results of a simulation on a map}
 \usage{
 plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
-  uniqueScale = FALSE, popupAreaVars = c(), colLinkVar = "none",
-  sizeLinkVar = "none", popupLinkVars = c(), type = c("detail", "avg"),
-  timeId = NULL, main = "", interactive = base::interactive(),
+  areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
+  uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
+  labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
+  popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
+  main = "", interactive = base::interactive(),
   options = plotMapOptions(), width = NULL, height = NULL)
 }
 \arguments{
@@ -27,12 +29,24 @@ depending on the values of the variable choosen. If it has length greater than
 1 then areas are represented by a polar area chart where the size of each section
 depends on the values of each variable.}
 
+\item{areaChartType}{If parameter \code{sizeAreaVars} contains multiple variables, this parameter
+determines the type of representation. Possible values are \code{"bar"} for
+bar charts, \code{"pie"} for pie charts, \code{"polar-area"} and 
+\code{"polar-radius"} for polar area charts where the values are represented
+respectively by the area or the radius of the slices.}
+
 \item{uniqueScale}{If the map contains polar or bar charts, should the different variables 
 represented use the same scale or should each variable have its own scale ?
 This parameter should be TRUE only if the variables have the same unit and 
 are comparable : for instance production variables.}
 
+\item{showLabels}{Used only when \code{sizeAreaVars} contains multiple variables. If it is 
+\code{TRUE}, then values of each variable are displayed.}
+
 \item{popupAreaVars}{Vector of variables to display when user clicks on an area.}
+
+\item{labelAreaVar}{Variable to display inside the areas. This parameter is used only if 
+parameter \code{sizeAreaVars} contains zero or one variable.}
 
 \item{colLinkVar}{Name of a variable present in \code{x$links}. The values of this variable
 are represented by the color of the links on the map. If \code{"none"}, then

@@ -22,15 +22,25 @@
 #'   depending on the values of the variable choosen. If it has length greater than
 #'   1 then areas are represented by a polar area chart where the size of each section
 #'   depends on the values of each variable.
+#' @param areaChartType
+#'   If parameter \code{sizeAreaVars} contains multiple variables, this parameter
+#'   determines the type of representation. Possible values are \code{"bar"} for
+#'   bar charts, \code{"pie"} for pie charts, \code{"polar-area"} and 
+#'   \code{"polar-radius"} for polar area charts where the values are represented
+#'   respectively by the area or the radius of the slices.
 #' @param uniqueScale
 #'   If the map contains polar or bar charts, should the different variables 
 #'   represented use the same scale or should each variable have its own scale ?
 #'   This parameter should be TRUE only if the variables have the same unit and 
 #'   are comparable : for instance production variables. 
+#' @param showLabels
+#'   Used only when \code{sizeAreaVars} contains multiple variables. If it is 
+#'   \code{TRUE}, then values of each variable are displayed. 
 #' @param popupAreaVars
 #'   Vector of variables to display when user clicks on an area.
 #' @param labelAreaVar
-#'   Variable to display in the areas.
+#'   Variable to display inside the areas. This parameter is used only if 
+#'   parameter \code{sizeAreaVars} contains zero or one variable.
 #' @param colLinkVar
 #'   Name of a variable present in \code{x$links}. The values of this variable
 #'   are represented by the color of the links on the map. If \code{"none"}, then
@@ -87,12 +97,13 @@
 #' 
 #' @export
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+                    areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
                     uniqueScale = FALSE,
                     showLabels = FALSE,
                     popupAreaVars = c(),
                     labelAreaVar = "none",
-                    areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
-                    colLinkVar = "none", sizeLinkVar = "none", popupLinkVars = c(),
+                    colLinkVar = "none", sizeLinkVar = "none", 
+                    popupLinkVars = c(),
                     type = c("detail", "avg"),
                     timeId = NULL,
                     main = "",

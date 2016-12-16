@@ -20,9 +20,6 @@
 \item{colAreas}{Vector of colors for areas. By default, the colors used in the Antares
 software are used.}
 
-\item{areaChartType}{Type of chart to use to represent multiple values. Possible values are "bar"
-for bar charts and "polar" for polar area charts.}
-
 \item{popupArea}{Character vector containing the html to display when the user clicks on an
 area.}
 

@@ -2,6 +2,7 @@
 
 S3method(plot,antaresDataTable)
 S3method(plot,mapLayout)
+export(addD3charts)
 export(addDirectedSegments)
 export(addShadows)
 export(colorScaleOptions)
