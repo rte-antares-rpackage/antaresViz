@@ -6,7 +6,7 @@
 # Private variables accessible only by functions from the package
 pkgEnv <- antaresRead:::pkgEnv
 
-# Generate the list of aliases for function productionStack()
+# Generate the list of aliases for function prodStack()
 #
 # The definition of the variables used in aliases is stored in file 
 # "GraphicalCharter.csv"
@@ -31,7 +31,7 @@ names(colors) <- graphicalCharter$name
   )
 }
 
-# List of aliases for parameter "variables" in function productionStack()
+# List of aliases for parameter "variables" in function prodStack()
 #
 # Each element has five elements:
 # - description: A concise description of the production stack.
@@ -46,28 +46,28 @@ pkgEnv$prodStackAliases <- list(
   eco2mix = .getProdStackAlias(
     description = "Production stack used on Eco2mix website: 
     http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique",
-    var = c("pumpedStorage", "minusBalance", "bioenergie", "wind", "solar", 
-            "nuclear", "hydraulic", "gas", "coal", "lignite", "fuel", "other"),
+    var = c("pumpedStorage", "import/export", "bioenergy", "wind", "solar", 
+            "nuclear", "hydraulic", "gas", "coal", "lignite", "oil", "other"),
     lines = c("load", "totalProduction")
   ),
   
   thermalFirst = .getProdStackAlias(
     description = "thermal first",
-    var = c("pumpedStorage", "minusBalance", "nuclear", "lignite", "coal", "gas",
-            "oil", "mixFuel", "other", "bioenergie", "wind", "solar", 
-            "hydraulicRor", "hydraulicStro")
+    var = c("pumpedStorage", "import/export", "nuclear", "lignite", "coal", "gas",
+            "oil", "mixFuel", "misc. DTG", "bioenergy", "wind", "solar", 
+            "hydraulicRor", "hydraulicStor")
   ),
   
   netLoad = .getProdStackAlias(
     description = "netLoad",
-    var = c("pumpedStorage", "minusBalance", "nuclear", "lignite", "coal", "gas",
-            "oil", "mixFuel", "other", "hydraulicStro"),
+    var = c("pumpedStorage", "import/export", "nuclear", "lignite", "coal", "gas",
+            "oil", "mixFuel", "misc. DTG", "hydraulicStor"),
     lines = c("netLoad")
   ),
   
   mustRun = .getProdStackAlias(
     description = "must-run",
-    var = c("pumpedStorage", "minusBalance", "mustRunTotal", "thermalDispatchable",
+    var = c("pumpedStorage", "import/export", "mustRunTotal", "thermalDispatchable",
             "hydraulicDispatchable", "renewableNoDispatchable")
   )
 )

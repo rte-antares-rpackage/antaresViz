@@ -57,7 +57,7 @@
 addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto", 
                         fillColor = NULL, colorPalette = NULL,
                         width = 30, height = 30, opacity = 1, showLabels = FALSE,
-                        labelStyle = "fill:white;font-size:8px;", 
+                        labelStyle = NULL, 
                         labelPrecision = 0, labelText = NULL,
                         transitionTime = 750, popup = NULL, layerId = NULL) {
   
@@ -95,7 +95,7 @@ addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto"
                     popup = popup, layerId = layerId, fillColor = fillColor)
   )
   
-  map %>% requireDep(c("d3", "d3chart", "d3chart_bindings")) %>% 
+  map %>% requireDep(c("d3chart", "d3chart_bindings")) %>% 
     invokeMethod(leaflet:::getMapData(map), "addD3charts", 
                  options, data, unname(maxValues), colorPalette)
 }
@@ -138,7 +138,7 @@ updateD3charts <- function(map, layerId, data = NULL, maxValues = NULL, type = N
                     popup = popup, fillColor = fillColor)
   )
   
-  map %>% requireDep(c("d3", "d3chart", "d3chart_bindings")) %>% 
+  map %>% requireDep(c("d3chart", "d3chart_bindings")) %>% 
     invokeMethod(leaflet:::getMapData(map), "updateD3charts", 
                  options, data, unname(maxValues), colorPalette)
   

@@ -6,9 +6,9 @@
 \usage{
 addD3charts(map, lng, lat, data = 1, maxValues = NULL, type = "auto",
   fillColor = NULL, colorPalette = NULL, width = 30, height = 30,
-  opacity = 1, showLabels = FALSE,
-  labelStyle = "fill:white;font-size:8px;", labelPrecision = 0,
-  labelText = NULL, transitionTime = 750, popup = NULL, layerId = NULL)
+  opacity = 1, showLabels = FALSE, labelStyle = NULL,
+  labelPrecision = 0, labelText = NULL, transitionTime = 750,
+  popup = NULL, layerId = NULL)
 }
 \arguments{
 \item{map}{A leaflet map object created with \code{\link[leaflet]{leaflet}}.}

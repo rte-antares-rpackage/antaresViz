@@ -5,7 +5,10 @@ window.LeafletWidget.methods.addD3charts = function(options, data, maxValues, co
       if (options.hasOwnProperty(k)) opt[k] = options[k][i];
     }
     
-    if (data) opt.data = data[i];
+    if (data) {
+      opt.data = data[i];
+      if (opt.data.length > 1) opt.labelText = null;
+    }
     if (maxValues) opt.maxValues = maxValues;
     if (colorPalette) opt.colorPalette = colorPalette;
     
@@ -26,7 +29,10 @@ window.LeafletWidget.methods.updateD3charts = function(options, data, maxValues,
     for (var k in options) {
       if (options.hasOwnProperty(k)) opt[k] = options[k][i];
     }
-    if (data) opt.data = data[i];
+    if (data) {
+      opt.data = data[i];
+      if (opt.data.length > 1) opt.labelText = null;
+    }
     if (maxValues) opt.maxValues = maxValues;
     if (colors) opt.colors = colors;
     

@@ -7,18 +7,12 @@
 #' default, the different functions already output a legend. This function
 #' is mostly useful to share a unique legend between two or more time series plots.
 #' 
-#' @param labels
-#'   vector containing the names of the times series
-#' @param colors
-#'   vector of colors. for function \code{tsLegend} it must have the same length
-#'   as parameter \code{labels}. For function \code{productionStackLegend}, it 
-#'   must have same length as parameter \code{variables}. If \code{variables} is
-#'   an alias, then this argument should be \code{NULL} in order to use default
-#'   colors.
-#' @param types
-#'   "line" or "area" or a vector with same length as \code{labels} containing 
-#'   these two values.
-#' @inheritParams productionStack
+#' @param labels vector containing the names of the times series
+#' @param colors vector of colors. It must have the same length as parameter
+#'   \code{labels}.
+#' @param types "line" or "area" or a vector with same length as \code{labels}
+#'   containing these two values.
+#' @inheritParams prodStack
 #' 
 #' @details 
 #' Thes functions can be used to create a legend shared by multiple plots 
@@ -29,26 +23,22 @@
 #' 
 #' \preformatted{
 #' ```{R, echo = FALSE}
-#' library(shiny)
+#' library(manipulateWidget)
 #' 
-#' fillCol(height = "600px", flex = c(1, 1, NA),
-#'   fillRow(
-#'     productionStack(mydata, areas = "fr", 
-#'                     main = "Production stack in France", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
-#'     productionStack(mydata, areas = "de", 
-#'                     main = "Production stack in Germany", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
-#'   ),
-#'   fillRow(
-#'     productionStack(mydata, areas = "es", 
-#'                     main = "Production stack in Spain", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
-#'     productionStack(mydata, areas = "be", 
-#'                     main = "Production stack in Belgium", unit = "GWh", 
-#'                     legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
-#'   ),
-#'   productionStackLegend(legendId = 1)
+#' combineWidgets(
+#'   prodStack(mydata, areas = "fr", 
+#'             main = "Production stack in France", unit = "GWh", 
+#'             legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
+#'   prodStack(mydata, areas = "de", 
+#'             main = "Production stack in Germany", unit = "GWh", 
+#'             legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
+#'   prodStack(mydata, areas = "es", 
+#'             main = "Production stack in Spain", unit = "GWh", 
+#'             legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
+#'   prodStack(mydata, areas = "be", 
+#'             main = "Production stack in Belgium", unit = "GWh", 
+#'             legend = FALSE, legendId = 1, height = "100\%", width = "100\%"),
+#'   footer = prodStackLegend(legendId = 1)
 #' )
 #' ```
 #' }
@@ -162,37 +152,6 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
   )
 }
 
-JS_addLegend <- JS('
-function(el, x, data) {
-  var htmlwidgetContainer = el.parentElement; 
-  
-  var container = document.createElement("div");
-  container.id = "container";
-  container.style.height = el.style.height;
-  container.style.width = el.style.width;
-  container.style.position = "relative";
-  
-  el.style.position = "absolute";
-  el.style.top = "0";
-  el.style.bottom = data.size + "px";
-  el.style.height = "auto";
-  container.appendChild(el);
-  
-  var leg = document.createElement("div");
-  leg.style.height = data.size + "px";
-  leg.style.position = "absolute";
-  leg.style.bottom = "0";
-  leg.style.left = "0";
-  leg.style.right = "0";
-  leg.innerHTML = data.html;
-  container.appendChild(leg);
-  
-  htmlwidgetContainer.appendChild(container);
-  
-  this.resize();
-}
-')
-
 JS_updateLegend <- function(legendId, timeStep = "hourly") {
   
   # Function that transform a timestamp ta a date label
@@ -226,7 +185,7 @@ function(e, timestamp, data) {
     if (!values.hasOwnProperty(k)) continue; 
     var el = document.getElementById(k + '%s');
     if (el) {
-      if (values[k] > 100) {
+      if (Math.abs(values[k]) > 100) {
         el.innerHTML = Math.round(values[k]);
       } else {
         el.innerHTML = values[k].toPrecision(3);

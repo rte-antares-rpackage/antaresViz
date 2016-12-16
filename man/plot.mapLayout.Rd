@@ -20,6 +20,11 @@
 \item{colAreas}{Vector of colors for areas. By default, the colors used in the Antares
 software are used.}
 
+\item{dataAreas}{A numeric vector or a numeric matrix that is passed to function
+\code{link[addD3charts]}. A single vector will produce circles with
+different radius. A matrix will produce bar charts or pie charts or 
+polar charts, depending on the value of \code{areaChartType}}
+
 \item{popupArea}{Character vector containing the html to display when the user clicks on an
 area.}
 
@@ -59,12 +64,6 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{...}{Currently unused.}
-
-\item{sizeAreas}{Either a single numeric value indicating the radius of the areas on the 
-map or a vector with as many values as the number of areas of the study or
-a matrix with as many rows as the number of areas. In the last case, areas 
-are represented by polar area charts and each column is represented by one
-section of the polar charts.}
 }
 \value{
 The function generates an \code{htmlwidget} of class \code{leaflet}. It can

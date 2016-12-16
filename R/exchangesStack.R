@@ -11,7 +11,7 @@
 #' @param area
 #'   Name of a single area. The flows from/to this area will be drawn by the
 #'   function.
-#' @inheritParams productionStack
+#' @inheritParams prodStack
 #' 
 #' @return 
 #' A htmlwidget of class \code{dygraph}. It can be modified with functions from
@@ -49,7 +49,7 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     # Prepare data for stack creation
     linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
                          withDirection = TRUE)
-    dt <- merge(x[as.Date(.timeIdToDate(timeId, timeStep)) %between% dateRange,
+    dt <- merge(x[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                   .(link, timeId, flow = `FLOW LIN.`)],
                 linksDef,
                 by = "link")
@@ -68,20 +68,17 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     
     # Stack
     g <- .plotStack(dt, timeStep, opts, colors,
-                    legendId = legendId, main = main, ylab = ylab,
-                    width = width, height = height)
+                    legendId = legendId, main = main, ylab = ylab)
     
-    if (!legend) {
-      return(g)
-    }
+    if (legend) {
+      # Add a nice legend
+      legend <- tsLegend(names(dt)[-1], colors, types = "area", 
+                         legendItemsPerRow = legendItemsPerRow, 
+                         legendId = legendId)
+    } else legend <- NULL
     
-    # Add a nice legend
-    legend <- tsLegend(names(dt)[-1], colors, types = "area", 
-                       legendItemsPerRow = legendItemsPerRow, 
-                       legendId = legendId)
     
-    g %>%  htmlwidgets::onRender(JS_addLegend, list(size = legend$attribs$height, 
-                                       html = htmltools::doRenderTags(legend)))
+    combineWidgets(g, footer = legend, width = width, height = height)
     
   }
   

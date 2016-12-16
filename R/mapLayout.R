@@ -106,7 +106,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #'   Should links be drawn on the map ?
 #' @param ...
 #'   Currently unused.
-#' @inheritParams productionStack
+#' @inheritParams prodStack
 #' @inheritParams plotMapOptions
 #'   
 #' @return 
