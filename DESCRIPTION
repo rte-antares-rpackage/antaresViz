@@ -1,8 +1,8 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.5
-Date: 2016-11-14
+Version: 0.6
+Date: 2017-01-23
 Authors@R: c(
     person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = "ctb"),
@@ -23,7 +23,7 @@ Imports:
     tibble,
     htmltools,
     htmlwidgets (>= 0.7.0),
-    manipulateWidget (>= 0.4.0),
+    manipulateWidget (>= 0.5.1),
     mapStudio,
     leaflet (>= 1.0),
     sp,

@@ -6,6 +6,9 @@
 #' 
 #' @param x
 #'   Object of class \code{antaresDataTable}.
+#' @param table
+#'   Name of the table to display when \code{x} is an \code{antaresDataList}
+#'   object.
 #' @param variable
 #'   Name of the variable to plot. If this argument is missing, then the 
 #'   function starts a shiny gadget that let the user choose the variable to
@@ -96,44 +99,142 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                                   legend = TRUE,
                                   legendItemsPerRow = 5,
                                   width = NULL, height = NULL, ...) {
+  .plotAntares(
+    x, 
+    table = NULL, 
+    variable = variable, 
+    elements = elements,
+    type = type,
+    dateRange = dateRange,
+    confInt = confInt,
+    minValue = minValue,
+    interactive = interactive,
+    colors = colors, main = main, ylab = ylab, 
+    legend = TRUE, legendItemsPerRow = legendItemsPerRow,
+    width = width, height = height, 
+    ...
+  )
+}
+
+#' @rdname plot.antaresDataTable
+#' @export
+plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NULL, 
+                                  type = c("ts", "barplot", "monotone", "density", "cdf"),
+                                  dateRange = NULL,
+                                  confInt = 0,
+                                  minValue = NULL,
+                                  maxValue = NULL,
+                                  interactive = base::interactive(),
+                                  colors = NULL,
+                                  main = NULL,
+                                  ylab = NULL,
+                                  legend = TRUE,
+                                  legendItemsPerRow = 5,
+                                  width = NULL, height = NULL, ...) {
+  .plotAntares(
+    x, 
+    table = NULL, 
+    variable = variable, 
+    elements = elements,
+    type = type,
+    dateRange = dateRange,
+    confInt = confInt,
+    minValue = minValue,
+    interactive = interactive,
+    colors = colors, main = main, ylab = ylab, 
+    legend = TRUE, legendItemsPerRow = legendItemsPerRow,
+    width = width, height = height, 
+    ...
+  )
+}
+
+.plotAntares <- function(x, table = NULL, variable = NULL, elements = NULL, 
+                         type = c("ts", "barplot", "monotone", "density", "cdf"),
+                         dateRange = NULL,
+                         confInt = 0,
+                         minValue = NULL,
+                         maxValue = NULL,
+                         interactive = base::interactive(),
+                         colors = NULL,
+                         main = NULL,
+                         ylab = NULL,
+                         legend = TRUE,
+                         legendItemsPerRow = 5,
+                         width = NULL, height = NULL, ...) {
   
   type <- match.arg(type)
-  idCols <- .idCols(x)
-  valueCols <- setdiff(names(x), idCols)
   timeStep <- attr(x, "timeStep")
   dataname <- deparse(substitute(x))
-  showConfInt <- !is.null(x$mcYear) && length(unique(x$mcYear) > 1)
   
-  # Prepare data for plotting
-  dt <- x[, .(
-    time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
-    value = 0)
+  .prepareData <- function(x) {
+    idCols <- .idCols(x)
+    
+    dt <- x[, .(
+      time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
+      value = 0)
     ]
-  
-  if ("cluster" %in% idCols) {
-    dt$element <- paste(x$area, x$cluster, sep = " > ")
-  } else if ("district" %in% idCols) {
-    dt$element <- x$district
-  } else if ("link" %in% idCols) {
-    dt$element <- x$link
-  } else if ("area" %in% idCols) {
-    dt$element <- x$area
-  } else stop("No Id column")
-  
-  if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
-    dt$mcYear <- x$mcYear
+    
+    if ("cluster" %in% idCols) {
+      dt$element <- paste(x$area, x$cluster, sep = " > ")
+    } else if ("district" %in% idCols) {
+      dt$element <- x$district
+    } else if ("link" %in% idCols) {
+      dt$element <- x$link
+    } else if ("area" %in% idCols) {
+      dt$element <- x$area
+    } else stop("No Id column")
+    
+    if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
+      dt$mcYear <- x$mcYear
+    }
+    
+    dt
   }
   
-  dataDateRange <- as.Date(range(dt$time))
-  if (is.null(dateRange) || length(dateRange) < 2) dateRange <- dataDateRange
-  
+  if (is(x, "antaresDataTable")) {
+    x <- as.antaresDataList(x)
+  }
+    
+  params <- lapply(x, function(tab) {
+    idCols <- .idCols(tab)
+    dt <- .prepareData(tab)
+    
+    dataDateRange <- as.Date(range(dt$time))
+    if (is.null(dateRange) || length(dateRange) < 2) dateRange <- dataDateRange
+    
+    uniqueElem <- sort(as.character(unique(dt$element)))
+    if (is.null(elements)) {
+      elements <- uniqueElem
+      if (length(elements) > 5) elements <- elements[1:5]
+    }
+    
+    list(
+      dt = dt,
+      idCols = idCols,
+      valueCols = setdiff(names(tab), idCols),
+      showConfInt = !is.null(tab$mcYear) && length(unique(tab$mcYear) > 1),
+      dataDateRange = dataDateRange,
+      dateRange = dateRange,
+      uniqueElem = uniqueElem,
+      elements = elements
+    )
+  })
   
   # Function that generates the desired graphic.
-  plotFun <- function(dt, variable, elements, type, confInt, dateRange, minValue, maxValue) {
-    if (is.null(variable)) variable <- valueCols[1]
-    dt$value <- x[, get(variable)]
-    if (length(elements) > 0 & !"all" %in% elements) dt <- dt[element %in% elements]
+  plotFun <- function(table, variable, elements, type, confInt, dateRange, minValue, maxValue) {
+    if (is.null(variable)) variable <- params[[table]]$valueCols[1]
+    if (is.null(table) || !variable %in% names(x[[table]])) return(combineWidgets())
+    dt <- params[[table]]$dt
+    
+    dt$value <- x[[table]][, get(variable)]
+    if (length(elements) == 0) {
+      elements <- params[[table]]$uniqueElem[1:5]
+    }
+    if (!"all" %in% elements) dt <- dt[element %in% elements]
     dt <- dt[as.Date(time) %between% dateRange]
+    
+    if (nrow(dt) == 0) return(combineWidgets())
+    
     f <- switch(type,
                 "ts" = .plotTS,
                 "barplot" = .barplot,
@@ -166,12 +267,6 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     return(plotFun(dt, variable, elements, type, confInt, dateRange, minValue, maxValue))
   }
   
-  uniqueElem <- sort(as.character(unique(dt$element)))
-  if (is.null(elements)) {
-    elements <- uniqueElem
-    if (length(elements) > 5) elements <- elements[1:5]
-  }
-  
   if (timeStep == "annual") {
     type <- "barplot"
     typeChoices <- "barplot"
@@ -180,20 +275,26 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
   }
   
   manipulateWidget(
-    plotFun(dt, variable, elements, type, confInt, dateRange, minValue, maxValue),
-    variable = mwSelect(valueCols, variable),
+    plotFun(table, variable, elements, type, confInt, dateRange, minValue, maxValue),
+    table = mwSelect(names(params)),
+    variable = mwSelect(value = variable),
     type = mwSelect(c("time series" = "ts", "barplot", "monotone", "density", "cdf"), type),
-    dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
+    dateRange = mwDateRange(params[[1]]$dateRange, min = params[[1]]$dataDateRange[1], max = params[[1]]$dataDateRange[2]),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     minValue = mwNumeric(minValue, "min value"),
     maxValue = mwNumeric(maxValue, "max value"),
-    elements = mwSelect(c("all", uniqueElem), elements, multiple = TRUE),
+    elements = mwSelect(value = elements, multiple = TRUE),
     .main = dataname,
-    .display = list(confInt = showConfInt,
+    .display = list(table = length(params) > 1,
+                    confInt = params[[table]]$showConfInt,
                     minValue = type %in% c("density", "cdf"),
                     maxValue = type %in% c("density", "cdf"),
                     dateRange = timeStep != "annual",
-                    type = timeStep != "annual")
+                    type = timeStep != "annual"),
+    .updateInputs = list(
+      variable = list(choices = params[[table]]$valueCols),
+      elements = list(choices = c("all", params[[table]]$uniqueElem))
+    )
   )
   
 }

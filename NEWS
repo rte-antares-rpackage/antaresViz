@@ -1,5 +1,20 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+Changes in version 0.6 (2016-01-23)
+
+BREAKING CHANGES:
+* productionStack and has been renamed prodStack.
+
+NEW FEATURES:
+* plotMap() can now use pie charts, bar charts and polar area charts to represent multiple variables.
+* plotMap() can now represent average values on the whole period instead of representing only a single time step.
+* plotMap() can now display labels on areas. This feature is experimental for now and will be improved in next versions.
+* It is now possible to choose which variables are displayed in popups in maps created with plotMap().
+* plot() method for antaresDataTable can now output monotone, density and cululated distribution.  
+* It is now possible to register custom production stack aliases with function 'setProdStackLegend'. New aliases are then available in prodStack().
+* The package now also provides a plot method for antaresDataList objects.
+
+
 Changes in version 0.5 (2016-11-14)
 
 NEW FEATURES:
