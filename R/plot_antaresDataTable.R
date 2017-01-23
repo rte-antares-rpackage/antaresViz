@@ -1,11 +1,11 @@
 # Copyright © 2016 RTE Réseau de transport d’électricité
 
-#' plot time series contained in an antaresDataTable
+#' plot time series contained in an antaresData object
 #' 
-#' This function generates an interactive plot of an antares Time series.
+#' This function generates an interactive plot of an antares time series.
 #' 
 #' @param x
-#'   Object of class \code{antaresDataTable}.
+#'   Object of class \code{antaresData}.
 #' @param table
 #'   Name of the table to display when \code{x} is an \code{antaresDataList}
 #'   object.
@@ -223,7 +223,10 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
   # Function that generates the desired graphic.
   plotFun <- function(table, variable, elements, type, confInt, dateRange, minValue, maxValue) {
     if (is.null(variable)) variable <- params[[table]]$valueCols[1]
-    if (is.null(table) || !variable %in% names(x[[table]])) return(combineWidgets())
+    if (is.null(dateRange)) dateRange <- params[[table]]$dateRange
+    if (is.null(type) || is.null(table) || !variable %in% names(x[[table]])) {
+      return(combineWidgets())
+    }
     dt <- params[[table]]$dt
     
     dt$value <- x[[table]][, get(variable)]
@@ -261,10 +264,11 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
     
   }
   
+  if (is.null(table)) table <- names(params)[1]
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(dt, variable, elements, type, confInt, dateRange, minValue, maxValue))
+    return(plotFun(table, variable, elements, type, confInt, dateRange, minValue, maxValue))
   }
   
   if (timeStep == "annual") {
@@ -274,12 +278,13 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
     typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf")
   }
   
+  
   manipulateWidget(
     plotFun(table, variable, elements, type, confInt, dateRange, minValue, maxValue),
-    table = mwSelect(names(params)),
+    table = mwSelect(names(params), value = table),
     variable = mwSelect(value = variable),
     type = mwSelect(c("time series" = "ts", "barplot", "monotone", "density", "cdf"), type),
-    dateRange = mwDateRange(params[[1]]$dateRange, min = params[[1]]$dataDateRange[1], max = params[[1]]$dataDateRange[2]),
+    dateRange = mwDateRange(params[[table]]$dateRange),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     minValue = mwNumeric(minValue, "min value"),
     maxValue = mwNumeric(maxValue, "max value"),
@@ -293,7 +298,11 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
                     type = timeStep != "annual"),
     .updateInputs = list(
       variable = list(choices = params[[table]]$valueCols),
-      elements = list(choices = c("all", params[[table]]$uniqueElem))
+      elements = list(choices = c("all", params[[table]]$uniqueElem)),
+      dateRange = list(
+        min = params[[table]]$dataDateRange[1], 
+        max = params[[table]]$dataDateRange[2]
+      )
     )
   )
   

@@ -3,7 +3,7 @@
 \name{plot.antaresDataTable}
 \alias{plot.antaresDataList}
 \alias{plot.antaresDataTable}
-\title{plot time series contained in an antaresDataTable}
+\title{plot time series contained in an antaresData object}
 \usage{
 \method{plot}{antaresDataTable}(x, variable = NULL, elements = NULL,
   type = c("ts", "barplot", "monotone", "density", "cdf"), dateRange = NULL,
@@ -20,7 +20,7 @@
   height = NULL, ...)
 }
 \arguments{
-\item{x}{Object of class \code{antaresDataTable}.}
+\item{x}{Object of class \code{antaresData}.}
 
 \item{variable}{Name of the variable to plot. If this argument is missing, then the 
 function starts a shiny gadget that let the user choose the variable to
@@ -86,7 +86,7 @@ any other time step.It can be directly displayed in the viewer or be stored
 in a variable for later use.
 }
 \description{
-This function generates an interactive plot of an antares Time series.
+This function generates an interactive plot of an antares time series.
 }
 \details{
 If the input data contains several Monte-Carlo scenarios, the function will
