@@ -6,6 +6,9 @@
 #' 
 #' @param x
 #'   Object of class \code{antaresData}.
+#' @param y
+#'   Optional object of class \code{antaresData}. If it is specified, then two
+#'   charts are generated.
 #' @param table
 #'   Name of the table to display when \code{x} is an \code{antaresDataList}
 #'   object.
@@ -44,6 +47,15 @@
 #'   Vector of colors
 #' @param ylab
 #'   Label of the Y axis.
+#' @param compare
+#'   An optional character vector containing names of parameters. When it is set,
+#'   two charts are outputed with their own input controls. Alternatively, it can
+#'   be a named list with names corresponding to parameter names and values being
+#'   list with the initial values of the given parameter for each chart.
+#' @param compareLayout
+#'   Only used if \code{y} or \code{compare} is not null. If it equals to "v", 
+#'   then charts are placed one above the other. If it equals to "h", they are
+#'   placed one next to the other.
 #' @param ...
 #'   currently unused
 #' @inheritParams prodStack
@@ -83,15 +95,35 @@
 #' dataAnnual <- readAntares("all", timeStep = "Annual")
 #' plot(dataAnnual)
 #' 
+#' # Compare the results of two simulations
+#' setSimulationPath(path1)
+#' mydata1 <- readAntares("all", timeStep = "daily")
+#' setSimulationPath(path2)
+#' mydata2 <- readAntares("all", timeStep = "daily")
+#' 
+#' plot(mydata1, mydata2)
+#' 
+#' # Compare two periods for the same simulation
+#' plot(mydata1, compare = "dateRange")
+#' 
+#' # Compare two Monte-Carlo scenarios
+#' detailedData <- readAntares("all", mcYears = "all")
+#' plot(detailedData[mcYear == 1], detailedData[mcYear == 2])
+#' 
+#' # To do the same thing, with antaresDataList objects, one can use 'subset'
+#' detailedData <- readAntares(areas = "all" links = "all", mcYears = "all")
+#' plot(subset(detailedData, mcYears = 1), subset(detailedData, mcYears = 2))
 #' }
 #'
 #' @export
-plot.antaresDataTable <- function(x, variable = NULL, elements = NULL, 
+plot.antaresDataTable <- function(x, y = NULL, variable = NULL, elements = NULL, 
                                   type = c("ts", "barplot", "monotone", "density", "cdf"),
                                   dateRange = NULL,
                                   confInt = 0,
                                   minValue = NULL,
                                   maxValue = NULL,
+                                  compare = NULL,
+                                  compareLayout = c("v", "h"),
                                   interactive = base::interactive(),
                                   colors = NULL,
                                   main = NULL,
@@ -100,7 +132,8 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
                                   legendItemsPerRow = 5,
                                   width = NULL, height = NULL, ...) {
   .plotAntares(
-    x, 
+    x,
+    y = y,
     table = NULL, 
     variable = variable, 
     elements = elements,
@@ -108,6 +141,9 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
     dateRange = dateRange,
     confInt = confInt,
     minValue = minValue,
+    maxValue = maxValue,
+    compare = compare,
+    compareLayout = compareLayout,
     interactive = interactive,
     colors = colors, main = main, ylab = ylab, 
     legend = TRUE, legendItemsPerRow = legendItemsPerRow,
@@ -118,12 +154,14 @@ plot.antaresDataTable <- function(x, variable = NULL, elements = NULL,
 
 #' @rdname plot.antaresDataTable
 #' @export
-plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NULL, 
+plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
                                   type = c("ts", "barplot", "monotone", "density", "cdf"),
                                   dateRange = NULL,
                                   confInt = 0,
                                   minValue = NULL,
                                   maxValue = NULL,
+                                  compare = NULL,
+                                  compareLayout = c("v", "h"),
                                   interactive = base::interactive(),
                                   colors = NULL,
                                   main = NULL,
@@ -133,6 +171,7 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
                                   width = NULL, height = NULL, ...) {
   .plotAntares(
     x, 
+    y = y,
     table = NULL, 
     variable = variable, 
     elements = elements,
@@ -140,6 +179,9 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
     dateRange = dateRange,
     confInt = confInt,
     minValue = minValue,
+    maxValue = maxValue,
+    compare = compare,
+    compareLayout = compareLayout,
     interactive = interactive,
     colors = colors, main = main, ylab = ylab, 
     legend = TRUE, legendItemsPerRow = legendItemsPerRow,
@@ -148,12 +190,14 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
   )
 }
 
-.plotAntares <- function(x, table = NULL, variable = NULL, elements = NULL, 
+.plotAntares <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
                          type = c("ts", "barplot", "monotone", "density", "cdf"),
                          dateRange = NULL,
                          confInt = 0,
                          minValue = NULL,
                          maxValue = NULL,
+                         compare = NULL,
+                         compareLayout = c("v", "h"),
                          interactive = base::interactive(),
                          colors = NULL,
                          main = NULL,
@@ -165,8 +209,25 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
   type <- match.arg(type)
   timeStep <- attr(x, "timeStep")
   dataname <- deparse(substitute(x))
+  compareLayout <- match.arg(compareLayout)
   
-  .prepareData <- function(x) {
+  if (is.null(compare)) {
+    if (!is.null(y)) compare <- list()
+  } else {
+    if (is.character(compare)) {
+      compare <- match.arg(
+        compare, 
+        c("table", "variable", "elements", "type", "dateRange", "minValue", "maxValue"),
+        several.ok = TRUE
+      )
+      tmp <- lapply(compare, function(x) NULL)
+      names(tmp) <- compare
+      compare <- tmp
+    }
+  }
+  
+  
+  .prepareParams <- function(x) {
     idCols <- .idCols(x)
     
     dt <- x[, .(
@@ -188,17 +249,6 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
       dt$mcYear <- x$mcYear
     }
     
-    dt
-  }
-  
-  if (is(x, "antaresDataTable")) {
-    x <- as.antaresDataList(x)
-  }
-    
-  params <- lapply(x, function(tab) {
-    idCols <- .idCols(tab)
-    dt <- .prepareData(tab)
-    
     dataDateRange <- as.Date(range(dt$time))
     if (is.null(dateRange) || length(dateRange) < 2) dateRange <- dataDateRange
     
@@ -211,27 +261,45 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
     list(
       dt = dt,
       idCols = idCols,
-      valueCols = setdiff(names(tab), idCols),
-      showConfInt = !is.null(tab$mcYear) && length(unique(tab$mcYear) > 1),
+      valueCols = setdiff(names(x), idCols),
+      showConfInt = !is.null(x$mcYear) && length(unique(x$mcYear) > 1),
       dataDateRange = dataDateRange,
       dateRange = dateRange,
       uniqueElem = uniqueElem,
       elements = elements
     )
-  })
+  }
+  
+  if (is(x, "antaresDataTable")) {
+    x <- as.antaresDataList(x)
+  }
+    
+  params <- list(
+    x = lapply(x, .prepareParams)
+  )
+  
+  if (!is.null(y)) {
+    if (!is(y, "antaresData")) stop("y should be an 'antaresData' object")
+    y <- as.antaresDataList(y)
+    params$y <- lapply(y, .prepareParams)
+    x <- list(x, y)
+  } else {
+    params$y <- params$x
+    x <- list(x, x)
+  }
   
   # Function that generates the desired graphic.
-  plotFun <- function(table, variable, elements, type, confInt, dateRange, minValue, maxValue) {
-    if (is.null(variable)) variable <- params[[table]]$valueCols[1]
-    if (is.null(dateRange)) dateRange <- params[[table]]$dateRange
-    if (is.null(type) || is.null(table) || !variable %in% names(x[[table]])) {
+  plotFun <- function(table, id, variable, elements, type, confInt, dateRange, minValue, maxValue) {
+    if (is.null(variable)) variable <- params[[id]][[table]]$valueCols[1]
+    if (is.null(dateRange)) dateRange <- params[[id]][[table]]$dateRange
+    if (is.null(type) || is.null(table) || !variable %in% names(x[[id]][[table]])) {
       return(combineWidgets())
     }
-    dt <- params[[table]]$dt
+    dt <- params[[id]][[table]]$dt
     
-    dt$value <- x[[table]][, get(variable)]
+    dt$value <- x[[id]][[table]][, get(variable)]
     if (length(elements) == 0) {
-      elements <- params[[table]]$uniqueElem[1:5]
+      elements <- params[[id]][[table]]$uniqueElem[1:5]
     }
     if (!"all" %in% elements) dt <- dt[element %in% elements]
     dt <- dt[as.Date(time) %between% dateRange]
@@ -254,8 +322,8 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
       minValue = minValue,
       maxValue = maxValue, 
       colors = colors, 
-      main = main, 
-      ylab = ylab, 
+      main = if(length(main) == 1) main else main[id], 
+      ylab = if(length(ylab) == 1) ylab else ylab[id], 
       legend = legend, 
       legendItemsPerRow = legendItemsPerRow, 
       width = width, 
@@ -264,7 +332,7 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
     
   }
   
-  if (is.null(table)) table <- names(params)[1]
+  if (is.null(table)) table <- names(params[[1]])[1]
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
@@ -280,30 +348,32 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
   
   
   manipulateWidget(
-    plotFun(table, variable, elements, type, confInt, dateRange, minValue, maxValue),
-    table = mwSelect(names(params), value = table),
+    plotFun(table, .id, variable, elements, type, confInt, dateRange, minValue, maxValue),
+    table = mwSelect(names(params[[1]]), value = table),
     variable = mwSelect(value = variable),
     type = mwSelect(c("time series" = "ts", "barplot", "monotone", "density", "cdf"), type),
-    dateRange = mwDateRange(params[[table]]$dateRange),
+    dateRange = mwDateRange(params[[1]][[table]]$dateRange),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     minValue = mwNumeric(minValue, "min value"),
     maxValue = mwNumeric(maxValue, "max value"),
     elements = mwSelect(value = elements, multiple = TRUE),
     .main = dataname,
-    .display = list(table = length(params) > 1,
-                    confInt = params[[table]]$showConfInt,
+    .display = list(table = length(params[[.id]]) > 1,
+                    confInt = params[[.id]][[table]]$showConfInt,
                     minValue = type %in% c("density", "cdf"),
                     maxValue = type %in% c("density", "cdf"),
                     dateRange = timeStep != "annual",
                     type = timeStep != "annual"),
     .updateInputs = list(
-      variable = list(choices = params[[table]]$valueCols),
-      elements = list(choices = c("all", params[[table]]$uniqueElem)),
+      variable = list(choices = params[[.id]][[table]]$valueCols),
+      elements = list(choices = c("all", params[[.id]][[table]]$uniqueElem)),
       dateRange = list(
-        min = params[[table]]$dataDateRange[1], 
-        max = params[[table]]$dataDateRange[2]
+        min = params[[.id]][[table]]$dataDateRange[1], 
+        max = params[[.id]][[table]]$dataDateRange[2]
       )
-    )
+    ),
+    .compare = compare,
+    .compareLayout = compareLayout
   )
   
 }

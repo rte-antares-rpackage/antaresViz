@@ -5,22 +5,27 @@
 \alias{plot.antaresDataTable}
 \title{plot time series contained in an antaresData object}
 \usage{
-\method{plot}{antaresDataTable}(x, variable = NULL, elements = NULL,
-  type = c("ts", "barplot", "monotone", "density", "cdf"), dateRange = NULL,
-  confInt = 0, minValue = NULL, maxValue = NULL,
+\method{plot}{antaresDataTable}(x, y = NULL, variable = NULL,
+  elements = NULL, type = c("ts", "barplot", "monotone", "density", "cdf"),
+  dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
+  compare = NULL, compareLayout = c("v", "h"),
   interactive = base::interactive(), colors = NULL, main = NULL,
   ylab = NULL, legend = TRUE, legendItemsPerRow = 5, width = NULL,
   height = NULL, ...)
 
-\method{plot}{antaresDataList}(x, table = NULL, variable = NULL,
+\method{plot}{antaresDataList}(x, y = NULL, table = NULL, variable = NULL,
   elements = NULL, type = c("ts", "barplot", "monotone", "density", "cdf"),
   dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
+  compare = NULL, compareLayout = c("v", "h"),
   interactive = base::interactive(), colors = NULL, main = NULL,
   ylab = NULL, legend = TRUE, legendItemsPerRow = 5, width = NULL,
   height = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}.}
+
+\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
+charts are generated.}
 
 \item{variable}{Name of the variable to plot. If this argument is missing, then the 
 function starts a shiny gadget that let the user choose the variable to
@@ -52,6 +57,15 @@ is set, all values not in [-maxValue, maxValue] are removed from the graphic.
 This is useful to deal with variables containing a few extreme values
 (generally cost and price variables). If \code{maxValue} is 0 or unset, all
 values are displayed.}
+
+\item{compare}{An optional character vector containing names of parameters. When it is set,
+two charts are outputed with their own input controls. Alternatively, it can
+be a named list with names corresponding to parameter names and values being
+list with the initial values of the given parameter for each chart.}
+
+\item{compareLayout}{Only used if \code{y} or \code{compare} is not null. If it equals to "v", 
+then charts are placed one above the other. If it equals to "h", they are
+placed one next to the other.}
 
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}
@@ -116,6 +130,24 @@ plot(dataDetailed)
 dataAnnual <- readAntares("all", timeStep = "Annual")
 plot(dataAnnual)
 
+# Compare the results of two simulations
+setSimulationPath(path1)
+mydata1 <- readAntares("all", timeStep = "daily")
+setSimulationPath(path2)
+mydata2 <- readAntares("all", timeStep = "daily")
+
+plot(mydata1, mydata2)
+
+# Compare two periods for the same simulation
+plot(mydata1, compare = "dateRange")
+
+# Compare two Monte-Carlo scenarios
+detailedData <- readAntares("all", mcYears = "all")
+plot(detailedData[mcYear == 1], detailedData[mcYear == 2])
+
+# To do the same thing, with antaresDataList objects, one can use 'subset'
+detailedData <- readAntares(areas = "all" links = "all", mcYears = "all")
+plot(subset(detailedData, mcYears = 1), subset(detailedData, mcYears = 2))
 }
 
 }
