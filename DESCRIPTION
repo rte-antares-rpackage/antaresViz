@@ -8,7 +8,10 @@ Authors@R: c(
     person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = "ctb"),
     person("RTE", role = "cph")
     )
+Maintainer: Francois Guillem <francois.guillem@rte-france.com>
 Description: Visualize the data extracted from an antares project.
+Url: https://github.com/rte-antares-rpackage/antares-rpackageViz
+BugReports: https://github.com/rte-antares-rpackage/antares-rpackageViz/issues
 License: GPL (>= 2) + file LICENSE 
 LazyData: TRUE
 Depends:

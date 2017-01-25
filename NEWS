@@ -8,12 +8,16 @@ BREAKING CHANGES:
 NEW FEATURES:
 * plotMap() can now use pie charts, bar charts and polar area charts to represent multiple variables.
 * plotMap() can now represent average values on the whole period instead of representing only a single time step.
-* plotMap() can now display labels on areas. This feature is experimental for now and will be improved in next versions.
+* plotMap() can now display labels on areas. This feature is still experimental for now and will be improved in next versions.
 * It is now possible to choose which variables are displayed in popups in maps created with plotMap().
-* plot() method for antaresDataTable can now output monotone, density and cululated distribution.  
+* It is now possible to manually set break points for color scales in maps thourgh parameter "options" of plotMap.
+* plot() method for antaresDataTable can now output monotone, density and cululated distribution. 
+* There is now a plot() method for antaresDataList objects.
 * It is now possible to register custom production stack aliases with function 'setProdStackLegend'. New aliases are then available in prodStack().
 * The package now also provides a plot method for antaresDataList objects.
 
+BUGFIXES:
+* plot() was not working with annual data.
 
 Changes in version 0.5 (2016-11-14)
 
