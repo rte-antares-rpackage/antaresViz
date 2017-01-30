@@ -11,18 +11,18 @@ Authors@R: c(
 Maintainer: Francois Guillem <francois.guillem@rte-france.com>
 Description: Visualize the data extracted from an antares project.
 Url: https://github.com/rte-antares-rpackage/antares-rpackageViz
-BugReports: https://github.com/rte-antares-rpackage/antares-rpackageViz/issues
-License: GPL (>= 2) + file LICENSE 
+BugReports: https://goo.gl/7KeeOe
+License: GPL (>= 2) | file LICENSE 
 LazyData: TRUE
 Depends:
     antaresRead (>= 0.14.0),
-    antaresProcessing (>= 0.5.0)
+    antaresProcessing (>= 0.5.0),
 Imports:
     dygraphs (>= 1.1.1),
     shiny (>= 0.13.0),
     miniUI,
     magrittr,
-    highcharter (>= 0.4.0),
+    plotly (>= 4.5.6),
     tibble,
     htmltools,
     htmlwidgets (>= 0.7.0),
@@ -30,5 +30,8 @@ Imports:
     mapStudio,
     leaflet (>= 1.0),
     sp,
-    webshot
+    webshot,
+    data.table,
+    methods,
+    lubridate
 RoxygenNote: 5.0.1

@@ -96,10 +96,12 @@ addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto"
   )
   
   map %>% requireDep(c("d3chart", "d3chart_bindings")) %>% 
-    invokeMethod(leaflet:::getMapData(map), "addD3charts", 
+    invokeMethod(NULL, "addD3charts", 
                  options, data, unname(maxValues), colorPalette)
 }
 
+#' @export
+#' @rdname addD3charts
 updateD3charts <- function(map, layerId, data = NULL, maxValues = NULL, type = NULL, 
                            fillColor = NULL, colorPalette = NULL, 
                            width = NULL, height = NULL, opacity = NULL, showLabels = NULL,
@@ -139,7 +141,7 @@ updateD3charts <- function(map, layerId, data = NULL, maxValues = NULL, type = N
   )
   
   map %>% requireDep(c("d3chart", "d3chart_bindings")) %>% 
-    invokeMethod(leaflet:::getMapData(map), "updateD3charts", 
+    invokeMethod(NULL, "updateD3charts", 
                  options, data, unname(maxValues), colorPalette)
   
 }

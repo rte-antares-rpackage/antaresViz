@@ -25,12 +25,25 @@ software are used.}
 different radius. A matrix will produce bar charts or pie charts or 
 polar charts, depending on the value of \code{areaChartType}}
 
+\item{opacityArea}{Opacity of areas. It has to be a numeric vector with values
+between 0 and 1.}
+
+\item{areaMaxWidth}{Maximal width in pixels of the symbols that represent 
+areas on the map.}
+
+\item{areaChartType}{Type of chart to use to represent areas.}
+
 \item{popupArea}{Character vector containing the html to display when the user clicks on an
 area.}
+
+\item{labelArea}{Character vector containing labels to display inside areas.}
 
 \item{colLinks}{Vector of colors for links.}
 
 \item{sizeLinks}{Line width of the links, in pixels.}
+
+\item{opacityLinks}{Opacity of the links. It has to be a numeric vector with values
+between 0 and 1.}
 
 \item{dirLinks}{Single value or vector indicating the direction of the link. Possible values
 are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
@@ -45,6 +58,8 @@ link.}
 \item{areas}{Should areas be drawn on the map ?}
 
 \item{addTiles}{Should a base map be downloaded on the internet and displayed ?}
+
+\item{background}{background-color of the map. Not implemented yet.}
 
 \item{polygons}{An object of class \code{SpatialPolygonsDataFrame} created by package 
 \code{sp} or related packages. These polygons will be displayed above the 

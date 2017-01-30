@@ -48,7 +48,7 @@
 #' @param sizeLinkVar
 #'   Name of a variable present in \code{x$links}. Its values are represented by
 #'   the line width of the links on the map.
-#' @param popupLinkVar
+#' @param popupLinkVars
 #'   Vector of variables to display when user clicks on a link.
 #' @param type
 #'   If \code{type="avg"}, the data is averaged by area/and or link and

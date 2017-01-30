@@ -11,6 +11,8 @@
 #'   default size of areas.
 #' @param areaMaxSize
 #'   maximal size of an area when it represents the value of some variable.
+#' @param areaMaxWidth
+#'   Maximal width of areas
 #' @param areaChartColors
 #'   Vector of colors to use in polar area charts and bar charts
 #' @param areaColorScaleOpts
@@ -31,6 +33,7 @@
 #'   always visible and "hidden" to mask it.
 #' @param addTiles
 #'   Should a base map be downloaded on the internet and displayed ?
+#' @param background Background color of maps (currently not implemented).
 #' @param polygons
 #'   An object of class \code{SpatialPolygonsDataFrame} created by package 
 #'   \code{sp} or related packages. These polygons will be displayed above the 

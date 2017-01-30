@@ -85,13 +85,21 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #'   \code{link[addD3charts]}. A single vector will produce circles with
 #'   different radius. A matrix will produce bar charts or pie charts or 
 #'   polar charts, depending on the value of \code{areaChartType}
+#' @param opacityArea Opacity of areas. It has to be a numeric vector with values
+#'   between 0 and 1.
+#' @param areaMaxWidth Maximal width in pixels of the symbols that represent 
+#'   areas on the map.
+#' @param areaChartType Type of chart to use to represent areas.
 #' @param popupArea
 #'   Character vector containing the html to display when the user clicks on an
 #'   area.
+#' @param labelArea Character vector containing labels to display inside areas.
 #' @param colLinks
 #'   Vector of colors for links.
 #' @param sizeLinks
 #'   Line width of the links, in pixels.
+#' @param opacityLinks Opacity of the links. It has to be a numeric vector with values
+#'   between 0 and 1. 
 #' @param dirLinks
 #'   Single value or vector indicating the direction of the link. Possible values
 #'   are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
@@ -100,6 +108,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #' @param popupLink
 #'   Character vector containing the html to display when the user clicks on a 
 #'   link.
+#' @param background background-color of the map. Not implemented yet.
 #' @param areas
 #'   Should areas be drawn on the map ?
 #' @param links

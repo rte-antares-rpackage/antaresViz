@@ -33,7 +33,7 @@
 #' simply lines with an arrow in their middle that represent their direction.
 #' 
 #' @param map
-#'   A map object created with \code{\link[leaflet]{leaflet()}}
+#'   A map object created with \code{\link[leaflet]{leaflet}()}
 #' @param x0
 #'   longitude of the origin of the segments
 #' @param y0
@@ -89,7 +89,7 @@ addDirectedSegments <- function(map, x0, y0, x1, y1, color = "blue", weight = 3,
   
   map %>% 
     requireDep("directedSegment") %>% 
-    invokeMethod(data = leaflet:::getMapData(map), "addDirectedSegments", options)
+    invokeMethod(data = NULL, "addDirectedSegments", options)
 }
 
 #' @rdname addDirectedSegments
@@ -105,7 +105,7 @@ updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL,
                     popup = popup)
   )
   
-  invokeMethod(map, data = leaflet:::getMapData(map), "updateDirectedSegments", options)
+  invokeMethod(map, data = NULL, "updateDirectedSegments", options)
 }
 
 #' Add a shadow to map layers
@@ -119,12 +119,13 @@ updateDirectedSegments <- function(map, layerId, color = NULL, weight = NULL,
 #' The modified map object
 #' 
 #' @examples 
-#' 
-#' leaflet() %>%
-#'   addTiles() %>% 
-#'   addDirectedSegments(0, 0, 1, 0, col= gray(0.9)) %>%
-#'   addCircleMarkers(c(0, 1), c(0, 0), color = "white", fillOpacity = 1, stroke = FALSE) %>%
-#'   addShadows()
+#' if (require(leaflet)) {
+#'   leaflet() %>%
+#'     addTiles() %>% 
+#'     addDirectedSegments(0, 0, 1, 0, col= gray(0.9)) %>%
+#'     addCircleMarkers(c(0, 1), c(0, 0), color = "white", fillOpacity = 1, stroke = FALSE) %>%
+#'     addShadows()
+#' }
 #' 
 #' @export
 addShadows <- function(map) {

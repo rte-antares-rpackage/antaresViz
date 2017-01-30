@@ -25,6 +25,8 @@ colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
 
 \item{areaMaxSize}{maximal size of an area when it represents the value of some variable.}
 
+\item{areaMaxWidth}{Maximal width of areas}
+
 \item{areaChartColors}{Vector of colors to use in polar area charts and bar charts}
 
 \item{areaColorScaleOpts}{List of options used to construct a continuous color scale. This list should
@@ -44,6 +46,8 @@ add a button to display it. Other values are "visible" to make the legend
 always visible and "hidden" to mask it.}
 
 \item{addTiles}{Should a base map be downloaded on the internet and displayed ?}
+
+\item{background}{Background color of maps (currently not implemented).}
 
 \item{polygons}{An object of class \code{SpatialPolygonsDataFrame} created by package 
 \code{sp} or related packages. These polygons will be displayed above the 
