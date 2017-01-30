@@ -114,7 +114,7 @@
 #' detailedData <- readAntares(areas = "all" links = "all", mcYears = "all")
 #' plot(subset(detailedData, mcYears = 1), subset(detailedData, mcYears = 2))
 #' }
-#'
+#' 
 #' @export
 plot.antaresDataTable <- function(x, y = NULL, variable = NULL, elements = NULL, 
                                   type = c("ts", "barplot", "monotone", "density", "cdf"),
@@ -497,30 +497,35 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
       uniqueElements <- sort(unique(dt$element))
       
       alpha <- (1 - confInt) / 2
-      dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
-                   suffix = c("", "_l", "_u")), 
-               by = .(element)]
-      dt[, element := paste0(element, suffix)]
+      .getConfInt <- function(x) {
+        q <- quantile(x, c(alpha, 1 - alpha))
+        m <- mean(x)
+        list(value = m, l = m - q[1], u = q[2] - m)
+      }
+      dt <- dt[, .getConfInt(value), by = .(element)]
     }
   }
   
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Comparison of", variable)
   
-  g <- highchart() %>%
-    hc_yAxis(title = list(text = ylab)) %>% 
-    hc_legend(enabled = FALSE) %>% 
-    hc_title(text = main)
+  g <- plot_ly(dt) %>% 
+    config(displayModeBar = FALSE) %>% 
+    layout(title = main, yaxis = list(title = ylab))
   
-  if (!exists("uniqueColvar")) {
-    g <- g %>% hc_xAxis(categories = dt$element) %>%
-      hc_add_series(name = variable, data = dt$value, type = "column") 
+  if (is.null(dt$l)) {
+    g <- g %>% add_bars(x = ~element, y = ~value, alpha = 0.3)
   } else {
-    g <- g %>% hc_xAxis(categories = dt[suffix == "", colvar]) %>%
-      hc_add_series(name = variable, data = dt[suffix == "", value], type = "column") %>% 
-      hc_add_series(name = "range", 
-                    data = cbind(dt[suffix == "_l", value], dt[suffix == "_u", value]), 
-                    type = "errorbar")
+    g <- g %>% 
+      add_bars(
+        x = ~element, y = ~value, alpha = 0.3,
+        error_y = ~list(
+          type = "array",
+          symmetric = FALSE,
+          array = u,
+          arrayminus = l
+        )
+      )
   }
   
   combineWidgets(g, width = width, height = height)
