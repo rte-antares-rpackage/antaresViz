@@ -34,9 +34,9 @@ requireDep <- function(map, deps) {
      
      d3chart = htmlDependency(
        "d3chart",
-       "1.0",
+       "0.1.3",
        src = system.file("leafletPlugins", package = "antaresViz"),
-       script = "d3chart.min.js"
+       script = "leaflet.d3chart.min.js"
      ),
      
      d3chart_bindings = htmlDependency(
