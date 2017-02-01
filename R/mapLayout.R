@@ -149,7 +149,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #' 
 #' @export
 plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
-                           opacityArea = 1, areaMaxWidth = 20,
+                           opacityArea = 1, areaMaxSize = 50, areaMaxHeight = 50,
                            areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"), 
                            popupArea = x$coords$area, 
                            labelArea = NULL,
@@ -200,7 +200,8 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
                        data = dataAreas, fillColor = colAreas,
                        showLabels = !is.null(labelArea),
                        labelText = labelArea,
-                       width = areaMaxWidth,
+                       width = areaMaxSize,
+                       height = areaMaxHeight,
                        popup = popupArea, layerId = x$coords$area, opacity = opacityArea)
   }
   

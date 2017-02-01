@@ -217,7 +217,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         areaChartType = length(sizeAreaVars) >= 2,
         showLabels = length(sizeAreaVars) >= 2,
         labelAreaVar = length(sizeAreaVars) < 2
-      )
+      ),
+      .viewer = "browser"
     )
   }
 

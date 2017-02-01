@@ -11,6 +11,8 @@
 #'   default size of areas.
 #' @param areaMaxSize
 #'   maximal size of an area when it represents the value of some variable.
+#' @param areaMaxHeight
+#'   Maximal height of bars. Used only if a barchart representation is used.
 #' @param areaChartColors
 #'   Vector of colors to use in polar area charts and bar charts
 #' @param areaColorScaleOpts
@@ -54,7 +56,7 @@
 #' 
 #' @export
 plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 30, 
-                           areaMaxSize = 30, areaMaxWidth = 30, areaChartColors = NULL,
+                           areaMaxSize = 50, areaMaxHeight = 50, areaChartColors = NULL,
                            areaColorScaleOpts = colorScaleOptions(),
                            linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, 
                            linkMaxSize = 10, linkColorScaleOpts = colorScaleOptions(),

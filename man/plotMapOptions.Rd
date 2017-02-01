@@ -6,7 +6,7 @@
 \title{Graphical options for plotMap}
 \usage{
 plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 30,
-  areaMaxSize = 30, areaMaxWidth = 30, areaChartColors = NULL,
+  areaMaxSize = 50, areaMaxHeight = 50, areaChartColors = NULL,
   areaColorScaleOpts = colorScaleOptions(), linkDefaultCol = "#CCCCCC",
   linkDefaultSize = 3, linkMaxSize = 10,
   linkColorScaleOpts = colorScaleOptions(), legend = c("choose", "visible",
@@ -24,6 +24,8 @@ colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
 \item{areaDefaultSize}{default size of areas.}
 
 \item{areaMaxSize}{maximal size of an area when it represents the value of some variable.}
+
+\item{areaMaxHeight}{Maximal height of bars. Used only if a barchart representation is used.}
 
 \item{areaChartColors}{Vector of colors to use in polar area charts and bar charts}
 

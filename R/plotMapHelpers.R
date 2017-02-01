@@ -180,6 +180,7 @@
   # Update areas
   map <- updateD3charts(map, optsArea$coords$area, data = optsArea$size,
                         maxValues = optsArea$maxSize, width = areaWidth,
+                        height = options$areaMaxHeight,
                         showLabels = showLabels, labelText = labels, 
                         type = areaChartType[[1]],
                         fillColor = optsArea$color, popup = optsArea$popup)
@@ -196,7 +197,7 @@
   # Size legend (radius, polar or bar chart legend)
   if (length(sizeAreaVars) > 0) {
     if (length(sizeAreaVars) == 1) {
-      map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$areaMaxSize, optsArea$maxSize))
+      map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$areaMaxSize / 2, optsArea$maxSize))
     } else {
       map <- updateAntaresLegend(
         map, 

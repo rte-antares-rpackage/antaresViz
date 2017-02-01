@@ -5,14 +5,14 @@
 \title{Plot method for map layout}
 \usage{
 \method{plot}{mapLayout}(x, colAreas = x$coords$color, dataAreas = 1,
-  opacityArea = 1, areaMaxWidth = 20, areaChartType = c("auto", "bar",
-  "pie", "polar-area", "polar-radius"), popupArea = x$coords$area,
-  labelArea = NULL, colLinks = "#CCCCCC", sizeLinks = 3,
-  opacityLinks = 1, dirLinks = 0, popupLink = x$links$link,
-  links = TRUE, areas = TRUE, addTiles = TRUE, background = "white",
-  polygons = NULL, polygonOptions = list(stroke = TRUE, color = "#bbb",
-  weight = 0.5, opacity = 1, fillOpacity = 0.2, options = list(clickable =
-  FALSE)), width = NULL, height = NULL, ...)
+  opacityArea = 1, areaMaxSize = 50, areaMaxHeight = 50,
+  areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"),
+  popupArea = x$coords$area, labelArea = NULL, colLinks = "#CCCCCC",
+  sizeLinks = 3, opacityLinks = 1, dirLinks = 0,
+  popupLink = x$links$link, links = TRUE, areas = TRUE, addTiles = TRUE,
+  background = "white", polygons = NULL, polygonOptions = list(stroke =
+  TRUE, color = "#bbb", weight = 0.5, opacity = 1, fillOpacity = 0.2, options =
+  list(clickable = FALSE)), width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}
@@ -24,6 +24,10 @@ software are used.}
 \code{link[addD3charts]}. A single vector will produce circles with
 different radius. A matrix will produce bar charts or pie charts or 
 polar charts, depending on the value of \code{areaChartType}}
+
+\item{areaMaxSize}{maximal size of an area when it represents the value of some variable.}
+
+\item{areaMaxHeight}{Maximal height of bars. Used only if a barchart representation is used.}
 
 \item{popupArea}{Character vector containing the html to display when the user clicks on an
 area.}
