@@ -12,7 +12,7 @@ updateDirectedSegments(map, layerId, color = NULL, weight = NULL,
   opacity = NULL, dir = NULL, popup = NULL)
 }
 \arguments{
-\item{map}{A map object created with \code{\link[leaflet]{leaflet()}}}
+\item{map}{A map object created with \code{\link[leaflet]{leaflet}()}}
 
 \item{x0}{longitude of the origin of the segments}
 

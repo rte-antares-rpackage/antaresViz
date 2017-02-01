@@ -52,8 +52,10 @@ display. If it equals to 0, then confidence interval is not computed nor
 displayed. Used only when multiple Monte Carlo scenarios are present in 
 the input data.}
 
+\item{minValue}{}
+
 \item{maxValue}{Only used if parameter \code{type} is "density" or "cdf". If this parameter 
-is set, all values not in [-maxValue, maxValue] are removed from the graphic.
+is set, all values not in [-minValue, maxValue] are removed from the graphic.
 This is useful to deal with variables containing a few extreme values
 (generally cost and price variables). If \code{maxValue} is 0 or unset, all
 values are displayed.}

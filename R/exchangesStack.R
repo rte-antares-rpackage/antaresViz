@@ -11,6 +11,7 @@
 #' @param area
 #'   Name of a single area. The flows from/to this area will be drawn by the
 #'   function.
+#' @param ylab Title of the Y-axis.
 #' @inheritParams prodStack
 #' 
 #' @return 

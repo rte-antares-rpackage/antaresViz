@@ -274,7 +274,7 @@ prodStackLegend <- function(stack = "eco2mix",
   tsLegend(
     labels = c(names(stackOpts$variables), names(stackOpts$lines)), 
     colors = c(stackOpts$colors, stackOpts$lineColors),
-    type = c(rep("area", length(stackOpts$variables)), rep("line", length(stackOpts$lines))),
+    types = c(rep("area", length(stackOpts$variables)), rep("line", length(stackOpts$lines))),
     legendItemsPerRow = legendItemsPerRow,
     legendId = legendId
   )

@@ -26,6 +26,8 @@ order to use default colors.}
 
 \item{main}{Title of the graph.}
 
+\item{ylab}{Title of the Y-axis.}
+
 \item{unit}{Unit used in the graph. Possible values are "MWh", "GWh" or "TWh".}
 
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets

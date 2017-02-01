@@ -47,6 +47,8 @@ always visible and "hidden" to mask it.}
 
 \item{addTiles}{Should a base map be downloaded on the internet and displayed ?}
 
+\item{background}{Background color of maps (currently not implemented).}
+
 \item{polygons}{An object of class \code{SpatialPolygonsDataFrame} created by package 
 \code{sp} or related packages. These polygons will be displayed above the 
 base map (if any) and under the layer containing areas and links. It can

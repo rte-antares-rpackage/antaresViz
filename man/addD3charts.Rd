@@ -2,6 +2,7 @@
 % Please edit documentation in R/d3chart.R
 \name{addD3charts}
 \alias{addD3charts}
+\alias{updateD3charts}
 \title{Add or update charts on a leaflet map}
 \usage{
 addD3charts(map, lng, lat, data = 1, maxValues = NULL, type = "auto",
@@ -9,6 +10,12 @@ addD3charts(map, lng, lat, data = 1, maxValues = NULL, type = "auto",
   opacity = 1, showLabels = FALSE, labelStyle = NULL,
   labelPrecision = 0, labelText = NULL, transitionTime = 750,
   popup = NULL, layerId = NULL)
+
+updateD3charts(map, layerId, data = NULL, maxValues = NULL, type = NULL,
+  fillColor = NULL, colorPalette = NULL, width = NULL, height = NULL,
+  opacity = NULL, showLabels = NULL, labelStyle = NULL,
+  labelPrecision = NULL, labelText = NULL, transitionTime = NULL,
+  popup = NULL)
 }
 \arguments{
 \item{map}{A leaflet map object created with \code{\link[leaflet]{leaflet}}.}

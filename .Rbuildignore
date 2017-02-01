@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+demo_antaresViz.*
+countries
+ml.rda
