@@ -19,7 +19,7 @@
 #' 
 globalVariables(
   c("value", "element", "mcYear", "suffix", "time", "timeId", "dt", ".", 
-    "x", "y", ".initial", ".session", "FLOW LIN.", "area", "direction", 
+    "x", "y", ".id", ".initial", ".session", "FLOW LIN.", "area", "direction", 
     "flow", "formulas", "link")
 )
 

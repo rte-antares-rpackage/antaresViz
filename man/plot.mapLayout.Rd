@@ -28,7 +28,8 @@ polar charts, depending on the value of \code{areaChartType}}
 \item{opacityArea}{Opacity of areas. It has to be a numeric vector with values
 between 0 and 1.}
 
-\item{areaMaxSize}{maximal size of an area when it represents the value of some variable.}
+\item{areaMaxSize}{Maximal width in pixels of the symbols that represent 
+areas on the map.}
 
 \item{areaMaxHeight}{Maximal height of bars. Used only if a barchart representation is used.}
 
@@ -80,9 +81,6 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{...}{Currently unused.}
-
-\item{areaMaxWidth}{Maximal width in pixels of the symbols that represent 
-areas on the map.}
 }
 \value{
 The function generates an \code{htmlwidget} of class \code{leaflet}. It can

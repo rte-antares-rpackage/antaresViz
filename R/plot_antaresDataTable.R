@@ -38,7 +38,11 @@
 #'   displayed. Used only when multiple Monte Carlo scenarios are present in 
 #'   the input data.
 #' @param minValue
-#'   
+#'   Only used if parameter \code{type} is "density" or "cdf". If this parameter
+#'   is set, all values that are less than \code{minValue} are removed from the 
+#'   graphic. This is useful to deal with variables containing a few extreme
+#'   values (generally cost and price variables). If \code{minValue} is unset,
+#'   all values are displayed.
 #' @param maxValue
 #'   Only used if parameter \code{type} is "density" or "cdf". If this parameter 
 #'   is set, all values not in [-minValue, maxValue] are removed from the graphic.

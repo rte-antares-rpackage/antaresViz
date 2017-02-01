@@ -87,7 +87,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #'   polar charts, depending on the value of \code{areaChartType}
 #' @param opacityArea Opacity of areas. It has to be a numeric vector with values
 #'   between 0 and 1.
-#' @param areaMaxWidth Maximal width in pixels of the symbols that represent 
+#' @param areaMaxSize Maximal width in pixels of the symbols that represent 
 #'   areas on the map.
 #' @param areaChartType Type of chart to use to represent areas.
 #' @param popupArea
