@@ -264,7 +264,9 @@ plot.antaresDataList <- function(x, table = NULL, variable = NULL, elements = NU
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(dt, variable, elements, type, confInt, dateRange, minValue, maxValue))
+    table <- names(params)[1]
+    if (is.null(dateRange)) dateRange <- params[[1]]$dateRange
+    return(plotFun(table, variable, elements, type, confInt, dateRange, minValue, maxValue))
   }
   
   if (timeStep == "annual") {
