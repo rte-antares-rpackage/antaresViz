@@ -342,7 +342,7 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(table, variable, elements, type, confInt, dateRange, minValue, maxValue))
+    return(plotFun(table, 1, variable, elements, type, confInt, dateRange, minValue, maxValue))
   }
   
   if (timeStep == "annual") {
@@ -443,7 +443,7 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
   
   legendId <- sample(1e9, 1)
   
-  g <- dygraph(dt, main = main, group = legendId) %>% 
+  g <- dygraph(as.xts.data.table(dt), main = main, group = legendId) %>% 
     dyOptions(
       includeZero = TRUE, 
       gridLineColor = gray(0.8), 
@@ -657,7 +657,7 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
   
   legendId <- sample(1e9, 1)
   
-  g <- dygraph(dt, main = main, group = legendId) %>% 
+  g <- dygraph(as.xts.data.table(dt), main = main, group = legendId) %>% 
     dyOptions(
       includeZero = TRUE, 
       colors = colors,

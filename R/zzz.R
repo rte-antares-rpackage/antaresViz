@@ -10,7 +10,6 @@
 #' @import manipulateWidget
 #' @import mapStudio
 #' @import leaflet
-#' @import data.table
 #' @importFrom plotly plot_ly layout config add_bars
 #' @importFrom grDevices col2rgb colorRampPalette colors gray rainbow
 #' @importFrom graphics plot
