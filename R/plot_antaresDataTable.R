@@ -123,7 +123,7 @@
 #' 
 #' @export
 plot.antaresDataTable <- function(x, y = NULL, variable = NULL, elements = NULL, 
-                                  type = c("ts", "barplot", "monotone", "density", "cdf"),
+                                  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                                   dateRange = NULL,
                                   confInt = 0,
                                   minValue = NULL,
@@ -137,6 +137,8 @@ plot.antaresDataTable <- function(x, y = NULL, variable = NULL, elements = NULL,
                                   legend = TRUE,
                                   legendItemsPerRow = 5,
                                   width = NULL, height = NULL, ...) {
+  type <- match.arg(type)
+  
   .plotAntares(
     x,
     y = y,
@@ -161,7 +163,7 @@ plot.antaresDataTable <- function(x, y = NULL, variable = NULL, elements = NULL,
 #' @rdname plot.antaresDataTable
 #' @export
 plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
-                                  type = c("ts", "barplot", "monotone", "density", "cdf"),
+                                  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                                   dateRange = NULL,
                                   confInt = 0,
                                   minValue = NULL,
@@ -175,6 +177,9 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
                                   legend = TRUE,
                                   legendItemsPerRow = 5,
                                   width = NULL, height = NULL, ...) {
+  
+  type <- match.arg(type)
+  
   .plotAntares(
     x, 
     y = y,
@@ -197,7 +202,7 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
 }
 
 .plotAntares <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
-                         type = c("ts", "barplot", "monotone", "density", "cdf"),
+                         type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                          dateRange = NULL,
                          confInt = 0,
                          minValue = NULL,
@@ -212,10 +217,10 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
                          legendItemsPerRow = 5,
                          width = NULL, height = NULL, ...) {
   
-  type <- match.arg(type)
   timeStep <- attr(x, "timeStep")
   dataname <- deparse(substitute(x))
   compareLayout <- match.arg(compareLayout)
+  opts <- simOptions(x)
   
   if (is.null(compare)) {
     if (!is.null(y)) compare <- list()
@@ -237,6 +242,7 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
     idCols <- .idCols(x)
     
     dt <- x[, .(
+      timeId = timeId,
       time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
       value = 0)
     ]
@@ -318,6 +324,7 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
                 "monotone" = .plotMonotone,
                 "density" = .density,
                 "cdf" = .cdf,
+                "heatmap" = .heatmap,
                 stop("Invalid type")
     )
     f(
@@ -333,7 +340,8 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
       legend = legend, 
       legendItemsPerRow = legendItemsPerRow, 
       width = width, 
-      height = height
+      height = height,
+      opts = opts
     )
     
   }
@@ -349,7 +357,7 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
     type <- "barplot"
     typeChoices <- "barplot"
   } else {
-    typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf")
+    typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   }
   
   
@@ -357,7 +365,7 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
     plotFun(table, .id, variable, elements, type, confInt, dateRange, minValue, maxValue),
     table = mwSelect(names(params[[1]]), value = table),
     variable = mwSelect(value = variable),
-    type = mwSelect(c("time series" = "ts", "barplot", "monotone", "density", "cdf"), type),
+    type = mwSelect(typeChoices, type),
     dateRange = mwDateRange(params[[1]][[table]]$dateRange),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
     minValue = mwNumeric(minValue, "min value"),
@@ -654,10 +662,9 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
   } else {
     colors <- rep(colors, length.out = length(uniqueElements))
   }
-  
   legendId <- sample(1e9, 1)
   
-  g <- dygraph(as.xts.data.table(dt), main = main, group = legendId) %>% 
+  g <- dygraph(as.data.frame(dt), main = main, group = legendId) %>% 
     dyOptions(
       includeZero = TRUE, 
       colors = colors,
@@ -686,4 +693,31 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
   
   
   combineWidgets(g, footer = l, width = width, height = height)
+}
+
+.heatmap <- function(dt, timeStep, variable, main = NULL, ylab = NULL, opts, ...) {
+  if (!timeStep %in% c("hourly", "daily")) {
+    stop("Heatmap are only for daily and hourly data")
+  }
+  
+  if (timeStep == "daily") {
+    dt$weekId <- .getTimeId(dt$timeId * 24, "weekly", opts)
+    wdaysLabels <- c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+    dt$wday <- wdaysLabels[lubridate::wday(dt$time)]
+    
+    dt <- split(dt, f = droplevels(dt$element))
+    
+    xCategories <- c(wdaysLabels,wdaysLabels)[which(wdaysLabels == opts$firstWeekday) + 0:6]
+    
+    plots <- lapply(dt, function(x) {
+      plot_ly(x) %>% config(displayModeBar = FALSE) %>% 
+        add_heatmap(x=~wday, y=~weekId, z=~value) %>% 
+        layout(
+          title = ~element[1],
+          xaxis=list(categoryarray=xCategories, categoryorder="array")
+        )
+    })
+    
+    combineWidgets(list=plots)
+  }
 }

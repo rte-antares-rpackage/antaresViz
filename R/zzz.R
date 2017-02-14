@@ -24,6 +24,7 @@ globalVariables(
 
 .idCols <- antaresRead:::.idCols
 .timeIdToDate <- antaresRead:::.timeIdToDate
+.getTimeId <- antaresRead:::.getTimeId
 .checkColumns <- antaresProcessing:::.checkColumns
 .checkAttrs <- antaresProcessing:::.checkAttrs
 
