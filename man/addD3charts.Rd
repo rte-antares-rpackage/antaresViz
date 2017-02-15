@@ -89,4 +89,3 @@ mymap \%>\% updateD3charts("c1", maxValues = 6)
 mymap \%>\% updateD3charts("c1", type="pie")
 
 }
-

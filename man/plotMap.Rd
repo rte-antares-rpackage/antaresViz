@@ -115,4 +115,3 @@ plotMap(mydata, ml, options = list(colArea="red", colLink = "orange"))
 }
 
 }
-

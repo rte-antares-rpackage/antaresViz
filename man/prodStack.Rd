@@ -131,4 +131,3 @@ prodStack(mydata, unit = "GWh", stack = "renewable")
 \seealso{
 \code{\link{prodStackLegend}}
 }
-
