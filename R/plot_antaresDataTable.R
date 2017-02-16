@@ -62,7 +62,7 @@
 #'   Only used if \code{y} or \code{compare} is not null. If it equals to "v", 
 #'   then charts are placed one above the other. If it equals to "h", they are
 #'   placed one next to the other.
-#' @param colorScaleOptions
+#' @param colorScaleOpts
 #'   A list of parameters that control the creation of color scales. It is used
 #'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available
 #'   parameters.
@@ -141,15 +141,14 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
                                   ylab = NULL,
                                   legend = TRUE,
                                   legendItemsPerRow = 5,
-                                  colorScaleOptions = colorScaleOptions(20),
+                                  colorScaleOpts = colorScaleOptions(20),
                                   width = NULL, height = NULL, ...) {
   
   dataname <- deparse(substitute(x))
   type <- match.arg(type)
-  colorScaleOptions <- colorScaleOptions(colorScaleOptions)
+  colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
   
   if (!is(x, "antaresDataList")) x <- as.antaresDataList(x)
-  
   
   timeStep <- attr(x, "timeStep")
   compareLayout <- match.arg(compareLayout)
@@ -271,7 +270,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
       width = width, 
       height = height,
       opts = opts,
-      colorScaleOptions = colorScaleOptions
+      colorScaleOpts = colorScaleOpts
     )
     
   }
@@ -309,6 +308,11 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
                     dateRange = timeStep != "annual",
                     type = timeStep != "annual"),
     .updateInputs = list(
+      type = list(choices = {
+        if (timeStep == "annual") "barplot"
+        else if (timeStep %in% c("hourly", "daily")) typeChoices
+        else typeChoices[1:5]
+      }),
       variable = list(choices = params[[.id]][[table]]$valueCols),
       elements = list(choices = c("all", params[[.id]][[table]]$uniqueElem)),
       dateRange = list(
@@ -626,7 +630,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
 }
 
 .heatmap <- function(dt, timeStep, variable, main = NULL, ylab = NULL, opts,
-                     colorScaleOptions, ...) {
+                     colorScaleOpts, ...) {
   if (!timeStep %in% c("hourly", "daily")) {
     stop("Heatmap are only for daily and hourly data")
   }
@@ -666,10 +670,10 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
       domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
     }
     
-    colorScaleOptions$domain <- domain
-    colorScaleOptions$x <- x$value
+    colorScaleOpts$domain <- domain
+    colorScaleOpts$x <- x$value
     
-    colorPalette <- do.call(continuousColorPal, colorScaleOptions)
+    colorPalette <- do.call(continuousColorPal, colorScaleOpts)
     minVal <- rangevar[1]
     scale <- diff(rangevar)
     colorScaleFun <- function(x) {
