@@ -49,6 +49,10 @@
 #'   This is useful to deal with variables containing a few extreme values
 #'   (generally cost and price variables). If \code{maxValue} is 0 or unset, all
 #'   values are displayed.
+#' @param aggregate
+#'   When multiple elements are selected, should the data be aggregated. If
+#'   "none", each element is represented separetly. If "mean" values are
+#'   averaged and if "sum" they are added.
 #' @param colors
 #'   Vector of colors
 #' @param ylab

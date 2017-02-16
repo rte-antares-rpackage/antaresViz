@@ -7,11 +7,11 @@
 \method{plot}{antaresData}(x, y = NULL, table = NULL, variable = NULL,
   elements = NULL, type = c("ts", "barplot", "monotone", "density", "cdf",
   "heatmap"), dateRange = NULL, confInt = 0, minValue = NULL,
-  maxValue = NULL, compare = NULL, compareLayout = c("v", "h"),
-  interactive = base::interactive(), colors = NULL, main = NULL,
-  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
-  colorScaleOptions = colorScaleOptions(20), width = NULL, height = NULL,
-  ...)
+  maxValue = NULL, aggregate = c("none", "mean", "sum"), compare = NULL,
+  compareLayout = c("v", "h"), interactive = base::interactive(),
+  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
+  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
+  width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}.}
@@ -59,6 +59,10 @@ This is useful to deal with variables containing a few extreme values
 (generally cost and price variables). If \code{maxValue} is 0 or unset, all
 values are displayed.}
 
+\item{aggregate}{When multiple elements are selected, should the data be aggregated. If
+"none", each element is represented separetly. If "mean" values are
+averaged and if "sum" they are added.}
+
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
 be a named list with names corresponding to parameter names and values being
@@ -83,7 +87,7 @@ usefull when one wants to create a shared legend with
 
 \item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
 
-\item{colorScaleOptions}{A list of parameters that control the creation of color scales. It is used
+\item{colorScaleOpts}{A list of parameters that control the creation of color scales. It is used
 only for heatmaps. See \code{\link{colorScaleOptions}}() for available
 parameters.}
 
