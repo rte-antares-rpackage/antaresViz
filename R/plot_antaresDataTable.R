@@ -128,24 +128,26 @@
 #' 
 #' @export
 plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
-                                  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-                                  dateRange = NULL,
-                                  confInt = 0,
-                                  minValue = NULL,
-                                  maxValue = NULL,
-                                  compare = NULL,
-                                  compareLayout = c("v", "h"),
-                                  interactive = base::interactive(),
-                                  colors = NULL,
-                                  main = NULL,
-                                  ylab = NULL,
-                                  legend = TRUE,
-                                  legendItemsPerRow = 5,
-                                  colorScaleOpts = colorScaleOptions(20),
-                                  width = NULL, height = NULL, ...) {
+                             type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
+                             dateRange = NULL,
+                             confInt = 0,
+                             minValue = NULL,
+                             maxValue = NULL,
+                             aggregate = c("none", "mean", "sum"),
+                             compare = NULL,
+                             compareLayout = c("v", "h"),
+                             interactive = base::interactive(),
+                             colors = NULL,
+                             main = NULL,
+                             ylab = NULL,
+                             legend = TRUE,
+                             legendItemsPerRow = 5,
+                             colorScaleOpts = colorScaleOptions(20),
+                             width = NULL, height = NULL, ...) {
   
   dataname <- deparse(substitute(x))
   type <- match.arg(type)
+  aggregate <- match.arg(aggregate)
   colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
   
   if (!is(x, "antaresDataList")) x <- as.antaresDataList(x)
@@ -229,15 +231,21 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   }
   
   # Function that generates the desired graphic.
-  plotFun <- function(table, id, variable, elements, type, confInt, dateRange, minValue, maxValue) {
+  plotFun <- function(table, id, variable, elements, type, confInt, dateRange, 
+                      minValue, maxValue, aggregate) {
+    
     if (is.null(variable)) variable <- params[[id]][[table]]$valueCols[1]
     if (is.null(dateRange)) dateRange <- params[[id]][[table]]$dateRange
     if (is.null(type) || is.null(table) || !variable %in% names(x[[id]][[table]])) {
       return(combineWidgets())
     }
-    dt <- params[[id]][[table]]$dt
+    if (length(elements) == 0) {
+      return(combineWidgets("Choose at least one element"))
+    }
     
+    dt <- params[[id]][[table]]$dt
     dt$value <- x[[id]][[table]][, get(variable)]
+    
     if (length(elements) == 0) {
       elements <- params[[id]][[table]]$uniqueElem[1:5]
     }
@@ -245,6 +253,16 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     dt <- dt[as.Date(time) %between% dateRange]
     
     if (nrow(dt) == 0) return(combineWidgets())
+    
+    if (aggregate != "none" && params[[id]][[table]]$showConfInt) {
+      if (aggregate == "mean") {
+        dt <- dt[, .(element = as.factor(variable), value = mean(value)), 
+                 by = c(.idCols(dt))]
+      } else if (aggregate == "sum") {
+        dt <- dt[, .(element = as.factor(variable), value = sum(value)), 
+                 by = c(.idCols(dt))]
+      }
+    }
     
     f <- switch(type,
                 "ts" = .plotTS,
@@ -279,7 +297,8 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(table, 1, variable, elements, type, confInt, dateRange, minValue, maxValue))
+    return(plotFun(table, 1, variable, elements, type, confInt, dateRange, 
+                   minValue, maxValue, aggregate))
   }
   
   if (timeStep == "annual") {
@@ -291,7 +310,8 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   
   
   manipulateWidget(
-    plotFun(table, .id, variable, elements, type, confInt, dateRange, minValue, maxValue),
+    plotFun(table, .id, variable, elements, type, confInt, dateRange, minValue, 
+            maxValue, aggregate),
     table = mwSelect(names(params[[1]]), value = table),
     variable = mwSelect(value = variable),
     type = mwSelect(typeChoices, type),
@@ -300,6 +320,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     minValue = mwNumeric(minValue, "min value"),
     maxValue = mwNumeric(maxValue, "max value"),
     elements = mwSelect(value = elements, multiple = TRUE),
+    aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
     .main = dataname,
     .display = list(table = length(params[[.id]]) > 1,
                     confInt = params[[.id]][[table]]$showConfInt,
