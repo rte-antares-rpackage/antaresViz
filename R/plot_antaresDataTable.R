@@ -62,6 +62,11 @@
 #'   Only used if \code{y} or \code{compare} is not null. If it equals to "v", 
 #'   then charts are placed one above the other. If it equals to "h", they are
 #'   placed one next to the other.
+#' @param colorScaleOptions
+#'   A list of parameters that control the creation of color scales. It is used
+#'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available
+#'   parameters.
+#'   
 #' @param ...
 #'   currently unused
 #' @inheritParams prodStack
@@ -136,13 +141,15 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
                                   ylab = NULL,
                                   legend = TRUE,
                                   legendItemsPerRow = 5,
+                                  colorScaleOptions = colorScaleOptions(20),
                                   width = NULL, height = NULL, ...) {
   
   dataname <- deparse(substitute(x))
+  type <- match.arg(type)
+  colorScaleOptions <- colorScaleOptions(colorScaleOptions)
   
   if (!is(x, "antaresDataList")) x <- as.antaresDataList(x)
   
-  type <- match.arg(type)
   
   timeStep <- attr(x, "timeStep")
   compareLayout <- match.arg(compareLayout)
@@ -263,7 +270,8 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
       legendItemsPerRow = legendItemsPerRow, 
       width = width, 
       height = height,
-      opts = opts
+      opts = opts,
+      colorScaleOptions = colorScaleOptions
     )
     
   }
@@ -617,7 +625,8 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   combineWidgets(g, footer = l, width = width, height = height)
 }
 
-.heatmap <- function(dt, timeStep, variable, main = NULL, ylab = NULL, opts, ...) {
+.heatmap <- function(dt, timeStep, variable, main = NULL, ylab = NULL, opts,
+                     colorScaleOptions, ...) {
   if (!timeStep %in% c("hourly", "daily")) {
     stop("Heatmap are only for daily and hourly data")
   }
@@ -657,7 +666,10 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
       domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
     }
     
-    colorPalette <- continuousColorPal(x$value, 20, domain)
+    colorScaleOptions$domain <- domain
+    colorScaleOptions$x <- x$value
+    
+    colorPalette <- do.call(continuousColorPal, colorScaleOptions)
     minVal <- rangevar[1]
     scale <- diff(rangevar)
     colorScaleFun <- function(x) {

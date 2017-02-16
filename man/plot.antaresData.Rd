@@ -9,8 +9,9 @@
   "heatmap"), dateRange = NULL, confInt = 0, minValue = NULL,
   maxValue = NULL, compare = NULL, compareLayout = c("v", "h"),
   interactive = base::interactive(), colors = NULL, main = NULL,
-  ylab = NULL, legend = TRUE, legendItemsPerRow = 5, width = NULL,
-  height = NULL, ...)
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOptions = colorScaleOptions(20), width = NULL, height = NULL,
+  ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}.}
@@ -81,6 +82,10 @@ usefull when one wants to create a shared legend with
 \code{\link{prodStackLegend}}}
 
 \item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
+
+\item{colorScaleOptions}{A list of parameters that control the creation of color scales. It is used
+only for heatmaps. See \code{\link{colorScaleOptions}}() for available
+parameters.}
 
 \item{width}{Width of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
