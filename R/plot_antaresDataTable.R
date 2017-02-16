@@ -635,6 +635,10 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     stop("Heatmap are only for daily and hourly data")
   }
   
+  if (!is.null(dt$mcYear)) {
+    dt <- dt[, .(value = mean(value)), by = .(timeId, time, element)]
+  }
+  
   wdaysLabels <- c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
   
   if (timeStep == "daily") {
