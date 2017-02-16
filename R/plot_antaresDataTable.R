@@ -739,7 +739,6 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
     minVal <- rangevar[1]
     scale <- diff(rangevar)
     colorScaleFun <- function(x) {
-      print(x)
       x <- scale * x + minVal
       col <- attr(colorPalette, "pal")
       breaks <- attr(colorPalette, "breaks")
@@ -750,14 +749,20 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
       }
       res
     }
+    
     plot_ly(x) %>% config(displayModeBar = FALSE) %>% 
       add_heatmap(x=~wday, y=~weekId, z=~value, colors = colorScaleFun) %>% 
       layout(
         title = ~element[1],
-        xaxis=list(categoryarray=xCategories, categoryorder="array")
+        xaxis=list(
+          title="",
+          categoryarray=xCategories, 
+          categoryorder="array",
+          tickvals = paste0(wdaysLabels, ifelse(timeStep == "hourly", " 12:00", "")),
+          ticktext = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+        )
       )
   })
-  
   
   combineWidgets(list=plots)
 }
