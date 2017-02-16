@@ -122,47 +122,7 @@
 #' }
 #' 
 #' @export
-plot.antaresDataTable <- function(x, y = NULL, variable = NULL, elements = NULL, 
-                                  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-                                  dateRange = NULL,
-                                  confInt = 0,
-                                  minValue = NULL,
-                                  maxValue = NULL,
-                                  compare = NULL,
-                                  compareLayout = c("v", "h"),
-                                  interactive = base::interactive(),
-                                  colors = NULL,
-                                  main = NULL,
-                                  ylab = NULL,
-                                  legend = TRUE,
-                                  legendItemsPerRow = 5,
-                                  width = NULL, height = NULL, ...) {
-  type <- match.arg(type)
-  
-  .plotAntares(
-    x,
-    y = y,
-    table = NULL, 
-    variable = variable, 
-    elements = elements,
-    type = type,
-    dateRange = dateRange,
-    confInt = confInt,
-    minValue = minValue,
-    maxValue = maxValue,
-    compare = compare,
-    compareLayout = compareLayout,
-    interactive = interactive,
-    colors = colors, main = main, ylab = ylab, 
-    legend = TRUE, legendItemsPerRow = legendItemsPerRow,
-    width = width, height = height, 
-    ...
-  )
-}
-
-#' @rdname plot.antaresDataTable
-#' @export
-plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
+plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
                                   type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                                   dateRange = NULL,
                                   confInt = 0,
@@ -178,47 +138,13 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
                                   legendItemsPerRow = 5,
                                   width = NULL, height = NULL, ...) {
   
-  type <- match.arg(type)
+  dataname <- deparse(substitute(x))
   
-  .plotAntares(
-    x, 
-    y = y,
-    table = NULL, 
-    variable = variable, 
-    elements = elements,
-    type = type,
-    dateRange = dateRange,
-    confInt = confInt,
-    minValue = minValue,
-    maxValue = maxValue,
-    compare = compare,
-    compareLayout = compareLayout,
-    interactive = interactive,
-    colors = colors, main = main, ylab = ylab, 
-    legend = TRUE, legendItemsPerRow = legendItemsPerRow,
-    width = width, height = height, 
-    ...
-  )
-}
-
-.plotAntares <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
-                         type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-                         dateRange = NULL,
-                         confInt = 0,
-                         minValue = NULL,
-                         maxValue = NULL,
-                         compare = NULL,
-                         compareLayout = c("v", "h"),
-                         interactive = base::interactive(),
-                         colors = NULL,
-                         main = NULL,
-                         ylab = NULL,
-                         legend = TRUE,
-                         legendItemsPerRow = 5,
-                         width = NULL, height = NULL, ...) {
+  if (!is(x, "antaresDataList")) x <- as.antaresDataList(x)
+  
+  type <- match.arg(type)
   
   timeStep <- attr(x, "timeStep")
-  dataname <- deparse(substitute(x))
   compareLayout <- match.arg(compareLayout)
   opts <- simOptions(x)
   
@@ -280,10 +206,6 @@ plot.antaresDataList <- function(x, y = NULL, table = NULL, variable = NULL, ele
       uniqueElem = uniqueElem,
       elements = elements
     )
-  }
-  
-  if (is(x, "antaresDataTable")) {
-    x <- as.antaresDataList(x)
   }
     
   params <- list(
