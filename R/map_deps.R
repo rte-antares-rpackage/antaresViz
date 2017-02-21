@@ -32,18 +32,18 @@ requireDep <- function(map, deps) {
        script = "timeLabel.js"
      ),
      
-     d3chart = htmlDependency(
-       "d3chart",
-       "1.0",
+     minichart = htmlDependency(
+       "minichart",
+       "0.2.2",
        src = system.file("leafletPlugins", package = "antaresViz"),
-       script = "d3chart.min.js"
+       script = "leaflet.minichart.min.js"
      ),
      
-     d3chart_bindings = htmlDependency(
-       "d3chart_bindings",
+     minichart_bindings = htmlDependency(
+       "minichart_bindings",
        "1.0",
        src = system.file("leafletPlugins", package = "antaresViz"),
-       script = "d3chart_bindings.js"
+       script = "minichart_bindings.js"
      )
      
    )

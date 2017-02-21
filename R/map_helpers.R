@@ -178,7 +178,7 @@
   }
   
   # Update areas
-  map <- updateD3charts(map, optsArea$coords$area, data = optsArea$size,
+  map <- updateMinicharts(map, optsArea$coords$area, data = optsArea$size,
                         maxValues = optsArea$maxSize, width = areaWidth,
                         height = options$areaMaxHeight,
                         showLabels = showLabels, labelText = labels, 

@@ -1,4 +1,4 @@
-window.LeafletWidget.methods.addD3charts = function(options, data, maxValues, colorPalette) {
+window.LeafletWidget.methods.addMinicharts = function(options, data, maxValues, colorPalette) {
   for (var i = 0; i < options.lng.length; i++) {
     var opt = {};
     for (var k in options) {
@@ -12,32 +12,42 @@ window.LeafletWidget.methods.addD3charts = function(options, data, maxValues, co
     if (maxValues) opt.maxValues = maxValues;
     if (colorPalette) opt.colorPalette = colorPalette;
     
-    var l = L.d3chart([options.lat[i], options.lng[i]], opt);
+    var l = L.minichart([options.lat[i], options.lng[i]], opt);
+    
+    // Keep a reference of colors and data for later use.
+    l.fillColor = opt.fillColor || "blue";
+    l.colorPalette = colorPalette || ["#1f77b4", "#ff7f0e", "#2ca02c"];
+    l.data = data[i];
     
     if (options.popup) l.bindPopup(options.popup[i]);
     
     var id = options.layerId ? options.layerId[i] : undefined;
-    this.layerManager.addLayer(l, "d3chart", id);
+    this.layerManager.addLayer(l, "minichart", id);
   }
 };
 
-window.LeafletWidget.methods.updateD3charts = function(options, data, maxValues, colors) {
+window.LeafletWidget.methods.updateMinicharts = function(options, data, maxValues, colorPalette) {
   for (var i = 0; i < options.layerId.length; i++) {
-    var l = this.layerManager.getLayer("d3chart", options.layerId[i]);
+    var l = this.layerManager.getLayer("minichart", options.layerId[i]);
     
     var opt = {};
     for (var k in options) {
       if (options.hasOwnProperty(k)) opt[k] = options[k][i];
     }
+    
     if (data) {
+      l.data = data[i];
       opt.data = data[i];
-      if (opt.data.length > 1) opt.labelText = null;
     }
+    
     if (maxValues) opt.maxValues = maxValues;
-    if (colors) opt.colors = colors;
     
     if (options.popup) l.bindPopup(options.popup[i]);
     
+    if (colorPalette) l.colorPalette = colorPalette;
+    if (opt.fillColor) l.fillColor = opt.fillColor;
+    if (l.data.length == 1) opt.colors = l.fillColor;
+    else opt.colors = l.colorPalette;
     l.setOptions(opt);
   }
 };

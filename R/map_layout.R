@@ -82,7 +82,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
 #'   software are used.
 #' @param dataAreas
 #'   A numeric vector or a numeric matrix that is passed to function
-#'   \code{link[addD3charts]}. A single vector will produce circles with
+#'   \code{link[addMinicharts]}. A single vector will produce circles with
 #'   different radius. A matrix will produce bar charts or pie charts or 
 #'   polar charts, depending on the value of \code{areaChartType}
 #' @param opacityArea Opacity of areas. It has to be a numeric vector with values
@@ -205,7 +205,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   if (areas) {
     areaChartType <- match.arg(areaChartType)
     
-    map <- addD3charts(map, lng = x$coords$x, lat = x$coords$y, 
+    map <- addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
                        data = dataAreas, fillColor = colAreas,
                        showLabels = !is.null(labelArea),
                        labelText = labelArea,
