@@ -173,6 +173,8 @@
     } else {
       showLabels <- TRUE
       labels <- optsArea$coords[[labelAreaVar]]
+      # Create nice labels
+      labels <- prettyNumbers(labels)
     }
     
   }

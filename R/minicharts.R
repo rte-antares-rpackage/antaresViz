@@ -86,12 +86,19 @@ addMinicharts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "aut
     type <- ifelse (ncol(data) == 1, "polar-area", "bar")
   }
   
+  if (showLabels) {
+    if (!is.null(labelText)) labels <- labelText
+    else labels <- "auto"
+  } else {
+    labels <- "none"
+  }
+  
   options <- .prepareOptions(
     required = list(lng = lng, lat = lat), 
     optional = list(type = type, width = width, height = height, 
-                    opacity = opacity, labels = ifelse(showLabels, "auto", "none"), 
+                    opacity = opacity, labels = labels, 
                     labelStyle = labelStyle, labelPrecision = labelPrecision,
-                    labelText = labelText, transitionTime = transitionTime,
+                    transitionTime = transitionTime,
                     popup = popup, layerId = layerId, fillColor = fillColor)
   )
   
@@ -130,10 +137,21 @@ updateMinicharts <- function(map, layerId, data = NULL, maxValues = NULL, type =
     type <- NULL
   }
   
+  if (is.null(showLabels)) {
+    labels <- NULL
+  } else {
+    if (showLabels) {
+      if (!is.null(labelText)) labels <- labelText
+      else labels <- "auto"
+    } else {
+      labels <- "none"
+    }
+  }
+  
   options <- .prepareOptions(
     required = list(layerId = layerId), 
     optional = list(type = type, width = width, height = height, 
-                    opacity = opacity, labels = ifelse(showLabels, "auto", "none"), 
+                    opacity = opacity, labels = labels, 
                     labelStyle = labelStyle, labelPrecision = labelPrecision,
                     labelText = labelText, transitionTime = transitionTime,
                     popup = popup, fillColor = fillColor)
