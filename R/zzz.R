@@ -73,7 +73,7 @@ pkgEnv$prodStackAliases <- list(
     http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique",
     var = c("pumpedStorage", "import/export", "bioenergy", "wind", "solar", 
             "nuclear", "hydraulic", "gas", "coal", "lignite", "oil", "other"),
-    lines = c("totalLoad", "totalProduction")
+    lines = c("load", "totalProduction")
   ),
   
   thermalFirst = .getProdStackAlias(
