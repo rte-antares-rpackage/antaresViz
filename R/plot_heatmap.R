@@ -86,7 +86,7 @@
           tickvals = paste0(wdaysLabels, ifelse(timeStep == "hourly", " 12:00", "")),
           ticktext = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
         ),
-        yaxis = list(title = ylab)
+        yaxis = list(title = "week")
       )
   })
   
