@@ -1,6 +1,17 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
-Changes in version 0.6 (2016-01-23)
+Changes in version 0.7 (2017-02-23)
+
+NEW FEATURES:
+* plot() method can now generate heatmaps.
+* plot() method has a new parameter "aggregate" to choose whether to visualize individual plots or aggregated plot.
+* plotMap() can now display labels. This may require to increase area size so there is enough place for labels.
+
+BUGFIXES:
+* Many small problems detected by R CMD CHECK have been solved.
+
+
+Changes in version 0.6 (2017-01-23)
 
 BREAKING CHANGES:
 * productionStack and has been renamed prodStack.
