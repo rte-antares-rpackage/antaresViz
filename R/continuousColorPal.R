@@ -30,11 +30,13 @@
 continuousColorPal <- function(x, breaks = 5, domain = NULL,
                                negCol = "#FF0000", zeroCol = "#FFFFFF", posCol = "#0000FF",
                                naCol = "#EEEEEE", zeroTol = NULL) {
-  if (is.null(zeroTol)) {
-    zeroTol <- signif(diff(domain) * 0.01, 1)
-  }
   
   if (is.null(domain)) domain <- range(x, na.rm = TRUE)
+  if (domain[1] == domain[2]) domain <- domain[1] + c(-1, 1)
+  if (is.null(zeroTol)) {
+    zeroTol <- signif(diff(domain) * 0.02, 1)
+  }
+  
   
   if (length(breaks) == 1) {
     # Automatically choose approximatelly 'length(breaks)' break points

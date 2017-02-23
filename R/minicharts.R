@@ -46,15 +46,15 @@
 #' 
 #' @examples 
 #' require(leaflet)
-#' mymap <- leaflet() %>% addTiles() %>% addD3charts(0, 0, data = 1:3, layerId = "c1") 
+#' mymap <- leaflet() %>% addTiles() %>% addMinicharts(0, 0, data = 1:3, layerId = "c1") 
 #' 
 #' mymap
-#' mymap %>% updateD3charts("c1", maxValues = 6)
-#' mymap %>% updateD3charts("c1", type="pie")
+#' mymap %>% updateMinicharts("c1", maxValues = 6)
+#' mymap %>% updateMinicharts("c1", type="pie")
 #' 
 #' @export
 #' 
-addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto", 
+addMinicharts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto", 
                         fillColor = NULL, colorPalette = NULL,
                         width = 30, height = 30, opacity = 1, showLabels = FALSE,
                         labelStyle = NULL, 
@@ -65,7 +65,7 @@ addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto"
   
   # Data preparation
   
-  # When adding only one d3chart, data can be a vector or a data frame, so it 
+  # When adding only one minichart, data can be a vector or a data frame, so it 
   # needs to be converted to a matrix with correct lines and columns
   if (max(length(lng), length(lat)) == 1) {
     data <- matrix(data, nrow = 1)
@@ -86,21 +86,30 @@ addD3charts <- function(map, lng, lat, data = 1, maxValues = NULL, type = "auto"
     type <- ifelse (ncol(data) == 1, "polar-area", "bar")
   }
   
+  if (showLabels) {
+    if (!is.null(labelText)) labels <- labelText
+    else labels <- "auto"
+  } else {
+    labels <- "none"
+  }
+  
   options <- .prepareOptions(
     required = list(lng = lng, lat = lat), 
     optional = list(type = type, width = width, height = height, 
-                    opacity = opacity, showLabels = showLabels, 
+                    opacity = opacity, labels = labels, 
                     labelStyle = labelStyle, labelPrecision = labelPrecision,
-                    labelText = labelText, transitionTime = transitionTime,
+                    transitionTime = transitionTime,
                     popup = popup, layerId = layerId, fillColor = fillColor)
   )
   
-  map %>% requireDep(c("d3chart", "d3chart_bindings")) %>% 
-    invokeMethod(leaflet:::getMapData(map), "addD3charts", 
+  map %>% requireDep(c("minichart", "minichart_bindings")) %>% 
+    invokeMethod(NULL, "addMinicharts", 
                  options, data, unname(maxValues), colorPalette)
 }
 
-updateD3charts <- function(map, layerId, data = NULL, maxValues = NULL, type = NULL, 
+#' @export
+#' @rdname addMinicharts
+updateMinicharts <- function(map, layerId, data = NULL, maxValues = NULL, type = NULL, 
                            fillColor = NULL, colorPalette = NULL, 
                            width = NULL, height = NULL, opacity = NULL, showLabels = NULL,
                            labelStyle = NULL, 
@@ -128,18 +137,28 @@ updateD3charts <- function(map, layerId, data = NULL, maxValues = NULL, type = N
     type <- NULL
   }
   
+  if (is.null(showLabels)) {
+    labels <- NULL
+  } else {
+    if (showLabels) {
+      if (!is.null(labelText)) labels <- labelText
+      else labels <- "auto"
+    } else {
+      labels <- "none"
+    }
+  }
   
   options <- .prepareOptions(
     required = list(layerId = layerId), 
     optional = list(type = type, width = width, height = height, 
-                    opacity = opacity, showLabels = showLabels, 
+                    opacity = opacity, labels = labels, 
                     labelStyle = labelStyle, labelPrecision = labelPrecision,
                     labelText = labelText, transitionTime = transitionTime,
                     popup = popup, fillColor = fillColor)
   )
   
-  map %>% requireDep(c("d3chart", "d3chart_bindings")) %>% 
-    invokeMethod(leaflet:::getMapData(map), "updateD3charts", 
+  map %>% requireDep(c("minichart", "minichart_bindings")) %>% 
+    invokeMethod(NULL, "updateMinicharts", 
                  options, data, unname(maxValues), colorPalette)
   
 }

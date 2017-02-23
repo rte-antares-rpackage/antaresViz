@@ -6,7 +6,7 @@
 #' 
 #' @param plot
 #'   A plot generated with one of the functions of this package.
-#' @param filename
+#' @param file
 #'   The name of the output file
 #' @param width
 #'   Width of the output file

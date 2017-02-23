@@ -9,13 +9,13 @@ savePlotAsPng(plot, file = "Rplot.png", width = 600, height = 480, ...)
 \arguments{
 \item{plot}{A plot generated with one of the functions of this package.}
 
+\item{file}{The name of the output file}
+
 \item{width}{Width of the output file}
 
 \item{height}{height of the output file}
 
 \item{...}{Other parameters passed to function \code{\link[webshot]{webshot}}}
-
-\item{filename}{The name of the output file}
 }
 \value{
 The function only creates the required file. Nothing is returned
@@ -33,4 +33,3 @@ presentations.
 }
 
 }
-
