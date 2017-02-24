@@ -111,6 +111,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
   
+  x <- antaresProcessing::synthesize(x)
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
