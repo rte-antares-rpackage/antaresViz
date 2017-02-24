@@ -177,7 +177,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if (!interactive) {
     map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                     uniqueScale, showLabels, labelAreaVar, colLinkVar, 
-                    sizeLinkVar, popupLinkVars)
+                    sizeLinkVar, popupLinkVars, type = type)
   } else {
     # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
@@ -188,10 +188,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     map <- manipulateWidget(
       {
         plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
-                uniqueScale, showLabels, labelAreaVar,
+                uniqueScale, howLabels, labelAreaVar,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session)
       },
-      type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = "detail"),
+      type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
       Areas = list(
         colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
