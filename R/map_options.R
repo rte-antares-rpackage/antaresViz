@@ -56,10 +56,10 @@
 #' }
 #' 
 #' @export
-plotMapOptions <- function(areaDefaultCol = "#CCCCCC", areaDefaultSize = 30, 
+plotMapOptions <- function(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30, 
                            areaMaxSize = 50, areaMaxHeight = 50, areaChartColors = NULL,
                            areaColorScaleOpts = colorScaleOptions(),
-                           linkDefaultCol = "#CCCCCC", linkDefaultSize = 3, 
+                           linkDefaultCol = "#BEBECE", linkDefaultSize = 3, 
                            linkMaxSize = 15, linkColorScaleOpts = colorScaleOptions(),
                            legend = c("choose", "visible", "hidden"),
                            addTiles = TRUE, background = "white", polygons = NULL,

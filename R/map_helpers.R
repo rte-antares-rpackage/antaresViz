@@ -48,6 +48,12 @@
     }
     dataFiltered <- data[timeId == t]
   }
+  
+  # Special case: We have to take the absolute value of FLOW LIN.
+  if ("FLOW LIN." %in% names(dataFiltered)) {
+    dataFiltered[, `FLOW LIN.` := abs(`FLOW LIN.`)]
+  }
+  
   coords <- merge(coords, dataFiltered, by = mergeBy)
   
   # Initialize the object returned by the function
@@ -56,6 +62,9 @@
   # color
   if (colVar != "none" & length(sizeVar) <= 1) {
     rangevar <- range(data[[colVar]])
+    # Special case of FLOW LIN
+    if (colVar == "FLOW LIN.") rangevar <- c(0, max(abs(rangevar)))
+    
     if (rangevar[1] >= 0) {
       domain <- rangevar
     } else {

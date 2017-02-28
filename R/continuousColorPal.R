@@ -65,26 +65,32 @@ continuousColorPal <- function(x, breaks = 5, domain = NULL,
   breaks2[length(breaks2)] <- Inf
   
   # Choose colors for positive and negative values
-  if (any(breaks <= 0)) {
+  if (all(breaks <= 0)) {
+    if (max(domain) >= -zeroTol) {
+      pal <- colorRampPalette(c(negCol, zeroCol), space = "Lab")(length(breaks) - 1)
+    } else {
+      pal <- colorRampPalette(c(negCol, zeroCol), space = "Lab")(length(breaks))
+      pal <- pal[-length(pal)]
+    }
+  } else if (all(breaks >= 0)) {
+    if (min(domain) <= zeroTol) {
+      pal <- colorRampPalette(c(zeroCol, posCol), space = "Lab")(length(breaks) - 1)
+    } else {
+      pal <- colorRampPalette(c(zeroCol, posCol), space = "Lab")(length(breaks))
+      pal <- pal[-1]
+    }
+  } else {
     negPal <- colorRampPalette(c(negCol, zeroCol), space = "Lab")(sum(breaks <= 0))
-  } else {
-    negPal <- character(0)
-  }
-  
-  if (any(breaks >= 0)) {
     posPal <- colorRampPalette(c(zeroCol, posCol), space = "Lab")(sum(breaks >= 0))
-  } else {
-    posPal <- character(0)
-  }
-  
-  
-  # Create the color palette
-  # We include the zero color only if some interval contains 0
-  changeSign <- any(diff(sign(breaks)) == 2)
-  if (changeSign) {
-    pal <- c(negPal[-length(negPal)], zeroCol, posPal[-1])
-  } else {
-    pal <- c(negPal[-length(negPal)], posPal[-1])
+    
+    # Create the color palette
+    # We include the zero color only if some interval contains 0
+    changeSign <- any(diff(sign(breaks)) == 2)
+    if (changeSign) {
+      pal <- c(negPal[-length(negPal)], zeroCol, posPal[-1])
+    } else {
+      pal <- c(negPal[-length(negPal)], posPal[-1])
+    }
   }
   
   # Map values to colors
