@@ -5,10 +5,10 @@
 \alias{colorScaleOptions}
 \title{Graphical options for plotMap}
 \usage{
-plotMapOptions(areaDefaultCol = "#CCCCCC", areaDefaultSize = 30,
+plotMapOptions(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
   areaMaxSize = 50, areaMaxHeight = 50, areaChartColors = NULL,
-  areaColorScaleOpts = colorScaleOptions(), linkDefaultCol = "#CCCCCC",
-  linkDefaultSize = 3, linkMaxSize = 10,
+  areaColorScaleOpts = colorScaleOptions(), linkDefaultCol = "#BEBECE",
+  linkDefaultSize = 3, linkMaxSize = 15,
   linkColorScaleOpts = colorScaleOptions(), legend = c("choose", "visible",
   "hidden"), addTiles = TRUE, background = "white", polygons = NULL,
   polygonOptions = list(stroke = TRUE, color = "#999", weight = 0.5, opacity =
