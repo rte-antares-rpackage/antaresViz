@@ -96,7 +96,8 @@
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
-      strokeWidth = 0
+      strokeWidth = 0,
+      useDataTimezone = TRUE 
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 

@@ -64,7 +64,8 @@
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE,
-      colors = colors 
+      colors = colors, 
+      useDataTimezone = TRUE 
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60, rangePad = 10) %>% 

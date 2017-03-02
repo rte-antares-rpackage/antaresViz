@@ -158,12 +158,12 @@ JS_updateLegend <- function(legendId, timeStep = "hourly") {
   timeToLab <- switch(
     timeStep,
     hourly = "var date = new Date(x); 
-              var day = date.toString().slice(0, 10);
-              var h = date.toString().slice(16, 21);
+              var day = date.toUTCString().slice(0, 11);
+              var h = date.toUTCString().slice(17, 22);
               return day + '<br/>' + h;",
-    daily = "var date = new Date(x); return date.toString().slice(0, 10)",
-    weekly = "var date = new Date(x); return date.toString().slice(0, 10)",
-    monthly = "var date = new Date(x); return date.toString().slice(4, 8)",
+    daily = "var date = new Date(x); return date.toUTCString().slice(0, 11)",
+    weekly = "var date = new Date(x); return date.toUTCString().slice(0, 11)",
+    monthly = "var date = new Date(x); return date.toUTCString().slice(7, 11)",
     "return x"
   )
   
