@@ -16,11 +16,16 @@
     stop("Heatmap are only for daily and hourly data")
   }
   
+  if (is.null(ylab)) ylab <- variable
+  
   if (!is.null(dt$mcYear)) {
     dt <- dt[, .(value = mean(value)), by = .(timeId, time, element)]
   }
   
   wdaysLabels <- c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+  wdaysAbbr <- c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+  monthsAbbr <- c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep",
+                  "oct", "nov", "dec")
   
   if (timeStep == "daily") {
     
@@ -28,6 +33,16 @@
     dt$wday <- wdaysLabels[lubridate::wday(dt$time)]
     
     xCategories <- c(wdaysLabels,wdaysLabels)[which(wdaysLabels == opts$firstWeekday) + 0:6]
+    
+    # Text displayed on hover
+    dt$hover <- sprintf(
+      "%s %s %s (%s)<br>%s: %s",
+      wdaysAbbr[lubridate::wday(dt$time)],
+      lubridate::day(dt$time),
+      monthsAbbr[lubridate::month(dt$time)],
+      dt$timeId,
+      ylab, dt$value
+    )
     
   } else if (timeStep == "hourly") {
     dt$weekId <- .getTimeId(dt$timeId, "weekly", opts)
@@ -43,7 +58,25 @@
     })
     xCategories <- do.call(c, xCategories)
     
+    # Text displayed on hover
+    dt$hover <- sprintf(
+      "%s %s %s %02.f:00 (%s)<br>%s: %s",
+      wdaysAbbr[lubridate::wday(dt$time)],
+      lubridate::day(dt$time),
+      monthsAbbr[lubridate::month(dt$time)],
+      lubridate::hour(dt$time),
+      dt$timeId,
+      ylab, dt$value
+    )
   }
+  
+  # Determine where to place tick marks on y-axis.
+  wdayIds <- seq_along(xCategories)
+  names(wdayIds) <- xCategories
+  
+  yticks <- dt[lubridate::day(time) == 1 & lubridate::hour(time) == 0, 
+               .(time, weekId, wday)]
+  yticks[, wdayId := wdayIds[wday]]
   
   dt <- split(dt, f = droplevels(dt$element))
   
@@ -76,7 +109,8 @@
     if (is.null(ylab)) ylab <- variable
     
     plot_ly(x) %>% config(displayModeBar = FALSE) %>% 
-      add_heatmap(x=~wday, y=~weekId, z=~value, colors = colorScaleFun) %>% 
+      add_heatmap(x=~wday, y=~weekId, z=~value, text = ~hover, 
+                  colors = colorScaleFun, hoverinfo="text") %>% 
       layout(
         title = ~element[1],
         xaxis = list(
@@ -84,9 +118,13 @@
           categoryarray = xCategories, 
           categoryorder = "array",
           tickvals = paste0(wdaysLabels, ifelse(timeStep == "hourly", " 12:00", "")),
-          ticktext = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+          ticktext = wdaysAbbr
         ),
-        yaxis = list(title = "week")
+        yaxis = list(
+          title = "",
+          tickvals = yticks$weekId + (yticks$wdayId - 1) / max(wdayIds) - 0.5,
+          ticktext = monthsAbbr[lubridate::month(yticks$time)]
+        )
       )
   })
   

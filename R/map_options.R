@@ -104,7 +104,7 @@ plotMapOptions <- function(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
 #' @rdname plotMapOptions
 #' @export
 colorScaleOptions <- function(breaks = 5, domain = NULL,
-                              negCol = "#FF0000", zeroCol = "#FFFFFF", posCol = "#0000FF",
+                              negCol = "#FF0000", zeroCol = "#FAFAFA", posCol = "#0000FF",
                               naCol = "#EEEEEE", zeroTol = NULL, colors = NULL) {
   as.list(environment())
 }
