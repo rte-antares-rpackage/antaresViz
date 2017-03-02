@@ -121,7 +121,7 @@
       </tr>
   '
   
-  x <- as.matrix(x[, var, with = FALSE])
+  x <- signif(as.matrix(x[, var, with = FALSE]), 4)
   rows <- apply(x, 1, function(x) {
     sprintf(rowTemplate, var, x) %>% 
       paste(collapse = "")

@@ -2,6 +2,17 @@
 
 colorLegend <- function(title, colors, breaks) {
   options(scipen = 6)
+  
+  
+  # Round break points in order to get unique but simple labels
+  digits <- 4
+  tmp <- signif(breaks, digits)
+  while(any(duplicated(tmp))) {
+    digits <- digits + 1
+    tmp <- signif(breaks, digits)
+  }
+  breaks <- tmp
+    
   colors <- sapply(rev(colors), function(x) {
     sprintf('<div class="legend-color" style = "background-color:%s;"></div>', x)
   })
@@ -31,7 +42,15 @@ colorLegend <- function(title, colors, breaks) {
 
 prettyValues <- function(maxValue, n = 3) {
   values <- pretty(c(0, maxValue), n = n+1)
-  c(values[2:(length(values) - 2)], maxValue)
+  values <- c(values[2:(length(values) - 2)], maxValue)
+  digits <- 4
+  tmp <- signif(values, digits)
+  while(any(duplicated(tmp))) {
+    digits <- digits + 1
+    tmp <- signif(values, digits)
+  }
+  values <- tmp
+  values
 }
 
 radiusLegend <- function(title, maxRadius, maxValue) {

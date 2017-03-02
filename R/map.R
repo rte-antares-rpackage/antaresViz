@@ -189,7 +189,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     map <- manipulateWidget(
       {
         plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
-                uniqueScale, howLabels, labelAreaVar,
+                uniqueScale, showLabels, labelAreaVar,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session)
       },
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
