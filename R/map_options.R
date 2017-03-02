@@ -96,11 +96,15 @@ plotMapOptions <- function(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
 #'   All values in the interval \code{\[-zeroTol, +zeroTol\]} are mapped to the
 #'   \code{zeroCol} color. If \code{NULL}, the function tries to pick a nice
 #'   value that is approximately equal to 1\% of the maximal value.
-#'
+#' @param colors
+#'   Vector of colors. If it is set and if user manually sets break points, then
+#'   these colors are used instead of the colors defined by parameters negCol,
+#'   zeroCol and posCol.
+#'  
 #' @rdname plotMapOptions
 #' @export
 colorScaleOptions <- function(breaks = 5, domain = NULL,
                               negCol = "#FF0000", zeroCol = "#FFFFFF", posCol = "#0000FF",
-                              naCol = "#EEEEEE", zeroTol = NULL) {
+                              naCol = "#EEEEEE", zeroTol = NULL, colors = NULL) {
   as.list(environment())
 }
