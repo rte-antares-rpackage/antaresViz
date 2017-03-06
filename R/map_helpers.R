@@ -49,11 +49,6 @@
     dataFiltered <- data[timeId == t]
   }
   
-  # Special case: We have to take the absolute value of FLOW LIN.
-  if ("FLOW LIN." %in% names(dataFiltered)) {
-    dataFiltered[, `FLOW LIN.` := abs(`FLOW LIN.`)]
-  }
-  
   coords <- merge(coords, dataFiltered, by = mergeBy)
   
   # Initialize the object returned by the function
@@ -88,6 +83,7 @@
   # Direction
   if ("FLOW LIN." %in% names(coords)) {
     res$dir <- sign(coords$`FLOW LIN.`)
+    coords[, `FLOW LIN.` := abs(`FLOW LIN.`)]
   } else {
     res$dir <- 0
   }
