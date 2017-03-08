@@ -127,7 +127,8 @@ prodStack <- function(x, stack = "eco2mix",
   
   # Check that input contains area or district data
   if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
-
+  x <- synthesize(x)
+  
   if (is(x, "antaresDataTable")) {
     if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
   } else if (is(x, "antaresDataList")) {

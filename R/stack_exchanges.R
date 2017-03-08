@@ -33,6 +33,16 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
                            legendItemsPerRow = 5,
                            width = NULL, height = NULL) {
   
+  if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
+  x <- synthesize(x)
+  
+  if (is(x, "antaresDataTable")) {
+    if (!attr(x, "type") == "links") stop("'x' should contain link data")
+  } else if (is(x, "antaresDataList")) {
+    if (is.null(x$links)) stop("'x' should contain link data")
+    x <- x$links
+  }
+  
   unit <- match.arg(unit)
   timeStep <- attr(x, "timeStep")
   opts <- simOptions(x)
