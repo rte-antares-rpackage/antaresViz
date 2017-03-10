@@ -11,8 +11,10 @@ exchangesStack(x, area = NULL, dateRange = NULL, colors = NULL,
   height = NULL)
 }
 \arguments{
-\item{x}{data.table of class \code{antaresDataTable} created with function
-\code{\link[antaresRead]{readAntares}}. It must contain link data.}
+\item{x}{Object of class \code{antaresData} created with function
+\code{\link[antaresRead]{readAntares}}. It is required to contain link data.
+If it also contains area data with column `ROW BAL.`, then exchanges with
+the rest of the world are also displayed on the chart.}
 
 \item{area}{Name of a single area. The flows from/to this area will be drawn by the
 function.}
@@ -55,13 +57,17 @@ package \code{dygraphs}.
 }
 \description{
 This function draws a stack representing the evolution of the exchanges of
-an area with its neighbours.
+an area with its neighbours. Positive values denotes exports and negative 
+values imports.
 }
 \examples{
 \dontrun{
 mydata <- readAntares(links = "all", timeStep = "daily")
 exchangeStack(mydata)
 
+# Also display exchanges with the rest of the world
+mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
+exchangesStack(mydata)
 }
 
 }

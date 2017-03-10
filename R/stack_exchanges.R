@@ -3,11 +3,14 @@
 #' Plot the exchanges of an area
 #' 
 #' This function draws a stack representing the evolution of the exchanges of
-#' an area with its neighbours.
+#' an area with its neighbours. Positive values denotes exports and negative 
+#' values imports.
 #' 
 #' @param x
-#'   data.table of class \code{antaresDataTable} created with function
-#'   \code{\link[antaresRead]{readAntares}}. It must contain link data.
+#'   Object of class \code{antaresData} created with function
+#'   \code{\link[antaresRead]{readAntares}}. It is required to contain link data.
+#'   If it also contains area data with column `ROW BAL.`, then exchanges with
+#'   the rest of the world are also displayed on the chart.
 #' @param area
 #'   Name of a single area. The flows from/to this area will be drawn by the
 #'   function.
@@ -23,6 +26,9 @@
 #' mydata <- readAntares(links = "all", timeStep = "daily")
 #' exchangeStack(mydata)
 #' 
+#' # Also display exchanges with the rest of the world
+#' mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
+#' exchangesStack(mydata)
 #' }
 #' 
 #' @export
@@ -35,11 +41,18 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
   
   if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
   x <- synthesize(x)
+  row <- NULL # exchanges with rest of the world
   
   if (is(x, "antaresDataTable")) {
     if (!attr(x, "type") == "links") stop("'x' should contain link data")
   } else if (is(x, "antaresDataList")) {
     if (is.null(x$links)) stop("'x' should contain link data")
+    
+    # If they are present, add the echanges with the rest of the world
+    if (!is.null(x$areas) && !is.null(x$areas$`ROW BAL.`)) {
+      row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, 
+                         flow = - `ROW BAL.`, to = "ROW", direction = 1)]
+    }
     x <- x$links
   }
   
@@ -58,12 +71,14 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
   
   plotFun <- function(area, dateRange, unit) {
     # Prepare data for stack creation
+    a <- area
     linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
                          withDirection = TRUE)
     dt <- merge(x[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                   .(link, timeId, flow = `FLOW LIN.`)],
                 linksDef,
                 by = "link")
+    dt <- rbind(dt, row[area == a])
     dt[, flow := flow * direction / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]
     
     dt <- dcast(dt, timeId ~ to, value.var = "flow")
