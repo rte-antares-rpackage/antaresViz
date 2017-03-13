@@ -156,7 +156,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                       uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
                       popupLinkVars, 
                       type = c("detail", "avg"), 
-                      initial = TRUE, session = NULL) {
+                      initial = TRUE, session = NULL, outputId = "output1") {
     
     type <- match.arg(type)
     if (type == "avg") t <- NULL
@@ -165,7 +165,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       map <- .initMap(x, mapLayout, options) %>% 
         addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
     } else {
-      map <- leafletProxy("output", session)
+      map <- leafletProxy(outputId, session)
     }
      map <- map %>%
       .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
@@ -190,7 +190,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       {
         plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                 uniqueScale, showLabels, labelAreaVar,
-                colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session)
+                colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session,
+                .output)
       },
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
