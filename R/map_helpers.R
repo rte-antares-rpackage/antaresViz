@@ -189,7 +189,8 @@
                         maxValues = optsArea$maxSize, width = areaWidth,
                         height = options$areaMaxHeight,
                         showLabels = showLabels, labelText = labels, 
-                        type = areaChartType[[1]],
+                        type = areaChartType[[1]], 
+                        colorPalette = options$areaChartColors,
                         fillColor = optsArea$color, popup = optsArea$popup)
   
   # Update the legend
