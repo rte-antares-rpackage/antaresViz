@@ -31,6 +31,15 @@
                            popupVars, colorScaleOpts, labelVar = NULL) {
   
   neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars, labelVar)), "none")
+  if (any(! neededVars %in% names(data))) {
+    missingVars <- setdiff(neededVars, names(data))
+    for (v in missingVars) {
+      warning("Column '", v, "' does not exist.", call. = FALSE)
+    }
+    
+    neededVars <- intersect(neededVars, names(data))
+  }
+  
   if (is.null(t)) {
     if (length(neededVars) == 0) {
       data <- unique(data[, mergeBy, with = FALSE])
