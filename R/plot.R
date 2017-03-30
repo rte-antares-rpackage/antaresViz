@@ -154,7 +154,14 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   aggregate <- match.arg(aggregate)
   colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
   
-  if (!is(x, "antaresDataList")) x <- as.antaresDataList(x)
+  # Generate a group number for dygraph objects
+  if (!("dateRange" %in% compare)) {
+    group <- sample(1e9, 1)
+  } else {
+    group <- NULL
+  }
+  
+  x <- as.antaresDataList(x)
   
   timeStep <- attr(x, "timeStep")
   compareLayout <- match.arg(compareLayout)
@@ -292,7 +299,8 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
       width = width, 
       height = height,
       opts = opts,
-      colorScaleOpts = colorScaleOpts
+      colorScaleOpts = colorScaleOpts,
+      group = group
     )
     
   }

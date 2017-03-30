@@ -22,10 +22,12 @@
                     ylab = NULL,
                     legend = TRUE,
                     legendItemsPerRow = 5,
+                    group = NULL,
                     width = NULL, height = NULL, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
+  if (is.null(group)) group <- sample(1e9, 1)
   
   # If dt contains several Monte-Carlo scenario, compute aggregate statistics
   if (!is.null(dt$mcYear)) {
@@ -57,7 +59,7 @@
   
   legendId <- sample(1e9, 1)
   
-  g <- dygraph(as.xts.data.table(dt), main = main, group = legendId) %>% 
+  g <- dygraph(as.xts.data.table(dt), main = main, group = group) %>% 
     dyOptions(
       includeZero = TRUE, 
       gridLineColor = gray(0.8), 
