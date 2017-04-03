@@ -174,7 +174,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     if (is.character(compare)) {
       compare <- match.arg(
         compare, 
-        c("table", "variable", "elements", "type", "dateRange", "minValue", "maxValue"),
+        c("table", "variable", "elements", "type", "dateRange", "minValue", "maxValue", "mcYear"),
         several.ok = TRUE
       )
       tmp <- lapply(compare, function(x) NULL)
@@ -313,10 +313,11 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   }
   
   if (is.null(table)) table <- names(params[[1]])[1]
+  if (is.null(mcYear)) mcYear <- "synthesis"
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(table, 1, variable, elements, type, confInt, dateRange, 
+    return(plotFun(table, mcYear, 1, variable, elements, type, confInt, dateRange, 
                    minValue, maxValue, aggregate))
   }
   
@@ -326,7 +327,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     plotFun(table, mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
             maxValue, aggregate),
     table = mwSelect(names(params[[1]]), value = table),
-    mcYear = mwSelect(c("synthesis", params[[1]][[table]]$uniqueMcYears)),
+    mcYear = mwSelect(c("synthesis", params[[1]][[table]]$uniqueMcYears), mcYear),
     variable = mwSelect(value = variable),
     type = mwSelect(typeChoices, type),
     dateRange = mwDateRange(params[[1]][[table]]$dateRange),
