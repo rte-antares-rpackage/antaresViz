@@ -31,7 +31,7 @@
 #' 
 continuousColorPal <- function(x, breaks = 5, domain = NULL,
                                negCol = "#FF0000", zeroCol = "#FFFFFF", posCol = "#0000FF",
-                               naCol = "#EEEEEE", zeroTol = NULL, colors = NULL) {
+                               naCol = "#EEEEEE", zeroTol = NULL, colors = NULL, ...) {
   
   if (is.null(domain)) domain <- range(x, na.rm = TRUE)
   if (domain[1] == domain[2]) domain <- domain[1] + c(-1, 1)

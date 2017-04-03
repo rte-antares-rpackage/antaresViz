@@ -65,22 +65,34 @@
   
   # color
   if (colVar != "none" & length(sizeVar) <= 1) {
-    rangevar <- range(data[[colVar]])
-    # Special case of FLOW LIN
-    if (colVar == "FLOW LIN.") rangevar <- c(0, max(abs(rangevar)))
-    
-    if (rangevar[1] >= 0) {
-      domain <- rangevar
+    if (is.numeric(data[[colVar]])) {
+      rangevar <- range(data[[colVar]])
+      # Special case of FLOW LIN
+      if (colVar == "FLOW LIN.") rangevar <- c(0, max(abs(rangevar)))
+      
+      if (rangevar[1] >= 0) {
+        domain <- rangevar
+      } else {
+        domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
+      }
+      
+      colorScaleOpts$x <- coords[[colVar]]
+      colorScaleOpts$domain <- domain
+      res$color <- do.call(continuousColorPal, colorScaleOpts)
+      
+      res$pal <- attr(res$color, "pal")
+      res$colorBreaks <- attr(res$color, "breaks")
     } else {
-      domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
+      if (is.factor(data[[colVar]])) colorScaleOpts$levels <- levels(data[[colVar]])
+      else colorScaleOpts$levels <- unique(data[[colVar]])
+      
+      colorScaleOpts$x <- coords[[colVar]]
+      
+      res$color <- do.call(catColorPal, colorScaleOpts)
+      res$pal <- attr(res$color, "pal")
+      res$levels <- attr(res$color, "levels")
     }
     
-    colorScaleOpts$x <- coords[[colVar]]
-    colorScaleOpts$domain = domain
-    res$color <- do.call(continuousColorPal, colorScaleOpts)
-    
-    res$pal <- attr(res$color, "pal")
-    res$colorBreaks <- attr(res$color, "breaks")
   }
   
   # size
@@ -126,7 +138,9 @@
       </tr>
   '
   
-  x <- signif(as.matrix(x[, var, with = FALSE]), 4)
+  x <- x[, lapply(.SD, function(x) {if (is.numeric(x)) signif(x, 4) else x}), .SDcols = var]
+  x <- as.matrix(x)
+  
   rows <- apply(x, 1, function(x) {
     sprintf(rowTemplate, var, x) %>% 
       paste(collapse = "")
@@ -206,7 +220,11 @@
   #
   # Color scale legend
   if (!is.null(optsArea$pal)) {
-    map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
+    if (is.null(optsArea$levels)) {
+      map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
+    } else {
+      map <- updateAntaresLegend(map, htmlAreaColor = barChartLegend(optsArea$levels, colAreaVar, optsArea$pal))
+    }
   } else {
     map <- updateAntaresLegend(map, htmlAreaColor = "")
   }
@@ -256,7 +274,11 @@
   
   # Color scale legend
   if (!is.null(optsLink$pal)) {
-    map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
+    if (is.null(optsLink$levels)) {
+      map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
+    } else {
+      map <- updateAntaresLegend(map, htmlLinkColor = barChartLegend(optsLink$levels, colLinkVar, optsLink$pal))
+    }
   } else {
     map <- updateAntaresLegend(map, htmlLinkColor = "")
   }
