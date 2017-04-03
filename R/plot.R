@@ -132,6 +132,7 @@
 #' 
 #' @export
 plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
+                             mcYear = NULL,
                              type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                              dateRange = NULL,
                              confInt = 0,
@@ -223,6 +224,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
       dataDateRange = dataDateRange,
       dateRange = dateRange,
       uniqueElem = uniqueElem,
+      uniqueMcYears = unique(x$mcYear),
       elements = elements
     )
   }
@@ -242,7 +244,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   }
   
   # Function that generates the desired graphic.
-  plotFun <- function(table, id, variable, elements, type, confInt, dateRange, 
+  plotFun <- function(table, mcYear, id, variable, elements, type, confInt, dateRange, 
                       minValue, maxValue, aggregate) {
     
     if (is.null(variable)) variable <- params[[id]][[table]]$valueCols[1]
@@ -256,6 +258,11 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     
     dt <- params[[id]][[table]]$dt
     dt$value <- x[[id]][[table]][, get(variable)]
+    
+    if (!is.null(mcYear) && mcYear != "synthesis") {
+      mcy <- mcYear
+      dt <- dt[mcYear == mcy]
+    }
     
     if (length(elements) == 0) {
       elements <- params[[id]][[table]]$uniqueElem[1:5]
@@ -316,9 +323,10 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   
   manipulateWidget(
-    plotFun(table, .id, variable, elements, type, confInt, dateRange, minValue, 
+    plotFun(table, mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
             maxValue, aggregate),
     table = mwSelect(names(params[[1]]), value = table),
+    mcYear = mwSelect(c("synthesis", params[[1]][[table]]$uniqueMcYears)),
     variable = mwSelect(value = variable),
     type = mwSelect(typeChoices, type),
     dateRange = mwDateRange(params[[1]][[table]]$dateRange),
@@ -329,12 +337,14 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
     .main = dataname,
     .display = list(table = length(params[[.id]]) > 1,
-                    confInt = params[[.id]][[table]]$showConfInt,
+                    mcYear = params[[.id]][[table]]$showConfInt,
+                    confInt = params[[.id]][[table]]$showConfInt & mcYear == "synthesis",
                     minValue = type %in% c("density", "cdf"),
                     maxValue = type %in% c("density", "cdf"),
                     dateRange = timeStep != "annual",
                     type = timeStep != "annual"),
     .updateInputs = list(
+      mcYear = list(choices = c("synthesis", params[[.id]][[table]]$uniqueMcYears)),
       type = list(choices = {
         if (timeStep == "annual") "barplot"
         else if (timeStep %in% c("hourly", "daily")) typeChoices
