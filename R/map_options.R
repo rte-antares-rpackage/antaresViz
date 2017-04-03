@@ -100,11 +100,14 @@ plotMapOptions <- function(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
 #'   Vector of colors. If it is set and if user manually sets break points, then
 #'   these colors are used instead of the colors defined by parameters negCol,
 #'   zeroCol and posCol.
+#' @param levels
+#'   Vector of the distinct values a variable can take. Only used when the 
+#'   variable to represent is a categorical variable. 
 #'  
 #' @rdname plotMapOptions
 #' @export
 colorScaleOptions <- function(breaks = 5, domain = NULL,
                               negCol = "#FF0000", zeroCol = "#FAFAFA", posCol = "#0000FF",
-                              naCol = "#EEEEEE", zeroTol = NULL, colors = NULL) {
+                              naCol = "#EEEEEE", zeroTol = NULL, colors = NULL, levels = NULL) {
   as.list(environment())
 }

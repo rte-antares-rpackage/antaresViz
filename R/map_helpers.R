@@ -83,8 +83,10 @@
       res$pal <- attr(res$color, "pal")
       res$colorBreaks <- attr(res$color, "breaks")
     } else {
-      if (is.factor(data[[colVar]])) colorScaleOpts$levels <- levels(data[[colVar]])
-      else colorScaleOpts$levels <- unique(data[[colVar]])
+      if (is.null(colorScaleOpts$levels)) {
+        if (is.factor(data[[colVar]])) colorScaleOpts$levels <- levels(data[[colVar]])
+        else colorScaleOpts$levels <- unique(data[[colVar]])
+      }
       
       colorScaleOpts$x <- coords[[colVar]]
       
