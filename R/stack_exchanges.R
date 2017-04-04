@@ -88,7 +88,7 @@ exchangesStack <- function(x, area = NULL, mcYear = NULL, dateRange = NULL, colo
     
     if (mcYear == "synthesis") {
       dt <- synthesize(dt)
-      row <- row[, .(flow = mean(flow)), by = .(area, link, timeId, to, direction)]
+      if (!is.null(row)) row <- row[, .(flow = mean(flow)), by = .(area, link, timeId, to, direction)]
     } else if ("mcYear" %in% names(x)) {
       mcy <- mcYear
       dt <- dt[mcYear == mcy]
@@ -98,7 +98,10 @@ exchangesStack <- function(x, area = NULL, mcYear = NULL, dateRange = NULL, colo
                   .(link, timeId, flow = `FLOW LIN.`)],
                 linksDef,
                 by = "link")
-    if (!is.null(row)) dt <- rbind(dt, row[area == a])
+    if (!is.null(row)) {
+      row <- row[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange]
+      dt <- rbind(dt, row[area == a])
+    }
     dt[, flow := flow * direction / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]
     
     dt <- dcast(dt, timeId ~ to, value.var = "flow")
