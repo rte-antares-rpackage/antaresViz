@@ -11,7 +11,7 @@
 #'
 #' @noRd
 .heatmap <- function(dt, timeStep, variable, main = NULL, ylab = NULL, opts,
-                     colorScaleOpts, ...) {
+                     colorScaleOpts, width = NULL, height = NULL, ...) {
   if (!timeStep %in% c("hourly", "daily")) {
     stop("Heatmap are only for daily and hourly data")
   }
@@ -128,5 +128,5 @@
       )
   })
   
-  combineWidgets(list=plots, title = main)
+  combineWidgets(list=plots, title = main, width = width, height = height)
 }
