@@ -126,6 +126,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (is.null(x$areas) && is.null(x$links)) stop("Argument 'x' should contain at least area or link data.")
   }
   
+  # Should parameter mcYear be shown in the UI ?
+  showMcYear <- !attr(x, "synthesis") && length(unique(x[[1]]$mcYear)) > 1
+  
+  
   # Should links and/or areas be displayed ?
   areas <- !is.null(x$areas)
   links <- !is.null(x$links)
@@ -237,6 +241,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       ),
       .main = main,
       .display = list(
+        mcYear = showMcYear,
         timeId = !hideTimeIdSlider && type =="detail",
         uniqueScale = length(sizeAreaVars) >= 2 && areaChartType != "pie",
         areaChartType = length(sizeAreaVars) >= 2,

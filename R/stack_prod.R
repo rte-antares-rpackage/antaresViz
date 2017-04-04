@@ -145,6 +145,9 @@ prodStack <- function(x, stack = "eco2mix",
     areas <- unique(x$area)[1]
   }
   
+  # should mcYear parameter be displayed on the UI?
+  displayMcYear <- !attr(x, "synthesis") && length(unique(x$mcYear)) > 1
+  
   dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
   if (length(dateRange) < 2) dateRange <- dataDateRange
   
@@ -193,7 +196,8 @@ prodStack <- function(x, stack = "eco2mix",
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     areas = mwSelect(as.character(unique(x$area)), areas, multiple = TRUE),
-    .main = "Production stack"
+    .main = "Production stack",
+    .display = list(mcYear = displayMcYear)
   )
 }
 

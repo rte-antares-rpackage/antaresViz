@@ -50,11 +50,20 @@ exchangesStack <- function(x, area = NULL, mcYear = NULL, dateRange = NULL, colo
     
     # If they are present, add the echanges with the rest of the world
     if (!is.null(x$areas) && !is.null(x$areas$`ROW BAL.`)) {
-      row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, 
-                         flow = - `ROW BAL.`, to = "ROW", direction = 1)]
+      if ("mcYear" %in% names(x$areas)) {
+        row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, mcYear, 
+                           flow = - `ROW BAL.`, to = "ROW", direction = 1)]
+      } else {
+        row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, 
+                           flow = - `ROW BAL.`, to = "ROW", direction = 1)]
+      }
+      
     }
     x <- x$links
   }
+  
+  # shoudl mcYear parameter be displayed on the UI?
+  displayMcYear <- !attr(x, "synthesis") && length(unique(x$mcYear)) > 1
   
   unit <- match.arg(unit)
   timeStep <- attr(x, "timeStep")
@@ -79,15 +88,17 @@ exchangesStack <- function(x, area = NULL, mcYear = NULL, dateRange = NULL, colo
     
     if (mcYear == "synthesis") {
       dt <- synthesize(dt)
+      row <- row[, .(flow = mean(flow)), by = .(area, link, timeId, to, direction)]
     } else if ("mcYear" %in% names(x)) {
       mcy <- mcYear
       dt <- dt[mcYear == mcy]
+      if (!is.null(row)) row <- row[mcYear == mcy, .(area, link, timeId, flow, to, direction)]
     } 
     dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                   .(link, timeId, flow = `FLOW LIN.`)],
                 linksDef,
                 by = "link")
-    dt <- rbind(dt, row[area == a])
+    if (!is.null(row)) dt <- rbind(dt, row[area == a])
     dt[, flow := flow * direction / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]
     
     dt <- dcast(dt, timeId ~ to, value.var = "flow")
@@ -124,7 +135,8 @@ exchangesStack <- function(x, area = NULL, mcYear = NULL, dateRange = NULL, colo
     mcYear = mwSelect(c("synthesis", unique(x$mcYear)), mcYear),
     area = mwSelect(areaList, area),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
-    unit = mwSelect(c("MWh", "GWh", "TWh"), unit)
+    unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
+    .display = list(mcYear = displayMcYear)
   )
   
 }
