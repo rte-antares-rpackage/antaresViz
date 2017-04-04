@@ -116,6 +116,7 @@
 #' @export
 prodStack <- function(x, stack = "eco2mix",
                       areas = NULL, 
+                      mcYear = NULL,
                       dateRange = NULL,
                       main = "Production stack", unit = c("MWh", "GWh", "TWh"),
                       interactive = base::interactive(), 
@@ -124,10 +125,10 @@ prodStack <- function(x, stack = "eco2mix",
                       width = NULL, height = NULL) {
   
   unit <- match.arg(unit)
+  if (is.null(mcYear)) mcYear <- "synthesis"
   
   # Check that input contains area or district data
   if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
-  x <- synthesize(x)
   
   if (is(x, "antaresDataTable")) {
     if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
@@ -147,11 +148,18 @@ prodStack <- function(x, stack = "eco2mix",
   dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
   if (length(dateRange) < 2) dateRange <- dataDateRange
   
-  plotWithLegend <- function(areas, main = "", unit, stack, dateRange) {
+  plotWithLegend <- function(areas, main = "", unit, stack, dateRange, mcYear) {
     if (length(areas) == 0) return ("Please choose an area")
     stackOpts <- .aliasToStackOptions(stack)
     
     dt <- x[area %in% areas]
+    
+    if (mcYear == "synthesis") dt <- synthesize(dt)
+    else if ("mcYear" %in% names(dt)) {
+      mcy <- mcYear
+      dt <- dt[mcYear == mcy]
+    }
+    
     if (!is.null(dateRange)) {
       dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = simOptions(x))) %between% dateRange]
     }
@@ -174,11 +182,12 @@ prodStack <- function(x, stack = "eco2mix",
   }
   
   if (!interactive) {
-    return(plotWithLegend(areas, main, unit, stack, dateRange))
+    return(plotWithLegend(areas, main, unit, stack, dateRange, mcYear))
   }
   
   manipulateWidget(
-    plotWithLegend(areas, main, unit, stack, dateRange),
+    plotWithLegend(areas, main, unit, stack, dateRange, mcYear),
+    mcYear = mwSelect(c("synthesis", unique(x$mcYear))),
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),

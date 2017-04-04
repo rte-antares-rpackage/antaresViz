@@ -32,7 +32,7 @@
 #' }
 #' 
 #' @export
-exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL, 
+exchangesStack <- function(x, area = NULL, mcYear = NULL, dateRange = NULL, colors = NULL, 
                            main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
                            interactive = base::interactive(), 
                            legend = TRUE, legendId = sample(1e9, 1),
@@ -40,7 +40,7 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
                            width = NULL, height = NULL) {
   
   if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
-  x <- synthesize(x)
+  if (is.null(mcYear)) mcYear <- "synthesis"
   row <- NULL # exchanges with rest of the world
   
   if (is(x, "antaresDataTable")) {
@@ -69,12 +69,21 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
   
   if (is.null(area)) area = areaList[1]
   
-  plotFun <- function(area, dateRange, unit) {
+  plotFun <- function(area, dateRange, unit, mcYear) {
     # Prepare data for stack creation
     a <- area
     linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
                          withDirection = TRUE)
-    dt <- merge(x[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
+    
+    dt <- x
+    
+    if (mcYear == "synthesis") {
+      dt <- synthesize(dt)
+    } else if ("mcYear" %in% names(x)) {
+      mcy <- mcYear
+      dt <- dt[mcYear == mcy]
+    } 
+    dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                   .(link, timeId, flow = `FLOW LIN.`)],
                 linksDef,
                 by = "link")
@@ -108,10 +117,11 @@ exchangesStack <- function(x, area = NULL, dateRange = NULL, colors = NULL,
     
   }
   
-  if (!interactive) return(plotFun(area, dateRange, unit))
+  if (!interactive) return(plotFun(area, dateRange, unit, mcYear))
   
   manipulateWidget(
-    plotFun(area, dateRange, unit),
+    plotFun(area, dateRange, unit, mcYear),
+    mcYear = mwSelect(c("synthesis", unique(x$mcYear)), mcYear),
     area = mwSelect(areaList, area),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit)
