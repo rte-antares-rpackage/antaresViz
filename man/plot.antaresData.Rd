@@ -5,13 +5,14 @@
 \title{plot time series contained in an antaresData object}
 \usage{
 \method{plot}{antaresData}(x, y = NULL, table = NULL, variable = NULL,
-  elements = NULL, type = c("ts", "barplot", "monotone", "density", "cdf",
-  "heatmap"), dateRange = NULL, confInt = 0, minValue = NULL,
-  maxValue = NULL, aggregate = c("none", "mean", "sum"), compare = NULL,
-  compareLayout = c("v", "h"), interactive = base::interactive(),
-  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
-  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, ...)
+  elements = NULL, mcYear = NULL, type = c("ts", "barplot", "monotone",
+  "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
+  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
+  compare = NULL, compareLayout = c("v", "h"),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
+  ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}.}

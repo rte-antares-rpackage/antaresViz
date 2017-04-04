@@ -4,9 +4,9 @@
 \alias{exchangesStack}
 \title{Plot the exchanges of an area}
 \usage{
-exchangesStack(x, area = NULL, dateRange = NULL, colors = NULL,
-  main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
-  interactive = base::interactive(), legend = TRUE,
+exchangesStack(x, area = NULL, mcYear = NULL, dateRange = NULL,
+  colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
+  "TWh"), interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), legendItemsPerRow = 5, width = NULL,
   height = NULL)
 }

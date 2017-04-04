@@ -16,7 +16,7 @@ plotMapOptions(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
 
 colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
   zeroCol = "#FAFAFA", posCol = "#0000FF", naCol = "#EEEEEE",
-  zeroTol = NULL, colors = NULL)
+  zeroTol = NULL, colors = NULL, levels = NULL)
 }
 \arguments{
 \item{areaDefaultCol}{default color of areas.}
@@ -83,6 +83,9 @@ value that is approximately equal to 1\% of the maximal value.}
 \item{colors}{Vector of colors. If it is set and if user manually sets break points, then
 these colors are used instead of the colors defined by parameters negCol,
 zeroCol and posCol.}
+
+\item{levels}{Vector of the distinct values a variable can take. Only used when the 
+variable to represent is a categorical variable.}
 }
 \value{
 A list with the values of the different graphical parameters.

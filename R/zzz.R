@@ -34,6 +34,10 @@ DEFAULT_CAT_COLORS <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
 # Private variables accessible only by functions from the package
 pkgEnv <- antaresRead:::pkgEnv
 
+.onLoad <- function(libname, pkgname) {
+  setInteractivity("auto")
+}
+
 # Generate the list of aliases for function prodStack()
 #
 # The definition of the variables used in aliases is stored in file 

@@ -9,7 +9,7 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
   labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
-  main = "", interactive = base::interactive(),
+  mcYear = NULL, main = "", interactive = getInteractivity(),
   options = plotMapOptions(), width = NULL, height = NULL)
 }
 \arguments{

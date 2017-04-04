@@ -108,7 +108,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     timeId = NULL,
                     mcYear = NULL,
                     main = "",
-                    interactive = base::interactive(),
+                    interactive = getInteractivity(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
   

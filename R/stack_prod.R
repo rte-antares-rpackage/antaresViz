@@ -119,7 +119,7 @@ prodStack <- function(x, stack = "eco2mix",
                       mcYear = NULL,
                       dateRange = NULL,
                       main = "Production stack", unit = c("MWh", "GWh", "TWh"),
-                      interactive = base::interactive(), 
+                      interactive = getInteractivity(), 
                       legend = TRUE, legendId = sample(1e9, 1),
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL) {

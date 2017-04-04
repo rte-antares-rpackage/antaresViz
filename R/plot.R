@@ -141,7 +141,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
                              aggregate = c("none", "mean", "sum"),
                              compare = NULL,
                              compareLayout = c("v", "h"),
-                             interactive = base::interactive(),
+                             interactive = getInteractivity(),
                              colors = NULL,
                              main = NULL,
                              ylab = NULL,

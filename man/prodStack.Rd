@@ -11,9 +11,9 @@ prodStackAliases()
 setProdStackAlias(name, variables, colors, lines = NULL, lineColors = NULL,
   description = NULL)
 
-prodStack(x, stack = "eco2mix", areas = NULL, dateRange = NULL,
-  main = "Production stack", unit = c("MWh", "GWh", "TWh"),
-  interactive = base::interactive(), legend = TRUE,
+prodStack(x, stack = "eco2mix", areas = NULL, mcYear = NULL,
+  dateRange = NULL, main = "Production stack", unit = c("MWh", "GWh",
+  "TWh"), interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), legendItemsPerRow = 5, width = NULL,
   height = NULL)
 }

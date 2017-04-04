@@ -34,7 +34,7 @@
 #' @export
 exchangesStack <- function(x, area = NULL, mcYear = NULL, dateRange = NULL, colors = NULL, 
                            main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
-                           interactive = base::interactive(), 
+                           interactive = getInteractivity(), 
                            legend = TRUE, legendId = sample(1e9, 1),
                            legendItemsPerRow = 5,
                            width = NULL, height = NULL) {
