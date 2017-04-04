@@ -106,15 +106,16 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     popupLinkVars = c(),
                     type = c("detail", "avg"),
                     timeId = NULL,
+                    mcYear = NULL,
                     main = "",
                     interactive = base::interactive(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
   
-  x <- antaresProcessing::synthesize(x)
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
+  if (is.null(mcYear)) mcYear <- "synthesis"
   
   # Check that parameters have the good class
   if (!is(mapLayout, "mapLayout")) stop("Argument 'mapLayout' must be an object of class 'mapLayout' created with function 'mapLayout'.")
@@ -131,13 +132,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   
   # First and last time ids in data
-  if (areas) {
-    timeIdMin <- min(x$areas$timeId)
-    timeIdMax <- max(x$areas$timeId)
-  } else {
-    timeIdMin <- min(x$links$timeId)
-    timeIdMax <- max(x$links$timeId)
-  }
+  timeIdMin <- min(x[[1]]$timeId)
+  timeIdMax <- max(x[[1]]$timeId)
+
   # Select first timeId if necessary
   if (is.null(timeId)) timeId <- timeIdMin
   
@@ -151,15 +148,39 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     mapLayout$links <- mapLayout$links[link %in% linkList]
   }
   
+  # Precompute synthetic results and set keys for fast filtering
+  syntx <- synthesize(x) 
+  if (areas) setkey(syntx$areas, timeId)
+  if (links) setkey(syntx$links, timeId)
+
+  oldkeys <- lapply(x, key)
+  on.exit({
+    if (areas) setkeyv(x$areas, oldkeys$areas)
+    if (links) setkeyv(x$links, oldkeys$links)
+  })
+  
+  if (attr(x, "synthesis")) {
+    mcYear <- "synthesis"
+    keys <- c("timeId")
+  } else {
+    keys <- c("mcYear", "timeId")
+  }
+  
+  if (areas) setkeyv(x$areas, keys)
+  if (links) setkeyv(x$links, keys)
+  
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
                       uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
                       popupLinkVars, 
-                      type = c("detail", "avg"), 
+                      type = c("detail", "avg"), mcYear,
                       initial = TRUE, session = NULL, outputId = "output1") {
     
     type <- match.arg(type)
     if (type == "avg") t <- NULL
+    
+    # Prepare data
+    if (mcYear == "synthesis") x <- syntx
     
     if (initial) {
       map <- .initMap(x, mapLayout, options) %>% 
@@ -168,8 +189,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       map <- leafletProxy(outputId, session)
     }
      map <- map %>%
-      .redrawLinks(x, mapLayout, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
-      .redrawCircles(x, mapLayout, t, colAreaVar, sizeAreaVars, popupAreaVars, 
+      .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
+      .redrawCircles(x, mapLayout, mcYear, t, colAreaVar, sizeAreaVars, popupAreaVars, 
                      uniqueScale, showLabels, labelAreaVar, areaChartType, options)
      if (is.null(t)) map %>% updateTimeLabel("", "none", simOptions(x))
      else map %>% updateTimeLabel(t, attr(x, "timeStep"), simOptions(x))
@@ -178,7 +199,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if (!interactive) {
     map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                     uniqueScale, showLabels, labelAreaVar, colLinkVar, 
-                    sizeLinkVar, popupLinkVars, type = type)
+                    sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear)
   } else {
     # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
@@ -190,9 +211,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       {
         plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                 uniqueScale, showLabels, labelAreaVar,
-                colLinkVar, sizeLinkVar, popupLinkVars, type, .initial, .session,
+                colLinkVar, sizeLinkVar, popupLinkVars, type, mcYear, .initial, .session,
                 .output)
       },
+      mcYear = mwSelect(c("synthesis", unique(x[[1]]$mcYear)), mcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
       Areas = list(

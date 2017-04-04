@@ -27,8 +27,10 @@
 #'            the data
 #' 
 #' @noRd
-.getColAndSize <- function(data, coords, mergeBy, t, colVar, sizeVar, 
+.getColAndSize <- function(data, coords, mergeBy, mcy, t, colVar, sizeVar, 
                            popupVars, colorScaleOpts, labelVar = NULL) {
+  
+  if (mcy != "synthesis") data <- data[J(as.numeric(mcy))]
   
   neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars, labelVar)), "none")
   if (any(! neededVars %in% names(data))) {
@@ -50,12 +52,8 @@
     }
     dataFiltered <- data
   } else {
-    if (!is.null(data$mcYear) & length(unique(data$mcYear)) > 1 & length(neededVars) > 0) {
-      data <- data[, lapply(.SD, mean), 
-                   keyby = c("timeId", mergeBy),
-                   .SDcols = neededVars]
-    }
-    dataFiltered <- data[timeId == t]
+    if (mcy != "synthesis") dataFiltered <- data[J(as.numeric(mcy), t)]
+    else dataFiltered <- data[J(t)]
   }
   
   coords <- merge(coords, dataFiltered, by = mergeBy)
@@ -165,7 +163,7 @@
 }
 
 # Update the circles and polar charts representing areas in an existing map
-.redrawCircles <- function(map, x, mapLayout, t, colAreaVar, sizeAreaVars,
+.redrawCircles <- function(map, x, mapLayout, mcy, t, colAreaVar, sizeAreaVars,
                            popupAreaVars, uniqueScale, showLabels, labelAreaVar,
                            areaChartType,
                            options) {
@@ -175,7 +173,7 @@
   ml <- copy(mapLayout)
   
   # Compute color and size of areas for the given time step.
-  optsArea <- .getColAndSize(x$areas, ml$coords, "area", t,
+  optsArea <- .getColAndSize(x$areas, ml$coords, "area", mcy, t,
                              colAreaVar, sizeAreaVars, popupAreaVars,
                              options$areaColorScaleOpts, labelVar = labelAreaVar)
   ml$coords <- optsArea$coords
@@ -249,14 +247,14 @@
 }
 
 # Update the links in an existing map
-.redrawLinks <- function(map, x, mapLayout, t, colLinkVar, sizeLinkVar, 
+.redrawLinks <- function(map, x, mapLayout, mcy, t, colLinkVar, sizeLinkVar, 
                          popupLinkVars, options) {
   if (is.null(x$links)) return(map)
   
   ml <- copy(mapLayout)
   
   # Get color and size of links
-  optsLink <- .getColAndSize(x$links, mapLayout$links, "link", t,
+  optsLink <- .getColAndSize(x$links, mapLayout$links, "link", mcy, t,
                              colLinkVar, sizeLinkVar, popupLinkVars,  
                              options$linkColorScaleOpts)
   
