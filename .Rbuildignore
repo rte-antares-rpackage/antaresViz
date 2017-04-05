@@ -3,3 +3,6 @@
 demo_antaresViz.*
 countries
 ml.rda
+^appveyor\.yml$
+^\.travis\.yml$
+^codecov\.yml$
