@@ -4,5 +4,10 @@ language: R
 sudo: false
 cache: packages
 
+r_github_packages:
+  - rte-antares-rpackage/antaresRead
+  - rte-antares-rpackage/antaresProcessing
+  - rte-antares-rpackage/mapStudio
+
 after_success:
   - Rscript -e 'covr::codecov()'
