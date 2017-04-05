@@ -5,6 +5,7 @@ sudo: false
 cache: packages
 
 r_github_packages:
+  - hadley/devtools#1263
   - rte-antares-rpackage/antaresRead
   - rte-antares-rpackage/antaresProcessing
   - rte-antares-rpackage/mapStudio
