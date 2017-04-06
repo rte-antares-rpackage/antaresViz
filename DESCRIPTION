@@ -29,7 +29,6 @@ Imports:
     manipulateWidget (>= 0.5.1),
     leaflet (>= 1.0),
     sp,
-    rgdal,
     webshot,
     data.table,
     methods,
