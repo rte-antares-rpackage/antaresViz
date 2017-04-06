@@ -8,13 +8,12 @@
 #' @import shiny
 #' @import htmltools
 #' @import manipulateWidget
-#' @import mapStudio
 #' @import leaflet
 #' @importFrom plotly plot_ly layout config add_bars add_heatmap
 #' @importFrom grDevices col2rgb colorRampPalette colors gray rainbow
-#' @importFrom graphics plot
+#' @importFrom graphics plot par
 #' @importFrom methods is
-#' @importFrom stats density quantile
+#' @importFrom stats density quantile lm predict
 #' 
 globalVariables(
   c("value", "element", "mcYear", "suffix", "time", "timeId", "dt", ".", 
