@@ -4,7 +4,7 @@
 \alias{exchangesStack}
 \title{Plot the exchanges of an area}
 \usage{
-exchangesStack(x, area = NULL, mcYear = NULL, dateRange = NULL,
+exchangesStack(x, area = NULL, mcYear = "synthesis", dateRange = NULL,
   colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
   "TWh"), interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), legendItemsPerRow = 5, width = NULL,
@@ -18,6 +18,11 @@ the rest of the world are also displayed on the chart.}
 
 \item{area}{Name of a single area. The flows from/to this area will be drawn by the
 function.}
+
+\item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
+determine which scenario is displayed. Must be an integer representing the
+index of the scenario or the word "synthesis". In this case data are 
+synthesized.}
 
 \item{dateRange}{A vector of two dates. Only data points between these two dates are 
 displayed. If NULL, then all data is displayed.}

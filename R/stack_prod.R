@@ -16,6 +16,11 @@
 #' @param areas
 #'   Vector of area or district names. The data of these areas or districts is
 #'   aggregated by the function to construct the production stack.
+#' @param mcYear
+#'   If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
+#'   determine which scenario is displayed. Must be an integer representing the
+#'   index of the scenario or the word "synthesis". In this case data are 
+#'   synthesized.
 #' @param dateRange
 #'   A vector of two dates. Only data points between these two dates are 
 #'   displayed. If NULL, then all data is displayed.
@@ -116,7 +121,7 @@
 #' @export
 prodStack <- function(x, stack = "eco2mix",
                       areas = NULL, 
-                      mcYear = NULL,
+                      mcYear = "synthesis",
                       dateRange = NULL,
                       main = "Production stack", unit = c("MWh", "GWh", "TWh"),
                       interactive = getInteractivity(), 

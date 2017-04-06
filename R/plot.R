@@ -132,7 +132,7 @@
 #' 
 #' @export
 plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
-                             mcYear = NULL,
+                             mcYear = "synthesis",
                              type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                              dateRange = NULL,
                              confInt = 0,

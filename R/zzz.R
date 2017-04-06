@@ -19,7 +19,8 @@
 globalVariables(
   c("value", "element", "mcYear", "suffix", "time", "timeId", "dt", ".", 
     "x", "y", ".id", ".initial", ".session", "FLOW LIN.", "area", "direction", 
-    "flow", "formulas", "link")
+    "flow", "formulas", "link", ".output", "J", "ROW BAL.", "change", "to",
+    "wdayId", "weekId")
 )
 
 .idCols <- antaresRead:::.idCols

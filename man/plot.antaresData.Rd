@@ -5,8 +5,8 @@
 \title{plot time series contained in an antaresData object}
 \usage{
 \method{plot}{antaresData}(x, y = NULL, table = NULL, variable = NULL,
-  elements = NULL, mcYear = NULL, type = c("ts", "barplot", "monotone",
-  "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
+  elements = NULL, mcYear = "synthesis", type = c("ts", "barplot",
+  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
   minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
   compare = NULL, compareLayout = c("v", "h"),
   interactive = getInteractivity(), colors = NULL, main = NULL,
@@ -34,6 +34,11 @@ this parameter should be a vector of area names. If data contains clusters
 data, this parameter has to be the concatenation of the area name and the
 cluster name, separated by \code{" > "}. This is to prevent confusion 
 when two clusters from different areas have the same name.}
+
+\item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
+determine which scenario is displayed. Must be an integer representing the
+index of the scenario or the word "synthesis". In this case data are 
+synthesized.}
 
 \item{type}{Type of plot to draw. "ts" creates a time series plot, "barplot" creates
 a barplot with one bar per element representing the average value of the

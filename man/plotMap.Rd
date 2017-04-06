@@ -9,7 +9,7 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
   labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
-  mcYear = NULL, main = "", interactive = getInteractivity(),
+  mcYear = "synthesis", main = "", interactive = getInteractivity(),
   options = plotMapOptions(), width = NULL, height = NULL)
 }
 \arguments{
@@ -63,6 +63,11 @@ step at a time. In interactive mode, an input control permits to choose the
 time step shown.}
 
 \item{timeId}{A single time id present in the data. Only used if \code{type="detail"}}
+
+\item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
+determine which scenario is displayed. Must be an integer representing the
+index of the scenario or the word "synthesis". In this case data are 
+synthesized.}
 
 \item{main}{Title of the map.}
 

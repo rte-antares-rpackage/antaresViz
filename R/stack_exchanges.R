@@ -32,7 +32,8 @@
 #' }
 #' 
 #' @export
-exchangesStack <- function(x, area = NULL, mcYear = NULL, dateRange = NULL, colors = NULL, 
+exchangesStack <- function(x, area = NULL, mcYear = "synthesis", 
+                           dateRange = NULL, colors = NULL, 
                            main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
                            interactive = getInteractivity(), 
                            legend = TRUE, legendId = sample(1e9, 1),

@@ -11,7 +11,7 @@ prodStackAliases()
 setProdStackAlias(name, variables, colors, lines = NULL, lineColors = NULL,
   description = NULL)
 
-prodStack(x, stack = "eco2mix", areas = NULL, mcYear = NULL,
+prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "synthesis",
   dateRange = NULL, main = "Production stack", unit = c("MWh", "GWh",
   "TWh"), interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), legendItemsPerRow = 5, width = NULL,
@@ -50,6 +50,11 @@ districts.}
 
 \item{areas}{Vector of area or district names. The data of these areas or districts is
 aggregated by the function to construct the production stack.}
+
+\item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
+determine which scenario is displayed. Must be an integer representing the
+index of the scenario or the word "synthesis". In this case data are 
+synthesized.}
 
 \item{dateRange}{A vector of two dates. Only data points between these two dates are 
 displayed. If NULL, then all data is displayed.}
