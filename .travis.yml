@@ -4,9 +4,16 @@ language: R
 dist: trusty
 sudo: required
 cache: packages
+
 addons:
   apt:
     packages:
       - libgdal-dev
       - libproj-dev
       - libv8-3.14-dev
+      
+r_packages:
+  - covr
+
+after_success:
+  - Rscript -e 'library(covr); codecov()'
