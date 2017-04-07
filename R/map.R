@@ -106,7 +106,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     popupLinkVars = c(),
                     type = c("detail", "avg"),
                     timeId = NULL,
-                    mcYear = "synthesis",
+                    mcYear = "average",
                     main = "",
                     interactive = getInteractivity(),
                     options = plotMapOptions(),
@@ -115,7 +115,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
-  if (is.null(mcYear)) mcYear <- "synthesis"
+  if (is.null(mcYear)) mcYear <- "average"
   
   # Check that parameters have the good class
   if (!is(mapLayout, "mapLayout")) stop("Argument 'mapLayout' must be an object of class 'mapLayout' created with function 'mapLayout'.")
@@ -164,7 +164,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   })
   
   if (attr(x, "synthesis")) {
-    mcYear <- "synthesis"
+    mcYear <- "average"
     keys <- c("timeId")
   } else {
     keys <- c("mcYear", "timeId")
@@ -184,7 +184,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (type == "avg") t <- NULL
     
     # Prepare data
-    if (mcYear == "synthesis") x <- syntx
+    if (mcYear == "average") x <- syntx
     
     if (initial) {
       map <- .initMap(x, mapLayout, options) %>% 
@@ -218,7 +218,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                 colLinkVar, sizeLinkVar, popupLinkVars, type, mcYear, .initial, .session,
                 .output)
       },
-      mcYear = mwSelect(c("synthesis", unique(x[[1]]$mcYear)), mcYear),
+      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
       Areas = list(

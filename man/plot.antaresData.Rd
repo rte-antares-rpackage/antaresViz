@@ -5,7 +5,7 @@
 \title{plot time series contained in an antaresData object}
 \usage{
 \method{plot}{antaresData}(x, y = NULL, table = NULL, variable = NULL,
-  elements = NULL, mcYear = "synthesis", type = c("ts", "barplot",
+  elements = NULL, mcYear = "average", type = c("ts", "barplot",
   "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
   minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
   compare = NULL, compareLayout = c("v", "h"),
@@ -37,8 +37,8 @@ when two clusters from different areas have the same name.}
 
 \item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
 determine which scenario is displayed. Must be an integer representing the
-index of the scenario or the word "synthesis". In this case data are 
-synthesized.}
+index of the scenario or the word "average". In this case data are 
+averaged.}
 
 \item{type}{Type of plot to draw. "ts" creates a time series plot, "barplot" creates
 a barplot with one bar per element representing the average value of the

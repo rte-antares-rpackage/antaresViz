@@ -132,7 +132,7 @@
 #' 
 #' @export
 plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
-                             mcYear = "synthesis",
+                             mcYear = "average",
                              type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                              dateRange = NULL,
                              confInt = 0,
@@ -259,7 +259,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     dt <- params[[id]][[table]]$dt
     dt$value <- x[[id]][[table]][, get(variable)]
     
-    if (!is.null(mcYear) && mcYear != "synthesis") {
+    if (!is.null(mcYear) && mcYear != "average") {
       mcy <- mcYear
       dt <- dt[mcYear == mcy]
     }
@@ -313,7 +313,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   }
   
   if (is.null(table)) table <- names(params[[1]])[1]
-  if (is.null(mcYear)) mcYear <- "synthesis"
+  if (is.null(mcYear)) mcYear <- "average"
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
@@ -327,7 +327,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     plotFun(table, mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
             maxValue, aggregate),
     table = mwSelect(names(params[[1]]), value = table),
-    mcYear = mwSelect(c("synthesis", params[[1]][[table]]$uniqueMcYears), mcYear),
+    mcYear = mwSelect(c("average", params[[1]][[table]]$uniqueMcYears), mcYear),
     variable = mwSelect(value = variable),
     type = mwSelect(typeChoices, type),
     dateRange = mwDateRange(params[[1]][[table]]$dateRange),
@@ -339,13 +339,13 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     .main = dataname,
     .display = list(table = length(params[[.id]]) > 1,
                     mcYear = params[[.id]][[table]]$showConfInt,
-                    confInt = params[[.id]][[table]]$showConfInt & mcYear == "synthesis",
+                    confInt = params[[.id]][[table]]$showConfInt & mcYear == "average",
                     minValue = type %in% c("density", "cdf"),
                     maxValue = type %in% c("density", "cdf"),
                     dateRange = timeStep != "annual",
                     type = timeStep != "annual"),
     .updateInputs = list(
-      mcYear = list(choices = c("synthesis", params[[.id]][[table]]$uniqueMcYears)),
+      mcYear = list(choices = c("average", params[[.id]][[table]]$uniqueMcYears)),
       type = list(choices = {
         if (timeStep == "annual") "barplot"
         else if (timeStep %in% c("hourly", "daily")) typeChoices

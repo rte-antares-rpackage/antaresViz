@@ -9,7 +9,7 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
   labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
-  mcYear = "synthesis", main = "", interactive = getInteractivity(),
+  mcYear = "average", main = "", interactive = getInteractivity(),
   options = plotMapOptions(), width = NULL, height = NULL)
 }
 \arguments{
@@ -66,8 +66,8 @@ time step shown.}
 
 \item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
 determine which scenario is displayed. Must be an integer representing the
-index of the scenario or the word "synthesis". In this case data are 
-synthesized.}
+index of the scenario or the word "average". In this case data are 
+averaged.}
 
 \item{main}{Title of the map.}
 

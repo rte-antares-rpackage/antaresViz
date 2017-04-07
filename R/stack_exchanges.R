@@ -32,7 +32,7 @@
 #' }
 #' 
 #' @export
-exchangesStack <- function(x, area = NULL, mcYear = "synthesis", 
+exchangesStack <- function(x, area = NULL, mcYear = "average", 
                            dateRange = NULL, colors = NULL, 
                            main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
                            interactive = getInteractivity(), 
@@ -41,7 +41,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "synthesis",
                            width = NULL, height = NULL) {
   
   if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
-  if (is.null(mcYear)) mcYear <- "synthesis"
+  if (is.null(mcYear)) mcYear <- "average"
   row <- NULL # exchanges with rest of the world
   
   if (is(x, "antaresDataTable")) {
@@ -87,7 +87,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "synthesis",
     
     dt <- x
     
-    if (mcYear == "synthesis") {
+    if (mcYear == "average") {
       dt <- synthesize(dt)
       if (!is.null(row)) row <- row[, .(flow = mean(flow)), by = .(area, link, timeId, to, direction)]
     } else if ("mcYear" %in% names(x)) {
@@ -136,7 +136,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "synthesis",
   
   manipulateWidget(
     plotFun(area, dateRange, unit, mcYear),
-    mcYear = mwSelect(c("synthesis", unique(x$mcYear)), mcYear),
+    mcYear = mwSelect(c("average", unique(x$mcYear)), mcYear),
     area = mwSelect(areaList, area),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),

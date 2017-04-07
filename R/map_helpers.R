@@ -30,7 +30,7 @@
 .getColAndSize <- function(data, coords, mergeBy, mcy, t, colVar, sizeVar, 
                            popupVars, colorScaleOpts, labelVar = NULL) {
   
-  if (mcy != "synthesis") data <- data[J(as.numeric(mcy))]
+  if (mcy != "average") data <- data[J(as.numeric(mcy))]
   
   neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars, labelVar)), "none")
   if (any(! neededVars %in% names(data))) {
@@ -52,7 +52,7 @@
     }
     dataFiltered <- data
   } else {
-    if (mcy != "synthesis") dataFiltered <- data[J(as.numeric(mcy), t)]
+    if (mcy != "average") dataFiltered <- data[J(as.numeric(mcy), t)]
     else dataFiltered <- data[J(t)]
   }
   

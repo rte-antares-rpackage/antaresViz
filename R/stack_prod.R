@@ -19,8 +19,8 @@
 #' @param mcYear
 #'   If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
 #'   determine which scenario is displayed. Must be an integer representing the
-#'   index of the scenario or the word "synthesis". In this case data are 
-#'   synthesized.
+#'   index of the scenario or the word "average". In this case data are 
+#'   averaged.
 #' @param dateRange
 #'   A vector of two dates. Only data points between these two dates are 
 #'   displayed. If NULL, then all data is displayed.
@@ -121,7 +121,7 @@
 #' @export
 prodStack <- function(x, stack = "eco2mix",
                       areas = NULL, 
-                      mcYear = "synthesis",
+                      mcYear = "average",
                       dateRange = NULL,
                       main = "Production stack", unit = c("MWh", "GWh", "TWh"),
                       interactive = getInteractivity(), 
@@ -130,7 +130,7 @@ prodStack <- function(x, stack = "eco2mix",
                       width = NULL, height = NULL) {
   
   unit <- match.arg(unit)
-  if (is.null(mcYear)) mcYear <- "synthesis"
+  if (is.null(mcYear)) mcYear <- "average"
   
   # Check that input contains area or district data
   if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
@@ -162,7 +162,7 @@ prodStack <- function(x, stack = "eco2mix",
     
     dt <- x[area %in% areas]
     
-    if (mcYear == "synthesis") dt <- synthesize(dt)
+    if (mcYear == "average") dt <- synthesize(dt)
     else if ("mcYear" %in% names(dt)) {
       mcy <- mcYear
       dt <- dt[mcYear == mcy]
@@ -195,7 +195,7 @@ prodStack <- function(x, stack = "eco2mix",
   
   manipulateWidget(
     plotWithLegend(areas, main, unit, stack, dateRange, mcYear),
-    mcYear = mwSelect(c("synthesis", unique(x$mcYear))),
+    mcYear = mwSelect(c("average", unique(x$mcYear))),
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
