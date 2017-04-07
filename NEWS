@@ -1,5 +1,24 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+Changes in version 0.8 (2017-04-07)
+
+NEW FEATURES:
+* All visualisation functions now accept synthetic and detailed data. A new parameter "mcYear" permits to choose whether to view averaged data or a given Monte-Carlo scenario.
+* plotMap() now always uses the absolute value of variable 'FLOW LIN.' to avoid any confusion. Direction of flows are represented with arrows.
+* plotMap() can now also represent categorical variables.
+* It is now possible to use custom color palette for continuous color scales in maps and heatmaps.
+* In heatmaps, the y-axis now contains month names instead of week ids. Moreover the info displayed when hovering data has been improved.
+* exchangesStack() can now also represent exchanges with rest of the world (column 'ROW BAL.').
+* A new function called setInteractivity() has been added to globally turn off or turn on interactive mode.
+
+BUGFIXES:
+* In plotMap(), several parameters were not working in non-interactive mode.
+* In plotMap(), some links were not displayed if the associated values were small.
+* Numbers are now correctly rounded on popups and legend in plotMap().
+* Invalid date/hours were displayed on charts due to problems of timezone.
+* It was not possible to change width and height of heatmaps.
+
+
 Changes in version 0.7 (2017-02-23)
 
 NEW FEATURES:
