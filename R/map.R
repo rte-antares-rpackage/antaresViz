@@ -134,7 +134,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   areas <- !is.null(x$areas)
   links <- !is.null(x$links)
   
-  
   # First and last time ids in data
   timeIdMin <- min(x[[1]]$timeId)
   timeIdMax <- max(x[[1]]$timeId)
@@ -187,8 +186,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (mcYear == "average") x <- syntx
     
     if (initial) {
-      map <- .initMap(x, mapLayout, options) %>% 
-        addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
+      map <- .initMap(x, mapLayout, options)
     } else {
       map <- leafletProxy(outputId, session)
     }
@@ -196,8 +194,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
       .redrawCircles(x, mapLayout, mcYear, t, colAreaVar, sizeAreaVars, popupAreaVars, 
                      uniqueScale, showLabels, labelAreaVar, areaChartType, options)
-     if (is.null(t)) map %>% updateTimeLabel("", "none", simOptions(x))
-     else map %>% updateTimeLabel(t, attr(x, "timeStep"), simOptions(x))
   }
   
   if (!interactive) {
@@ -220,7 +216,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       },
       mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
-      timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
       Areas = list(
         colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
         sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
@@ -242,7 +237,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .main = main,
       .display = list(
         mcYear = showMcYear,
-        timeId = !hideTimeIdSlider && type =="detail",
         uniqueScale = length(sizeAreaVars) >= 2 && areaChartType != "pie",
         areaChartType = length(sizeAreaVars) >= 2,
         showLabels = length(sizeAreaVars) >= 2,

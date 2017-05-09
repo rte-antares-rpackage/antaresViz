@@ -50,13 +50,9 @@
                    keyby = mergeBy, 
                    .SDcols = neededVars]
     }
-    dataFiltered <- data
-  } else {
-    if (mcy != "average") dataFiltered <- data[J(as.numeric(mcy), t)]
-    else dataFiltered <- data[J(t)]
   }
   
-  coords <- merge(coords, dataFiltered, by = mergeBy)
+  coords <- merge(coords, data, by = mergeBy)
   
   # Initialize the object returned by the function
   res <- list(coords = coords, dir = 0)
@@ -117,6 +113,17 @@
   res
 }
 
+.getTimeFormat <- function(timeStep) {
+  switch(
+    timeStep,
+    hourly = "%a %d %b %Y<br/>%H:%M",
+    daily = "%a %d %b %Y",
+    weekly = "W%w %Y",
+    monthly = "%b %Y",
+    yearly = "%Y"
+  )
+}
+
 .valuesToPopup <- function(x, var, title) {
   var <- var[var %in% names(x)]
   if (length(var) == 0) return(title)
@@ -170,6 +177,7 @@
                            areaChartType,
                            options) {
   if (is.null(x$areas)) return(map)
+  timeStep <- attr(x, "timeStep")
   
   # Just in case, we do not want to accidentally modify the original map layout.
   ml <- copy(mapLayout)
@@ -211,12 +219,15 @@
   
   # Update areas
   map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
-                        maxValues = optsArea$maxSize, width = areaWidth,
-                        height = options$areaMaxHeight,
-                        showLabels = showLabels, labelText = labels, 
-                        type = areaChartType[[1]], 
-                        colorPalette = options$areaChartColors,
-                        fillColor = optsArea$color, popup = optsArea$popup, legend = FALSE)
+                          time = optsArea$coords$time,
+                          maxValues = optsArea$maxSize, width = areaWidth,
+                          height = options$areaMaxHeight,
+                          showLabels = showLabels, labelText = labels, 
+                          type = areaChartType[[1]], 
+                          colorPalette = options$areaChartColors,
+                          fillColor = optsArea$color, popup = optsArea$popup, 
+                          timeFormat = .getTimeFormat(timeStep),
+                          legend = FALSE)
   
   # Update the legend
   #
@@ -253,6 +264,8 @@
                          popupLinkVars, options) {
   if (is.null(x$links)) return(map)
   
+  timeStep <- attr(x, "timeStep")
+  
   ml <- copy(mapLayout)
   
   # Get color and size of links
@@ -265,12 +278,14 @@
   if (is.null(optsLink$size)) optsLink$size <- options$linkDefaultSize
   else optsLink$size <- optsLink$size /optsLink$ maxSize * options$linkMaxSize
   
-  map <- map %>% updateFlows(layerId = ml$links$link, 
-                                        color = optsLink$color,
-                                        flow = abs(optsLink$size),
-                                        dir = optsLink$dir,
-                                        popup = optsLink$popup,
-                                        opacity = 1)
+  map <- map %>% updateFlows(layerId = optsLink$coords$link, 
+                             color = optsLink$color,
+                             flow = abs(optsLink$size),
+                             time = optsLink$coords$time,
+                             timeFormat = .getTimeFormat(timeStep),
+                             dir = optsLink$dir,
+                             popup = optsLink$popup,
+                             opacity = 1)
   
   # Update the legend
   
