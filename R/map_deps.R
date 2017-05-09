@@ -2,14 +2,6 @@
 
 requireDep <- function(map, deps) {
    mapDeps <- list(
-     
-     directedSegment = htmlDependency(
-       "directedSegment", 
-       "1.0",
-       src = system.file("leafletPlugins", package = "antaresViz"), 
-       script = "directedSegment.js"
-     ),
-     
      shadows = htmlDependency(
        "shadows",
        "1.0",
@@ -30,20 +22,6 @@ requireDep <- function(map, deps) {
        "1.0",
        src = system.file("leafletPlugins", package = "antaresViz"),
        script = "timeLabel.js"
-     ),
-     
-     minichart = htmlDependency(
-       "minichart",
-       "0.2.2",
-       src = system.file("leafletPlugins", package = "antaresViz"),
-       script = "leaflet.minichart.min.js"
-     ),
-     
-     minichart_bindings = htmlDependency(
-       "minichart_bindings",
-       "1.0",
-       src = system.file("leafletPlugins", package = "antaresViz"),
-       script = "minichart_bindings.js"
      )
      
    )

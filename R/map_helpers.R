@@ -74,7 +74,9 @@
         domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
       }
       
-      colorScaleOpts$x <- coords[[colVar]]
+      if (colVar == "FLOW LIN.") colorScaleOpts$x <- abs(coords[[colVar]])
+      else colorScaleOpts$x <- coords[[colVar]]
+      
       colorScaleOpts$domain <- domain
       res$color <- do.call(continuousColorPal, colorScaleOpts)
       
@@ -208,13 +210,13 @@
   }
   
   # Update areas
-  map <- updateMinicharts(map, optsArea$coords$area, data = optsArea$size,
+  map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
                         maxValues = optsArea$maxSize, width = areaWidth,
                         height = options$areaMaxHeight,
                         showLabels = showLabels, labelText = labels, 
                         type = areaChartType[[1]], 
                         colorPalette = options$areaChartColors,
-                        fillColor = optsArea$color, popup = optsArea$popup)
+                        fillColor = optsArea$color, popup = optsArea$popup, legend = FALSE)
   
   # Update the legend
   #
@@ -263,9 +265,9 @@
   if (is.null(optsLink$size)) optsLink$size <- options$linkDefaultSize
   else optsLink$size <- optsLink$size /optsLink$ maxSize * options$linkMaxSize
   
-  map <- map %>% updateDirectedSegments(layerId = ml$links$link, 
+  map <- map %>% updateFlows(layerId = ml$links$link, 
                                         color = optsLink$color,
-                                        weight = optsLink$size,
+                                        flow = abs(optsLink$size),
                                         dir = optsLink$dir,
                                         popup = optsLink$popup,
                                         opacity = 1)

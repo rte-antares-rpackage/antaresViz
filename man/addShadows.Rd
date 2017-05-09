@@ -7,7 +7,7 @@
 addShadows(map)
 }
 \arguments{
-\item{map}{A map object created with \code{\link[leaflet]{leaflet}()}}
+\item{map}{A leaflet map object.}
 }
 \value{
 The modified map object
@@ -17,12 +17,13 @@ This function adds a shadow to every svg element added to a leaflet map. It
 can greatly improve the lisibility of the map.
 }
 \examples{
-if (require(leaflet)) {
-  leaflet() \%>\%
-    addTiles() \%>\% 
-    addDirectedSegments(0, 0, 1, 0, col= gray(0.9)) \%>\%
-    addCircleMarkers(c(0, 1), c(0, 0), color = "white", fillOpacity = 1, stroke = FALSE) \%>\%
-    addShadows()
-}
+require(leaflet)
+require(leaflet.minicharts)
+
+leaflet() \%>\%
+  addTiles() \%>\% 
+  addFlows(0, 0, 1, 0, col= gray(0.9)) \%>\%
+  addCircleMarkers(c(0, 1), c(0, 0), color = "white", fillOpacity = 1, stroke = FALSE) \%>\%
+  addShadows()
 
 }

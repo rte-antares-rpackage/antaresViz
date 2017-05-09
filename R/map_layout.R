@@ -336,9 +336,9 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   
   # Add links
   if (links) {
-    map <- addDirectedSegments(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
-                               weight = sizeLinks, opacity = opacityLinks,
-                               color = colLinks, layerId = x$links$link, popup = popupLink)
+    map <- addFlows(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
+                    flow = abs(sizeLinks), opacity = opacityLinks, maxFlow = 1, maxThickness = 1,
+                    color = colLinks, layerId = x$links$link, popup = popupLink)
   }
   
   # Add areas
@@ -346,32 +346,14 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
     areaChartType <- match.arg(areaChartType)
     
     map <- addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
-                       data = dataAreas, fillColor = colAreas,
-                       showLabels = !is.null(labelArea),
-                       labelText = labelArea,
-                       width = areaMaxSize,
-                       height = areaMaxHeight,
-                       popup = popupArea, layerId = x$coords$area, opacity = opacityArea)
+                         chartdata = dataAreas, fillColor = colAreas,
+                         showLabels = !is.null(labelArea),
+                         labelText = labelArea,
+                         width = areaMaxSize,
+                         height = areaMaxHeight,
+                         popup = popupArea, layerId = x$coords$area, 
+                         opacity = opacityArea)
   }
-  
-  # Set the view of the map to include all data
-  xcoords <- c()
-  ycoords <- c()
-  
-  if (links) {
-    xcoords <- c(x$links$x0, x$links$x1)
-    ycoords <- c(x$links$y0, x$links$y1)
-  }
-  
-  if (areas) {
-    xcoords <- c(xcoords, x$coords$x)
-    ycoords <- c(ycoords, x$coords$y)
-  }
-
-  rangeX <- range(xcoords)
-  rangeY <- range(ycoords)
-  
-  map <- fitBounds(map, rangeX[1], rangeY[1], rangeX[2], rangeY[2])
   
   # Add shadows to elements
   map %>% addShadows()
