@@ -128,24 +128,9 @@
   var <- var[var %in% names(x)]
   if (length(var) == 0) return(title)
   
-  popupTemplate <- '
-  <div class = "popup">
-  <h2>%s</h2>
-  <hr/>
-  <table class="">
-    <tbody>
-      %s
-    </tbody>
-  </table>
-  </div>
-  '
+  popupTemplate <- '<div class="popup"><h2>%s</h2><hr/><table><tbody>%s</tbody></table></div>'
   
-  rowTemplate <- '
-      <tr>
-        <td class="key">%s</td>
-        <td class ="value">%s</td>
-      </tr>
-  '
+  rowTemplate <- '<tr><td class="key">%s</td><td class="value">%s</td></tr>'
   
   x <- x[, lapply(.SD, function(x) {if (is.numeric(x)) signif(x, 4) else x}), .SDcols = var]
   x <- as.matrix(x)
