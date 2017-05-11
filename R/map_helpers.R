@@ -256,12 +256,16 @@
   
   # Use default values if needed
   if (is.null(optsLink$color)) optsLink$color <- options$linkDefaultCol
-  if (is.null(optsLink$size)) optsLink$size <- options$linkDefaultSize
-  else optsLink$size <- optsLink$size /optsLink$ maxSize * options$linkMaxSize
+  if (is.null(optsLink$size)) {
+    optsLink$size <- options$linkDefaultSize
+    optsLink$maxSize <- options$linkMaxSize
+  }
   
   map <- map %>% updateFlows(layerId = optsLink$coords$link, 
                              color = optsLink$color,
                              flow = abs(optsLink$size),
+                             maxFlow = optsLink$maxSize,
+                             maxThickness = options$linkMaxSize,
                              time = optsLink$coords$time,
                              timeFormat = .getTimeFormat(timeStep),
                              dir = optsLink$dir,
