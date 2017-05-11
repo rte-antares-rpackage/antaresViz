@@ -43,19 +43,13 @@
   }
   
   if (is.null(t)) {
-    if (length(neededVars) == 0) {
-      data <- unique(data[, mergeBy, with = FALSE])
-    } else {
-      data <- data[, lapply(.SD, mean), 
-                   keyby = mergeBy, 
-                   .SDcols = neededVars]
-    }
+    data <- data[, lapply(.SD, mean), 
+                 keyby = mergeBy, 
+                 .SDcols = neededVars]
   }
   
-  coords <- merge(coords, data, by = mergeBy)
-  
   # Initialize the object returned by the function
-  res <- list(coords = coords, dir = 0)
+  res <- list(coords = data, dir = 0)
   
   # color
   if (colVar != "none" & length(sizeVar) <= 1) {
@@ -70,8 +64,8 @@
         domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
       }
       
-      if (colVar == "FLOW LIN.") colorScaleOpts$x <- abs(coords[[colVar]])
-      else colorScaleOpts$x <- coords[[colVar]]
+      if (colVar == "FLOW LIN.") colorScaleOpts$x <- abs(data[[colVar]])
+      else colorScaleOpts$x <- data[[colVar]]
       
       colorScaleOpts$domain <- domain
       res$color <- do.call(continuousColorPal, colorScaleOpts)
@@ -84,7 +78,7 @@
         else colorScaleOpts$levels <- unique(data[[colVar]])
       }
       
-      colorScaleOpts$x <- coords[[colVar]]
+      colorScaleOpts$x <- data[[colVar]]
       
       res$color <- do.call(catColorPal, colorScaleOpts)
       res$pal <- attr(res$color, "pal")
@@ -95,20 +89,20 @@
   
   # size
   if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
-    res$size <- as.matrix(coords[, sizeVar, with = FALSE])
+    res$size <- as.matrix(data[, sizeVar, with = FALSE])
     res$maxSize <- apply(abs(as.matrix(data[, sizeVar, with = FALSE])), 2, max)
   }
   
   # Direction
-  if ("FLOW LIN." %in% names(coords)) {
-    res$dir <- sign(coords$`FLOW LIN.`)
-    coords[, `FLOW LIN.` := abs(`FLOW LIN.`)]
+  if ("FLOW LIN." %in% names(data)) {
+    res$dir <- sign(data$`FLOW LIN.`)
+    #coords[, `FLOW LIN.` := abs(`FLOW LIN.`)]
   } else {
     res$dir <- 0
   }
   
   # Pop-up
-  res$popup <- .valuesToPopup(coords, union(colVar, union(sizeVar, popupVars)), coords[[mergeBy]])
+  res$popup <- .valuesToPopup(data, union(colVar, union(sizeVar, popupVars)), data[[mergeBy]])
   
   res
 }
@@ -132,13 +126,15 @@
   
   rowTemplate <- '<tr><td class="key">%s</td><td class="value">%s</td></tr>'
   
-  x <- x[, lapply(.SD, function(x) {if (is.numeric(x)) signif(x, 4) else x}), .SDcols = var]
-  x <- as.matrix(x)
+  x <- unname(lapply(var, function(v) {
+    x <- x[[v]]
+    if (is.numeric(x)) x <- signif(x, 4)
+    sprintf(rowTemplate, v, x)
+  }))
   
-  rows <- apply(x, 1, function(x) {
-    sprintf(rowTemplate, var, x) %>% 
-      paste(collapse = "")
-  })
+  x$sep <- ""
+  
+  rows <- do.call(paste, x)
   
   sprintf(popupTemplate, title, rows)
 }

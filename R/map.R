@@ -129,7 +129,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   # Should parameter mcYear be shown in the UI ?
   showMcYear <- !attr(x, "synthesis") && length(unique(x[[1]]$mcYear)) > 1
   
-  
   # Should links and/or areas be displayed ?
   areas <- !is.null(x$areas)
   links <- !is.null(x$links)
@@ -153,24 +152,25 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # Precompute synthetic results and set keys for fast filtering
   syntx <- synthesize(x) 
-  if (areas) setkey(syntx$areas, timeId)
-  if (links) setkey(syntx$links, timeId)
 
   oldkeys <- lapply(x, key)
-  on.exit({
-    if (areas) setkeyv(x$areas, oldkeys$areas)
-    if (links) setkeyv(x$links, oldkeys$links)
-  })
   
   if (attr(x, "synthesis")) {
     mcYear <- "average"
-    keys <- c("timeId")
   } else {
-    keys <- c("mcYear", "timeId")
+    if (areas) setkeyv(x$areas, keys)
+    if (links) setkeyv(x$links, keys)
   }
   
-  if (areas) setkeyv(x$areas, keys)
-  if (links) setkeyv(x$links, keys)
+  # Restore input data on exit
+  on.exit({
+    if (areas) {
+      setkeyv(x$areas, oldkeys$areas)
+    }
+    if (links) {
+      setkeyv(x$links, oldkeys$links)
+    }
+  })
   
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
@@ -190,7 +190,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     } else {
       map <- leafletProxy(outputId, session)
     }
-     map <- map %>%
+    
+    map %>% 
       .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
       .redrawCircles(x, mapLayout, mcYear, t, colAreaVar, sizeAreaVars, popupAreaVars, 
                      uniqueScale, showLabels, labelAreaVar, areaChartType, options)
