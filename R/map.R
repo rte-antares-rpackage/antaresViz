@@ -204,7 +204,16 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   } else {
     # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
+    
+    areaNumValColumns <- sapply(x$areas, is.numeric)
+    areaNumValColumns <- names(areaNumValColumns)[areaNumValColumns == TRUE]
+    areaNumValColumns <- intersect(areaValColums, areaNumValColumns)
+    
     linkValColums <- setdiff(names(x$links), .idCols(x$links))
+    
+    linkNumValColumns <- sapply(x$links, is.numeric)
+    linkNumValColumns <- names(linkNumValColumns)[linkNumValColumns == TRUE]
+    linkNumValColumns <- intersect(linkValColums, linkNumValColumns)
     # We don't want to show the time id slider if there is only one time id
     hideTimeIdSlider <- timeIdMin == timeIdMax
     
@@ -219,7 +228,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       Areas = list(
         colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
-        sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
+        sizeAreaVars = mwSelect(areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
         areaChartType = mwSelect(list("bar chart" = "bar", 
                                       "pie chart" = "pie",
                                       "polar (area)" = "polar-area",
@@ -232,7 +241,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       ),
       Links = list(
         colLinkVar = mwSelect(c("none", linkValColums), colLinkVar, label = "Color"),
-        sizeLinkVar = mwSelect(c("none", linkValColums), sizeLinkVar, label = "Width"),
+        sizeLinkVar = mwSelect(c("none", linkNumValColumns), sizeLinkVar, label = "Width"),
         popupLinkVars = mwSelect(linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
       ),
       .main = main,

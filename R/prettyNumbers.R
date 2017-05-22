@@ -3,6 +3,8 @@
 #' 
 #' @noRd
 prettyNumbers <- function(x) {
+  if (!is.numeric(x)) return(x)
+  
   sapply(x, function(number) {
     absVal <- abs(number)
     sign <- ifelse(number < 0, "-", "")
