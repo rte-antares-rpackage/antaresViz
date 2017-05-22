@@ -43,9 +43,13 @@
   }
   
   if (is.null(t)) {
-    data <- data[, lapply(.SD, mean), 
-                 keyby = mergeBy, 
-                 .SDcols = neededVars]
+    if (length(neededVars) > 0) {
+      data <- data[, lapply(.SD, mean), 
+                   keyby = mergeBy, 
+                   .SDcols = neededVars]
+    } else {
+      data <- unique(data[, mergeBy, with = FALSE])
+    }
   }
   
   # Initialize the object returned by the function
@@ -102,7 +106,8 @@
   }
   
   # Pop-up
-  res$popup <- .valuesToPopup(data, union(colVar, union(sizeVar, popupVars)), data[[mergeBy]])
+  # return names of columns that need to be added in popups
+  res$popupVarsSup <- setdiff(neededVars, sizeVar)
   
   res
 }
@@ -137,6 +142,8 @@
   rows <- do.call(paste, x)
   
   sprintf(popupTemplate, title, rows)
+  
+  ""
 }
 
 # Initialize a map with all elements invisible: links, circles and bar or polar 
@@ -198,6 +205,8 @@
     
   }
   
+  showValuesInPopup <- length(sizeAreaVars) > 0
+  
   # Update areas
   map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
                           time = optsArea$coords$time,
@@ -206,9 +215,14 @@
                           showLabels = showLabels, labelText = labels, 
                           type = areaChartType[[1]], 
                           colorPalette = options$areaChartColors,
-                          fillColor = optsArea$color, popup = optsArea$popup, 
+                          fillColor = optsArea$color,
                           timeFormat = .getTimeFormat(timeStep),
-                          legend = FALSE)
+                          legend = FALSE,
+                          popup = popupArgs(
+                            showValues = showValuesInPopup,
+                            digits = 2,
+                            supValues = optsArea$coords[, optsArea$popupVars, with = FALSE]
+                          ))
   
   # Update the legend
   #
@@ -261,15 +275,22 @@
     optsLink$maxSize <- options$linkMaxSize
   }
   
+  showValuesInPopup <- sizeLinkVar != "none"
+  
   map <- map %>% updateFlows(layerId = optsLink$coords$link, 
                              color = optsLink$color,
                              flow = abs(optsLink$size),
-                             maxFlow = optsLink$maxSize,
+                             maxFlow = unname(optsLink$maxSize),
                              maxThickness = options$linkMaxSize,
                              time = optsLink$coords$time,
                              timeFormat = .getTimeFormat(timeStep),
                              dir = optsLink$dir,
-                             popup = optsLink$popup,
+                             popup = popupArgs(
+                               showValues = showValuesInPopup,
+                               labels = sizeLinkVar,
+                               digits = 2,
+                               supValues = optsLink$coords[, optsLink$popupVars, with = FALSE]
+                              ),
                              opacity = 1)
   
   # Update the legend

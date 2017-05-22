@@ -158,8 +158,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if (attr(x, "synthesis")) {
     mcYear <- "average"
   } else {
-    if (areas) setkeyv(x$areas, keys)
-    if (links) setkeyv(x$links, keys)
+    if (areas) setkeyv(x$areas, "mcYear")
+    if (links) setkeyv(x$links, "mcYear")
   }
   
   # Restore input data on exit
