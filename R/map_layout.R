@@ -294,7 +294,7 @@ changeCoords <- function(lon, lat, col = "blue", info = paste(lon, ",", lat), ma
 plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
                            opacityArea = 1, areaMaxSize = 50, areaMaxHeight = 50,
                            areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"), 
-                           labelArea = NULL,
+                           labelArea = NULL, labelMinSize = 8, labelMaxSize = 8,
                            colLinks = "#CCCCCC", sizeLinks = 3, 
                            opacityLinks = 1, dirLinks = 0, 
                            links = TRUE, areas = TRUE,
@@ -344,7 +344,9 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
                          width = areaMaxSize,
                          height = areaMaxHeight,
                          layerId = x$coords$area, 
-                         opacity = opacityArea)
+                         opacity = opacityArea,
+                         labelMinSize = labelMinSize,
+                         labelMaxSize = labelMaxSize)
   }
   
   # Add shadows to elements

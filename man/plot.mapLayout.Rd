@@ -7,12 +7,12 @@
 \method{plot}{mapLayout}(x, colAreas = x$coords$color, dataAreas = 1,
   opacityArea = 1, areaMaxSize = 50, areaMaxHeight = 50,
   areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"),
-  labelArea = NULL, colLinks = "#CCCCCC", sizeLinks = 3,
-  opacityLinks = 1, dirLinks = 0, links = TRUE, areas = TRUE,
-  addTiles = TRUE, background = "white", polygons = NULL,
-  polygonOptions = list(stroke = TRUE, color = "#bbb", weight = 0.5, opacity =
-  1, fillOpacity = 0.2, options = list(clickable = FALSE)), width = NULL,
-  height = NULL, ...)
+  labelArea = NULL, labelMinSize = 8, labelMaxSize = 8,
+  colLinks = "#CCCCCC", sizeLinks = 3, opacityLinks = 1, dirLinks = 0,
+  links = TRUE, areas = TRUE, addTiles = TRUE, background = "white",
+  polygons = NULL, polygonOptions = list(stroke = TRUE, color = "#bbb",
+  weight = 0.5, opacity = 1, fillOpacity = 0.2, options = list(clickable =
+  FALSE)), width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}
@@ -36,6 +36,10 @@ areas on the map.}
 \item{areaChartType}{Type of chart to use to represent areas.}
 
 \item{labelArea}{Character vector containing labels to display inside areas.}
+
+\item{labelMinSize}{minimal height of labels.}
+
+\item{labelMaxSize}{maximal height of labels.}
 
 \item{colLinks}{Vector of colors for links.}
 

@@ -151,7 +151,10 @@
 .initMap <- function(x, ml, options) {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
-              opacityArea = 1, opacityLinks = 1, addTiles = options$addTiles,
+              opacityArea = 1, opacityLinks = 1, 
+              labelMinSize = options$labelMinSize,
+              labelMaxSize = options$labelMaxSize,
+              addTiles = options$addTiles,
               polygons = options$polygons, 
               polygonOptions = options$polygonOptions) %>% 
     addAntaresLegend(display = options$legend)
