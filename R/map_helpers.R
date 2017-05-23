@@ -310,7 +310,7 @@
   }
   
   # Line width legend
-  if (!is.null(optsLink$maxSize)) {
+  if (showValuesInPopup) {
     map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$linkMaxSize, optsLink$maxSize))
   } else {
     map <- updateAntaresLegend(map, htmlLinkSize = "")
