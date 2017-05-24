@@ -326,38 +326,44 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
   manipulateWidget(
     plotFun(table, mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
             maxValue, aggregate),
-    table = mwSelect(names(params[[1]]), value = table),
-    mcYear = mwSelect(c("average", params[[1]][[table]]$uniqueMcYears), mcYear),
-    variable = mwSelect(value = variable),
-    type = mwSelect(typeChoices, type),
-    dateRange = mwDateRange(params[[1]][[table]]$dateRange),
-    confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval"),
-    minValue = mwNumeric(minValue, "min value"),
-    maxValue = mwNumeric(maxValue, "max value"),
-    elements = mwSelect(value = elements, multiple = TRUE),
-    aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
-    .main = dataname,
-    .display = list(table = length(params[[.id]]) > 1,
-                    mcYear = params[[.id]][[table]]$showConfInt,
-                    confInt = params[[.id]][[table]]$showConfInt & mcYear == "average",
-                    minValue = type %in% c("density", "cdf"),
-                    maxValue = type %in% c("density", "cdf"),
-                    dateRange = timeStep != "annual",
-                    type = timeStep != "annual"),
-    .updateInputs = list(
-      mcYear = list(choices = c("average", params[[.id]][[table]]$uniqueMcYears)),
-      type = list(choices = {
+    
+    table = mwSelect(names(params[[.id]]), value = table, .display = length(params[[.id]]) > 1),
+    mcYear = mwSelect(
+      choices = c("average", params[[.id]][[table]]$uniqueMcYears) ,
+      mcYear, 
+      .display = params[[.id]][[table]]$showConfInt
+    ),
+    variable = mwSelect(
+      choices = params[[.id]][[table]]$valueCols,
+      value = variable
+    ),
+    type = mwSelect(
+      choices = {
         if (timeStep == "annual") "barplot"
         else if (timeStep %in% c("hourly", "daily")) typeChoices
         else typeChoices[1:5]
-      }),
-      variable = list(choices = params[[.id]][[table]]$valueCols),
-      elements = list(choices = c("all", params[[.id]][[table]]$uniqueElem)),
-      dateRange = list(
-        min = params[[.id]][[table]]$dataDateRange[1], 
-        max = params[[.id]][[table]]$dataDateRange[2]
-      )
+      },
+      value = type, 
+      .display = timeStep != "annual"
     ),
+    dateRange = mwDateRange(
+      value = params[[1]][[table]]$dateRange,
+      min = params[[.id]][[table]]$dataDateRange[1], 
+      max = params[[.id]][[table]]$dataDateRange[2],
+      .display = timeStep != "annual"
+    ),
+    confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval",
+                       .display = params[[.id]][[table]]$showConfInt & mcYear == "average"),
+    minValue = mwNumeric(minValue, "min value", .display = type %in% c("density", "cdf")),
+    maxValue = mwNumeric(maxValue, "max value", .display = type %in% c("density", "cdf")),
+    elements = mwSelect(
+      choices = c("all", params[[.id]][[table]]$uniqueElem),
+      value = elements, 
+      multiple = TRUE
+    ),
+    aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
+    
+    .main = dataname,
     .compare = compare,
     .compareLayout = compareLayout
   )

@@ -224,35 +224,38 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                 colLinkVar, sizeLinkVar, popupLinkVars, type, mcYear, .initial, .session,
                 .output)
       },
-      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear),
+      
+      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = showMcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
-      Areas = list(
+      
+      Areas = mwGroup(
         colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
         sizeAreaVars = mwSelect(areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
         areaChartType = mwSelect(list("bar chart" = "bar", 
                                       "pie chart" = "pie",
                                       "polar (area)" = "polar-area",
                                       "polar (radius)" = "polar-radius"),
-                                 value = areaChartType),
-        uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale"),
-        showLabels = mwCheckbox(showLabels, label = "Show labels"),
+                                 value = areaChartType,
+                                 .display = length(sizeAreaVars) >= 2),
+        uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale", 
+                                 .display = length(sizeAreaVars) >= 2 && areaChartType != "pie"),
+        showLabels = mwCheckbox(showLabels, label = "Show labels", 
+                                .display = length(sizeAreaVars) >= 2),
         popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE),
-        labelAreaVar = mwSelect(c("none", areaValColums), labelAreaVar, label = "Label")
+        labelAreaVar = mwSelect(c("none", areaValColums), labelAreaVar, label = "Label", 
+                                .display = length(sizeAreaVars) < 2)
       ),
-      Links = list(
+      
+      Links = mwGroup(
         colLinkVar = mwSelect(c("none", linkValColums), colLinkVar, label = "Color"),
         sizeLinkVar = mwSelect(c("none", linkNumValColumns), sizeLinkVar, label = "Width"),
         popupLinkVars = mwSelect(linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
       ),
+      
       .main = main,
-      .display = list(
-        mcYear = showMcYear,
-        uniqueScale = length(sizeAreaVars) >= 2 && areaChartType != "pie",
-        areaChartType = length(sizeAreaVars) >= 2,
-        showLabels = length(sizeAreaVars) >= 2,
-        labelAreaVar = length(sizeAreaVars) < 2
-      ),
-      .viewer = "browser"
+      .viewer = "browser",
+      .width = width,
+      .height = height
     )
   }
 
