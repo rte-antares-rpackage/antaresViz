@@ -201,6 +201,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                     uniqueScale, showLabels, labelAreaVar, colLinkVar, 
                     sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear)
+    return(combineWidgets(map, title = main, width = width, height = height))
   } else {
     # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
@@ -217,7 +218,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     # We don't want to show the time id slider if there is only one time id
     hideTimeIdSlider <- timeIdMin == timeIdMax
     
-    map <- manipulateWidget(
+    manipulateWidget(
       {
         plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                 uniqueScale, showLabels, labelAreaVar,
@@ -255,10 +256,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .main = main,
       .viewer = "browser",
       .width = width,
-      .height = height
+      .height = height,
+      .return = function(w, e) combineWidgets(w, title = main, width = width, height = height)
     )
   }
-
-  combineWidgets(map, title = main, width = width, height = height)
 }
 

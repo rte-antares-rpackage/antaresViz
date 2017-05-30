@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 demo_antaresViz.*
+.test_shiny_runtime.*
 countries
 ml.rda
 ^appveyor\.yml$
