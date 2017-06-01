@@ -1,5 +1,16 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+Changes in version 0.9 (2017-05-31)
+
+NEW FEATURES:
+* plotMap() can now export animated maps. 
+* It is now possible to set minimal and maximal size of labels in maps.
+* plotMap() can now bind non-numeric columns to the color of areas and links. 
+* It is now possible to set the size of plots in Rmarkdown documents with "runtime:shiny"
+
+BUGFIXES:
+* plotMap(interactive=TRUE) now works in Rmarkdown documents with "runtime:shiny"
+
 Changes in version 0.8 (2017-04-07)
 
 NEW FEATURES:

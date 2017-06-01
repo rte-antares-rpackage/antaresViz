@@ -1,8 +1,8 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.8
-Date: 2017-04-06
+Version: 0.9
+Date: 2017-05-31
 Authors@R: c(
     person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = "ctb"),
