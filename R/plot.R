@@ -155,7 +155,6 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   type <- match.arg(type)
   aggregate <- match.arg(aggregate)
   colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
-  compareOpts <- do.call(compareOptions, compareOpts)
   
   # Generate a group number for dygraph objects
   if (!("dateRange" %in% compare)) {
@@ -164,43 +163,14 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     group <- NULL
   }
   
-  # x can be an antaresdata object or a list of antaresData object
-  if (inherits(x, "antaresData")) {
-    x <- as.antaresDataList(x)
-    
-    if (!is.null(y)) {
-      if (is.null(compare)) compare <- list()
-      y <- as.antaresDataList(y)
-      x <- list(x, y)
-    } else {
-      if (is.null(compareOpts$ncharts)) {
-        if (is.null(compare)) compareOpts$ncharts <- 1
-        else compareOpts$ncharts <- 2
-      }
-
-      x <- replicate(compareOpts$ncharts, x, simplify = FALSE)
-    }
-  } else {
-    x <- lapply(x, as.antaresDataList)
-    compareOpts$ncharts <- length(x)
-  }
+  # Preprocess data for comparison
+  tmp <- .getDataForComp(x, y, compare, compareOpts)
+  x <- tmp$x
+  compare <- tmp$compare
+  compareOpts <- tmp$compareOpts
   
   timeStep <- attr(x[[1]], "timeStep")
   opts <- simOptions(x[[1]])
-  
-  if (!is.null(compare)) {
-    if (is.character(compare)) {
-      compare <- match.arg(
-        compare, 
-        c("table", "variable", "elements", "type", "dateRange", "minValue", "maxValue", "mcYear"),
-        several.ok = TRUE
-      )
-      tmp <- lapply(compare, function(x) NULL)
-      names(tmp) <- compare
-      compare <- tmp
-    }
-  }
-  
   
   .prepareParams <- function(x) {
     idCols <- .idCols(x)
