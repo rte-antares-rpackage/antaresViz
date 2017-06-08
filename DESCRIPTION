@@ -31,7 +31,7 @@ Imports:
     tibble,
     htmltools,
     htmlwidgets (>= 0.7.0),
-    manipulateWidget (>= 0.6.0),
+    manipulateWidget (>= 0.7.0),
     leaflet (>= 1.1.0),
     sp,
     webshot,

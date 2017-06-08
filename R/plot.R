@@ -5,7 +5,9 @@
 #' This function generates an interactive plot of an antares time series.
 #' 
 #' @param x
-#'   Object of class \code{antaresData}.
+#'   Object of class \code{antaresData}. Alternatively, it can be a list of 
+#'   \code{antaresData} objects. In this case, one chart is created for each
+#'   object.
 #' @param y
 #'   Optional object of class \code{antaresData}. If it is specified, then two
 #'   charts are generated.
@@ -62,10 +64,10 @@
 #'   two charts are outputed with their own input controls. Alternatively, it can
 #'   be a named list with names corresponding to parameter names and values being
 #'   list with the initial values of the given parameter for each chart.
-#' @param compareLayout
-#'   Only used if \code{y} or \code{compare} is not null. If it equals to "v", 
-#'   then charts are placed one above the other. If it equals to "h", they are
-#'   placed one next to the other.
+#' @param compareOpts
+#'   List of options that indicates the number of charts to create and their 
+#'   position. Check out the documentation of 
+#'   \code{\link[manipulateWidget]{compareOptions}} to see available options.
 #' @param colorScaleOpts
 #'   A list of parameters that control the creation of color scales. It is used
 #'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available
@@ -131,7 +133,7 @@
 #' }
 #' 
 #' @export
-plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
+tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
                              mcYear = "average",
                              type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                              dateRange = NULL,
@@ -140,7 +142,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
                              maxValue = NULL,
                              aggregate = c("none", "mean", "sum"),
                              compare = NULL,
-                             compareLayout = c("v", "h"),
+                             compareOpts = list(),
                              interactive = getInteractivity(),
                              colors = NULL,
                              main = NULL,
@@ -150,10 +152,10 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
                              colorScaleOpts = colorScaleOptions(20),
                              width = NULL, height = NULL, ...) {
   
-  dataname <- deparse(substitute(x))
   type <- match.arg(type)
   aggregate <- match.arg(aggregate)
   colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
+  compareOpts <- do.call(compareOptions, compareOpts)
   
   # Generate a group number for dygraph objects
   if (!("dateRange" %in% compare)) {
@@ -162,15 +164,31 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     group <- NULL
   }
   
-  x <- as.antaresDataList(x)
-  
-  timeStep <- attr(x, "timeStep")
-  compareLayout <- match.arg(compareLayout)
-  opts <- simOptions(x)
-  
-  if (is.null(compare)) {
-    if (!is.null(y)) compare <- list()
+  # x can be an antaresdata object or a list of antaresData object
+  if (inherits(x, "antaresData")) {
+    x <- as.antaresDataList(x)
+    
+    if (!is.null(y)) {
+      if (is.null(compare)) compare <- list()
+      y <- as.antaresDataList(y)
+      x <- list(x, y)
+    } else {
+      if (is.null(compareOpts$ncharts)) {
+        if (is.null(compare)) compareOpts$ncharts <- 1
+        else compareOpts$ncharts <- 2
+      }
+
+      x <- replicate(compareOpts$ncharts, x, simplify = FALSE)
+    }
   } else {
+    x <- lapply(x, as.antaresDataList)
+    compareOpts$ncharts <- length(x)
+  }
+  
+  timeStep <- attr(x[[1]], "timeStep")
+  opts <- simOptions(x[[1]])
+  
+  if (!is.null(compare)) {
     if (is.character(compare)) {
       compare <- match.arg(
         compare, 
@@ -229,19 +247,7 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
     )
   }
     
-  params <- list(
-    x = lapply(x, .prepareParams)
-  )
-  
-  if (!is.null(y)) {
-    if (!is(y, "antaresData")) stop("y should be an 'antaresData' object")
-    y <- as.antaresDataList(y)
-    params$y <- lapply(y, .prepareParams)
-    x <- list(x, y)
-  } else {
-    params$y <- params$x
-    x <- list(x, x)
-  }
+  params <- lapply(x, function(o) lapply(o, .prepareParams))
   
   # Function that generates the desired graphic.
   plotFun <- function(table, mcYear, id, variable, elements, type, confInt, dateRange, 
@@ -362,10 +368,12 @@ plot.antaresData <- function(x, y = NULL, table = NULL, variable = NULL, element
       multiple = TRUE
     ),
     aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
-    
-    .main = dataname,
     .compare = compare,
-    .compareLayout = compareLayout
+    .compareOpts = compareOpts
   )
   
 }
+
+#' @export
+#' @rdname tsPlot
+plot.antaresData <- tsPlot
