@@ -163,7 +163,41 @@ prodStack <- function(x, y = NULL,
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
     if (length(dateRange) < 2) dateRange <- dataDateRange
     
+    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear) {
+      if (length(areas) == 0) return ("Please choose an area")
+      stackOpts <- .aliasToStackOptions(stack)
+      
+      dt <- x[area %in% areas]
+      
+      if (mcYear == "average") dt <- synthesize(dt)
+      else if ("mcYear" %in% names(dt)) {
+        mcy <- mcYear
+        dt <- dt[mcYear == mcy]
+      }
+      
+      if (!is.null(dateRange)) {
+        dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = opts)) %between% dateRange]
+      }
+      
+      p <- .plotProdStack(dt, 
+                          stackOpts$variables, 
+                          stackOpts$colors,
+                          stackOpts$lines,
+                          stackOpts$lineColors,
+                          main = main,
+                          unit = unit,
+                          legendId = legendId + id - 1, groupId = groupId)
+      if (legend) {
+        l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId + id - 1)
+      } else {
+        l <- NULL
+      }
+      
+      combineWidgets(p, footer = l, width = width, height = height)
+    }
+    
     list(
+      plotWithLegend = plotWithLegend,
       x = x,
       timeStep = timeStep,
       opts = opts,
@@ -175,50 +209,15 @@ prodStack <- function(x, y = NULL,
     )
   })
   
-  plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear) {
-    if (length(areas) == 0) return ("Please choose an area")
-    stackOpts <- .aliasToStackOptions(stack)
-    
-    dt <- params$x[[id]]$x[area %in% areas]
-    
-    if (mcYear == "average") dt <- synthesize(dt)
-    else if ("mcYear" %in% names(dt)) {
-      mcy <- mcYear
-      dt <- dt[mcYear == mcy]
-    }
-    
-    if (!is.null(dateRange)) {
-      dt <- dt[as.Date(.timeIdToDate(dt$timeId, params$x[[id]]$timeStep, opts = params$x[[id]]$opts)) %between% dateRange]
-    }
-    
-    p <- .plotProdStack(dt, 
-                        stackOpts$variables, 
-                        stackOpts$colors,
-                        stackOpts$lines,
-                        stackOpts$lineColors,
-                        main = main,
-                        unit = unit,
-                        legendId = legendId + id - 1, groupId = groupId)
-    if (legend) {
-      l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId + id - 1)
-    } else {
-      l <- NULL
-    }
-    
-    combineWidgets(p, footer = l, width = width, height = height)
-  }
-  
   if (!interactive) {
-    return(plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear))
+    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear))
   }
-  
-  .id <- 1
   
   manipulateWidget(
-    plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear),
+    params$x[[.id]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear),
     mcYear = mwSelect(c("average", unique(params$x[[.id]]$x$mcYear)), .display = params$x[[.id]]$displayMcYear),
     main = mwText(main, label = "title"),
-    dateRange = mwDateRange(params$x[[.id]]$dateRange, 
+    dateRange = mwDateRange(params$x[[1]]$dateRange, 
                             min = params$x[[.id]]$dataDateRange[1], 
                             max = params$x[[.id]]$dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
