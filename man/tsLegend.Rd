@@ -17,7 +17,7 @@ tsLegend(labels, colors, types = "line", legendItemsPerRow = 5,
 \item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
 
 \item{legendId}{Id of the legend linked to the graph. This argument is 
-usefull when one wants to create a shared legend with
+usefull when one wants to create a shared legend with 
 \code{\link{prodStackLegend}}}
 
 \item{labels}{vector containing the names of the times series}

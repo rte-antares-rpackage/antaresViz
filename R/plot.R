@@ -8,9 +8,6 @@
 #'   Object of class \code{antaresData}. Alternatively, it can be a list of 
 #'   \code{antaresData} objects. In this case, one chart is created for each
 #'   object.
-#' @param y
-#'   Optional object of class \code{antaresData}. If it is specified, then two
-#'   charts are generated.
 #' @param table
 #'   Name of the table to display when \code{x} is an \code{antaresDataList}
 #'   object.
@@ -59,15 +56,6 @@
 #'   Vector of colors
 #' @param ylab
 #'   Label of the Y axis.
-#' @param compare
-#'   An optional character vector containing names of parameters. When it is set,
-#'   two charts are outputed with their own input controls. Alternatively, it can
-#'   be a named list with names corresponding to parameter names and values being
-#'   list with the initial values of the given parameter for each chart.
-#' @param compareOpts
-#'   List of options that indicates the number of charts to create and their 
-#'   position. Check out the documentation of 
-#'   \code{\link[manipulateWidget]{compareOptions}} to see available options.
 #' @param colorScaleOpts
 #'   A list of parameters that control the creation of color scales. It is used
 #'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available

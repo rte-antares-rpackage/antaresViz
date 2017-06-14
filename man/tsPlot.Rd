@@ -25,7 +25,8 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
-\code{antaresData} objects. In this one chart per object will be created.}
+\code{antaresData} objects. In this case, one chart is created for each
+object.}
 
 \item{y}{Optional object of class \code{antaresData}. If it is specified, then two
 charts are generated.}

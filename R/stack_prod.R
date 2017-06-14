@@ -10,6 +10,9 @@
 #'   An object of class \code{antaresData} created with function 
 #'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
 #'   districts.
+#' @param y
+#'   Optional object of class \code{antaresData}. If it is specified, then two
+#'   charts are generated.
 #' @param stack
 #'   Name of the stack to use. One can visualize available stacks with 
 #'   \code{prodStackAliases}
@@ -28,6 +31,15 @@
 #'   Title of the graph.
 #' @param unit
 #'   Unit used in the graph. Possible values are "MWh", "GWh" or "TWh".
+#' @param compare
+#'   An optional character vector containing names of parameters. When it is set,
+#'   two charts are outputed with their own input controls. Alternatively, it can
+#'   be a named list with names corresponding to parameter names and values being
+#'   list with the initial values of the given parameter for each chart.
+#' @param compareOpts
+#'   List of options that indicates the number of charts to create and their 
+#'   position. Check out the documentation of 
+#'   \code{\link[manipulateWidget]{compareOptions}} to see available options.
 #' @param width
 #'   Width of the graph expressed in pixels or in percentage of 
 #'   the parent element. For instance "500px" and "100\%" are valid values.

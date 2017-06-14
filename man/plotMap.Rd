@@ -4,17 +4,21 @@
 \alias{plotMap}
 \title{Display results of a simulation on a map}
 \usage{
-plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+plotMap(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
   uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
   labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
-  mcYear = "average", main = "", interactive = getInteractivity(),
-  options = plotMapOptions(), width = NULL, height = NULL)
+  mcYear = "average", main = "", compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), options = plotMapOptions(),
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
 \code{\link[antaresRead]{readAntares}} and containing areas and links data}
+
+\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
+charts are generated.}
 
 \item{mapLayout}{Object created with function \code{\link{mapLayout}}}
 
@@ -70,6 +74,15 @@ index of the scenario or the word "average". In this case data are
 averaged.}
 
 \item{main}{Title of the map.}
+
+\item{compare}{An optional character vector containing names of parameters. When it is set,
+two charts are outputed with their own input controls. Alternatively, it can
+be a named list with names corresponding to parameter names and values being
+list with the initial values of the given parameter for each chart.}
+
+\item{compareOpts}{List of options that indicates the number of charts to create and their 
+position. Check out the documentation of 
+\code{\link[manipulateWidget]{compareOptions}} to see available options.}
 
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}
