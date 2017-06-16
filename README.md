@@ -15,7 +15,7 @@ install.packages("antaresViz")
 
 To install the last development version:
 ```r
-devtools::install_github("rte-antares-rpackage/antares-rpackageViz", ref ="develop")
+devtools::install_github("rte-antares-rpackage/antaresViz", ref ="develop")
 ```
 
 To display the help of the package and see all the functions it provides, type:

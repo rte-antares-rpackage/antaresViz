@@ -43,23 +43,17 @@
   }
   
   if (is.null(t)) {
-    if (length(neededVars) == 0) {
-      data <- unique(data[, mergeBy, with = FALSE])
-    } else {
+    if (length(neededVars) > 0) {
       data <- data[, lapply(.SD, mean), 
                    keyby = mergeBy, 
                    .SDcols = neededVars]
+    } else {
+      data <- unique(data[, mergeBy, with = FALSE])
     }
-    dataFiltered <- data
-  } else {
-    if (mcy != "average") dataFiltered <- data[J(as.numeric(mcy), t)]
-    else dataFiltered <- data[J(t)]
   }
   
-  coords <- merge(coords, dataFiltered, by = mergeBy)
-  
   # Initialize the object returned by the function
-  res <- list(coords = coords, dir = 0)
+  res <- list(coords = data, dir = 0)
   
   # color
   if (colVar != "none" & length(sizeVar) <= 1) {
@@ -74,7 +68,9 @@
         domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
       }
       
-      colorScaleOpts$x <- coords[[colVar]]
+      if (colVar == "FLOW LIN.") colorScaleOpts$x <- abs(data[[colVar]])
+      else colorScaleOpts$x <- data[[colVar]]
+      
       colorScaleOpts$domain <- domain
       res$color <- do.call(continuousColorPal, colorScaleOpts)
       
@@ -86,7 +82,7 @@
         else colorScaleOpts$levels <- unique(data[[colVar]])
       }
       
-      colorScaleOpts$x <- coords[[colVar]]
+      colorScaleOpts$x <- data[[colVar]]
       
       res$color <- do.call(catColorPal, colorScaleOpts)
       res$pal <- attr(res$color, "pal")
@@ -97,56 +93,57 @@
   
   # size
   if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
-    res$size <- as.matrix(coords[, sizeVar, with = FALSE])
+    res$size <- as.matrix(data[, sizeVar, with = FALSE])
     res$maxSize <- apply(abs(as.matrix(data[, sizeVar, with = FALSE])), 2, max)
   }
   
   # Direction
-  if ("FLOW LIN." %in% names(coords)) {
-    res$dir <- sign(coords$`FLOW LIN.`)
-    coords[, `FLOW LIN.` := abs(`FLOW LIN.`)]
+  if ("FLOW LIN." %in% names(data)) {
+    res$dir <- sign(data$`FLOW LIN.`)
+    #coords[, `FLOW LIN.` := abs(`FLOW LIN.`)]
   } else {
     res$dir <- 0
   }
   
   # Pop-up
-  res$popup <- .valuesToPopup(coords, union(colVar, union(sizeVar, popupVars)), coords[[mergeBy]])
+  # return names of columns that need to be added in popups
+  res$popupVarsSup <- setdiff(neededVars, sizeVar)
   
   res
+}
+
+.getTimeFormat <- function(timeStep) {
+  switch(
+    timeStep,
+    hourly = "%a %d %b %Y<br/>%H:%M",
+    daily = "%a %d %b %Y",
+    weekly = "W%w %Y",
+    monthly = "%b %Y",
+    yearly = "%Y"
+  )
 }
 
 .valuesToPopup <- function(x, var, title) {
   var <- var[var %in% names(x)]
   if (length(var) == 0) return(title)
   
-  popupTemplate <- '
-  <div class = "popup">
-  <h2>%s</h2>
-  <hr/>
-  <table class="">
-    <tbody>
-      %s
-    </tbody>
-  </table>
-  </div>
-  '
+  popupTemplate <- '<div class="popup"><h2>%s</h2><hr/><table><tbody>%s</tbody></table></div>'
   
-  rowTemplate <- '
-      <tr>
-        <td class="key">%s</td>
-        <td class ="value">%s</td>
-      </tr>
-  '
+  rowTemplate <- '<tr><td class="key">%s</td><td class="value">%s</td></tr>'
   
-  x <- x[, lapply(.SD, function(x) {if (is.numeric(x)) signif(x, 4) else x}), .SDcols = var]
-  x <- as.matrix(x)
+  x <- unname(lapply(var, function(v) {
+    x <- x[[v]]
+    if (is.numeric(x)) x <- signif(x, 4)
+    sprintf(rowTemplate, v, x)
+  }))
   
-  rows <- apply(x, 1, function(x) {
-    sprintf(rowTemplate, var, x) %>% 
-      paste(collapse = "")
-  })
+  x$sep <- ""
+  
+  rows <- do.call(paste, x)
   
   sprintf(popupTemplate, title, rows)
+  
+  ""
 }
 
 # Initialize a map with all elements invisible: links, circles and bar or polar 
@@ -154,7 +151,10 @@
 .initMap <- function(x, ml, options) {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
-              opacityArea = 1, opacityLinks = 1, addTiles = options$addTiles,
+              opacityArea = 1, opacityLinks = 1, 
+              labelMinSize = options$labelMinSize,
+              labelMaxSize = options$labelMaxSize,
+              addTiles = options$addTiles,
               polygons = options$polygons, 
               polygonOptions = options$polygonOptions) %>% 
     addAntaresLegend(display = options$legend)
@@ -168,6 +168,7 @@
                            areaChartType,
                            options) {
   if (is.null(x$areas)) return(map)
+  timeStep <- attr(x, "timeStep")
   
   # Just in case, we do not want to accidentally modify the original map layout.
   ml <- copy(mapLayout)
@@ -207,14 +208,24 @@
     
   }
   
+  showValuesInPopup <- length(sizeAreaVars) > 0
+  
   # Update areas
-  map <- updateMinicharts(map, optsArea$coords$area, data = optsArea$size,
-                        maxValues = optsArea$maxSize, width = areaWidth,
-                        height = options$areaMaxHeight,
-                        showLabels = showLabels, labelText = labels, 
-                        type = areaChartType[[1]], 
-                        colorPalette = options$areaChartColors,
-                        fillColor = optsArea$color, popup = optsArea$popup)
+  map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
+                          time = optsArea$coords$time,
+                          maxValues = optsArea$maxSize, width = areaWidth,
+                          height = options$areaMaxHeight,
+                          showLabels = showLabels, labelText = labels, 
+                          type = areaChartType[[1]], 
+                          colorPalette = options$areaChartColors,
+                          fillColor = optsArea$color,
+                          timeFormat = .getTimeFormat(timeStep),
+                          legend = FALSE,
+                          popup = popupArgs(
+                            showValues = showValuesInPopup,
+                            digits = 2,
+                            supValues = optsArea$coords[, optsArea$popupVars, with = FALSE]
+                          ))
   
   # Update the legend
   #
@@ -251,6 +262,8 @@
                          popupLinkVars, options) {
   if (is.null(x$links)) return(map)
   
+  timeStep <- attr(x, "timeStep")
+  
   ml <- copy(mapLayout)
   
   # Get color and size of links
@@ -260,15 +273,28 @@
   
   # Use default values if needed
   if (is.null(optsLink$color)) optsLink$color <- options$linkDefaultCol
-  if (is.null(optsLink$size)) optsLink$size <- options$linkDefaultSize
-  else optsLink$size <- optsLink$size /optsLink$ maxSize * options$linkMaxSize
+  if (is.null(optsLink$size)) {
+    optsLink$size <- options$linkDefaultSize
+    optsLink$maxSize <- options$linkMaxSize
+  }
   
-  map <- map %>% updateDirectedSegments(layerId = ml$links$link, 
-                                        color = optsLink$color,
-                                        weight = optsLink$size,
-                                        dir = optsLink$dir,
-                                        popup = optsLink$popup,
-                                        opacity = 1)
+  showValuesInPopup <- sizeLinkVar != "none"
+  
+  map <- map %>% updateFlows(layerId = optsLink$coords$link, 
+                             color = optsLink$color,
+                             flow = abs(optsLink$size),
+                             maxFlow = unname(optsLink$maxSize),
+                             maxThickness = options$linkMaxSize,
+                             time = optsLink$coords$time,
+                             timeFormat = .getTimeFormat(timeStep),
+                             dir = optsLink$dir,
+                             popup = popupArgs(
+                               showValues = showValuesInPopup,
+                               labels = sizeLinkVar,
+                               digits = 2,
+                               supValues = optsLink$coords[, optsLink$popupVars, with = FALSE]
+                              ),
+                             opacity = 1)
   
   # Update the legend
   
@@ -284,7 +310,7 @@
   }
   
   # Line width legend
-  if (!is.null(optsLink$maxSize)) {
+  if (showValuesInPopup) {
     map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$linkMaxSize, optsLink$maxSize))
   } else {
     map <- updateAntaresLegend(map, htmlLinkSize = "")

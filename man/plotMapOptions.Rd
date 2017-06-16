@@ -7,12 +7,13 @@
 \usage{
 plotMapOptions(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
   areaMaxSize = 50, areaMaxHeight = 50, areaChartColors = NULL,
-  areaColorScaleOpts = colorScaleOptions(), linkDefaultCol = "#BEBECE",
-  linkDefaultSize = 3, linkMaxSize = 15,
-  linkColorScaleOpts = colorScaleOptions(), legend = c("choose", "visible",
-  "hidden"), addTiles = TRUE, background = "white", polygons = NULL,
-  polygonOptions = list(stroke = TRUE, color = "#999", weight = 0.5, opacity =
-  1, fillOpacity = 0.2, options = list(clickable = FALSE)))
+  areaColorScaleOpts = colorScaleOptions(), labelMinSize = 8,
+  labelMaxSize = 24, linkDefaultCol = "#BEBECE", linkDefaultSize = 3,
+  linkMaxSize = 15, linkColorScaleOpts = colorScaleOptions(),
+  legend = c("choose", "visible", "hidden"), addTiles = TRUE,
+  background = "white", polygons = NULL, polygonOptions = list(stroke =
+  TRUE, color = "#999", weight = 0.5, opacity = 1, fillOpacity = 0.2, options =
+  list(clickable = FALSE)))
 
 colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
   zeroCol = "#FAFAFA", posCol = "#0000FF", naCol = "#EEEEEE",
@@ -31,6 +32,10 @@ colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
 
 \item{areaColorScaleOpts}{List of options used to construct a continuous color scale. This list should
 be generated with function \code{colorScaleOptions}.}
+
+\item{labelMinSize}{minimal height of labels.}
+
+\item{labelMaxSize}{maximal height of labels.}
 
 \item{linkDefaultCol}{Default color of links.}
 

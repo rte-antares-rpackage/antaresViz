@@ -195,14 +195,13 @@ prodStack <- function(x, stack = "eco2mix",
   
   manipulateWidget(
     plotWithLegend(areas, main, unit, stack, dateRange, mcYear),
-    mcYear = mwSelect(c("average", unique(x$mcYear))),
+    mcYear = mwSelect(c("average", unique(x$mcYear)), .display = displayMcYear),
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     areas = mwSelect(as.character(unique(x$area)), areas, multiple = TRUE),
-    .main = "Production stack",
-    .display = list(mcYear = displayMcYear)
+    .main = "Production stack"
   )
 }
 

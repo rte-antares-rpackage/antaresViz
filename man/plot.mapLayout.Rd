@@ -7,12 +7,12 @@
 \method{plot}{mapLayout}(x, colAreas = x$coords$color, dataAreas = 1,
   opacityArea = 1, areaMaxSize = 50, areaMaxHeight = 50,
   areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"),
-  popupArea = x$coords$area, labelArea = NULL, colLinks = "#CCCCCC",
-  sizeLinks = 3, opacityLinks = 1, dirLinks = 0,
-  popupLink = x$links$link, links = TRUE, areas = TRUE, addTiles = TRUE,
-  background = "white", polygons = NULL, polygonOptions = list(stroke =
-  TRUE, color = "#bbb", weight = 0.5, opacity = 1, fillOpacity = 0.2, options =
-  list(clickable = FALSE)), width = NULL, height = NULL, ...)
+  labelArea = NULL, labelMinSize = 8, labelMaxSize = 8,
+  colLinks = "#CCCCCC", sizeLinks = 3, opacityLinks = 1, dirLinks = 0,
+  links = TRUE, areas = TRUE, addTiles = TRUE, background = "white",
+  polygons = NULL, polygonOptions = list(stroke = TRUE, color = "#bbb",
+  weight = 0.5, opacity = 1, fillOpacity = 0.2, options = list(clickable =
+  FALSE)), width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}
@@ -35,10 +35,11 @@ areas on the map.}
 
 \item{areaChartType}{Type of chart to use to represent areas.}
 
-\item{popupArea}{Character vector containing the html to display when the user clicks on an
-area.}
-
 \item{labelArea}{Character vector containing labels to display inside areas.}
+
+\item{labelMinSize}{minimal height of labels.}
+
+\item{labelMaxSize}{maximal height of labels.}
 
 \item{colLinks}{Vector of colors for links.}
 
@@ -51,9 +52,6 @@ between 0 and 1.}
 are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
 If it is equal to 1 or -1 it is represented by a line with an arrow pointing
 respectively the destination and the origin of the link.}
-
-\item{popupLink}{Character vector containing the html to display when the user clicks on a 
-link.}
 
 \item{links}{Should links be drawn on the map ?}
 

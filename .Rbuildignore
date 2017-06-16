@@ -1,8 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-demo_antaresViz.*
-countries
-ml.rda
 ^appveyor\.yml$
 ^\.travis\.yml$
 ^codecov\.yml$
+inst/examples

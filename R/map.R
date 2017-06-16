@@ -129,11 +129,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   # Should parameter mcYear be shown in the UI ?
   showMcYear <- !attr(x, "synthesis") && length(unique(x[[1]]$mcYear)) > 1
   
-  
   # Should links and/or areas be displayed ?
   areas <- !is.null(x$areas)
   links <- !is.null(x$links)
-  
   
   # First and last time ids in data
   timeIdMin <- min(x[[1]]$timeId)
@@ -154,24 +152,25 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # Precompute synthetic results and set keys for fast filtering
   syntx <- synthesize(x) 
-  if (areas) setkey(syntx$areas, timeId)
-  if (links) setkey(syntx$links, timeId)
 
   oldkeys <- lapply(x, key)
-  on.exit({
-    if (areas) setkeyv(x$areas, oldkeys$areas)
-    if (links) setkeyv(x$links, oldkeys$links)
-  })
   
   if (attr(x, "synthesis")) {
     mcYear <- "average"
-    keys <- c("timeId")
   } else {
-    keys <- c("mcYear", "timeId")
+    if (areas) setkeyv(x$areas, "mcYear")
+    if (links) setkeyv(x$links, "mcYear")
   }
   
-  if (areas) setkeyv(x$areas, keys)
-  if (links) setkeyv(x$links, keys)
+  # Restore input data on exit
+  on.exit({
+    if (areas) {
+      setkeyv(x$areas, oldkeys$areas)
+    }
+    if (links) {
+      setkeyv(x$links, oldkeys$links)
+    }
+  })
   
   # Function that draws the final map when leaving the shiny gadget.
   plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
@@ -187,71 +186,79 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (mcYear == "average") x <- syntx
     
     if (initial) {
-      map <- .initMap(x, mapLayout, options) %>% 
-        addTimeLabel(t, attr(x, "timeStep"), simOptions(x))
+      map <- .initMap(x, mapLayout, options)
     } else {
       map <- leafletProxy(outputId, session)
     }
-     map <- map %>%
+    
+    map %>% 
       .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
       .redrawCircles(x, mapLayout, mcYear, t, colAreaVar, sizeAreaVars, popupAreaVars, 
                      uniqueScale, showLabels, labelAreaVar, areaChartType, options)
-     if (is.null(t)) map %>% updateTimeLabel("", "none", simOptions(x))
-     else map %>% updateTimeLabel(t, attr(x, "timeStep"), simOptions(x))
   }
   
   if (!interactive) {
     map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                     uniqueScale, showLabels, labelAreaVar, colLinkVar, 
                     sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear)
+    return(combineWidgets(map, title = main, width = width, height = height))
   } else {
     # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
+    
+    areaNumValColumns <- sapply(x$areas, is.numeric)
+    areaNumValColumns <- names(areaNumValColumns)[areaNumValColumns == TRUE]
+    areaNumValColumns <- intersect(areaValColums, areaNumValColumns)
+    
     linkValColums <- setdiff(names(x$links), .idCols(x$links))
+    
+    linkNumValColumns <- sapply(x$links, is.numeric)
+    linkNumValColumns <- names(linkNumValColumns)[linkNumValColumns == TRUE]
+    linkNumValColumns <- intersect(linkValColums, linkNumValColumns)
     # We don't want to show the time id slider if there is only one time id
     hideTimeIdSlider <- timeIdMin == timeIdMax
     
-    map <- manipulateWidget(
+    manipulateWidget(
       {
         plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                 uniqueScale, showLabels, labelAreaVar,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, mcYear, .initial, .session,
                 .output)
       },
-      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear),
+      
+      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = showMcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
-      timeId = mwSlider(timeIdMin, timeIdMax, timeId, step = 1, animate = TRUE),
-      Areas = list(
+      
+      Areas = mwGroup(
         colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
-        sizeAreaVars = mwSelect(areaValColums, sizeAreaVars, label = "Size", multiple = TRUE),
+        sizeAreaVars = mwSelect(areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
         areaChartType = mwSelect(list("bar chart" = "bar", 
                                       "pie chart" = "pie",
                                       "polar (area)" = "polar-area",
                                       "polar (radius)" = "polar-radius"),
-                                 value = areaChartType),
-        uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale"),
-        showLabels = mwCheckbox(showLabels, label = "Show labels"),
+                                 value = areaChartType,
+                                 .display = length(sizeAreaVars) >= 2),
+        uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale", 
+                                 .display = length(sizeAreaVars) >= 2 && areaChartType != "pie"),
+        showLabels = mwCheckbox(showLabels, label = "Show labels", 
+                                .display = length(sizeAreaVars) >= 2),
         popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE),
-        labelAreaVar = mwSelect(c("none", areaValColums), labelAreaVar, label = "Label")
+        labelAreaVar = mwSelect(c("none", areaValColums), labelAreaVar, label = "Label", 
+                                .display = length(sizeAreaVars) < 2)
       ),
-      Links = list(
+      
+      Links = mwGroup(
         colLinkVar = mwSelect(c("none", linkValColums), colLinkVar, label = "Color"),
-        sizeLinkVar = mwSelect(c("none", linkValColums), sizeLinkVar, label = "Width"),
+        sizeLinkVar = mwSelect(c("none", linkNumValColumns), sizeLinkVar, label = "Width"),
         popupLinkVars = mwSelect(linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
       ),
+      
       .main = main,
-      .display = list(
-        mcYear = showMcYear,
-        timeId = !hideTimeIdSlider && type =="detail",
-        uniqueScale = length(sizeAreaVars) >= 2 && areaChartType != "pie",
-        areaChartType = length(sizeAreaVars) >= 2,
-        showLabels = length(sizeAreaVars) >= 2,
-        labelAreaVar = length(sizeAreaVars) < 2
-      ),
-      .viewer = "browser"
+      .viewer = "browser",
+      .width = width,
+      .height = height,
+      .return = function(w, e) combineWidgets(w, title = main, width = width, height = height)
     )
   }
-
-  combineWidgets(map, title = main, width = width, height = height)
 }
 

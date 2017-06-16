@@ -78,7 +78,9 @@
                .(time, weekId, wday)]
   yticks[, wdayId := wdayIds[wday]]
   
-  dt <- split(dt, f = droplevels(dt$element))
+  if (is.factor(dt$element)) dt[, element := droplevels(element)]
+  
+  dt <- split(dt, f = dt$element)
   
   plots <- lapply(dt, function(x) {
     rangevar <- range(x$value)

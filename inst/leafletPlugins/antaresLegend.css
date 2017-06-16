@@ -92,30 +92,3 @@ button:focus {
     background: #fff;
     border: solid 1px #ccc;
 }
-
-/* Popups */
-.popup > h2 {
-  color: #555;
-  font-size: 16px;
-  margin: 5px 0 0 0;
-}
-
-.popup .key {
-  font-weight:bold;
-  color: #337ab7;
-  text-align: right;
-  padding-right: 5px;
-}
-
-.popup .key::after {
-  content:" :";
-}
-
-.popup .value {
-  text-align: right;
-}
-
-.popup hr {
-  margin: 3px 0 6px 0;
-}
-

@@ -136,11 +136,10 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   
   manipulateWidget(
     plotFun(area, dateRange, unit, mcYear),
-    mcYear = mwSelect(c("average", unique(x$mcYear)), mcYear),
+    mcYear = mwSelect(c("average", unique(x$mcYear)), mcYear, .display = displayMcYear),
     area = mwSelect(areaList, area),
     dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
-    unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-    .display = list(mcYear = displayMcYear)
+    unit = mwSelect(c("MWh", "GWh", "TWh"), unit)
   )
   
 }

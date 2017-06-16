@@ -230,9 +230,6 @@ changeCoords <- function(lon, lat, col = "blue", info = paste(lon, ",", lat), ma
 #' @param areaMaxSize Maximal width in pixels of the symbols that represent 
 #'   areas on the map.
 #' @param areaChartType Type of chart to use to represent areas.
-#' @param popupArea
-#'   Character vector containing the html to display when the user clicks on an
-#'   area.
 #' @param labelArea Character vector containing labels to display inside areas.
 #' @param colLinks
 #'   Vector of colors for links.
@@ -245,9 +242,6 @@ changeCoords <- function(lon, lat, col = "blue", info = paste(lon, ",", lat), ma
 #'   are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
 #'   If it is equal to 1 or -1 it is represented by a line with an arrow pointing
 #'   respectively the destination and the origin of the link. 
-#' @param popupLink
-#'   Character vector containing the html to display when the user clicks on a 
-#'   link.
 #' @param background background-color of the map. Not implemented yet.
 #' @param areas
 #'   Should areas be drawn on the map ?
@@ -300,11 +294,9 @@ changeCoords <- function(lon, lat, col = "blue", info = paste(lon, ",", lat), ma
 plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
                            opacityArea = 1, areaMaxSize = 50, areaMaxHeight = 50,
                            areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"), 
-                           popupArea = x$coords$area, 
-                           labelArea = NULL,
+                           labelArea = NULL, labelMinSize = 8, labelMaxSize = 8,
                            colLinks = "#CCCCCC", sizeLinks = 3, 
                            opacityLinks = 1, dirLinks = 0, 
-                           popupLink = x$links$link,
                            links = TRUE, areas = TRUE,
                            addTiles = TRUE, background = "white", polygons = NULL,
                            polygonOptions = list(stroke = TRUE,
@@ -336,9 +328,9 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   
   # Add links
   if (links) {
-    map <- addDirectedSegments(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
-                               weight = sizeLinks, opacity = opacityLinks,
-                               color = colLinks, layerId = x$links$link, popup = popupLink)
+    map <- addFlows(map, x$links$x0, x$links$y0, x$links$x1, x$links$y1, dir = dirLinks,
+                    flow = abs(sizeLinks), opacity = opacityLinks, maxFlow = 1, maxThickness = 1,
+                    color = colLinks, layerId = x$links$link)
   }
   
   # Add areas
@@ -346,32 +338,16 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
     areaChartType <- match.arg(areaChartType)
     
     map <- addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
-                       data = dataAreas, fillColor = colAreas,
-                       showLabels = !is.null(labelArea),
-                       labelText = labelArea,
-                       width = areaMaxSize,
-                       height = areaMaxHeight,
-                       popup = popupArea, layerId = x$coords$area, opacity = opacityArea)
+                         chartdata = dataAreas, fillColor = colAreas,
+                         showLabels = !is.null(labelArea),
+                         labelText = labelArea,
+                         width = areaMaxSize,
+                         height = areaMaxHeight,
+                         layerId = x$coords$area, 
+                         opacity = opacityArea,
+                         labelMinSize = labelMinSize,
+                         labelMaxSize = labelMaxSize)
   }
-  
-  # Set the view of the map to include all data
-  xcoords <- c()
-  ycoords <- c()
-  
-  if (links) {
-    xcoords <- c(x$links$x0, x$links$x1)
-    ycoords <- c(x$links$y0, x$links$y1)
-  }
-  
-  if (areas) {
-    xcoords <- c(xcoords, x$coords$x)
-    ycoords <- c(ycoords, x$coords$y)
-  }
-
-  rangeX <- range(xcoords)
-  rangeY <- range(ycoords)
-  
-  map <- fitBounds(map, rangeX[1], rangeY[1], rangeX[2], rangeY[2])
   
   # Add shadows to elements
   map %>% addShadows()

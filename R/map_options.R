@@ -18,6 +18,8 @@
 #' @param areaColorScaleOpts
 #'   List of options used to construct a continuous color scale. This list should
 #'   be generated with function \code{colorScaleOptions}.
+#' @param labelMinSize minimal height of labels.
+#' @param labelMaxSize maximal height of labels.
 #' @param linkDefaultCol
 #'   Default color of links.
 #' @param linkDefaultSize
@@ -59,6 +61,7 @@
 plotMapOptions <- function(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30, 
                            areaMaxSize = 50, areaMaxHeight = 50, areaChartColors = NULL,
                            areaColorScaleOpts = colorScaleOptions(),
+                           labelMinSize = 8, labelMaxSize = 24,
                            linkDefaultCol = "#BEBECE", linkDefaultSize = 3, 
                            linkMaxSize = 15, linkColorScaleOpts = colorScaleOptions(),
                            legend = c("choose", "visible", "hidden"),

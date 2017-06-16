@@ -9,6 +9,7 @@
 #' @import htmltools
 #' @import manipulateWidget
 #' @import leaflet
+#' @import leaflet.minicharts
 #' @importFrom plotly plot_ly layout config add_bars add_heatmap
 #' @importFrom grDevices col2rgb colorRampPalette colors gray rainbow
 #' @importFrom graphics plot par
@@ -25,6 +26,7 @@ globalVariables(
 .idCols <- antaresRead:::.idCols
 .timeIdToDate <- antaresRead:::.timeIdToDate
 .getTimeId <- antaresRead:::.getTimeId
+.mergeByRef <- antaresRead:::.mergeByRef
 .checkColumns <- antaresProcessing:::.checkColumns
 .checkAttrs <- antaresProcessing:::.checkAttrs
 
