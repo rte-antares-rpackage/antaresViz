@@ -209,7 +209,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   
   # Function that generates the desired graphic.
   plotFun <- function(table, mcYear, id, variable, elements, type, confInt, dateRange, 
-                      minValue, maxValue, aggregate) {
+                      minValue, maxValue, aggregate, legend) {
     
     if (is.null(variable)) variable <- params[[id]][[table]]$valueCols[1]
     if (is.null(dateRange)) dateRange <- params[[id]][[table]]$dateRange
@@ -289,7 +289,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   
   manipulateWidget(
     plotFun(table, mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
-            maxValue, aggregate),
+            maxValue, aggregate, legend),
     
     table = mwSelect(names(params[[.id]]), value = table, .display = length(params[[.id]]) > 1),
     mcYear = mwSelect(
@@ -326,6 +326,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
       multiple = TRUE
     ),
     aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
+    legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
     .compare = compare,
     .compareOpts = compareOpts
   )

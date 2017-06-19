@@ -82,7 +82,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     
     if (is.null(area)) area = areaList[1]
     
-    plotFun <- function(id, area, dateRange, unit, mcYear) {
+    plotFun <- function(id, area, dateRange, unit, mcYear, legend) {
       # Prepare data for stack creation
       a <- area
       linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
@@ -146,10 +146,10 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     )
   })
   
-  if (!interactive) return(params$x[[1]]$plotFun(area, dateRange, unit, mcYear))
+  if (!interactive) return(params$x[[1]]$plotFun(area, dateRange, unit, mcYear, legend))
   
   manipulateWidget(
-    params$x[[.id]]$plotFun(.id, area, dateRange, unit, mcYear),
+    params$x[[.id]]$plotFun(.id, area, dateRange, unit, mcYear, legend),
     mcYear = mwSelect(c("average", unique(params$x[[.id]]$x$mcYear)), 
                       mcYear, 
                       .display = params$x[[.id]]$displayMcYear),
@@ -158,6 +158,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
                             min = params$x[[.id]]$dataDateRange[1], 
                             max = params$x[[.id]]$dataDateRange[2]),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
+    legend = mwCheckbox(legend),
     .compare = params$compare,
     .compareOpts = params$compareOpts
   )

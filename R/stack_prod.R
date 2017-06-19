@@ -175,7 +175,7 @@ prodStack <- function(x, y = NULL,
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
     if (length(dateRange) < 2) dateRange <- dataDateRange
     
-    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear) {
+    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend) {
       if (length(areas) == 0) return ("Please choose an area")
       stackOpts <- .aliasToStackOptions(stack)
       
@@ -222,11 +222,11 @@ prodStack <- function(x, y = NULL,
   })
   
   if (!interactive) {
-    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear))
+    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
   }
   
   manipulateWidget(
-    params$x[[.id]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear),
+    params$x[[.id]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend),
     mcYear = mwSelect(c("average", unique(params$x[[.id]]$x$mcYear)), .display = params$x[[.id]]$displayMcYear),
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(params$x[[1]]$dateRange, 
@@ -235,6 +235,7 @@ prodStack <- function(x, y = NULL,
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     areas = mwSelect(as.character(unique(params$x[[.id]]$x$area)), areas, multiple = TRUE),
+    legend = mwCheckbox(legend),
     .compare = params$compare,
     .compareOpts = params$compareOpts
   )
