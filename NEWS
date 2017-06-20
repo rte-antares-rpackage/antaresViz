@@ -1,5 +1,17 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+Changes in version 0.10 (2017-06-20)
+
+BREAKING CHANGES:
+* Function plotMapOptions() has lost some parameters of little use and has gained new ones. This may break some scripts.
+
+NEW FEATURES:
+* Comparison mode: All functions can now be used to compare two or more antaresData objects. It is also possible to use a single antaresData object but to compare multiple charts with different parameters.
+
+BUGFIXES:
+* mapLayout() was containing references to the deprecated 'mapStudio' package. This causes a crash on computers where this package has not been installed when it was alive.  
+
+
 Changes in version 0.9 (2017-05-31)
 
 NEW FEATURES:
@@ -10,6 +22,7 @@ NEW FEATURES:
 
 BUGFIXES:
 * plotMap(interactive=TRUE) now works in Rmarkdown documents with "runtime:shiny"
+
 
 Changes in version 0.8 (2017-04-07)
 
