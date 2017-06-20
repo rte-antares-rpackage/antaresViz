@@ -33,20 +33,12 @@
 #'   Should the legend be displayed or not ? Default is to mask the legend but
 #'   add a button to display it. Other values are "visible" to make the legend
 #'   always visible and "hidden" to mask it.
-#' @param addTiles
-#'   Should a base map be downloaded on the internet and displayed ?
-#' @param background Background color of maps (currently not implemented).
-#' @param polygons
-#'   An object of class \code{SpatialPolygonsDataFrame} created by package 
-#'   \code{sp} or related packages. These polygons will be displayed above the 
-#'   base map (if any) and under the layer containing areas and links. It can
-#'   be useful to create maps that do not require an internet connection to be
-#'   correctly displayed or to display custom geographic area boundaries.
-#' @param polygonOptions
-#'   A list of options that are accepted by function 
-#'   \code{\link[leaflet]{addPolygons}}. When parameter \code{polygons} is 
-#'   provided, these options control how they are drawn on the map (color, 
-#'   opacity, etc.).
+#' @param tilesURL URL template used to get map tiles. The followign site 
+#'   provides some URLs;
+#'   \url{https://leaflet-extras.github.io/leaflet-providers/preview/}
+#' @param preprocess A function that takes as argument a map and that returns a
+#'   modified version of this map. This parameter can be used to add extra
+#'   information on a map.
 #'   
 #' @return 
 #'   A list with the values of the different graphical parameters.
@@ -65,18 +57,19 @@ plotMapOptions <- function(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
                            linkDefaultCol = "#BEBECE", linkDefaultSize = 3, 
                            linkMaxSize = 15, linkColorScaleOpts = colorScaleOptions(),
                            legend = c("choose", "visible", "hidden"),
-                           addTiles = TRUE, background = "white", polygons = NULL,
-                           polygonOptions = list(stroke = TRUE,
-                                                 color = "#999",
-                                                 weight = 0.5,
-                                                 opacity = 1,
-                                                 fillOpacity = 0.2,
-                                                 options = list(clickable = FALSE))) {
+                           tilesURL = defaultTilesURL(),
+                           preprocess = function(map) {map}) {
   legend <- match.arg(legend)
   areaColorScaleOpts <- do.call(colorScaleOptions, areaColorScaleOpts)
   linkColorScaleOpts <- do.call(colorScaleOptions, linkColorScaleOpts)
   
   as.list(environment())
+}
+
+#' @export
+#' @rdname plotMapOptions
+defaultTilesURL <- function() {
+  "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
 }
 
 #' @param breaks

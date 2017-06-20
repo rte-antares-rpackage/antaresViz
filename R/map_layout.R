@@ -242,7 +242,6 @@ changeCoords <- function(lon, lat, col = "blue", info = paste(lon, ",", lat), ma
 #'   are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
 #'   If it is equal to 1 or -1 it is represented by a line with an arrow pointing
 #'   respectively the destination and the origin of the link. 
-#' @param background background-color of the map. Not implemented yet.
 #' @param areas
 #'   Should areas be drawn on the map ?
 #' @param links
@@ -292,39 +291,20 @@ changeCoords <- function(lon, lat, col = "blue", info = paste(lon, ",", lat), ma
 #' 
 #' @export
 plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
-                           opacityArea = 1, areaMaxSize = 50, areaMaxHeight = 50,
+                           opacityArea = 1, areaMaxSize = 30, areaMaxHeight = 50,
                            areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"), 
                            labelArea = NULL, labelMinSize = 8, labelMaxSize = 8,
                            colLinks = "#CCCCCC", sizeLinks = 3, 
                            opacityLinks = 1, dirLinks = 0, 
-                           links = TRUE, areas = TRUE,
-                           addTiles = TRUE, background = "white", polygons = NULL,
-                           polygonOptions = list(stroke = TRUE,
-                                                 color = "#bbb",
-                                                 weight = 0.5,
-                                                 opacity = 1,
-                                                 fillOpacity = 0.2,
-                                                 options = list(clickable = FALSE)),
+                           links = TRUE, areas = TRUE, tilesURL = defaultTilesURL(),
+                           preprocess = function(map) {map},
                            width = NULL, height = NULL, ...) {
   
   areaChartType <- match.arg(areaChartType)
   
-  map <- leaflet(width = width, height = height, padding = 10)
-  
-  # Add a base map
-  if (addTiles) {
-    map <- addTiles(map, "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}")
-  }
-  
-  # Add custom polygons
-  if (!is.null(polygons)) {
-    if (!is(polygons, "SpatialPolygonsDataFrame") || !is(polygons, "SpatialPolygons")) {
-      stop("Parameter 'polygons' should be an object of class 'SpatialPolygonsDataFrame'.")
-    }
-    polygonOptions$map <- map
-    polygonOptions$data <- polygons
-    map <- do.call(addPolygons, polygonOptions)
-  }
+  map <- leaflet(width = width, height = height, padding = 10) %>% 
+    addTiles(tilesURL) %>% 
+    preprocess()
   
   # Add links
   if (links) {

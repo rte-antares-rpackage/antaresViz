@@ -131,9 +131,8 @@
               opacityArea = 1, opacityLinks = 1, 
               labelMinSize = options$labelMinSize,
               labelMaxSize = options$labelMaxSize,
-              addTiles = options$addTiles,
-              polygons = options$polygons, 
-              polygonOptions = options$polygonOptions) %>% 
+              tilesURL = options$tilesURL, 
+              preprocess = options$preprocess) %>% 
     addAntaresLegend(display = options$legend)
   
   addShadows(map)
