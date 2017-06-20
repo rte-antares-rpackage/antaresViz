@@ -118,6 +118,10 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
   areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
   if (is.null(mcYear)) mcYear <- "average"
+  if (inherits(y, "mapLayout")) {
+    mapLayout <- y
+    y <- NULL
+  }
   
   group <- paste0("map-group-", sample(1e9, 1))
   
