@@ -16,7 +16,7 @@ leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL
     x,
     width = width,
     height = height,
-    package = 'mapStudio',
+    package = 'antaresViz',
     sizingPolicy = htmlwidgets::sizingPolicy(
       browser.fill = TRUE
     )
@@ -41,7 +41,7 @@ leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL
 #'
 #' @noRd
 leafletDragPointsOutput <- function(outputId, width = '100%', height = '400px'){
-  htmlwidgets::shinyWidgetOutput(outputId, 'leafletDragPoints', width, height, package = 'mapStudio')
+  htmlwidgets::shinyWidgetOutput(outputId, 'leafletDragPoints', width, height, package = 'antaresViz')
 }
 
 #' @rdname placeGeoPoints-shiny

@@ -10,6 +10,9 @@
 #'   An object of class \code{antaresData} created with function 
 #'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
 #'   districts.
+#' @param y
+#'   Optional object of class \code{antaresData}. If it is specified, then two
+#'   charts are generated.
 #' @param stack
 #'   Name of the stack to use. One can visualize available stacks with 
 #'   \code{prodStackAliases}
@@ -28,6 +31,15 @@
 #'   Title of the graph.
 #' @param unit
 #'   Unit used in the graph. Possible values are "MWh", "GWh" or "TWh".
+#' @param compare
+#'   An optional character vector containing names of parameters. When it is set,
+#'   two charts are outputed with their own input controls. Alternatively, it can
+#'   be a named list with names corresponding to parameter names and values being
+#'   list with the initial values of the given parameter for each chart.
+#' @param compareOpts
+#'   List of options that indicates the number of charts to create and their 
+#'   position. Check out the documentation of 
+#'   \code{\link[manipulateWidget]{compareOptions}} to see available options.
 #' @param width
 #'   Width of the graph expressed in pixels or in percentage of 
 #'   the parent element. For instance "500px" and "100\%" are valid values.
@@ -41,10 +53,12 @@
 #'   Logical value indicating if a legend should be drawn. This argument is 
 #'   usefull when one wants to create a shared legend with
 #'   \code{\link{prodStackLegend}}
-#' @param legendId
-#'   Id of the legend linked to the graph. This argument is 
-#'   usefull when one wants to create a shared legend with
+#' @param legendId Id of the legend linked to the graph. This argument is 
+#'   usefull when one wants to create a shared legend with 
 #'   \code{\link{prodStackLegend}}
+#' @param groupId Parameter that can be used to synchronize the horizontal 
+#'   zoom of multiple charts. All charts that need to be synchronized must
+#'   have the same group. 
 #' @param legendItemsPerRow
 #'   Number of elements to put in each row of the legend.
 #' @param name
@@ -119,89 +133,111 @@
 #' }
 #' 
 #' @export
-prodStack <- function(x, stack = "eco2mix",
+prodStack <- function(x, y = NULL, 
+                      stack = "eco2mix",
                       areas = NULL, 
                       mcYear = "average",
                       dateRange = NULL,
                       main = "Production stack", unit = c("MWh", "GWh", "TWh"),
+                      compare = NULL,
+                      compareOpts = list(),
                       interactive = getInteractivity(), 
                       legend = TRUE, legendId = sample(1e9, 1),
+                      groupId = legendId,
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL) {
   
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
-  # Check that input contains area or district data
-  if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
-  
-  if (is(x, "antaresDataTable")) {
-    if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
-  } else if (is(x, "antaresDataList")) {
-    if (is.null(x$areas) & is.null(x$districts)) stop("'x' should contain area or district data")
-    if (!is.null(x$areas)) x <- x$areas
-    else x <- x$districts
-  }
-  
-  if (is.null(x$area)) x$area <- x$district
-  timeStep <- attr(x, "timeStep")
-  opts <- simOptions(x)
-  if (is.null(areas)) {
-    areas <- unique(x$area)[1]
-  }
-  
-  # should mcYear parameter be displayed on the UI?
-  displayMcYear <- !attr(x, "synthesis") && length(unique(x$mcYear)) > 1
-  
-  dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
-  if (length(dateRange) < 2) dateRange <- dataDateRange
-  
-  plotWithLegend <- function(areas, main = "", unit, stack, dateRange, mcYear) {
-    if (length(areas) == 0) return ("Please choose an area")
-    stackOpts <- .aliasToStackOptions(stack)
+  params <- .getDataForComp(x, y, compare, compareOpts, function(x) {
+    # Check that input contains area or district data
+    if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
     
-    dt <- x[area %in% areas]
-    
-    if (mcYear == "average") dt <- synthesize(dt)
-    else if ("mcYear" %in% names(dt)) {
-      mcy <- mcYear
-      dt <- dt[mcYear == mcy]
+    if (is(x, "antaresDataTable")) {
+      if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
+    } else if (is(x, "antaresDataList")) {
+      if (is.null(x$areas) & is.null(x$districts)) stop("'x' should contain area or district data")
+      if (!is.null(x$areas)) x <- x$areas
+      else x <- x$districts
     }
     
-    if (!is.null(dateRange)) {
-      dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = simOptions(x))) %between% dateRange]
+    if (is.null(x$area)) x$area <- x$district
+    timeStep <- attr(x, "timeStep")
+    opts <- simOptions(x)
+    if (is.null(areas)) {
+      areas <- unique(x$area)[1]
     }
     
-    p <- .plotProdStack(dt, 
-                        stackOpts$variables, 
-                        stackOpts$colors,
-                        stackOpts$lines,
-                        stackOpts$lineColors,
-                        main = main,
-                        unit = unit,
-                        legendId = legendId)
-    if (legend) {
-      l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId)
-    } else {
-      l <- NULL
+    # should mcYear parameter be displayed on the UI?
+    displayMcYear <- !attr(x, "synthesis") && length(unique(x$mcYear)) > 1
+    
+    dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
+    if (length(dateRange) < 2) dateRange <- dataDateRange
+    
+    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend) {
+      if (length(areas) == 0) return ("Please choose an area")
+      stackOpts <- .aliasToStackOptions(stack)
+      
+      dt <- x[area %in% areas]
+      
+      if (mcYear == "average") dt <- synthesize(dt)
+      else if ("mcYear" %in% names(dt)) {
+        mcy <- mcYear
+        dt <- dt[mcYear == mcy]
+      }
+      
+      if (!is.null(dateRange)) {
+        dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = opts)) %between% dateRange]
+      }
+      
+      p <- .plotProdStack(dt, 
+                          stackOpts$variables, 
+                          stackOpts$colors,
+                          stackOpts$lines,
+                          stackOpts$lineColors,
+                          main = main,
+                          unit = unit,
+                          legendId = legendId + id - 1, groupId = groupId)
+      if (legend) {
+        l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId + id - 1)
+      } else {
+        l <- NULL
+      }
+      
+      combineWidgets(p, footer = l, width = width, height = height)
     }
     
-    combineWidgets(p, footer = l, width = width, height = height)
-  }
+    list(
+      plotWithLegend = plotWithLegend,
+      x = x,
+      timeStep = timeStep,
+      opts = opts,
+      areas = areas,
+      displayMcYear = displayMcYear,
+      dataDateRange = dataDateRange,
+      dateRange = dateRange
+      
+    )
+  })
   
   if (!interactive) {
-    return(plotWithLegend(areas, main, unit, stack, dateRange, mcYear))
+    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
   }
   
   manipulateWidget(
-    plotWithLegend(areas, main, unit, stack, dateRange, mcYear),
-    mcYear = mwSelect(c("average", unique(x$mcYear)), .display = displayMcYear),
+    params$x[[.id]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend),
+    mcYear = mwSelect(c("average", unique(params$x[[.id]]$x$mcYear)), .display = params$x[[.id]]$displayMcYear),
     main = mwText(main, label = "title"),
-    dateRange = mwDateRange(dateRange, min = dataDateRange[1], max = dataDateRange[2]),
+    dateRange = mwDateRange(params$x[[1]]$dateRange, 
+                            min = params$x[[.id]]$dataDateRange[1], 
+                            max = params$x[[.id]]$dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-    areas = mwSelect(as.character(unique(x$area)), areas, multiple = TRUE),
-    .main = "Production stack"
+    areas = mwSelect(as.character(unique(params$x[[.id]]$x$area)), areas, multiple = TRUE),
+    legend = mwCheckbox(legend),
+    .compare = params$compare,
+    .compareOpts = params$compareOpts
   )
 }
 
@@ -264,6 +300,7 @@ prodStack <- function(x, stack = "eco2mix",
 #' @noRd
 .plotProdStack <- function(x, variables, colors, lines, lineColors, 
                                  main = NULL, unit = "MWh", legendId = "",
+                                 groupId = legendId,
                                  width = NULL, height = NULL) {
   
   timeStep <- attr(x, "timeStep")
@@ -278,6 +315,7 @@ prodStack <- function(x, stack = "eco2mix",
   }
   
   .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, legendId,
+             groupId,
              main = main, ylab = sprintf("Production (%s)", unit), 
              width = width, height = height)
 }

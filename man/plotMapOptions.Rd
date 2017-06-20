@@ -2,6 +2,7 @@
 % Please edit documentation in R/map_options.R
 \name{plotMapOptions}
 \alias{plotMapOptions}
+\alias{defaultTilesURL}
 \alias{colorScaleOptions}
 \title{Graphical options for plotMap}
 \usage{
@@ -10,10 +11,10 @@ plotMapOptions(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
   areaColorScaleOpts = colorScaleOptions(), labelMinSize = 8,
   labelMaxSize = 24, linkDefaultCol = "#BEBECE", linkDefaultSize = 3,
   linkMaxSize = 15, linkColorScaleOpts = colorScaleOptions(),
-  legend = c("choose", "visible", "hidden"), addTiles = TRUE,
-  background = "white", polygons = NULL, polygonOptions = list(stroke =
-  TRUE, color = "#999", weight = 0.5, opacity = 1, fillOpacity = 0.2, options =
-  list(clickable = FALSE)))
+  legend = c("choose", "visible", "hidden"), tilesURL = defaultTilesURL(),
+  preprocess = function(map) {     map })
+
+defaultTilesURL()
 
 colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
   zeroCol = "#FAFAFA", posCol = "#0000FF", naCol = "#EEEEEE",
@@ -50,20 +51,13 @@ be generated with function \code{colorScaleOptions}.}
 add a button to display it. Other values are "visible" to make the legend
 always visible and "hidden" to mask it.}
 
-\item{addTiles}{Should a base map be downloaded on the internet and displayed ?}
+\item{tilesURL}{URL template used to get map tiles. The followign site 
+provides some URLs;
+\url{https://leaflet-extras.github.io/leaflet-providers/preview/}}
 
-\item{background}{Background color of maps (currently not implemented).}
-
-\item{polygons}{An object of class \code{SpatialPolygonsDataFrame} created by package 
-\code{sp} or related packages. These polygons will be displayed above the 
-base map (if any) and under the layer containing areas and links. It can
-be useful to create maps that do not require an internet connection to be
-correctly displayed or to display custom geographic area boundaries.}
-
-\item{polygonOptions}{A list of options that are accepted by function 
-\code{\link[leaflet]{addPolygons}}. When parameter \code{polygons} is 
-provided, these options control how they are drawn on the map (color, 
-opacity, etc.).}
+\item{preprocess}{A function that takes as argument a map and that returns a
+modified version of this map. This parameter can be used to add extra
+information on a map.}
 
 \item{breaks}{Either a single number indicating the approximate number of colors to use, or
 a vector of values at which values to change color. 

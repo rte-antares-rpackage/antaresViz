@@ -123,29 +123,6 @@
   )
 }
 
-.valuesToPopup <- function(x, var, title) {
-  var <- var[var %in% names(x)]
-  if (length(var) == 0) return(title)
-  
-  popupTemplate <- '<div class="popup"><h2>%s</h2><hr/><table><tbody>%s</tbody></table></div>'
-  
-  rowTemplate <- '<tr><td class="key">%s</td><td class="value">%s</td></tr>'
-  
-  x <- unname(lapply(var, function(v) {
-    x <- x[[v]]
-    if (is.numeric(x)) x <- signif(x, 4)
-    sprintf(rowTemplate, v, x)
-  }))
-  
-  x$sep <- ""
-  
-  rows <- do.call(paste, x)
-  
-  sprintf(popupTemplate, title, rows)
-  
-  ""
-}
-
 # Initialize a map with all elements invisible: links, circles and bar or polar 
 # charts 
 .initMap <- function(x, ml, options) {
@@ -154,9 +131,8 @@
               opacityArea = 1, opacityLinks = 1, 
               labelMinSize = options$labelMinSize,
               labelMaxSize = options$labelMaxSize,
-              addTiles = options$addTiles,
-              polygons = options$polygons, 
-              polygonOptions = options$polygonOptions) %>% 
+              tilesURL = options$tilesURL, 
+              preprocess = options$preprocess) %>% 
     addAntaresLegend(display = options$legend)
   
   addShadows(map)

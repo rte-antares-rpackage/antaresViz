@@ -96,7 +96,7 @@
 #' }
 #' 
 #' @export
-plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
                     uniqueScale = FALSE,
                     showLabels = FALSE,
@@ -108,6 +108,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     timeId = NULL,
                     mcYear = "average",
                     main = "",
+                    compare = NULL,
+                    compareOpts = list(),
                     interactive = getInteractivity(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL) {
@@ -116,93 +118,95 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   areaChartType <- match.arg(areaChartType)
   options <- do.call(plotMapOptions, options)
   if (is.null(mcYear)) mcYear <- "average"
+  if (inherits(y, "mapLayout")) {
+    mapLayout <- y
+    y <- NULL
+  }
+  
+  group <- paste0("map-group-", sample(1e9, 1))
   
   # Check that parameters have the good class
   if (!is(mapLayout, "mapLayout")) stop("Argument 'mapLayout' must be an object of class 'mapLayout' created with function 'mapLayout'.")
-  if (!is(x, "antaresData")) {
-    stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
-  } else {
-    x <- as.antaresDataList(x)
-    if (is.null(x$areas) && is.null(x$links)) stop("Argument 'x' should contain at least area or link data.")
-  }
   
-  # Should parameter mcYear be shown in the UI ?
-  showMcYear <- !attr(x, "synthesis") && length(unique(x[[1]]$mcYear)) > 1
-  
-  # Should links and/or areas be displayed ?
-  areas <- !is.null(x$areas)
-  links <- !is.null(x$links)
-  
-  # First and last time ids in data
-  timeIdMin <- min(x[[1]]$timeId)
-  timeIdMax <- max(x[[1]]$timeId)
-
-  # Select first timeId if necessary
-  if (is.null(timeId)) timeId <- timeIdMin
-  
-  # Keep only links and areas present in the data
-  if (areas) {
-    areaList <- unique(x$areas$area)
-    mapLayout$coords <- mapLayout$coords[area %in% areaList]
-  }
-  if (links) {
-    linkList <- unique(x$links$link)
-    mapLayout$links <- mapLayout$links[link %in% linkList]
-  }
-  
-  # Precompute synthetic results and set keys for fast filtering
-  syntx <- synthesize(x) 
-
-  oldkeys <- lapply(x, key)
-  
-  if (attr(x, "synthesis")) {
-    mcYear <- "average"
-  } else {
-    if (areas) setkeyv(x$areas, "mcYear")
-    if (links) setkeyv(x$links, "mcYear")
-  }
-  
-  # Restore input data on exit
-  on.exit({
+  params <- .getDataForComp(x, y, compare, compareOpts, function(x) {
+    if (!is(x, "antaresData")) {
+      stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
+    } else {
+      x <- as.antaresDataList(x)
+      if (is.null(x$areas) && is.null(x$links)) stop("Argument 'x' should contain at least area or link data.")
+    }
+    
+    # Should parameter mcYear be shown in the UI ?
+    showMcYear <- !attr(x, "synthesis") && length(unique(x[[1]]$mcYear)) > 1
+    
+    # Should links and/or areas be displayed ?
+    areas <- !is.null(x$areas)
+    links <- !is.null(x$links)
+    
+    # First and last time ids in data
+    timeIdMin <- min(x[[1]]$timeId)
+    timeIdMax <- max(x[[1]]$timeId)
+    
+    # Select first timeId if necessary
+    if (is.null(timeId)) timeId <- timeIdMin
+    
+    # Keep only links and areas present in the data
     if (areas) {
-      setkeyv(x$areas, oldkeys$areas)
+      areaList <- unique(x$areas$area)
+      mapLayout$coords <- mapLayout$coords[area %in% areaList]
     }
     if (links) {
-      setkeyv(x$links, oldkeys$links)
+      linkList <- unique(x$links$link)
+      mapLayout$links <- mapLayout$links[link %in% linkList]
     }
-  })
-  
-  # Function that draws the final map when leaving the shiny gadget.
-  plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
-                      uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
-                      popupLinkVars, 
-                      type = c("detail", "avg"), mcYear,
-                      initial = TRUE, session = NULL, outputId = "output1") {
     
-    type <- match.arg(type)
-    if (type == "avg") t <- NULL
+    # Precompute synthetic results and set keys for fast filtering
+    syntx <- synthesize(x) 
     
-    # Prepare data
-    if (mcYear == "average") x <- syntx
+    oldkeys <- lapply(x, key)
     
-    if (initial) {
-      map <- .initMap(x, mapLayout, options)
+    if (attr(x, "synthesis")) {
+      mcYear <- "average"
     } else {
-      map <- leafletProxy(outputId, session)
+      if (areas) setkeyv(x$areas, "mcYear")
+      if (links) setkeyv(x$links, "mcYear")
     }
     
-    map %>% 
-      .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
-      .redrawCircles(x, mapLayout, mcYear, t, colAreaVar, sizeAreaVars, popupAreaVars, 
-                     uniqueScale, showLabels, labelAreaVar, areaChartType, options)
-  }
-  
-  if (!interactive) {
-    map <-  plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
-                    uniqueScale, showLabels, labelAreaVar, colLinkVar, 
-                    sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear)
-    return(combineWidgets(map, title = main, width = width, height = height))
-  } else {
+    # Restore input data on exit
+    on.exit({
+      if (areas) {
+        setkeyv(x$areas, oldkeys$areas)
+      }
+      if (links) {
+        setkeyv(x$links, oldkeys$links)
+      }
+    }, add = TRUE)
+    
+    # Function that draws the final map when leaving the shiny gadget.
+    plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
+                        uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
+                        popupLinkVars, 
+                        type = c("detail", "avg"), mcYear,
+                        initial = TRUE, session = NULL, outputId = "output1") {
+
+      type <- match.arg(type)
+      if (type == "avg") t <- NULL
+      
+      # Prepare data
+      if (mcYear == "average") x <- syntx
+      
+      if (initial) {
+        map <- .initMap(x, mapLayout, options) %>% syncWith(group)
+      } else {
+        map <- leafletProxy(outputId, session)
+      }
+      
+      map %>% 
+        .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
+        .redrawCircles(x, mapLayout, mcYear, t, colAreaVar, sizeAreaVars, popupAreaVars, 
+                       uniqueScale, showLabels, labelAreaVar, areaChartType, options)
+    }
+    
     # Create the interactive widget
     areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
     
@@ -218,20 +222,40 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     # We don't want to show the time id slider if there is only one time id
     hideTimeIdSlider <- timeIdMin == timeIdMax
     
+    list(
+      plotFun = plotFun,
+      x = x,
+      showMcYear = showMcYear,
+      areaValColums = areaValColums,
+      areaNumValColumns = areaNumValColumns,
+      linkValColums = linkValColums,
+      linkNumValColumns = linkNumValColumns,
+      hideTimeIdSlider = hideTimeIdSlider,
+      timeId = timeId
+    )
+  })
+  
+  if (!interactive) {
+    map <-  params$x[[1]]$plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
+                    uniqueScale, showLabels, labelAreaVar, colLinkVar, 
+                    sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear)
+    return(combineWidgets(map, title = main, width = width, height = height))
+  } else {
+    
     manipulateWidget(
       {
-        plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
+        params$x[[.id]]$plotFun(params$x[[.id]]$timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                 uniqueScale, showLabels, labelAreaVar,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, mcYear, .initial, .session,
                 .output)
       },
       
-      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = showMcYear),
+      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = params$x[[.id]]$showMcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       
       Areas = mwGroup(
-        colAreaVar = mwSelect(c("none", areaValColums), colAreaVar, label = "Color"),
-        sizeAreaVars = mwSelect(areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
+        colAreaVar = mwSelect(c("none", params$x[[.id]]$areaValColums), colAreaVar, label = "Color"),
+        sizeAreaVars = mwSelect(params$x[[.id]]$areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
         areaChartType = mwSelect(list("bar chart" = "bar", 
                                       "pie chart" = "pie",
                                       "polar (area)" = "polar-area",
@@ -242,23 +266,22 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                                  .display = length(sizeAreaVars) >= 2 && areaChartType != "pie"),
         showLabels = mwCheckbox(showLabels, label = "Show labels", 
                                 .display = length(sizeAreaVars) >= 2),
-        popupAreaVars = mwSelect(areaValColums, popupAreaVars, label = "Popup", multiple = TRUE),
-        labelAreaVar = mwSelect(c("none", areaValColums), labelAreaVar, label = "Label", 
+        popupAreaVars = mwSelect(params$x[[.id]]$areaValColums, popupAreaVars, label = "Popup", multiple = TRUE),
+        labelAreaVar = mwSelect(c("none", params$x[[.id]]$areaValColums), labelAreaVar, label = "Label", 
                                 .display = length(sizeAreaVars) < 2)
       ),
       
       Links = mwGroup(
-        colLinkVar = mwSelect(c("none", linkValColums), colLinkVar, label = "Color"),
-        sizeLinkVar = mwSelect(c("none", linkNumValColumns), sizeLinkVar, label = "Width"),
-        popupLinkVars = mwSelect(linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
+        colLinkVar = mwSelect(c("none", params$x[[.id]]$linkValColums), colLinkVar, label = "Color"),
+        sizeLinkVar = mwSelect(c("none", params$x[[.id]]$linkNumValColumns), sizeLinkVar, label = "Width"),
+        popupLinkVars = mwSelect(params$x[[.id]]$linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
       ),
-      
-      .main = main,
       .viewer = "browser",
       .width = width,
       .height = height,
-      .return = function(w, e) combineWidgets(w, title = main, width = width, height = height)
+      .return = function(w, e) combineWidgets(w, title = main, width = width, height = height),
+      .compare = params$compare,
+      .compareOpts = params$compareOpts
     )
   }
 }
-

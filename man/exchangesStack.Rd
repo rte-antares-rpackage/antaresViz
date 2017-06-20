@@ -4,17 +4,21 @@
 \alias{exchangesStack}
 \title{Plot the exchanges of an area}
 \usage{
-exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
-  colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
-  "TWh"), interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), legendItemsPerRow = 5, width = NULL,
-  height = NULL)
+exchangesStack(x, y = NULL, area = NULL, mcYear = "average",
+  dateRange = NULL, colors = NULL, main = NULL, ylab = NULL,
+  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), legend = TRUE,
+  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
 \code{\link[antaresRead]{readAntares}}. It is required to contain link data.
 If it also contains area data with column `ROW BAL.`, then exchanges with
 the rest of the world are also displayed on the chart.}
+
+\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
+charts are generated.}
 
 \item{area}{Name of a single area. The flows from/to this area will be drawn by the
 function.}
@@ -37,6 +41,15 @@ order to use default colors.}
 
 \item{unit}{Unit used in the graph. Possible values are "MWh", "GWh" or "TWh".}
 
+\item{compare}{An optional character vector containing names of parameters. When it is set,
+two charts are outputed with their own input controls. Alternatively, it can
+be a named list with names corresponding to parameter names and values being
+list with the initial values of the given parameter for each chart.}
+
+\item{compareOpts}{List of options that indicates the number of charts to create and their 
+position. Check out the documentation of 
+\code{\link[manipulateWidget]{compareOptions}} to see available options.}
+
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}
 
@@ -45,8 +58,12 @@ usefull when one wants to create a shared legend with
 \code{\link{prodStackLegend}}}
 
 \item{legendId}{Id of the legend linked to the graph. This argument is 
-usefull when one wants to create a shared legend with
+usefull when one wants to create a shared legend with 
 \code{\link{prodStackLegend}}}
+
+\item{groupId}{Parameter that can be used to synchronize the horizontal 
+zoom of multiple charts. All charts that need to be synchronized must
+have the same group.}
 
 \item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
 

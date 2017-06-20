@@ -5,14 +5,13 @@
 \title{Plot method for map layout}
 \usage{
 \method{plot}{mapLayout}(x, colAreas = x$coords$color, dataAreas = 1,
-  opacityArea = 1, areaMaxSize = 50, areaMaxHeight = 50,
+  opacityArea = 1, areaMaxSize = 30, areaMaxHeight = 50,
   areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"),
   labelArea = NULL, labelMinSize = 8, labelMaxSize = 8,
   colLinks = "#CCCCCC", sizeLinks = 3, opacityLinks = 1, dirLinks = 0,
-  links = TRUE, areas = TRUE, addTiles = TRUE, background = "white",
-  polygons = NULL, polygonOptions = list(stroke = TRUE, color = "#bbb",
-  weight = 0.5, opacity = 1, fillOpacity = 0.2, options = list(clickable =
-  FALSE)), width = NULL, height = NULL, ...)
+  links = TRUE, areas = TRUE, tilesURL = defaultTilesURL(),
+  preprocess = function(map) {     map }, width = NULL, height = NULL,
+  ...)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}
@@ -57,20 +56,13 @@ respectively the destination and the origin of the link.}
 
 \item{areas}{Should areas be drawn on the map ?}
 
-\item{addTiles}{Should a base map be downloaded on the internet and displayed ?}
+\item{tilesURL}{URL template used to get map tiles. The followign site 
+provides some URLs;
+\url{https://leaflet-extras.github.io/leaflet-providers/preview/}}
 
-\item{background}{background-color of the map. Not implemented yet.}
-
-\item{polygons}{An object of class \code{SpatialPolygonsDataFrame} created by package 
-\code{sp} or related packages. These polygons will be displayed above the 
-base map (if any) and under the layer containing areas and links. It can
-be useful to create maps that do not require an internet connection to be
-correctly displayed or to display custom geographic area boundaries.}
-
-\item{polygonOptions}{A list of options that are accepted by function 
-\code{\link[leaflet]{addPolygons}}. When parameter \code{polygons} is 
-provided, these options control how they are drawn on the map (color, 
-opacity, etc.).}
+\item{preprocess}{A function that takes as argument a map and that returns a
+modified version of this map. This parameter can be used to add extra
+information on a map.}
 
 \item{width}{Width of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
