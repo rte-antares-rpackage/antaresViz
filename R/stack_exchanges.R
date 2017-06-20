@@ -139,6 +139,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     list(
       plotFun = plotFun,
       areaList = areaList,
+      area = area,
       dataDateRange = dataDateRange,
       dateRange = dateRange,
       displayMcYear = displayMcYear,
@@ -146,7 +147,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     )
   })
   
-  if (!interactive) return(params$x[[1]]$plotFun(area, dateRange, unit, mcYear, legend))
+  if (!interactive) return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend))
   
   manipulateWidget(
     params$x[[.id]]$plotFun(.id, area, dateRange, unit, mcYear, legend),
