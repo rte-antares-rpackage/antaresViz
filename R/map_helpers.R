@@ -128,6 +128,7 @@
 .initMap <- function(x, ml, options) {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
+              colAreas = options$areaDefaultCol,
               opacityArea = 1, opacityLinks = 1, 
               labelMinSize = options$labelMinSize,
               labelMaxSize = options$labelMaxSize,
@@ -143,6 +144,7 @@
                            popupAreaVars, uniqueScale, showLabels, labelAreaVar,
                            areaChartType,
                            options) {
+  
   if (is.null(x$areas)) return(map)
   timeStep <- attr(x, "timeStep")
   
@@ -186,10 +188,29 @@
   
   showValuesInPopup <- length(sizeAreaVars) > 0
   
+  # Update corresponding polygons if necessary
+  if (!is.null(ml$map)) {
+    onChange <- JS('(function(opts, d3) {
+        if (opts.fillColor && this._map) {
+          var s = this._map.layerManager.getLayer("shape", this.layerId);
+          d3.select(s._path)
+            .transition()
+            .duration(750)
+            .attr("fill", opts.fillColor);
+        }
+      }
+    )')
+    if (length(sizeAreaVars) < 2) width <- 0
+    else width <- areaWidth
+  } else {
+    onChange <- JS(NULL)
+    width <- areaWidth
+  }
+  
   # Update areas
   map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
                           time = optsArea$coords$time,
-                          maxValues = optsArea$maxSize, width = areaWidth,
+                          maxValues = optsArea$maxSize, width = width,
                           height = options$areaMaxHeight,
                           showLabels = showLabels, labelText = labels, 
                           type = areaChartType[[1]], 
@@ -197,6 +218,7 @@
                           fillColor = optsArea$color,
                           timeFormat = .getTimeFormat(timeStep),
                           legend = FALSE,
+                          onChange = onChange,
                           popup = popupArgs(
                             showValues = showValuesInPopup,
                             digits = 2,

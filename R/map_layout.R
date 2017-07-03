@@ -53,7 +53,6 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
   mapCoords <- changeCoords(coords$x, coords$y, coords$color, info, map)
   coords$x <- sp::coordinates(mapCoords)[, 1]
   coords$y <- sp::coordinates(mapCoords)[, 2]
-  if (!is.null(map)) coords$geoAreaId <- mapCoords$geoAreaId
   
   if (what == "areas") {
     links[coords, `:=`(x0 = x, y0 = y),on=c(from = "area")]
@@ -63,7 +62,14 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
     links[coords, `:=`(x1 = x, y1 = y),on=c(toDistrict = "district")]
   }
   
-  res <- list(coords = coords, links = links)
+  if (!is.null(map)) {
+    coords$geoAreaId <- mapCoords$geoAreaId
+    coords <- coords[!is.na(coords$geoAreaId),]
+    
+    map <- map[coords$geoAreaId,]
+  }
+  
+  res <- list(coords = coords, links = links, map = map)
   class(res) <- "mapLayout"
   attr(res, "type") <- what
   res
@@ -302,9 +308,16 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   
   areaChartType <- match.arg(areaChartType)
   
-  map <- leaflet(width = width, height = height, padding = 10) %>% 
-    addTiles(tilesURL) %>% 
-    preprocess()
+  map <- leaflet(width = width, height = height, padding = 10) %>% addTiles(tilesURL) 
+  
+  # Add Polygons
+  if (areas & !is.null(x$map)) {
+    map <- addPolygons(map, data = x$map, layerId = x$coords$area, fillColor = colAreas, weight = 1,
+                       fillOpacity = 1, color = "#333")
+  }
+  
+  # Add custom elements
+  map <- preprocess(map)
   
   # Add links
   if (links) {
@@ -315,6 +328,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   
   # Add areas
   if (areas) {
+    
     areaChartType <- match.arg(areaChartType)
     
     map <- addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
@@ -327,6 +341,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
                          opacity = opacityArea,
                          labelMinSize = labelMinSize,
                          labelMaxSize = labelMaxSize)
+    
   }
   
   # Add shadows to elements
