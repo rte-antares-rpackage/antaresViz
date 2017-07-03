@@ -56,7 +56,7 @@
   res <- list(coords = data, dir = 0)
   
   # color
-  if (colVar != "none" & length(sizeVar) <= 1) {
+  if (colVar != "none") {
     if (is.numeric(data[[colVar]])) {
       rangevar <- range(data[[colVar]])
       # Special case of FLOW LIN
@@ -206,6 +206,10 @@
   } else {
     onChange <- JS(NULL)
     width <- areaWidth
+    if (length(sizeAreaVars) >= 2) {
+      optsArea$color <- options$areaDefaultCol
+      optsArea$pal <- NULL
+    }
   }
   
   # Update areas
