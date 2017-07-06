@@ -190,17 +190,16 @@
   
   # Update corresponding polygons if necessary
   if (!is.null(ml$map)) {
-    onChange <- JS('(function(opts, popup, d3) {
-        var s = this._map.layerManager.getLayer("shape", this.layerId);
-        s.bindPopup(popup);
-        if (opts.fillColor) {
-          d3.select(s._path)
-            .transition()
-            .duration(750)
-            .attr("fill", opts.fillColor);
-        }
+    onChange <- JS('
+      var s = this._map.layerManager.getLayer("shape", this.layerId);
+      s.bindPopup(popup);
+      if (opts.fillColor) {
+        d3.select(s._path)
+          .transition()
+          .duration(750)
+          .attr("fill", opts.fillColor);
       }
-    )')
+    ')
     if (length(sizeAreaVars) < 2) width <- 0
     else width <- areaWidth
   } else {
