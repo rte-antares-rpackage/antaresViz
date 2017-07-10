@@ -6,6 +6,7 @@ Date: 2017-05-31
 Authors@R: c(
     person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = "ctb"),
+    person("Baptiste", "SEGUINOT", , "baptiste.seguinot@rte-france.com", role = "ctb"),
     person("RTE", role = "cph")
     )
 Maintainer: Francois Guillem <francois.guillem@rte-france.com>
