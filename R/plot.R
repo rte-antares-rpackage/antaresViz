@@ -282,7 +282,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   # to interactively explore the data
   if (!interactive) {
     return(plotFun(table, mcYear, 1, variable, elements, type, confInt, dateRange, 
-                   minValue, maxValue, aggregate))
+                   minValue, maxValue, aggregate, legend))
   }
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
