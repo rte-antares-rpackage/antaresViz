@@ -172,16 +172,6 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       if (links) setkeyv(x$links, "mcYear")
     }
     
-    # Restore input data on exit
-    on.exit({
-      if (areas) {
-        setkeyv(x$areas, oldkeys$areas)
-      }
-      if (links) {
-        setkeyv(x$links, oldkeys$links)
-      }
-    }, add = TRUE)
-    
     # Function that draws the final map when leaving the shiny gadget.
     plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
                         uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
@@ -191,6 +181,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
 
       type <- match.arg(type)
       if (type == "avg") t <- NULL
+      else if (is.null(t)) t <- 0
       
       # Prepare data
       if (mcYear == "average") x <- syntx
