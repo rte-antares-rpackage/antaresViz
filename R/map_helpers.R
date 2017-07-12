@@ -56,6 +56,7 @@
   res <- list(coords = data, dir = 0)
   
   # color
+  if (!colVar %in% names(data)) colVar <- "none"
   if (colVar != "none") {
     if (is.numeric(data[[colVar]])) {
       rangevar <- range(data[[colVar]])
@@ -92,6 +93,7 @@
   }
   
   # size
+  sizeVar <- intersect(sizeVar, names(data))
   if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
     res$size <- as.matrix(data[, sizeVar, with = FALSE])
     res$maxSize <- apply(abs(as.matrix(data[, sizeVar, with = FALSE])), 2, max)
