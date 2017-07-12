@@ -199,11 +199,12 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
     }
     
     # Create the interactive widget
-    areaValColums <- setdiff(names(x$areas), .idCols(x$areas))
+    areaValColumns <- setdiff(names(x$areas), .idCols(x$areas))
+    areaValColumnsSynt <- setdiff(names(syntx$areas), .idCols(syntx$areas))
     
     areaNumValColumns <- sapply(x$areas, is.numeric)
     areaNumValColumns <- names(areaNumValColumns)[areaNumValColumns == TRUE]
-    areaNumValColumns <- intersect(areaValColums, areaNumValColumns)
+    areaNumValColumns <- intersect(areaValColumns, areaNumValColumns)
     
     linkValColums <- setdiff(names(x$links), .idCols(x$links))
     
@@ -213,11 +214,14 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
     # We don't want to show the time id slider if there is only one time id
     hideTimeIdSlider <- timeIdMin == timeIdMax
     
+    print(areaValColumnsSynt)
+    
     list(
       plotFun = plotFun,
       x = x,
       showMcYear = showMcYear,
-      areaValColums = areaValColums,
+      areaValColumns = areaValColumns,
+      areaValColumnsSynt = areaValColumnsSynt,
       areaNumValColumns = areaNumValColumns,
       linkValColums = linkValColums,
       linkNumValColumns = linkNumValColumns,
@@ -245,7 +249,14 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       
       Areas = mwGroup(
-        colAreaVar = mwSelect(c("none", params$x[[.id]]$areaValColums), colAreaVar, label = "Color"),
+        colAreaVar = mwSelect(
+          choices = {
+            if (mcYear == "average") c("none", params$x[[.id]]$areaValColumnsSynt)
+            else c("none", params$x[[.id]]$areaValColumns)
+          },
+          value = colAreaVar, 
+          label = "Color"
+        ),
         sizeAreaVars = mwSelect(params$x[[.id]]$areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
         areaChartType = mwSelect(list("bar chart" = "bar", 
                                       "pie chart" = "pie",
@@ -257,9 +268,23 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                                  .display = length(sizeAreaVars) >= 2 && areaChartType != "pie"),
         showLabels = mwCheckbox(showLabels, label = "Show labels", 
                                 .display = length(sizeAreaVars) >= 2),
-        popupAreaVars = mwSelect(params$x[[.id]]$areaValColums, popupAreaVars, label = "Popup", multiple = TRUE),
-        labelAreaVar = mwSelect(c("none", params$x[[.id]]$areaValColums), labelAreaVar, label = "Label", 
-                                .display = length(sizeAreaVars) < 2)
+        popupAreaVars = mwSelect(
+          choices = {
+            if (mcYear == "average") c("none", params$x[[.id]]$areaValColumnsSynt)
+            else c("none", params$x[[.id]]$areaValColumns)
+          }, 
+          popupAreaVars, 
+          label = "Popup", 
+          multiple = TRUE
+        ),
+        labelAreaVar = mwSelect(
+          choices = {
+            if (mcYear == "average") c("none", params$x[[.id]]$areaValColumnsSynt)
+            else c("none", params$x[[.id]]$areaValColumns)
+          }, 
+          labelAreaVar, label = "Label", 
+          .display = length(sizeAreaVars) < 2
+        )
       ),
       
       Links = mwGroup(
