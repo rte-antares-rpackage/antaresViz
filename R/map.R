@@ -214,8 +214,6 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
     # We don't want to show the time id slider if there is only one time id
     hideTimeIdSlider <- timeIdMin == timeIdMax
     
-    print(areaValColumnsSynt)
-    
     list(
       plotFun = plotFun,
       x = x,
