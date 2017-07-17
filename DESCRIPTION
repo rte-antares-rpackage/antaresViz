@@ -1,8 +1,8 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.10
-Date: 2017-05-31
+Version: 0.11
+Date: 2017-07-17
 Authors@R: c(
     person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = "ctb"),
@@ -21,7 +21,7 @@ LazyData: TRUE
 Encoding: UTF-8
 Depends:
     antaresRead (>= 0.14.0),
-    antaresProcessing (>= 0.10.2)
+    antaresProcessing (>= 0.11.0)
 Imports:
     dygraphs (>= 1.1.1),
     shiny (>= 0.13.0),

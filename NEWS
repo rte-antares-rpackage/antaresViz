@@ -1,5 +1,16 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+Changes in version 0.11 (2017-07-17)
+
+NEW FEATURES:
+* In plotMap(), it is now possible to represent areas with polygons instead of circles. To do see, user needs to provide a SpatialPolygonsDataFrame object to function mapLayout(). He is then able to interactively set associations between an area and a polygon. 
+
+BUGFIXES:
+* Hour was not correctly printed in some charts.
+* It was not possible anymore to choose a specific Monte-Carlo scenario in plotMap() when interactive = FALSE.
+* Non numeric columns were not correcly handled by plotMap().
+* Heatmaps were not correctly displayed in comparison mode.
+
 Changes in version 0.10 (2017-06-20)
 
 BREAKING CHANGES:
