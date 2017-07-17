@@ -122,23 +122,23 @@
 #' 
 #' @export
 tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
-                             mcYear = "average",
-                             type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-                             dateRange = NULL,
-                             confInt = 0,
-                             minValue = NULL,
-                             maxValue = NULL,
-                             aggregate = c("none", "mean", "sum"),
-                             compare = NULL,
-                             compareOpts = list(),
-                             interactive = getInteractivity(),
-                             colors = NULL,
-                             main = NULL,
-                             ylab = NULL,
-                             legend = TRUE,
-                             legendItemsPerRow = 5,
-                             colorScaleOpts = colorScaleOptions(20),
-                             width = NULL, height = NULL, ...) {
+                   mcYear = "average",
+                   type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
+                   dateRange = NULL,
+                   confInt = 0,
+                   minValue = NULL,
+                   maxValue = NULL,
+                   aggregate = c("none", "mean", "sum"),
+                   compare = NULL,
+                   compareOpts = list(),
+                   interactive = getInteractivity(),
+                   colors = NULL,
+                   main = NULL,
+                   ylab = NULL,
+                   legend = TRUE,
+                   legendItemsPerRow = 5,
+                   colorScaleOpts = colorScaleOptions(20),
+                   width = NULL, height = NULL, ...) {
   
   type <- match.arg(type)
   aggregate <- match.arg(aggregate)
@@ -224,7 +224,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     dt$value <- x[[id]][[table]][, get(variable)]
     
     if (!is.null(mcYear) && mcYear != "average") {
-      mcy <- mcYear
+      mcy <- mcYear # Just to avoid name confusion in the next line
       dt <- dt[mcYear == mcy]
     }
     

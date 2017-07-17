@@ -14,7 +14,6 @@
 #' 
 .getDataForComp <- function(x, y, compare, compareOpts, processFun = as.antaresDataList) {
   if (is.null(compareOpts)) compareOpts <- list()
-  compareOpts <- do.call(compareOptions, compareOpts)
   
   if (inherits(x, "antaresData")) {
     x <- processFun(x)
@@ -23,6 +22,7 @@
       if (is.null(compare)) compare <- list()
       y <- processFun(y)
       x <- list(x, y)
+      compareOpts$ncharts <- 2
     } else {
       if (is.null(compareOpts$ncharts)) {
         if (is.null(compare)) compareOpts$ncharts <- 1
@@ -36,6 +36,8 @@
     compareOpts$ncharts <- length(x)
     if (is.null(compare)) compare <- list()
   }
+  
+  compareOpts <- do.call(compareOptions, compareOpts)
   
   list(
     x = x,
