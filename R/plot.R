@@ -216,35 +216,15 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     if (is.null(type) || is.null(table) || !variable %in% names(x[[id]][[table]])) {
       return(combineWidgets())
     }
-    if (length(elements) == 0) {
-      return(combineWidgets("Choose at least one element"))
-    }
     
-    dt <- params[[id]][[table]]$dt
-    dt$value <- x[[id]][[table]][, get(variable)]
-    
-    if (!is.null(mcYear) && mcYear != "average") {
-      mcy <- mcYear # Just to avoid name confusion in the next line
-      dt <- dt[mcYear == mcy]
-    }
-    
-    if (length(elements) == 0) {
-      elements <- params[[id]][[table]]$uniqueElem[1:5]
-    }
-    if (!"all" %in% elements) dt <- dt[element %in% elements]
-    dt <- dt[as.Date(time) %between% dateRange]
+    dt <- .getTSData(
+      x[[id]][[table]], params[[id]][[table]]$dt, 
+      variable = variable, elements = elements, 
+      uniqueElement = params[[id]][[table]]$uniqueElem, 
+      mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
+    )
     
     if (nrow(dt) == 0) return(combineWidgets())
-    
-    if (aggregate != "none" && length(params[[id]][[table]]$uniqueElem) > 1) {
-      if (aggregate == "mean") {
-        dt <- dt[, .(element = as.factor(variable), value = mean(value)), 
-                 by = c(.idCols(dt))]
-      } else if (aggregate == "sum") {
-        dt <- dt[, .(element = as.factor(variable), value = sum(value)), 
-                 by = c(.idCols(dt))]
-      }
-    }
     
     f <- switch(type,
                 "ts" = .plotTS,
@@ -255,6 +235,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
                 "heatmap" = .heatmap,
                 stop("Invalid type")
     )
+    
     f(
       dt, 
       timeStep = timeStep, 
