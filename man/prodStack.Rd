@@ -16,7 +16,7 @@ prodStack(x, y = NULL, stack = "eco2mix", areas = NULL,
   unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL)
+  width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -98,6 +98,8 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
 \code{prodStackAliases} returns an interactive html graphic. If argument

@@ -9,7 +9,7 @@ exchangesStack(x, y = NULL, area = NULL, mcYear = "average",
   unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL)
+  width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
@@ -72,6 +72,8 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
 A htmlwidget of class \code{dygraph}. It can be modified with functions from

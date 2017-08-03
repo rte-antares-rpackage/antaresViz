@@ -84,6 +84,7 @@
 #' @param description
 #'   Description of the stack. It is displayed by function 
 #'   \code{prodStackAliases}.
+#' @param ... Other arguments for \code{\link{manipulateWidget}}
 #'  
 #' @return 
 #' \code{prodStackAliases} returns an interactive html graphic. If argument
@@ -145,7 +146,7 @@ prodStack <- function(x, y = NULL,
                       legend = TRUE, legendId = sample(1e9, 1),
                       groupId = legendId,
                       legendItemsPerRow = 5,
-                      width = NULL, height = NULL) {
+                      width = NULL, height = NULL, ...) {
   
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
@@ -237,7 +238,8 @@ prodStack <- function(x, y = NULL,
     areas = mwSelect(as.character(unique(params$x[[max(1,.id)]]$x$area)), areas, multiple = TRUE),
     legend = mwCheckbox(legend),
     .compare = params$compare,
-    .compareOpts = params$compareOpts
+    .compareOpts = params$compareOpts, 
+    ...
   )
 }
 

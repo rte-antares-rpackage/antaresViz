@@ -62,6 +62,7 @@
 #' @param options
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
+#' 
 #' @inheritParams prodStack
 #'   
 #' @return 
@@ -112,7 +113,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                     compareOpts = list(),
                     interactive = getInteractivity(),
                     options = plotMapOptions(),
-                    width = NULL, height = NULL) {
+                    width = NULL, height = NULL, ...) {
   
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
@@ -294,7 +295,8 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       .height = height,
       .return = function(w, e) combineWidgets(w, title = main, width = width, height = height),
       .compare = params$compare,
-      .compareOpts = params$compareOpts
+      .compareOpts = params$compareOpts, 
+      ...
     )
   }
 }

@@ -39,7 +39,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
                            interactive = getInteractivity(), 
                            legend = TRUE, legendId = sample(1e9, 1), groupId = legendId,
                            legendItemsPerRow = 5,
-                           width = NULL, height = NULL) {
+                           width = NULL, height = NULL, ...) {
   
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
@@ -161,7 +161,8 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     legend = mwCheckbox(legend),
     .compare = params$compare,
-    .compareOpts = params$compareOpts
+    .compareOpts = params$compareOpts, 
+    ...
   )
   
 }

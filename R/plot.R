@@ -60,9 +60,7 @@
 #'   A list of parameters that control the creation of color scales. It is used
 #'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available
 #'   parameters.
-#'   
-#' @param ...
-#'   currently unused
+#' 
 #' @inheritParams prodStack
 #'   
 #' @return 
@@ -264,7 +262,8 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
     legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
     .compare = compare,
-    .compareOpts = compareOpts
+    .compareOpts = compareOpts, 
+    ...
   )
   
 }
