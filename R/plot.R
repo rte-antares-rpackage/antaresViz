@@ -152,75 +152,30 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   }
   
   # Preprocess data for comparison
-  tmp <- .getDataForComp(x, y, compare, compareOpts)
-  x <- tmp$x
+  tmp <- .getDataForComp(x, y, compare, compareOpts, processFun = function(x) {
+    .getParsForTsPlot(x, elements, dateRange)
+  })
+  
+  params <- tmp$x
   compare <- tmp$compare
   compareOpts <- tmp$compareOpts
   
-  timeStep <- attr(x[[1]], "timeStep")
-  opts <- simOptions(x[[1]])
-  
-  .prepareParams <- function(x) {
-    idCols <- .idCols(x)
-    
-    dt <- x[, .(
-      timeId = timeId,
-      time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
-      value = 0)
-    ]
-    
-    if ("cluster" %in% idCols) {
-      dt$element <- paste(x$area, x$cluster, sep = " > ")
-    } else if ("district" %in% idCols) {
-      dt$element <- x$district
-    } else if ("link" %in% idCols) {
-      dt$element <- x$link
-    } else if ("area" %in% idCols) {
-      dt$element <- x$area
-    } else stop("No Id column")
-    
-    if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
-      dt$mcYear <- x$mcYear
-    }
-    
-    dataDateRange <- as.Date(range(dt$time))
-    if (is.null(dateRange) || length(dateRange) < 2) dateRange <- dataDateRange
-    
-    uniqueElem <- sort(as.character(unique(dt$element)))
-    if (is.null(elements)) {
-      elements <- uniqueElem
-      if (length(elements) > 5) elements <- elements[1:5]
-    }
-    
-    list(
-      dt = dt,
-      idCols = idCols,
-      valueCols = setdiff(names(x), idCols),
-      showConfInt = !is.null(x$mcYear) && length(unique(x$mcYear) > 1),
-      dataDateRange = dataDateRange,
-      dateRange = dateRange,
-      uniqueElem = uniqueElem,
-      uniqueMcYears = unique(x$mcYear),
-      elements = elements
-    )
-  }
-    
-  params <- lapply(x, function(o) lapply(o, .prepareParams))
+  timeStep <- params[[1]][[1]]$timeStep
+  opts <- params[[1]][[1]]$opts
   
   # Function that generates the desired graphic.
   plotFun <- function(table, mcYear, id, variable, elements, type, confInt, dateRange, 
                       minValue, maxValue, aggregate, legend) {
-    
-    if (is.null(variable)) variable <- params[[id]][[table]]$valueCols[1]
-    if (is.null(dateRange)) dateRange <- params[[id]][[table]]$dateRange
-    if (is.null(type) || is.null(table) || !variable %in% names(x[[id]][[table]])) {
+    if (is.null(variable)) variable <- params[[max(1,id)]][[table]]$valueCols[1]
+    if (is.null(dateRange)) dateRange <- params[[max(1,id)]][[table]]$dateRange
+    if (is.null(type) || is.null(table) || !variable %in% names(params[[max(1,id)]][[table]]$x)) {
       return(combineWidgets())
     }
     
     dt <- .getTSData(
-      x[[id]][[table]], params[[id]][[table]]$dt, 
+      params[[max(1,id)]][[table]]$x, params[[max(1,id)]][[table]]$dt, 
       variable = variable, elements = elements, 
-      uniqueElement = params[[id]][[table]]$uniqueElem, 
+      uniqueElement = params[[max(1,id)]][[table]]$uniqueElem, 
       mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
     )
     
@@ -272,14 +227,14 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     plotFun(table, mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
             maxValue, aggregate, legend),
     
-    table = mwSelect(names(params[[.id]]), value = table, .display = length(params[[.id]]) > 1),
+    table = mwSelect(names(params[[max(1,.id)]]), value = table, .display = length(params[[max(1,.id)]]) > 1),
     mcYear = mwSelect(
-      choices = c("average", params[[.id]][[table]]$uniqueMcYears) ,
+      choices = c("average", params[[max(1,.id)]][[table]]$uniqueMcYears) ,
       mcYear, 
-      .display = params[[.id]][[table]]$showConfInt
+      .display = params[[max(1,.id)]][[table]]$showConfInt
     ),
     variable = mwSelect(
-      choices = params[[.id]][[table]]$valueCols,
+      choices = params[[max(1,.id)]][[table]]$valueCols,
       value = variable
     ),
     type = mwSelect(
@@ -293,16 +248,16 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     ),
     dateRange = mwDateRange(
       value = params[[1]][[table]]$dateRange,
-      min = params[[.id]][[table]]$dataDateRange[1], 
-      max = params[[.id]][[table]]$dataDateRange[2],
+      min = params[[max(1,.id)]][[table]]$dataDateRange[1], 
+      max = params[[max(1,.id)]][[table]]$dataDateRange[2],
       .display = timeStep != "annual"
     ),
     confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval",
-                       .display = params[[.id]][[table]]$showConfInt & mcYear == "average"),
+                       .display = params[[max(1,.id)]][[table]]$showConfInt & mcYear == "average"),
     minValue = mwNumeric(minValue, "min value", .display = type %in% c("density", "cdf")),
     maxValue = mwNumeric(maxValue, "max value", .display = type %in% c("density", "cdf")),
     elements = mwSelect(
-      choices = c("all", params[[.id]][[table]]$uniqueElem),
+      choices = c("all", params[[max(1,.id)]][[table]]$uniqueElem),
       value = elements, 
       multiple = TRUE
     ),

@@ -243,19 +243,19 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                 .output)
       },
       
-      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = params$x[[.id]]$showMcYear),
+      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = params$x[[max(1,.id)]]$showMcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       
       Areas = mwGroup(
         colAreaVar = mwSelect(
           choices = {
-            if (mcYear == "average") c("none", params$x[[.id]]$areaValColumnsSynt)
-            else c("none", params$x[[.id]]$areaValColumns)
+            if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
+            else c("none", params$x[[max(1,.id)]]$areaValColumns)
           },
           value = colAreaVar, 
           label = "Color"
         ),
-        sizeAreaVars = mwSelect(params$x[[.id]]$areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
+        sizeAreaVars = mwSelect(params$x[[max(1,.id)]]$areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
         areaChartType = mwSelect(list("bar chart" = "bar", 
                                       "pie chart" = "pie",
                                       "polar (area)" = "polar-area",
@@ -268,8 +268,8 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                                 .display = length(sizeAreaVars) >= 2),
         popupAreaVars = mwSelect(
           choices = {
-            if (mcYear == "average") c("none", params$x[[.id]]$areaValColumnsSynt)
-            else c("none", params$x[[.id]]$areaValColumns)
+            if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
+            else c("none", params$x[[max(1,.id)]]$areaValColumns)
           }, 
           popupAreaVars, 
           label = "Popup", 
@@ -277,8 +277,8 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
         ),
         labelAreaVar = mwSelect(
           choices = {
-            if (mcYear == "average") c("none", params$x[[.id]]$areaValColumnsSynt)
-            else c("none", params$x[[.id]]$areaValColumns)
+            if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
+            else c("none", params$x[[max(1,.id)]]$areaValColumns)
           }, 
           labelAreaVar, label = "Label", 
           .display = length(sizeAreaVars) < 2
@@ -286,11 +286,10 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       ),
       
       Links = mwGroup(
-        colLinkVar = mwSelect(c("none", params$x[[.id]]$linkValColums), colLinkVar, label = "Color"),
-        sizeLinkVar = mwSelect(c("none", params$x[[.id]]$linkNumValColumns), sizeLinkVar, label = "Width"),
-        popupLinkVars = mwSelect(params$x[[.id]]$linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
+        colLinkVar = mwSelect(c("none", params$x[[max(1,.id)]]$linkValColums), colLinkVar, label = "Color"),
+        sizeLinkVar = mwSelect(c("none", params$x[[max(1,.id)]]$linkNumValColumns), sizeLinkVar, label = "Width"),
+        popupLinkVars = mwSelect(params$x[[max(1,.id)]]$linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
       ),
-      .viewer = "browser",
       .width = width,
       .height = height,
       .return = function(w, e) combineWidgets(w, title = main, width = width, height = height),

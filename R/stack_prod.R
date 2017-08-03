@@ -226,15 +226,15 @@ prodStack <- function(x, y = NULL,
   }
   
   manipulateWidget(
-    params$x[[.id]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend),
-    mcYear = mwSelect(c("average", unique(params$x[[.id]]$x$mcYear)), .display = params$x[[.id]]$displayMcYear),
+    params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend),
+    mcYear = mwSelect(c("average", unique(params$x[[max(1,.id)]]$x$mcYear)), .display = params$x[[max(1,.id)]]$displayMcYear),
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(params$x[[1]]$dateRange, 
-                            min = params$x[[.id]]$dataDateRange[1], 
-                            max = params$x[[.id]]$dataDateRange[2]),
+                            min = params$x[[max(1,.id)]]$dataDateRange[1], 
+                            max = params$x[[max(1,.id)]]$dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-    areas = mwSelect(as.character(unique(params$x[[.id]]$x$area)), areas, multiple = TRUE),
+    areas = mwSelect(as.character(unique(params$x[[max(1,.id)]]$x$area)), areas, multiple = TRUE),
     legend = mwCheckbox(legend),
     .compare = params$compare,
     .compareOpts = params$compareOpts
