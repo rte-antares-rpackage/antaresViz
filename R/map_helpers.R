@@ -44,9 +44,18 @@
   
   if (is.null(t)) {
     if (length(neededVars) > 0) {
-      data <- data[, lapply(.SD, mean), 
-                   keyby = mergeBy, 
-                   .SDcols = neededVars]
+  
+      
+      colsKeep <- c(.idCols(data), neededVars)
+      data <- data[, .SD, .SDcols = colsKeep]
+      suppressWarnings(
+      data <- synthesize(data, useTime = FALSE)
+      )
+      
+      
+      data <- data[,.SD, .SDcols = c(mergeBy, neededVars)]
+      
+      
     } else {
       data <- unique(data[, mergeBy, with = FALSE])
     }
