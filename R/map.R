@@ -112,7 +112,8 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                     compareOpts = list(),
                     interactive = getInteractivity(),
                     options = plotMapOptions(),
-                    width = NULL, height = NULL) {
+                    width = NULL, height = NULL,
+                    dateRange = NULL) {
   
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
@@ -152,6 +153,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
     
     # Keep only links and areas present in the data
     if (areas) {
+  
       areaList <- unique(x$areas$area)
       mapLayout$coords <- mapLayout$coords[area %in% areaList]
     }
@@ -171,13 +173,30 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       if (areas) setkeyv(x$areas, "mcYear")
       if (links) setkeyv(x$links, "mcYear")
     }
+    opts <- simOptions(x)
+    if(!is.null(x$areas)){
+      x$areas[,time := .timeIdToDate(x$areas$timeId, attr(x, "timeStep"), opts)]
+    }
+    
+    if(!is.null(x$links)){
+      x$links[,time := .timeIdToDate(x$links$timeId, attr(x, "timeStep"), opts)]
+    }
+    
+    
+    if(is.null(dateRange)){
+      if(!is.null(x$areas)){
+        dateRange <- range(as.Date(x$areas$time))
+      }else{
+        dateRange <- range(as.Date(x$links$time))
+      }
+    }
     
     # Function that draws the final map when leaving the shiny gadget.
     plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
                         uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
                         popupLinkVars, 
                         type = c("detail", "avg"), mcYear,
-                        initial = TRUE, session = NULL, outputId = "output1") {
+                        initial = TRUE, session = NULL, outputId = "output1",dateRange = NULL) {
 
       type <- match.arg(type)
       if (type == "avg") t <- NULL
@@ -185,6 +204,20 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       
       # Prepare data
       if (mcYear == "average") x <- syntx
+      
+    if(!is.null(dateRange)){
+      dateRange <- sort(dateRange)
+      if(!is.null(x$areas))
+      {
+        x$areas  <- x$areas[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2] + 1, tz = "UTC")]
+      }
+      if(!is.null(x$links))
+      {
+        x$links <- x$links[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2] + 1, tz = "UTC")]
+      }
+    }
+      
+
       
       if (initial) {
         map <- .initMap(x, mapLayout, options) %>% syncWith(group)
@@ -197,7 +230,6 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
         .redrawCircles(x, mapLayout, mcYear, t, colAreaVar, sizeAreaVars, popupAreaVars, 
                        uniqueScale, showLabels, labelAreaVar, areaChartType, options)
     }
-    
     # Create the interactive widget
     areaValColumns <- setdiff(names(x$areas), .idCols(x$areas))
     areaValColumnsSynt <- setdiff(names(syntx$areas), .idCols(syntx$areas))
@@ -224,28 +256,33 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       linkValColums = linkValColums,
       linkNumValColumns = linkNumValColumns,
       hideTimeIdSlider = hideTimeIdSlider,
-      timeId = timeId
+      timeId = timeId,
+      dateRange = dateRange
     )
   })
   
   if (!interactive) {
     map <-  params$x[[1]]$plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                     uniqueScale, showLabels, labelAreaVar, colLinkVar, 
-                    sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear)
+                    sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear, dateRange = dateRange)
     return(combineWidgets(map, title = main, width = width, height = height))
   } else {
-    
     manipulateWidget(
       {
         params$x[[.id]]$plotFun(params$x[[.id]]$timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                 uniqueScale, showLabels, labelAreaVar,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, mcYear, .initial, .session,
-                .output)
+                .output, dateRange)
       },
       
       mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = params$x[[.id]]$showMcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
-      
+      dateRange = mwDateRange(
+        value = params$x[[1]]$dateRange,
+        min = params$x[[1]]$dateRange[1], 
+        max = params$x[[1]]$dateRange[2],label = "Daterange"
+        
+      ),
       Areas = mwGroup(
         colAreaVar = mwSelect(
           choices = {
