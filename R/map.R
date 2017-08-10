@@ -264,7 +264,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
   if (!interactive) {
     map <-  params$x[[1]]$plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                     uniqueScale, showLabels, labelAreaVar, colLinkVar, 
-                    sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear)
+                    sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear, dateRange = dateRange)
     return(combineWidgets(map, title = main, width = width, height = height))
   } else {
     
@@ -273,7 +273,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
         params$x[[.id]]$plotFun(params$x[[.id]]$timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
                 uniqueScale, showLabels, labelAreaVar,
                 colLinkVar, sizeLinkVar, popupLinkVars, type, mcYear, .initial, .session,
-                .output)
+                .output, dateRange)
       },
       
       mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = params$x[[max(1,.id)]]$showMcYear),
