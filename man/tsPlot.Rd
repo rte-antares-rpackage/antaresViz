@@ -14,7 +14,7 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
   ...)
 
-plot.antaresData(x, y = NULL, table = NULL, variable = NULL,
+\method{plot}{antaresData}(x, y = NULL, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
   "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
   minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),

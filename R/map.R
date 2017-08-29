@@ -134,6 +134,16 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
     } else {
       x <- as.antaresDataList(x)
+      if(!is.null(x$areas)){
+        if(nrow(x$areas) == 0){
+          x$areas <- NULL
+        }
+      }
+      if(!is.null(x$links)){
+        if(nrow(x$links) == 0){
+          x$links <- NULL
+        }
+      }
       if (is.null(x$areas) && is.null(x$links)) stop("Argument 'x' should contain at least area or link data.")
     }
     
@@ -197,7 +207,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                         popupLinkVars, 
                         type = c("detail", "avg"), mcYear,
                         initial = TRUE, session = NULL, outputId = "output1", dateRange = NULL) {
-
+      
       type <- match.arg(type)
       if (type == "avg") t <- NULL
       else if (is.null(t)) t <- 0
@@ -262,21 +272,37 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
   })
   
   if (!interactive) {
-    map <-  params$x[[1]]$plotFun(timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
-                    uniqueScale, showLabels, labelAreaVar, colLinkVar, 
-                    sizeLinkVar, popupLinkVars, type = type, mcYear = mcYear, dateRange = dateRange)
+    map <-  params$x[[1]]$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
+                                  popupAreaVars = popupAreaVars,areaChartType = areaChartType,
+                                  uniqueScale = uniqueScale, showLabels = showLabels,
+                                  labelAreaVar = labelAreaVar, colLinkVar = colLinkVar, 
+                                  sizeLinkVar = sizeLinkVar, popupLinkVars = popupLinkVars,
+                                  type = type, mcYear = mcYear, dateRange = dateRange)
     return(combineWidgets(map, title = main, width = width, height = height))
   } else {
     
     manipulateWidget(
       {
-        params$x[[.id]]$plotFun(params$x[[.id]]$timeId, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType,
-                uniqueScale, showLabels, labelAreaVar,
-                colLinkVar, sizeLinkVar, popupLinkVars, type, mcYear, .initial, .session,
-                .output, dateRange)
+        params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
+                                colAreaVar = colAreaVar,
+                                sizeAreaVars = sizeAreaVars,
+                                popupAreaVars = popupAreaVars,
+                                areaChartType = areaChartType,
+                                uniqueScale = uniqueScale,
+                                showLabels = showLabels,
+                                labelAreaVar = labelAreaVar,
+                                colLinkVar = colLinkVar,
+                                sizeLinkVar = sizeLinkVar, 
+                                popupLinkVars = popupLinkVars,
+                                type = type,
+                                mcYear = mcYear,
+                                initial = .initial,
+                                session = .session,
+                                outputId = .output,
+                                dateRange = dateRange)
       },
       
-      mcYear = mwSelect(c("average", unique(x[[1]]$mcYear)), mcYear, .display = params$x[[max(1,.id)]]$showMcYear),
+      mcYear = mwSelect(c("average", unique(params$x[[1]]$mcYear)), mcYear, .display = params$x[[max(1,.id)]]$showMcYear),
       type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
       dateRange = mwDateRange(
         value = params$x[[1]]$dateRange,
@@ -326,7 +352,8 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       Links = mwGroup(
         colLinkVar = mwSelect(c("none", params$x[[max(1,.id)]]$linkValColums), colLinkVar, label = "Color"),
         sizeLinkVar = mwSelect(c("none", params$x[[max(1,.id)]]$linkNumValColumns), sizeLinkVar, label = "Width"),
-        popupLinkVars = mwSelect(params$x[[max(1,.id)]]$linkValColums, popupLinkVars, label = "Popup", multiple = TRUE)
+        popupLinkVars = mwSelect(params$x[[max(1,.id)]]$linkValColums, popupLinkVars, label = "Popup", multiple = TRUE),
+        .display = "links" %in% names(params$x[[max(1,.id)]]$x)
       ),
       .width = width,
       .height = height,

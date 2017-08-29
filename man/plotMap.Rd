@@ -11,7 +11,7 @@ plotMap(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
   mcYear = "average", main = "", compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), options = plotMapOptions(),
-  width = NULL, height = NULL, ...)
+  width = NULL, height = NULL, dateRange = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -95,6 +95,9 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{dateRange}{A vector of two dates. Only data points between these two dates are 
+displayed. If NULL, then all data is displayed.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
