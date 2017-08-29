@@ -4,81 +4,84 @@ library(rhdf5)
 library(manipulateWidget)
 library(data.table)
 library(rAmCharts)
+library(dygraphs)
 
 devtools::load_all(".")
-path <- "D:/Users/titorobe/Desktop/Antares/antaresHdf5/bigStd.h5"
-
-opts <- setSimulationPathH5(path)
-h5Options <- getOptionsH5(path)
-fid <- H5Fopen(h5Options$h5path)
-timeStep = "hourly"
-tables <- .getTableInH5(fid, timeStep)
-variables <- .getVariablesH5(fid,timeStep,  tables)
-MCyears <- h5Options$mcYears
-elems <- .getElements(opts, tables, fid, timeStep)
-dateR <- .getDateRange(fid, timeStep)
-typeChoices <- c("ts", "barplot", "monotone", "density", "cdf", "heatmap")
+path <- c("D:/Users/titorobe/Desktop/Antares/antaresViz/sim1.h5")
+plotH5ts(path, main = "rr")
 
 
 
-getData <- function(path, table, mcYear, variable, elements, dateRange){
-  if(mcYear == "MC-All")
-  {
-    mcYear <- NULL
-  }
-  areas <- links <- clusters <- districts <- NULL
-  assign(table, as.character(elements))
-  data <- h5ReadAntares(path, areas = areas, links = links, clusters = clusters, districts = districts, mcYears = mcYear, select = variable)
-  colsId <- antaresRead::getIdCols(data)
+
+plotH5ts <- function(path,
+                     confInt = 0.5,
+                     minValue = NULL,
+                     maxValue = NULL,
+                     colors = NULL,
+                     legend = TRUE,
+                     legendItemsPerRow = 5,
+                     width = NULL,
+                     height = NULL,
+                     main = NULL,
+                     ylab  = NULL,
+                     colorScaleOpts = colorScaleOptions(20),
+                     compare = NULL, ...){
   
-  if("cluster" %in% colsId){
-    idV <- c("area", "cluster")
-  } else if ("area"%in%colsId){
-    idV <- "area"
-  } else if ("link"%in%colsId){
-    idV <- "link"
-  } else if ("district"%in%colsId){
-    idV <- "district"
-  }
-  valueCol <- setdiff(names(data), colsId)
-  data <- data[,.SD, .SDcols = c("timeId", "time", valueCol, idV)]
-  if(length(idV) > 1){
-    data[, newKey := paste0(lapply(.SD, as.character), collapse = " < "), .SDcols = idV,by=1:nrow(data)]
-    data[,c(idV) := NULL]
-    idV <- "newKey"
-  }
-  odc <- c("timeId", "time", valueCol, idV)
-  setcolorder(data, odc)
-  setnames(data, names(data), c("timeId", "time", "value", "element"))
-  data[time>dateRange[1] & time<dateRange[2]]
-  
-}
-
-doGraph <- function(.id, path, table, mcYear, variable, elements, timeStep, data, dateRange, type){
-  data <- getData(path, table, mcYear, variable, elements, dateRange)
+  opts <- setSimulationPathH5(path[1])
+  fid <- H5Fopen(opts$h5path)
  
+  if(length(path)>1) compare <- list()
+  timeSteps <- .getTimStep(fid)
+  timeStep <- timeSteps[1]
+  typeChoices <- c("ts", "barplot", "monotone", "density", "cdf", "heatmap")
+  tables <- .getTableInH5(fid, timeStep)
+  variables <- .getVariablesH5(fid, timeStep,  tables)
+  MCyears <- opts$mcYears
+  elems <- .getElements(opts, tables, fid, timeStep)
   
-  f <- .getGraphFunction(type)
-  f(
-    data, 
-    timeStep = timeStep, 
-    variable = variable, 
-    maxValue = 0
-  )
+  # Generate a group number for dygraph objects
+  if (!("dateRange" %in% compare)) {
+    group <- sample(1e9, 1)
+  } else {
+    group <- NULL
+  }
+  manipulateWidget(.doPlot(.id = .id,
+                           path = path,
+                           table = table,
+                           mcYear = mcYear,
+                           variable = variable,
+                           elements = elements,
+                           timeStep = timeStep,
+                           data = data,
+                           dateRange = dateRange,
+                           type = type,
+                           minValue = minValue,
+                           maxValue = maxValue,
+                           colors = colors,
+                           main = main,
+                           ylab = ylab,
+                           legend = legend,
+                           legendItemsPerRow = legendItemsPerRow,
+                           width = width,
+                           height = height,
+                           opts = opts,
+                           colorScaleOpts = colorScaleOpts,
+                           group = group),
+                   table = mwSelect(tables, value = tables[1], label = "tables"),
+                   timeStep = mwSelect(choices = timeSteps, value = timeSteps[1], label ="timeStep"),
+                   mcYear = mwSelect(c("MC-All", MCyears), value = "MC-All", label = "MCyear"),
+                   dateRange = mwDateRange(value = c(as.Date("1900-01-01"), as.Date("2200-01-01")), min = dateRan[1], max = dateRan[2]),
+                   variable = mwSelect(variables[[table]], variables[[tables[1]]][1], label = "variable", multiple = TRUE),
+                   type = mwSelect(typeChoices,value = typeChoices[1], label = "type"),
+                   elements = mwSelect(c( elems[[table]]), value = elems[[tables[1]]][1],label = "elements", multiple = TRUE),
+                   minValue = mwNumeric(minValue, label = "min value", .display = type %in% c("density", "cdf")),
+                   maxValue = mwNumeric(maxValue, label = "max value", .display = type %in% c("density", "cdf")),
+                   dateRan = mwSharedValue(expr = .getDateRange(opts, timeStep) ),
+                   .compare = compare,
+                   ...)
   
-  #.plotTS(data, timeStep, variable, maxValue = 0)
+  
 }
-
-library(dygraphs)
-manipulateWidget(doGraph(.id, path, table, mcYear, variable, elements, timeStep, data, dateRange, type),
-                 table = mwSelect(tables, "tables"),
-                 mcYear = mwSelect(c("MC-All", MCyears), "MCyear"),
-                 dateRange = mwDateRange(value = dateR, min = dateR[1], max = dateR[2]) ,
-                 variable = mwSelect(variables[[table]], "variable"),
-                 type = mwSelect(typeChoices, "type"),
-                 elements = mwSelect(c("all", elems[[table]]), "elements"),
-                 .compare = "elements")
-
 
 
 
