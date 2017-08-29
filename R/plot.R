@@ -271,5 +271,4 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
 #' @export
 #' @rdname tsPlot
 #' @method plot antaresData
-#' @S3method plot antaresData
 plot.antaresData <- tsPlot

@@ -283,8 +283,6 @@ changeCoordsServer <- function(input, output, session,
 #'   \code{\link[leaflet]{leaflet}}
 #'   
 #' @method plot mapLayout
-#' 
-#' @S3method plot mapLayout
 #'    
 #' @examples 
 #' \dontrun{
