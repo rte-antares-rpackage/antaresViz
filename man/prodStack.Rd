@@ -15,8 +15,8 @@ prodStack(x, y = NULL, stack = "eco2mix", areas = NULL,
   mcYear = "average", dateRange = NULL, main = "Production stack",
   unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1000000000, 1), groupId = legendId,
-  legendItemsPerRow = 5, width = NULL, height = NULL, ...)
+  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
+  width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
