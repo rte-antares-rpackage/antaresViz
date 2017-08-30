@@ -33,172 +33,192 @@
 #' @export
 #' 
 mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
+  
   what <- match.arg(what)
   
-  if (what == "areas") {
-    coords <- copy(layout$areas)
-    info <- coords$area
-    links <- copy(layout$links)
-  } else {
-    coords <- copy(layout$districts)
-    info <- coords$district
-    links <- copy(layout$districtLinks)
+  ui <- fluidPage(
+    changeCoordsUI("ml")
+  )
+  
+  server <- function(input, output, session) {
+    callModule(changeCoordsServer, "ml", reactive(layout), what = reactive(what), 
+               map = map, stopApp = TRUE)
   }
   
-  links$x0 <- as.numeric(links$x0)
-  links$x1 <- as.numeric(links$x1)
-  links$y0 <- as.numeric(links$y0)
-  links$y1 <- as.numeric(links$y1)
+  mapCoords <- shiny::runApp(shiny::shinyApp(ui = ui, server = server))
   
-  mapCoords <- changeCoords(coords$x, coords$y, coords$color, info, map)
-  coords$x <- sp::coordinates(mapCoords)[, 1]
-  coords$y <- sp::coordinates(mapCoords)[, 2]
-  
-  if (what == "areas") {
-    links[coords, `:=`(x0 = x, y0 = y),on=c(from = "area")]
-    links[coords, `:=`(x1 = x, y1 = y),on=c(to = "area")]
-  } else {
-    links[coords, `:=`(x0 = x, y0 = y),on=c(fromDistrict = "district")]
-    links[coords, `:=`(x1 = x, y1 = y),on=c(toDistrict = "district")]
-  }
-  
-  if (!is.null(map)) {
-    coords$geoAreaId <- mapCoords$geoAreaId
-    coords <- coords[!is.na(coords$geoAreaId),]
-    
-    map <- map[coords$geoAreaId,]
-  }
-  
-  res <- list(coords = coords, links = links, map = map)
-  class(res) <- "mapLayout"
-  attr(res, "type") <- what
-  res
+  mapCoords
 }
 
-#' Modify coordinates interactively
-#'
-#' This function helps to correct the coordinates of a set of spatial  points by
-#' creating an interactive map. Moreover, the function can be used to visually
-#' associate points with polygons from a \code{\link[sp]{SpatialPolygons}} or
-#' \code{\link[sp]{SpatialPolygonsDataFrame}} object.
-#'
-#' @param lon
-#'   Longitude of the points (x-axis)
-#' @param lat
-#'   Latitude of the points (y-axis)
-#' @param col
-#'   Vector of colors
-#' @param info
-#'   A character vector that is displayed when one clicks on a marker. This helps
-#'   identify the points on the map.
-#' @param map
-#'   A \code{\link[sp]{SpatialPolygons}} or
-#'   \code{\link[sp]{SpatialPolygonsDataFrame}} object
-#'
-#' @return
-#' An object of class \code{\link[sp]{SpatialPoints}}. If parameter \code{map}
-#' has been provided then the function returns a
-#' \code{\link[sp]{SpatialPointsDataFrame}} with a column geoAreaId containing
-#' the number of the polygon a point belongs to.
-#'
-#' @noRd
-#'
-changeCoords <- function(lon, lat, col = "blue", info = paste(lon, ",", lat), map = NULL) {
+# changeCoords Module UI function
+changeCoordsUI <- function(id) {
+  # Create a namespace function using the provided id
+  ns <- NS(id)
   
-  points <- data.frame(lon = lon, lat = lat, oldLon = lon, oldLat = lat,
-                       color = col, info = as.character(info),
-                       stringsAsFactors = FALSE)
-  
-  # Find the bottom-left most and top right-most points
-  avgCoord <- rowMeans(points[, c("lon", "lat")])
-  pt1 <- which.min(avgCoord)
-  pt2 <- which.max(avgCoord)
-  
-  # Keep a copy of the initial coordinates
-  points$oldLon <- points$lon
-  points$oldLat <- points$lat
-  
-  ui <- miniPage(
-    gadgetTitleBar("My Gadget"),
-    miniContentPanel(
-      fillRow(
-        flex = c(NA, 1),
-        tags$div(
-          style = "width:200px;",
-          tags$p(textOutput("order")),
-          htmlOutput("info"),
-          conditionalPanel(
-            condition = "input.state < 2",
-            imageOutput("preview", height="150px"),
-            tags$p(),
-            actionButton("state", "Next")
-          )
-        ),
-        leafletDragPointsOutput("map", height = "100%")
-      )
+  tagList(
+    fluidRow(
+      column(width = 8, offset = 2, div(h3("Map Layout"), align = "center")),
+      column(2, div(br(), actionButton(ns("done"), "Done"), align = "center"))
+    ), 
+    
+    hr(), 
+    
+    fillRow(
+      flex = c(NA, 1),
+      tags$div(
+        style = "width:200px;",
+        tags$p(textOutput(ns("order"))),
+        htmlOutput(ns("info")),
+        conditionalPanel(
+          condition = paste0("input['", ns("state"), "'] < 2"),
+          imageOutput(ns("preview"), height="150px"),
+          tags$p(),
+          actionButton(ns("state"), "Next")
+        )
+      ),
+      leafletDragPointsOutput(ns("map"), height = "700px")
     )
   )
+}
+
+# changeCoords Module SERVER function
+changeCoordsServer <- function(input, output, session, 
+                               layout, what = reactive("areas"), 
+                               map = NULL, stopApp = FALSE){
+  
+  ns <- session$ns
+  
+  data <- reactive({
+    if (what() == "areas") {
+      coords <- copy(layout()$areas)
+      info <- coords$area
+      links <- copy(layout()$links)
+    } else {
+      coords <- copy(layout()$districts)
+      info <- coords$district
+      links <- copy(layout()$districtLinks)
+    }
+    
+    links$x0 <- as.numeric(links$x0)
+    links$x1 <- as.numeric(links$x1)
+    links$y0 <- as.numeric(links$y0)
+    links$y1 <- as.numeric(links$y1)
+    
+    list(coords = coords, info = info, links = links)
+  })
+  
+  data_points <- reactiveValues()
+  
+  observe({
+    cur_points <- data.frame(lon = data()$coords$x, lat = data()$coords$y, 
+                             oldLon = data()$coords$x, oldLat = data()$coords$y,
+                             color = data()$coords$color, info = as.character(data()$info), stringsAsFactors = FALSE)
+    isolate({
+      data_points$points <- cur_points
+      
+      avgCoord <- rowMeans(data_points$points[, c("lon", "lat")])
+      pt1 <- which.min(avgCoord)
+      pt2 <- which.max(avgCoord)
+      
+      data_points$points$lon[pt1] <- data_points$points$lat[pt1] <- 0
+      
+      data_points$pt1 <- pt1
+      data_points$pt2 <- pt2
+    })
+  })
   
   renderPreview <- function(pt) {
     renderPlot({
-      col <- rep("#cccccc", nrow(points))
-      col[pt] <- "red"
-      cex <- rep(1, nrow(points))
-      cex[pt] <- 2
-      par (mar = rep(0.1, 4))
-      plot(points$oldLon, points$oldLat, bty = "n", xaxt = "n", yaxt = "n",
-           xlab = "", ylab = "", main = "", col = col, asp = 1, pch = 19, cex = cex)
+      points <- isolate(data_points$points)
+      if(!is.null(points)){
+        col <- rep("#cccccc", nrow(points))
+        col[pt] <- "red"
+        cex <- rep(1, nrow(points))
+        cex[pt] <- 2
+        par (mar = rep(0.1, 4))
+        plot(points$oldLon, points$oldLat, bty = "n", xaxt = "n", yaxt = "n",
+             xlab = "", ylab = "", main = "", col = col, asp = 1, pch = 19, cex = cex)
+      }
     })
   }
   
-  server <- function(input, output, session) {
-    # Initialize outputs
-    points$lon[pt1] <- points$lat[pt1] <- 0
-    output$map <- renderLeafletDragPoints({leafletDragPoints(points[pt1, ], map)})
-    output$order <- renderText("Please place the following point on the map.")
-    output$info <- renderUI(HTML(points$info[pt1]))
-    output$preview <- renderPreview(pt1)
-    
-    coords <- reactive({
-      coords <- matrix(input$map_coords, ncol = 2, byrow = TRUE)
-      colnames(coords) <- c("lat", "lon")
-      as.data.frame(coords)
-    })
-    
-    observeEvent(input$state, {
-      if (input$state == 1) {
-        points$lat[pt2] <- input$map_mapcenter$lat
-        points$lon[pt2] <- input$map_mapcenter$lng
-        output$map <- renderLeafletDragPoints({leafletDragPoints(points[pt2, ])})
-        output$info <- renderUI(HTML(points$info[pt2]))
-        output$preview <- renderPreview(pt2)
-      } else if (input$state == 2) {
-        points <- .changeCoordinates(points, coords(), c(pt1, pt2))
-        output$map <- renderLeafletDragPoints({leafletDragPoints(points[-c(pt1, pt2), ])})
-        output$order <- renderText("Drag the markers on the map to adjust coordinates then click the 'Done' button")
-        output$info <- renderUI(HTML("<p>You can click on a marker to display information about the corresponding point.</p>"))
-      }
-    })
-    
-    # When the Done button is clicked, return a value
-    observeEvent(input$done, {
-      coords <- sp::SpatialPoints(coords()[, c("lon", "lat")],
-                                  proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
-      if (!is.null(map)) {
-        map <- sp::spTransform(map, sp::CRS("+proj=longlat +datum=WGS84"))
-        map$geoAreaId <- 1:length(map)
-        coords$geoAreaId <- sp::over(coords, map)$geoAreaId
-      }
-      
-      # Put coords in right order
-      ord <- order(c(pt1, pt2, (1:length(coords))[-c(pt1, pt2)]))
-      coords <- coords[ord,]
-      
-      stopApp(coords)
-    })
-  }
+  # Initialize outputs
+  output$map <- renderLeafletDragPoints({leafletDragPoints(data_points$points[data_points$pt1, ], map)})
+  output$order <- renderText("Please place the following point on the map.")
+  output$info <- renderUI(HTML(data_points$points$info[data_points$pt1]))
+  output$preview <- renderPreview(data_points$pt1)
   
-  runGadget(ui, server, viewer = browserViewer())
+  coords <- reactive({
+    coords <- matrix(input[[paste0("map", "_coords")]], ncol = 2, byrow = TRUE)
+    colnames(coords) <- c("lat", "lon")
+    as.data.frame(coords)
+  })
+  
+  observeEvent(input$state, {
+    if (input$state == 1) {
+      data_points$points$lat[data_points$pt2] <- input[[paste0("map", "_mapcenter")]]$lat
+      data_points$points$lon[data_points$pt2] <- input[[paste0("map", "_mapcenter")]]$lng
+      output$map <- renderLeafletDragPoints({leafletDragPoints(data_points$points[data_points$pt2, ])})
+      output$info <- renderUI(HTML(data_points$points$info[data_points$pt2]))
+      output$preview <- renderPreview(data_points$pt2)
+    } else if (input$state == 2) {
+      data_points$points <- .changeCoordinates(data_points$points, coords(), c(data_points$pt1, data_points$pt2))
+      output$map <- renderLeafletDragPoints({leafletDragPoints(data_points$points[-c(data_points$pt1, data_points$pt2), ])})
+      output$order <- renderText("Drag the markers on the map to adjust coordinates then click the 'Done' button")
+      output$info <- renderUI(HTML("<p>You can click on a marker to display information about the corresponding point.</p>"))
+    }
+  })
+  
+  # get coord
+  cur_coords <- reactiveValues(data = NULL)
+  
+  # When the Done button is clicked, return a value
+  observeEvent(input$done, {
+    coords <- sp::SpatialPoints(coords()[, c("lon", "lat")],
+                                proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
+    if (!is.null(map)) {
+      map <- sp::spTransform(map, sp::CRS("+proj=longlat +datum=WGS84"))
+      map$geoAreaId <- 1:length(map)
+      coords$geoAreaId <- sp::over(coords, map)$geoAreaId
+    }
+    
+    # Put coords in right order
+    ord <- order(c(data_points$pt1, data_points$pt2, (1:length(coords))[-c(data_points$pt1, data_points$pt2)]))
+    mapCoords <- coords[ord,]
+    
+    final_coords <- data()$coords
+    final_links <- data()$links
+    
+    final_coords$x <- sp::coordinates(mapCoords)[, 1]
+    final_coords$y <- sp::coordinates(mapCoords)[, 2]
+    
+    if (what() == "areas") {
+      final_links[final_coords, `:=`(x0 = x, y0 = y),on=c(from = "area")]
+      final_links[final_coords, `:=`(x1 = x, y1 = y),on=c(to = "area")]
+    } else {
+      final_links[final_coords, `:=`(x0 = x, y0 = y),on=c(fromDistrict = "district")]
+      final_links[final_coords, `:=`(x1 = x, y1 = y),on=c(toDistrict = "district")]
+    }
+    
+    if (!is.null(map)) {
+      final_coords$geoAreaId <- mapCoords$geoAreaId
+      final_coords <- final_coords[!is.na(final_coords$geoAreaId),]
+      
+      map <- map[final_coords$geoAreaId,]
+    }
+    
+    res <- list(coords = final_coords, links = final_links, map = map)
+    class(res) <- "mapLayout"
+    attr(res, "type") <- what()
+    
+    cur_coords$data <- res
+    
+    if(stopApp){
+      stopApp(res)
+    }
+  })
+  
+  return(reactive(cur_coords$res))
 }
 
 .changeCoordinates <- function(points, coords, pts = 1:nrow(points)) {
@@ -262,6 +282,8 @@ changeCoords <- function(lon, lat, col = "blue", info = paste(lon, ",", lat), ma
 #'   be stored in a variable and modified with package 
 #'   \code{\link[leaflet]{leaflet}}
 #'   
+#' @method plot mapLayout
+#'    
 #' @examples 
 #' \dontrun{
 #' # Read the coordinates of the areas in the Antares interface, then convert it
