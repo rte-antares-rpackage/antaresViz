@@ -87,7 +87,7 @@ values imports.
 \examples{
 \dontrun{
 mydata <- readAntares(links = "all", timeStep = "daily")
-exchangeStack(mydata)
+exchangesStack(mydata)
 
 # Also display exchanges with the rest of the world
 mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
