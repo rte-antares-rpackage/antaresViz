@@ -44,7 +44,12 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
-  params <- .getDataForComp(x, y, compare, compareOpts, function(x) {
+  f_area <- area
+  f_dateRange <- dateRange
+  f_compare <- compare
+  f_compareOpts <- compareOpts
+  
+  processFun <- function(x) {
     if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
     row <- NULL # exchanges with rest of the world
     
@@ -74,13 +79,13 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     opts <- simOptions(x)
     
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
-    if (length(dateRange) < 2) dateRange <- dataDateRange
+    if (length(f_dateRange) < 2) f_dateRange <- dataDateRange
     
     linksDef <- getLinks(namesOnly = FALSE, withDirection = TRUE, opts = opts)
     linksDef <- linksDef[link %in% x$link]
     areaList <- linksDef[, unique(area)]
     
-    if (is.null(area)) area = areaList[1]
+    if (is.null(f_area)) f_area = areaList[1]
     
     plotFun <- function(id, area, dateRange, unit, mcYear, legend) {
       # Prepare data for stack creation
@@ -139,16 +144,22 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     list(
       plotFun = plotFun,
       areaList = areaList,
-      area = area,
+      area = f_area,
       dataDateRange = dataDateRange,
-      dateRange = dateRange,
+      dateRange = f_dateRange,
       displayMcYear = displayMcYear,
       x = x
     )
-  })
+  }
+    
+  if (!interactive) {
+    params <- .getDataForComp(x, y, f_compare, f_compareOpts, processFun = processFun)
+    return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend))
+  } else {
+    init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
+  }
   
-  if (!interactive) return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend))
-  
+
   manipulateWidget(
     params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend),
     mcYear = mwSelect(c("average", unique(params$x[[max(1,.id)]]$x$mcYear)), 
@@ -160,8 +171,13 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
                             max = params$x[[max(1,.id)]]$dataDateRange[2]),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     legend = mwCheckbox(legend),
-    .compare = params$compare,
-    .compareOpts = params$compareOpts, 
+    x = mwSharedValue(x),
+    params = mwSharedValue({
+      .getDataForComp(x, y, f_compare, f_compareOpts, 
+                      processFun = processFun)
+    }),
+    .compare = init_params$compare,
+    .compareOpts = init_params$compareOpts, 
     ...
   )
   
