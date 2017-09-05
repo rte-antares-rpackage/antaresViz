@@ -151,7 +151,13 @@ prodStack <- function(x, y = NULL,
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
-  params <- .getDataForComp(x, y, compare, compareOpts, function(x) {
+  f_areas <- areas
+  f_dateRange <- dateRange
+  f_compare <- compare
+  f_compareOpts <- compareOpts
+  
+  processFun <- function(x) {
+    
     # Check that input contains area or district data
     if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
     
@@ -166,15 +172,15 @@ prodStack <- function(x, y = NULL,
     if (is.null(x$area)) x$area <- x$district
     timeStep <- attr(x, "timeStep")
     opts <- simOptions(x)
-    if (is.null(areas)) {
-      areas <- unique(x$area)[1]
+    if (is.null(f_areas)) {
+      f_areas <- unique(x$area)[1]
     }
     
     # should mcYear parameter be displayed on the UI?
     displayMcYear <- !attr(x, "synthesis") && length(unique(x$mcYear)) > 1
     
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
-    if (length(dateRange) < 2) dateRange <- dataDateRange
+    if (length(f_dateRange) < 2) f_dateRange <- dataDateRange
     
     plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend) {
       if (length(areas) == 0) return ("Please choose an area")
@@ -192,14 +198,17 @@ prodStack <- function(x, y = NULL,
         dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = opts)) %between% dateRange]
       }
       
-      p <- .plotProdStack(dt, 
-                          stackOpts$variables, 
+      p <- try(.plotProdStack(dt,
+                          stackOpts$variables,
                           stackOpts$colors,
                           stackOpts$lines,
                           stackOpts$lineColors,
                           main = main,
                           unit = unit,
-                          legendId = legendId + id - 1, groupId = groupId)
+                          legendId = legendId + id - 1, groupId = groupId), silent = TRUE)
+      if("try-error" %in% class(p)){
+        return (paste0("Can't visualize stack '", stack, "'<br>", p[1]))
+      }
       if (legend) {
         l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId + id - 1)
       } else {
@@ -214,31 +223,43 @@ prodStack <- function(x, y = NULL,
       x = x,
       timeStep = timeStep,
       opts = opts,
-      areas = areas,
+      areas = f_areas,
       displayMcYear = displayMcYear,
       dataDateRange = dataDateRange,
-      dateRange = dateRange
+      dateRange = f_dateRange
       
     )
-  })
-  
-  if (!interactive) {
-    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
   }
   
+
+  if (!interactive) {
+    params <- .getDataForComp(x, y, f_compare, f_compareOpts, processFun = processFun)
+    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
+  } else {
+    init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
+  }
+  
+  
   manipulateWidget(
-    params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend),
-    mcYear = mwSelect(c("average", unique(params$x[[max(1,.id)]]$x$mcYear)), .display = params$x[[max(1,.id)]]$displayMcYear),
+    {
+      paramsShared$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
+    },
+    mcYear = mwSelect(c("average", unique(paramsShared$x[[max(1,.id)]]$x$mcYear)), .display = paramsShared$x[[max(1,.id)]]$displayMcYear),
     main = mwText(main, label = "title"),
-    dateRange = mwDateRange(params$x[[1]]$dateRange, 
-                            min = params$x[[max(1,.id)]]$dataDateRange[1], 
-                            max = params$x[[max(1,.id)]]$dataDateRange[2]),
+    dateRange = mwDateRange(paramsShared$x[[1]]$dateRange, 
+                            min = paramsShared$x[[max(1,.id)]]$dataDateRange[1],
+                            max = paramsShared$x[[max(1,.id)]]$dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-    areas = mwSelect(as.character(unique(params$x[[max(1,.id)]]$x$area)), areas, multiple = TRUE),
+    areas = mwSelect(as.character(unique(paramsShared$x[[max(1,.id)]]$x$area)), areas, multiple = TRUE),
     legend = mwCheckbox(legend),
-    .compare = params$compare,
-    .compareOpts = params$compareOpts, 
+    xShared = mwSharedValue({x}),
+    paramsShared = mwSharedValue({
+      .getDataForComp(xShared, y, f_compare, f_compareOpts, 
+                      processFun = processFun)
+    }),
+    .compare = init_params$compare,
+    .compareOpts = init_params$compareOpts,
     ...
   )
 }
