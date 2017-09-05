@@ -242,22 +242,22 @@ prodStack <- function(x, y = NULL,
   
   manipulateWidget(
     {
-      paramsShared$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
+      params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
     },
-    mcYear = mwSelect(c("average", unique(paramsShared$x[[max(1,.id)]]$x$mcYear)), .display = paramsShared$x[[max(1,.id)]]$displayMcYear),
+    mcYear = mwSelect(c("average", unique(params$x[[max(1,.id)]]$x$mcYear)), .display = params$x[[max(1,.id)]]$displayMcYear),
     main = mwText(main, label = "title"),
-    dateRange = mwDateRange(paramsShared$x[[1]]$dateRange, 
-                            min = paramsShared$x[[max(1,.id)]]$dataDateRange[1],
-                            max = paramsShared$x[[max(1,.id)]]$dataDateRange[2]),
+    dateRange = mwDateRange(params$x[[1]]$dateRange, 
+                            min = params$x[[max(1,.id)]]$dataDateRange[1],
+                            max = params$x[[max(1,.id)]]$dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-    areas = mwSelect(as.character(unique(paramsShared$x[[max(1,.id)]]$x$area)), areas, multiple = TRUE),
+    areas = mwSelect(as.character(unique(params$x[[max(1,.id)]]$x$area)), areas, multiple = TRUE),
     legend = mwCheckbox(legend),
-    xShared = mwSharedValue({x}),
-    paramsShared = mwSharedValue({
-      .getDataForComp(xShared, y, f_compare, f_compareOpts, 
+    x = mwSharedValue(x),
+    params = mwSharedValue({
+      .getDataForComp(x, y, f_compare, f_compareOpts, 
                       processFun = processFun)
-    }),
+      }),
     .compare = init_params$compare,
     .compareOpts = init_params$compareOpts,
     ...
