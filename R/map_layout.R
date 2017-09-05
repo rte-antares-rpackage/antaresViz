@@ -58,7 +58,12 @@ changeCoordsUI <- function(id) {
   tagList(
     fluidRow(
       column(width = 8, offset = 2, div(h3("Map Layout"), align = "center")),
-      column(2, div(br(), actionButton(ns("done"), "Done"), align = "center"))
+      column(2, 
+             conditionalPanel(
+               condition = paste0("input['", ns("state"), "'] >= 2"),
+               div(br(), actionButton(ns("done"), "Done"), align = "center")
+             )
+      )
     ), 
     
     hr(), 
@@ -218,7 +223,7 @@ changeCoordsServer <- function(input, output, session,
     }
   })
   
-  return(reactive(cur_coords$res))
+  return(reactive(cur_coords$data))
 }
 
 .changeCoordinates <- function(points, coords, pts = 1:nrow(points)) {
