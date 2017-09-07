@@ -163,9 +163,16 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
   manipulateWidget(
     params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend),
     mcYear = mwSelect(c("average", unique(params$x[[max(1,.id)]]$x$mcYear)), 
-                      mcYear, 
+                      value = {
+                        if(.initial) mcYear
+                        else NULL
+                      }, 
                       .display = params$x[[max(1,.id)]]$displayMcYear),
-    area = mwSelect(params$x[[max(1,.id)]]$areaList, area),
+    area = mwSelect(params$x[[max(1,.id)]]$areaList, 
+                    value = {
+                      if(.initial) area
+                      else NULL
+                    }),
     dateRange = mwDateRange(params$x[[1]]$dateRange, 
                             min = params$x[[max(1,.id)]]$dataDateRange[1], 
                             max = params$x[[max(1,.id)]]$dataDateRange[2]),
