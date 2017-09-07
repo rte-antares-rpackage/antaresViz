@@ -251,7 +251,11 @@ prodStack <- function(x, y = NULL,
                             max = params$x[[max(1,.id)]]$dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-    areas = mwSelect(as.character(unique(params$x[[max(1,.id)]]$x$area)), areas, multiple = TRUE),
+    areas = mwSelect(as.character(unique(params$x[[max(1,.id)]]$x$area)), 
+                     value = {
+                       if(.initial) area
+                       else NULL
+                     }, multiple = TRUE),
     legend = mwCheckbox(legend),
     x = mwSharedValue(x),
     params = mwSharedValue({
