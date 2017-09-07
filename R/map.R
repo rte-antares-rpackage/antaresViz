@@ -129,7 +129,11 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
   # Check that parameters have the good class
   if (!is(mapLayout, "mapLayout")) stop("Argument 'mapLayout' must be an object of class 'mapLayout' created with function 'mapLayout'.")
   
-  params <- .getDataForComp(x, y, compare, compareOpts, function(x) {
+  f_dateRange <- dateRange
+  f_compare <- compare
+  f_compareOpts <- compareOpts
+  
+  processFun <- function(x, mapLayout) {
     if (!is(x, "antaresData")) {
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
     } else {
@@ -193,11 +197,11 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
     }
     
     
-    if(is.null(dateRange)){
+    if(is.null(f_dateRange)){
       if(!is.null(x$areas)){
-        dateRange <- range(as.Date(x$areas$time))
+        f_dateRange <- range(as.Date(x$areas$time))
       }else{
-        dateRange <- range(as.Date(x$links$time))
+        f_dateRange <- range(as.Date(x$links$time))
       }
     }
     
@@ -267,11 +271,12 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       linkNumValColumns = linkNumValColumns,
       hideTimeIdSlider = hideTimeIdSlider,
       timeId = timeId,
-      dateRange = dateRange
+      dateRange = f_dateRange
     )
-  })
+  }
   
   if (!interactive) {
+    params <- .getDataForComp(x, y, f_compare, f_compareOpts, processFun = processFun, mapLayout = mapLayout)
     map <-  params$x[[1]]$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
                                   popupAreaVars = popupAreaVars,areaChartType = areaChartType,
                                   uniqueScale = uniqueScale, showLabels = showLabels,
@@ -280,87 +285,126 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                                   type = type, mcYear = mcYear, dateRange = dateRange)
     return(combineWidgets(map, title = main, width = width, height = height))
   } else {
-    
-    manipulateWidget(
-      {
-        params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
-                                colAreaVar = colAreaVar,
-                                sizeAreaVars = sizeAreaVars,
-                                popupAreaVars = popupAreaVars,
-                                areaChartType = areaChartType,
-                                uniqueScale = uniqueScale,
-                                showLabels = showLabels,
-                                labelAreaVar = labelAreaVar,
-                                colLinkVar = colLinkVar,
-                                sizeLinkVar = sizeLinkVar, 
-                                popupLinkVars = popupLinkVars,
-                                type = type,
-                                mcYear = mcYear,
-                                initial = .initial,
-                                session = .session,
-                                outputId = .output,
-                                dateRange = dateRange)
-      },
-      
-      mcYear = mwSelect(c("average", unique(params$x[[1]]$mcYear)), mcYear, .display = params$x[[max(1,.id)]]$showMcYear),
-      type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
-      dateRange = mwDateRange(
-        value = params$x[[1]]$dateRange,
-        min = params$x[[1]]$dateRange[1], 
-        max = params$x[[1]]$dateRange[2],label = "Daterange"
-        
-      ),
-      Areas = mwGroup(
-        colAreaVar = mwSelect(
-          choices = {
-            if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
-            else c("none", params$x[[max(1,.id)]]$areaValColumns)
-          },
-          value = colAreaVar, 
-          label = "Color"
-        ),
-        sizeAreaVars = mwSelect(params$x[[max(1,.id)]]$areaNumValColumns, sizeAreaVars, label = "Size", multiple = TRUE),
-        areaChartType = mwSelect(list("bar chart" = "bar", 
-                                      "pie chart" = "pie",
-                                      "polar (area)" = "polar-area",
-                                      "polar (radius)" = "polar-radius"),
-                                 value = areaChartType,
-                                 .display = length(sizeAreaVars) >= 2),
-        uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale", 
-                                 .display = length(sizeAreaVars) >= 2 && areaChartType != "pie"),
-        showLabels = mwCheckbox(showLabels, label = "Show labels", 
-                                .display = length(sizeAreaVars) >= 2),
-        popupAreaVars = mwSelect(
-          choices = {
-            if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
-            else c("none", params$x[[max(1,.id)]]$areaValColumns)
-          }, 
-          popupAreaVars, 
-          label = "Popup", 
-          multiple = TRUE
-        ),
-        labelAreaVar = mwSelect(
-          choices = {
-            if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
-            else c("none", params$x[[max(1,.id)]]$areaValColumns)
-          }, 
-          labelAreaVar, label = "Label", 
-          .display = length(sizeAreaVars) < 2
-        )
-      ),
-      
-      Links = mwGroup(
-        colLinkVar = mwSelect(c("none", params$x[[max(1,.id)]]$linkValColums), colLinkVar, label = "Color"),
-        sizeLinkVar = mwSelect(c("none", params$x[[max(1,.id)]]$linkNumValColumns), sizeLinkVar, label = "Width"),
-        popupLinkVars = mwSelect(params$x[[max(1,.id)]]$linkValColums, popupLinkVars, label = "Popup", multiple = TRUE),
-        .display = "links" %in% names(params$x[[max(1,.id)]]$x)
-      ),
-      .width = width,
-      .height = height,
-      .return = function(w, e) combineWidgets(w, title = main, width = width, height = height),
-      .compare = params$compare,
-      .compareOpts = params$compareOpts, 
-      ...
-    )
+    init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
+  
+  manipulateWidget(
+    {
+      params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
+                              colAreaVar = colAreaVar,
+                              sizeAreaVars = sizeAreaVars,
+                              popupAreaVars = popupAreaVars,
+                              areaChartType = areaChartType,
+                              uniqueScale = uniqueScale,
+                              showLabels = showLabels,
+                              labelAreaVar = labelAreaVar,
+                              colLinkVar = colLinkVar,
+                              sizeLinkVar = sizeLinkVar, 
+                              popupLinkVars = popupLinkVars,
+                              type = type,
+                              mcYear = mcYear,
+                              initial = .initial,
+                              session = .session,
+                              outputId = .output,
+                              dateRange = dateRange)
+    },
+    
+    mcYear = mwSelect(c("average", unique(params$x[[1]]$mcYear)), 
+                      value = {
+                        if(.initial) mcYear
+                        else NULL
+                      }, .display = params$x[[max(1,.id)]]$showMcYear),
+    type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
+    dateRange = mwDateRange(
+      value = params$x[[1]]$dateRange,
+      min = params$x[[1]]$dateRange[1], 
+      max = params$x[[1]]$dateRange[2],label = "Daterange"
+    ),
+    Areas = mwGroup(
+      colAreaVar = mwSelect(
+        choices = {
+          if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
+          else c("none", params$x[[max(1,.id)]]$areaValColumns)
+        },
+        value = {
+          if(.initial) colAreaVar
+          else NULL
+        },
+        label = "Color"
+      ),
+      sizeAreaVars = mwSelect(params$x[[max(1,.id)]]$areaNumValColumns, 
+                              value = {
+                                if(.initial) sizeAreaVars
+                                else NULL
+                              }, label = "Size", multiple = TRUE),
+      areaChartType = mwSelect(list("bar chart" = "bar", 
+                                    "pie chart" = "pie",
+                                    "polar (area)" = "polar-area",
+                                    "polar (radius)" = "polar-radius"),
+                               value = {
+                                 if(.initial) areaChartType
+                                 else NULL
+                               },
+                               .display = length(sizeAreaVars) >= 2),
+      uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale", 
+                               .display = length(sizeAreaVars) >= 2 && areaChartType != "pie"),
+      showLabels = mwCheckbox(showLabels, label = "Show labels", 
+                              .display = length(sizeAreaVars) >= 2),
+      popupAreaVars = mwSelect(
+        choices = {
+          if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
+          else c("none", params$x[[max(1,.id)]]$areaValColumns)
+        }, 
+        value = {
+          if(.initial) popupAreaVars
+          else NULL
+        }, 
+        label = "Popup", 
+        multiple = TRUE
+      ),
+      labelAreaVar = mwSelect(
+        choices = {
+          if (mcYear == "average") c("none", params$x[[max(1,.id)]]$areaValColumnsSynt)
+          else c("none", params$x[[max(1,.id)]]$areaValColumns)
+        }, 
+        value = {
+          if(.initial) labelAreaVar
+          else NULL
+        }, label = "Label", 
+        .display = length(sizeAreaVars) < 2
+      )
+    ),
+    
+    Links = mwGroup(
+      colLinkVar = mwSelect(c("none", params$x[[max(1,.id)]]$linkValColums), 
+                            value = {
+                              if(.initial) colLinkVar
+                              else NULL
+                            }, label = "Color"),
+      sizeLinkVar = mwSelect(c("none", params$x[[max(1,.id)]]$linkNumValColumns), 
+                             value = {
+                               if(.initial) sizeLinkVar
+                               else NULL
+                             }, label = "Width"),
+      popupLinkVars = mwSelect(params$x[[max(1,.id)]]$linkValColums, 
+                               value = {
+                                 if(.initial) popupLinkVars
+                                 else NULL
+                               }, label = "Popup", multiple = TRUE),
+      .display = "links" %in% names(params$x[[max(1,.id)]]$x)
+    ),
+    x = mwSharedValue(x),
+    mapLayout = mwSharedValue(mapLayout),
+    params = mwSharedValue({
+      .getDataForComp(x, y, f_compare, f_compareOpts, 
+                      processFun = processFun, mapLayout = mapLayout)
+    }),
+    .width = width,
+    .height = height,
+    .return = function(w, e) combineWidgets(w, title = main, width = width, height = height),
+    .compare = init_params$compare,
+    .compareOpts = init_params$compareOpts, 
+    ...
+  )
+  
 }
