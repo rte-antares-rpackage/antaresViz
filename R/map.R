@@ -133,6 +133,9 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
   f_compare <- compare
   f_compareOpts <- compareOpts
   
+  # new_env for save and control mapLayout
+  env_plotFun <- new.env()
+  
   processFun <- function(x, mapLayout) {
     if (!is(x, "antaresData")) {
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
@@ -231,8 +234,12 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
           x$links <- x$links[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2] + 1, tz = "UTC")]
         }
       }
-      
+
       if (initial) {
+        assign("currentMapLayout", mapLayout, envir = env_plotFun)
+        map <- .initMap(x, mapLayout, options) %>% syncWith(group)
+      } else if(!isTRUE(all.equal(mapLayout, get("currentMapLayout", envir = env_plotFun)))){
+        assign("currentMapLayout", mapLayout)
         map <- .initMap(x, mapLayout, options) %>% syncWith(group)
       } else {
         map <- leafletProxy(outputId, session)
