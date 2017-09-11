@@ -129,10 +129,8 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
   # Check that parameters have the good class
   if (!is(mapLayout, "mapLayout")) stop("Argument 'mapLayout' must be an object of class 'mapLayout' created with function 'mapLayout'.")
   
-  f_dateRange <- dateRange
-  f_compare <- compare
-  f_compareOpts <- compareOpts
-  
+  init_dateRange <- dateRange
+
   # new_env for save and control mapLayout
   env_plotFun <- new.env()
   
@@ -200,11 +198,11 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
     }
     
     
-    if(is.null(f_dateRange)){
+    if(is.null(init_dateRange)){
       if(!is.null(x$areas)){
-        f_dateRange <- range(as.Date(x$areas$time))
+        init_dateRange <- range(as.Date(x$areas$time))
       }else{
-        f_dateRange <- range(as.Date(x$links$time))
+        init_dateRange <- range(as.Date(x$links$time))
       }
     }
     
@@ -278,12 +276,12 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
       linkNumValColumns = linkNumValColumns,
       hideTimeIdSlider = hideTimeIdSlider,
       timeId = timeId,
-      dateRange = f_dateRange
+      dateRange = init_dateRange
     )
   }
   
   if (!interactive) {
-    params <- .getDataForComp(x, y, f_compare, f_compareOpts, processFun = processFun, mapLayout = mapLayout)
+    params <- .getDataForComp(x, y, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
     map <-  params$x[[1]]$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
                                   popupAreaVars = popupAreaVars,areaChartType = areaChartType,
                                   uniqueScale = uniqueScale, showLabels = showLabels,
@@ -292,6 +290,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                                   type = type, mcYear = mcYear, dateRange = dateRange)
     return(combineWidgets(map, title = main, width = width, height = height))
   } else {
+    # just init for compare & compareOpts
     init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
   
@@ -403,7 +402,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
     x = mwSharedValue(x),
     mapLayout = mwSharedValue(mapLayout),
     params = mwSharedValue({
-      .getDataForComp(x, y, f_compare, f_compareOpts, 
+      .getDataForComp(x, y, compare, compareOpts, 
                       processFun = processFun, mapLayout = mapLayout)
     }),
     .width = width,

@@ -44,11 +44,9 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
-  f_area <- area
-  f_dateRange <- dateRange
-  f_compare <- compare
-  f_compareOpts <- compareOpts
-  
+  init_area <- area
+  init_dateRange <- dateRange
+
   processFun <- function(x) {
     if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
     row <- NULL # exchanges with rest of the world
@@ -79,13 +77,13 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     opts <- simOptions(x)
     
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
-    if (length(f_dateRange) < 2) f_dateRange <- dataDateRange
+    if (length(init_dateRange) < 2) init_dateRange <- dataDateRange
     
     linksDef <- getLinks(namesOnly = FALSE, withDirection = TRUE, opts = opts)
     linksDef <- linksDef[link %in% x$link]
     areaList <- linksDef[, unique(area)]
     
-    if (is.null(f_area)) f_area = areaList[1]
+    if (is.null(init_area)) init_area = areaList[1]
     
     plotFun <- function(id, area, dateRange, unit, mcYear, legend) {
       # Prepare data for stack creation
@@ -144,18 +142,19 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     list(
       plotFun = plotFun,
       areaList = areaList,
-      area = f_area,
+      area = init_area,
       dataDateRange = dataDateRange,
-      dateRange = f_dateRange,
+      dateRange = init_dateRange,
       displayMcYear = displayMcYear,
       x = x
     )
   }
     
   if (!interactive) {
-    params <- .getDataForComp(x, y, f_compare, f_compareOpts, processFun = processFun)
+    params <- .getDataForComp(x, y, compare, compareOpts, processFun = processFun)
     return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend))
   } else {
+    # just init for compare & compareOpts
     init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
   
@@ -180,7 +179,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     legend = mwCheckbox(legend),
     x = mwSharedValue(x),
     params = mwSharedValue({
-      .getDataForComp(x, y, f_compare, f_compareOpts, 
+      .getDataForComp(x, y, compare, compareOpts, 
                       processFun = processFun)
     }),
     .compare = init_params$compare,

@@ -142,6 +142,9 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   aggregate <- match.arg(aggregate)
   colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
   
+  init_elements <- elements
+  init_dateRange <- dateRange
+
   # Generate a group number for dygraph objects
   if (!("dateRange" %in% compare)) {
     group <- sample(1e9, 1)
@@ -149,121 +152,200 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     group <- NULL
   }
   
-  # Preprocess data for comparison
-  tmp <- .getDataForComp(x, y, compare, compareOpts, processFun = function(x) {
-    .getParsForTsPlot(x, elements, dateRange)
-  })
-  
-  params <- tmp$x
-  compare <- tmp$compare
-  compareOpts <- tmp$compareOpts
-  
-  timeStep <- params[[1]][[1]]$timeStep
-  opts <- params[[1]][[1]]$opts
-  
-  # Function that generates the desired graphic.
-  plotFun <- function(table, mcYear, id, variable, elements, type, confInt, dateRange, 
-                      minValue, maxValue, aggregate, legend) {
-    if (is.null(variable)) variable <- params[[max(1,id)]][[table]]$valueCols[1]
-    if (is.null(dateRange)) dateRange <- params[[max(1,id)]][[table]]$dateRange
-    if (is.null(type) || is.null(table) || !variable %in% names(params[[max(1,id)]][[table]]$x)) {
-      return(combineWidgets())
-    }
+  processFun <- function(x, elements = NULL, dateRange = NULL) {
+    assert_that(inherits(x, "antaresData"))
+    x <- as.antaresDataList(x)
     
-    dt <- .getTSData(
-      params[[max(1,id)]][[table]]$x, params[[max(1,id)]][[table]]$dt, 
-      variable = variable, elements = elements, 
-      uniqueElement = params[[max(1,id)]][[table]]$uniqueElem, 
-      mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
-    )
-    
-    if (nrow(dt) == 0) return(combineWidgets())
-    
-    f <- switch(type,
-                "ts" = .plotTS,
-                "barplot" = .barplot,
-                "monotone" = .plotMonotone,
-                "density" = .density,
-                "cdf" = .cdf,
-                "heatmap" = .heatmap,
-                stop("Invalid type")
-    )
-    
-    f(
-      dt, 
-      timeStep = timeStep, 
-      variable = variable, 
-      confInt = confInt, 
-      minValue = minValue,
-      maxValue = maxValue, 
-      colors = colors, 
-      main = if(length(main) == 1) main else main[id], 
-      ylab = if(length(ylab) == 1) ylab else ylab[id], 
-      legend = legend, 
-      legendItemsPerRow = legendItemsPerRow, 
-      width = width, 
-      height = height,
-      opts = opts,
-      colorScaleOpts = colorScaleOpts,
-      group = group
-    )
-    
+    lapply(x, function(x) {
+      idCols <- .idCols(x)
+      valueCols <- setdiff(names(x), idCols)
+      timeStep <- attr(x, "timeStep")
+      opts <- simOptions(x)
+      
+      dt <- x[, .(
+        timeId = timeId,
+        time = .timeIdToDate(timeId, attr(x, "timeStep"), simOptions(x)), 
+        value = 0)
+        ]
+      
+      if ("cluster" %in% idCols) {
+        dt$element <- paste(x$area, x$cluster, sep = " > ")
+      } else if ("district" %in% idCols) {
+        dt$element <- x$district
+      } else if ("link" %in% idCols) {
+        dt$element <- x$link
+      } else if ("area" %in% idCols) {
+        dt$element <- x$area
+      } else stop("No Id column")
+      
+      if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
+        dt$mcYear <- x$mcYear
+      }
+      
+      dataDateRange <- as.Date(range(dt$time))
+      if (is.null(dateRange) || length(dateRange) < 2) dateRange <- dataDateRange
+      
+      uniqueElem <- sort(as.character(unique(dt$element)))
+      if (is.null(elements)) {
+        elements <- uniqueElem
+        if (length(elements) > 5) elements <- elements[1:5]
+      }
+      
+      # Function that generates the desired graphic.
+      plotFun <- function(mcYear, id, variable, elements, type, confInt, dateRange, 
+                          minValue, maxValue, aggregate, legend) {
+        if (is.null(variable)) variable <- valueCols[1]
+        if (is.null(dateRange)) dateRange <- dateRange
+        if (is.null(type) || !variable %in% names(x)) {
+          return(combineWidgets())
+        }
+        
+        dt <- .getTSData(
+          x, dt, 
+          variable = variable, elements = elements, 
+          uniqueElement = uniqueElem, 
+          mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
+        )
+        
+        if (nrow(dt) == 0) return(combineWidgets())
+        
+        f <- switch(type,
+                    "ts" = .plotTS,
+                    "barplot" = .barplot,
+                    "monotone" = .plotMonotone,
+                    "density" = .density,
+                    "cdf" = .cdf,
+                    "heatmap" = .heatmap,
+                    stop("Invalid type")
+        )
+        
+        f(
+          dt, 
+          timeStep = timeStep, 
+          variable = variable, 
+          confInt = confInt, 
+          minValue = minValue,
+          maxValue = maxValue, 
+          colors = colors, 
+          main = if(length(main) == 1) main else main[id], 
+          ylab = if(length(ylab) == 1) ylab else ylab[id], 
+          legend = legend, 
+          legendItemsPerRow = legendItemsPerRow, 
+          width = width, 
+          height = height,
+          opts = opts,
+          colorScaleOpts = colorScaleOpts,
+          group = group
+        )
+        
+      }
+      
+      list(
+        plotFun = plotFun,
+        dt = dt,
+        x = x,
+        idCols = idCols,
+        valueCols = valueCols,
+        showConfInt = !is.null(x$mcYear) && length(unique(x$mcYear) > 1),
+        dataDateRange = dataDateRange,
+        dateRange = dateRange,
+        uniqueElem = uniqueElem,
+        uniqueMcYears = unique(x$mcYear),
+        elements = elements,
+        timeStep = timeStep,
+        opts = opts
+      )
+    })
   }
   
-  if (is.null(table)) table <- names(params[[1]])[1]
-  if (is.null(mcYear)) mcYear <- "average"
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(table, mcYear, 1, variable, elements, type, confInt, dateRange, 
-                   minValue, maxValue, aggregate, legend))
+    params <- antaresViz:::.getDataForComp(x, y, compare, compareOpts, 
+                                           processFun = processFun, 
+                                           elements = elements, dateRange = dateRange)
+    
+    if (is.null(table)) table <- names(params$x[[1]])[1]
+    if (is.null(mcYear)) mcYear <- "average"
+    
+    return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
+                                          minValue, maxValue, aggregate, legend))
+  } else {
+    # just init for compare & compareOpts
+    timeStep <- attr(x, "timeStep")
+    init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   
-  manipulateWidget(
-    plotFun(table, mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
-            maxValue, aggregate, legend),
-    
-    table = mwSelect(names(params[[max(1,.id)]]), value = table, .display = length(params[[max(1,.id)]]) > 1),
-    mcYear = mwSelect(
-      choices = c("average", params[[max(1,.id)]][[table]]$uniqueMcYears) ,
-      mcYear, 
-      .display = params[[max(1,.id)]][[table]]$showConfInt
-    ),
-    variable = mwSelect(
-      choices = params[[max(1,.id)]][[table]]$valueCols,
-      value = variable
-    ),
-    type = mwSelect(
-      choices = {
-        if (timeStep == "annual") "barplot"
-        else if (timeStep %in% c("hourly", "daily")) typeChoices
-        else typeChoices[1:5]
-      },
-      value = type, 
-      .display = timeStep != "annual"
-    ),
-    dateRange = mwDateRange(
-      value = params[[1]][[table]]$dateRange,
-      min = params[[max(1,.id)]][[table]]$dataDateRange[1], 
-      max = params[[max(1,.id)]][[table]]$dataDateRange[2],
-      .display = timeStep != "annual"
-    ),
-    confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval",
-                       .display = params[[max(1,.id)]][[table]]$showConfInt & mcYear == "average"),
-    minValue = mwNumeric(minValue, "min value", .display = type %in% c("density", "cdf")),
-    maxValue = mwNumeric(maxValue, "max value", .display = type %in% c("density", "cdf")),
-    elements = mwSelect(
-      choices = c("all", params[[max(1,.id)]][[table]]$uniqueElem),
-      value = elements, 
-      multiple = TRUE
-    ),
-    aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
-    legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
-    .compare = compare,
-    .compareOpts = compareOpts, 
-    ...
+  manipulateWidget({
+    params$x[[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
+                                            maxValue, aggregate, legend)
+  },
+  table = mwSelect(names(params$x[[max(1,.id)]]), value = {
+    if(.initial) table
+    else NULL
+  }, .display = length(params$x[[max(1,.id)]]) > 1),
+  mcYear = mwSelect(
+    choices = c("average", params$x[[max(1,.id)]][[table]]$uniqueMcYears) ,
+    value = {
+      if(.initial) mcYear
+      else NULL
+    }, 
+    .display = params$x[[max(1,.id)]][[table]]$showConfInt
+  ),
+  variable = mwSelect(
+    choices = params$x[[max(1,.id)]][[table]]$valueCols,
+    value = {
+      if(.initial) variable
+      else NULL
+    }
+  ),
+  type = mwSelect(
+    choices = {
+      if (timeStep == "annual") "barplot"
+      else if (timeStep %in% c("hourly", "daily")) typeChoices
+      else typeChoices[1:5]
+    },
+    value = {
+      if(.initial) type
+      else NULL
+    }, 
+    .display = timeStep != "annual"
+  ),
+  dateRange = mwDateRange(
+    value = params$x[[1]][[table]]$dateRange,
+    min = params$x[[max(1,.id)]][[table]]$dataDateRange[1], 
+    max = params$x[[max(1,.id)]][[table]]$dataDateRange[2],
+    .display = timeStep != "annual"
+  ),
+  confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval",
+                     .display = params$x[[max(1,.id)]][[table]]$showConfInt & mcYear == "average"),
+  minValue = mwNumeric(minValue, "min value", .display = type %in% c("density", "cdf")),
+  maxValue = mwNumeric(maxValue, "max value", .display = type %in% c("density", "cdf")),
+  elements = mwSelect(
+    choices = c("all", params$x[[max(1,.id)]][[table]]$uniqueElem),
+    value = {
+      if(.initial) elements
+      else NULL
+    }, 
+    multiple = TRUE
+  ),
+  aggregate = mwSelect(c("none", "mean", "sum"), 
+                       value ={
+                         if(.initial) aggregate
+                         else NULL
+                       }),
+  legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
+  x = mwSharedValue(x),
+  params = mwSharedValue({
+    .getDataForComp(x, y, compare, compareOpts, 
+                    processFun = processFun, 
+                    elements = init_elements, dateRange = init_dateRange)
+  }),
+  .compare = init_params$compare,
+  .compareOpts = init_params$compareOpts, 
+  ...
   )
   
 }

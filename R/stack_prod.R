@@ -151,11 +151,9 @@ prodStack <- function(x, y = NULL,
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
-  f_areas <- areas
-  f_dateRange <- dateRange
-  f_compare <- compare
-  f_compareOpts <- compareOpts
-  
+  init_areas <- areas
+  init_dateRange <- dateRange
+
   processFun <- function(x) {
     
     # Check that input contains area or district data
@@ -172,15 +170,15 @@ prodStack <- function(x, y = NULL,
     if (is.null(x$area)) x$area <- x$district
     timeStep <- attr(x, "timeStep")
     opts <- simOptions(x)
-    if (is.null(f_areas)) {
-      f_areas <- unique(x$area)[1]
+    if (is.null(init_areas)) {
+      init_areas <- unique(x$area)[1]
     }
     
     # should mcYear parameter be displayed on the UI?
     displayMcYear <- !attr(x, "synthesis") && length(unique(x$mcYear)) > 1
     
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
-    if (length(f_dateRange) < 2) f_dateRange <- dataDateRange
+    if (length(init_dateRange) < 2) init_dateRange <- dataDateRange
     
     plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend) {
       if (length(areas) == 0) return ("Please choose an area")
@@ -223,22 +221,21 @@ prodStack <- function(x, y = NULL,
       x = x,
       timeStep = timeStep,
       opts = opts,
-      areas = f_areas,
+      areas = init_areas,
       displayMcYear = displayMcYear,
       dataDateRange = dataDateRange,
-      dateRange = f_dateRange
+      dateRange = init_dateRange
       
     )
   }
   
-
   if (!interactive) {
-    params <- .getDataForComp(x, y, f_compare, f_compareOpts, processFun = processFun)
+    params <- .getDataForComp(x, y, compare, compareOpts, processFun = processFun)
     return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
   } else {
+    # just init for compare & compareOpts
     init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
-  
   
   manipulateWidget(
     {
@@ -259,7 +256,7 @@ prodStack <- function(x, y = NULL,
     legend = mwCheckbox(legend),
     x = mwSharedValue(x),
     params = mwSharedValue({
-      .getDataForComp(x, y, f_compare, f_compareOpts, 
+      .getDataForComp(x, y, compare, compareOpts, 
                       processFun = processFun)
       }),
     .compare = init_params$compare,
