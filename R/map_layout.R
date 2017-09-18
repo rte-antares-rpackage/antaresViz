@@ -94,42 +94,48 @@ changeCoordsServer <- function(input, output, session,
   ns <- session$ns
   
   data <- reactive({
-    if (what() == "areas") {
-      coords <- copy(layout()$areas)
-      info <- coords$area
-      links <- copy(layout()$links)
+    if(!is.null(layout())){
+      if (what() == "areas") {
+        coords <- copy(layout()$areas)
+        info <- coords$area
+        links <- copy(layout()$links)
+      } else {
+        coords <- copy(layout()$districts)
+        info <- coords$district
+        links <- copy(layout()$districtLinks)
+      }
+      
+      links$x0 <- as.numeric(links$x0)
+      links$x1 <- as.numeric(links$x1)
+      links$y0 <- as.numeric(links$y0)
+      links$y1 <- as.numeric(links$y1)
+      
+      list(coords = coords, info = info, links = links)
     } else {
-      coords <- copy(layout()$districts)
-      info <- coords$district
-      links <- copy(layout()$districtLinks)
+      NULL
     }
-    
-    links$x0 <- as.numeric(links$x0)
-    links$x1 <- as.numeric(links$x1)
-    links$y0 <- as.numeric(links$y0)
-    links$y1 <- as.numeric(links$y1)
-    
-    list(coords = coords, info = info, links = links)
   })
   
   data_points <- reactiveValues()
   
   observe({
-    cur_points <- data.frame(lon = data()$coords$x, lat = data()$coords$y, 
-                             oldLon = data()$coords$x, oldLat = data()$coords$y,
-                             color = data()$coords$color, info = as.character(data()$info), stringsAsFactors = FALSE)
-    isolate({
-      data_points$points <- cur_points
-      
-      avgCoord <- rowMeans(data_points$points[, c("lon", "lat")])
-      pt1 <- which.min(avgCoord)
-      pt2 <- which.max(avgCoord)
-      
-      data_points$points$lon[pt1] <- data_points$points$lat[pt1] <- 0
-      
-      data_points$pt1 <- pt1
-      data_points$pt2 <- pt2
-    })
+    if(!is.null(data())){
+      cur_points <- data.frame(lon = data()$coords$x, lat = data()$coords$y, 
+                               oldLon = data()$coords$x, oldLat = data()$coords$y,
+                               color = data()$coords$color, info = as.character(data()$info), stringsAsFactors = FALSE)
+      isolate({
+        data_points$points <- cur_points
+        
+        avgCoord <- rowMeans(data_points$points[, c("lon", "lat")])
+        pt1 <- which.min(avgCoord)
+        pt2 <- which.max(avgCoord)
+        
+        data_points$points$lon[pt1] <- data_points$points$lat[pt1] <- 0
+        
+        data_points$pt1 <- pt1
+        data_points$pt2 <- pt2
+      })
+    }
   })
   
   renderPreview <- function(pt) {
