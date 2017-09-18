@@ -46,7 +46,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
   
   init_area <- area
   init_dateRange <- dateRange
-
+  
   processFun <- function(x) {
     if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
     row <- NULL # exchanges with rest of the world
@@ -149,7 +149,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
       x = x
     )
   }
-    
+  
   if (!interactive) {
     params <- .getDataForComp(x, y, compare, compareOpts, processFun = processFun)
     return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend))
@@ -158,7 +158,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
   
-
+  
   manipulateWidget(
     params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend),
     mcYear = mwSelect(c("average", unique(params$x[[max(1,.id)]]$x$mcYear)), 
@@ -172,9 +172,13 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
                       if(.initial) area
                       else NULL
                     }),
-    dateRange = mwDateRange(params$x[[1]]$dateRange, 
-                            min = params$x[[max(1,.id)]]$dataDateRange[1], 
-                            max = params$x[[max(1,.id)]]$dataDateRange[2]),
+    dateRange = mwDateRange(
+      value = {
+        if(.initial) params$x[[1]]$dateRange
+        else NULL
+      },
+      min = params$x[[max(1,.id)]]$dataDateRange[1], 
+      max = params$x[[max(1,.id)]]$dataDateRange[2]),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     legend = mwCheckbox(legend),
     x = mwSharedValue(x),

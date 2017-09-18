@@ -153,7 +153,7 @@ prodStack <- function(x, y = NULL,
   
   init_areas <- areas
   init_dateRange <- dateRange
-
+  
   processFun <- function(x) {
     
     # Check that input contains area or district data
@@ -197,13 +197,13 @@ prodStack <- function(x, y = NULL,
       }
       
       p <- try(.plotProdStack(dt,
-                          stackOpts$variables,
-                          stackOpts$colors,
-                          stackOpts$lines,
-                          stackOpts$lineColors,
-                          main = main,
-                          unit = unit,
-                          legendId = legendId + id - 1, groupId = groupId), silent = TRUE)
+                              stackOpts$variables,
+                              stackOpts$colors,
+                              stackOpts$lines,
+                              stackOpts$lineColors,
+                              main = main,
+                              unit = unit,
+                              legendId = legendId + id - 1, groupId = groupId), silent = TRUE)
       if("try-error" %in% class(p)){
         return (paste0("Can't visualize stack '", stack, "'<br>", p[1]))
       }
@@ -243,9 +243,11 @@ prodStack <- function(x, y = NULL,
     },
     mcYear = mwSelect(c("average", unique(params$x[[max(1,.id)]]$x$mcYear)), .display = params$x[[max(1,.id)]]$displayMcYear),
     main = mwText(main, label = "title"),
-    dateRange = mwDateRange(params$x[[1]]$dateRange, 
-                            min = params$x[[max(1,.id)]]$dataDateRange[1],
-                            max = params$x[[max(1,.id)]]$dataDateRange[2]),
+    dateRange = mwDateRange(value = {
+      if(.initial) params$x[[1]]$dateRange
+      else NULL
+    }, min = params$x[[max(1,.id)]]$dataDateRange[1],
+    max = params$x[[max(1,.id)]]$dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     areas = mwSelect(as.character(unique(params$x[[max(1,.id)]]$x$area)), 
@@ -258,7 +260,7 @@ prodStack <- function(x, y = NULL,
     params = mwSharedValue({
       .getDataForComp(x, y, compare, compareOpts, 
                       processFun = processFun)
-      }),
+    }),
     .compare = init_params$compare,
     .compareOpts = init_params$compareOpts,
     ...
@@ -323,9 +325,9 @@ prodStack <- function(x, y = NULL,
 #' 
 #' @noRd
 .plotProdStack <- function(x, variables, colors, lines, lineColors, 
-                                 main = NULL, unit = "MWh", legendId = "",
-                                 groupId = legendId,
-                                 width = NULL, height = NULL) {
+                           main = NULL, unit = "MWh", legendId = "",
+                           groupId = legendId,
+                           width = NULL, height = NULL) {
   
   timeStep <- attr(x, "timeStep")
   
@@ -347,8 +349,8 @@ prodStack <- function(x, y = NULL,
 #' @rdname tsLegend
 #' @export
 prodStackLegend <- function(stack = "eco2mix", 
-                                  legendItemsPerRow = 5, legendId = "") {
-
+                            legendItemsPerRow = 5, legendId = "") {
+  
   stackOpts <- .aliasToStackOptions(stack)
   
   tsLegend(

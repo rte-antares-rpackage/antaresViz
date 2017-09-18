@@ -314,7 +314,10 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     .display = timeStep != "annual"
   ),
   dateRange = mwDateRange(
-    value = params$x[[1]][[table]]$dateRange,
+    value = {
+      if(.initial) params$x[[1]][[table]]$dateRange
+      else NULL
+    },
     min = params$x[[max(1,.id)]][[table]]$dataDateRange[1], 
     max = params$x[[max(1,.id)]][[table]]$dataDateRange[2],
     .display = timeStep != "annual"
