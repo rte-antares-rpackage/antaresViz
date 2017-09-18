@@ -322,7 +322,7 @@ plotMap <- function(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = 
                       }, .display = params$x[[max(1,.id)]]$showMcYear),
     type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
     dateRange = mwDateRange(
-      value = value = {
+      value = {
         if(.initial) params$x[[1]]$dateRange
         else NULL
       },
