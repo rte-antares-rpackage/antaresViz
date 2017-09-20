@@ -118,6 +118,8 @@
 #' plot(subset(detailedData, mcYears = 1), subset(detailedData, mcYears = 2))
 #' }
 #' 
+#' @import rhdf5
+#' 
 #' @export
 tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
                    mcYear = "average",
@@ -277,6 +279,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   manipulateWidget({
+    print(params)
     params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
                                             maxValue, aggregate, legend)
   },
@@ -376,7 +379,6 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   x_tranform = mwSharedValue({
     if(isH5){
       gc()
-      print("load data from h5")
       paramsH5
       mcYearh
       if("areas" %in% tables)
@@ -397,7 +399,6 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
           mcYearh2 <- as.numeric(mcYearh)
         }
       }
-      print("end load")
       readAntares(areas = areas, links = links, clusters = clusters, districts = districts, mcYears = mcYearh2,
                   timeStep = timeSteph5, opts = x)
     }else{
@@ -407,7 +408,6 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   
   y_tranform = mwSharedValue({
     if(isH5){
-      print("load data from h5")
       paramsH5
       mcYearh
       if("areas" %in% tables)
@@ -428,7 +428,6 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
           mcYearh2 <- as.numeric(mcYearh)
         }
       }
-      print("end load")
       readAntares(areas = areas, links = links, clusters = clusters, districts = districts, mcYears = mcYearh2,
                   timeStep = timeSteph5, opts = y)
     }else{
@@ -440,10 +439,6 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     attributes(x_tranform)$timeStep
   }),
   params = mwSharedValue({
-    print("mcYearh")
-    print(mcYearh)
-    print("shared_timeSteph5")
-    print(timeSteph5)
     prm <- .getDataForComp(x_tranform, y_tranform, compare, compareOpts, 
                            processFun = processFun, 
                            elements = init_elements, dateRange = init_dateRange)
@@ -452,13 +447,16 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   .compare = {
     if(is.null(compare))
     {
-      NULL
+      if(is.null(y)){
+
+      NULL        
+      }else{""}
     }else{
       compare
     }
   },
   .compareOpts = {
-    if(is.null(compare))
+    if(is.null(compare) && is.null(y))
     {
       compareOptions()
     }else{
@@ -475,3 +473,8 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
 #' @rdname tsPlot
 #' @method plot antaresData
 plot.antaresData <- tsPlot
+
+#' @export
+#' @rdname tsPlot
+#' @method plot simOptions
+plot.simOptions <- tsPlot

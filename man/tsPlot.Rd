@@ -3,6 +3,7 @@
 \name{tsPlot}
 \alias{tsPlot}
 \alias{plot.antaresData}
+\alias{plot.simOptions}
 \title{plot time series contained in an antaresData object}
 \usage{
 tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
@@ -15,6 +16,15 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   ...)
 
 \method{plot}{antaresData}(x, y = NULL, table = NULL, variable = NULL,
+  elements = NULL, mcYear = "average", type = c("ts", "barplot",
+  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
+  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
+  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
+  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
+  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
+  width = NULL, height = NULL, ...)
+
+\method{plot}{simOptions}(x, y = NULL, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
   "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
   minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),

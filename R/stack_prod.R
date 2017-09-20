@@ -147,7 +147,7 @@ prodStack <- function(x, y = NULL,
                       groupId = legendId,
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL, ...) {
-  
+  table <- NULL
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
@@ -234,13 +234,51 @@ prodStack <- function(x, y = NULL,
     return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
   } else {
     # just init for compare & compareOpts
-    init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
+    # init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
   
   manipulateWidget(
     {
       params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
     },
+    x = mwSharedValue({x}),
+    y = mwSharedValue({y}),
+    isH5 = mwSharedValue({"simOptions" %in% class(x) && !is.null(x$h5path)}),
+    paramsH5 = mwSharedValue({
+      if(isH5){
+        opts <- x
+        fid <- H5Fopen(opts$h5path)
+        timeStepS <- .getTimStep(fid)
+        timeStepS <- as.character(timeStepS)
+        mcYearS <- opts$mcYears
+        tabl <- .getTableInH5(fid, timeStepS[1])
+        tabl <- tabl[tabl%in%c("areas", "districts")]
+        list(
+          timeStepS = timeStepS,
+          opts = opts,
+          mcYearS = mcYearS,
+          tabl = tabl
+        )
+      }else{
+        NULL
+      }
+    }),
+    
+    #init_params = mwSharedValue({.getDataForComp(x_tranform, y_tranform, compare, compareOpts, function(x) {})}),
+    H5request = mwGroup(
+      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, value =  paramsH5$timeStepS[1]
+                            , label = "timeStep", multiple = FALSE),
+      tables = mwSelect(choices = paramsH5[["tabl"]], value = {
+        if(.initial) {paramsH5[["tabl"]][1]}else{NULL}
+      } , label = "table", multiple = FALSE),
+      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), value = {
+        if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+      }, label = "mcYear", multiple = TRUE)
+      ,.display = isH5),#isH5
+    params = mwSharedValue({
+      .getDataForComp(x_tranform, y_tranform, compare, compareOpts = if(is.null(compare)){compareOptions()}else{list(ncharts = 2, ncol = 1, nrow = 2)}, 
+                      processFun = processFun)
+    }),
     mcYear = mwSelect(c("average", unique(params$x[[max(1,.id)]]$x$mcYear)), .display = params$x[[max(1,.id)]]$displayMcYear),
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(value = {
@@ -250,19 +288,71 @@ prodStack <- function(x, y = NULL,
     max = params$x[[max(1,.id)]]$dataDateRange[2]),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-    areas = mwSelect(as.character(unique(params$x[[max(1,.id)]]$x$area)), 
-                     value = {
-                       if(.initial) area
-                       else NULL
-                     }, multiple = TRUE),
+    areas = mwSelect(#"fr", "fr",
+        as.character(unique(params$x[[max(1,.id)]]$x$area)), 
+                       value = {
+                         if(.initial) as.character(unique(params$x[[max(1,.id)]]$x$area))[1]
+                         else NULL},
+                      multiple = TRUE),
     legend = mwCheckbox(legend),
-    x = mwSharedValue(x),
-    params = mwSharedValue({
-      .getDataForComp(x, y, compare, compareOpts, 
-                      processFun = processFun)
+    x_tranform = mwSharedValue({
+      if(isH5){
+        gc()
+        paramsH5
+        mcYearh
+        if(length(mcYearh)==0) {mcYearh2 <- NULL}else{
+          if("all"%in%mcYearh){
+            mcYearh2 <- "all"
+          }else{
+            mcYearh2 <- as.numeric(mcYearh)
+          }
+        }
+        readAntares(areas = "all", district = "all", mcYears = mcYearh2,
+                    timeStep = timeSteph5, opts = x)
+      }else{
+        x
+      }
     }),
-    .compare = init_params$compare,
-    .compareOpts = init_params$compareOpts,
+    
+    y_tranform = mwSharedValue({
+      if(isH5){
+        gc()
+        paramsH5
+        mcYearh
+        if(length(mcYearh)==0) {mcYearh2 <- NULL}else{
+          if("all"%in%mcYearh){
+            mcYearh2 <- "all"
+          }else{
+            mcYearh2 <- as.numeric(mcYearh)
+          }
+        }
+        readAntares(areas = "all", district = "all", mcYears = mcYearh2,
+                    timeStep = timeSteph5, opts = y)
+      }else{
+        y
+      }
+    }),
+
+    .compare = {
+      if(is.null(compare))
+      {
+        if(is.null(y)){
+          
+          NULL        
+        }else{""}
+      }else{
+        compare
+      }
+    },
+    .compareOpts = {
+      if(is.null(compare) && is.null(y))
+      {
+        compareOptions()
+      }else{
+        #to review (temp version)
+        list(ncharts = 2, ncol = 1, nrow = 2)
+      }
+    },
     ...
   )
 }
