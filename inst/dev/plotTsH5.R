@@ -7,11 +7,8 @@ library(rAmCharts)
 library(dygraphs)
 
 devtools::load_all(".")
-path <- c("D:/Users/titorobe/Desktop/Antares/antaresViz/sim1.h5")
+path <- c("D:/Users/titorobe/Desktop/Antares/antaresViz")
 plotH5ts(path, main = "rr")
-
-
-
 
 plotH5ts <- function(path,
                      confInt = 0.5,
@@ -29,7 +26,6 @@ plotH5ts <- function(path,
   
   opts <- setSimulationPathH5(path[1])
   fid <- H5Fopen(opts$h5path)
- 
   if(length(path)>1) compare <- list()
   timeSteps <- .getTimStep(fid)
   timeStep <- timeSteps[1]
@@ -46,7 +42,7 @@ plotH5ts <- function(path,
     group <- NULL
   }
   manipulateWidget(.doPlot(.id = .id,
-                           path = path,
+                           path = opts$h5path,
                            table = table,
                            mcYear = mcYear,
                            variable = variable,
@@ -67,17 +63,32 @@ plotH5ts <- function(path,
                            opts = opts,
                            colorScaleOpts = colorScaleOpts,
                            group = group),
-                   table = mwSelect(tables, value = tables[1], label = "tables"),
-                   timeStep = mwSelect(choices = timeSteps, value = timeSteps[1], label ="timeStep"),
-                   mcYear = mwSelect(c("MC-All", MCyears), value = "MC-All", label = "MCyear"),
-                   dateRange = mwDateRange(value = c(as.Date("1900-01-01"), as.Date("2200-01-01")), min = dateRan[1], max = dateRan[2]),
-                   variable = mwSelect(variables[[table]], variables[[tables[1]]][1], label = "variable", multiple = TRUE),
-                   type = mwSelect(typeChoices,value = typeChoices[1], label = "type"),
-                   elements = mwSelect(c( elems[[table]]), value = elems[[tables[1]]][1],label = "elements", multiple = TRUE),
-                   minValue = mwNumeric(minValue, label = "min value", .display = type %in% c("density", "cdf")),
-                   maxValue = mwNumeric(maxValue, label = "max value", .display = type %in% c("density", "cdf")),
-                   dateRan = mwSharedValue(expr = .getDateRange(opts, timeStep) ),
-                   .compare = compare,
+                    table = mwSelect(as.character(tables), value = {if(.initial){tables[1]}else{NULL}}, label = "tables"),
+                    timeStep = mwSelect(choices = as.character(timeSteps), value = {if(.initial){timeSteps[1]}else{NULL}}, label ="timeStep"),
+                    mcYear = mwSelect(c("MC-All", MCyears), value = "MC-All", label = "MCyear"),
+                    dateRange = mwDateRange(value = c(as.Date("1900-01-01"), as.Date("2200-01-01")), min = dateRan[1], max = dateRan[2]),
+                    
+                    variable = mwSelect(variables[[table]], variables[[table]][1], label = "variable", multiple = TRUE),
+                    # variable = mwSelect(variables[[table]], value = 
+                    #                     {
+                    #                     if(.initial){variables[[tables[1]]][1]}else{NULL}
+                    #                     },
+                    #                     label = "variable", multiple = TRUE),
+                    # 
+                    type = mwSelect(typeChoices, value = typeChoices[1], label = "type"),
+                   # 
+                    elements = mwSelect(c( elems[[table]]), value = elems[[table]][1],label = "elements", multiple = TRUE),
+                   # 
+                    # elements = mwSelect(c( elems[[table]]), value = 
+                    #                                           {
+                    #                                             if(.initial){elems[[tables[1]]][1]}else{NULL}
+                    #                                           }
+                    #                                         ,
+                    #                        label = "elements", multiple = TRUE),
+                    minValue = mwNumeric(minValue, label = "min value", .display = type %in% c("density", "cdf")),
+                    maxValue = mwNumeric(maxValue, label = "max value", .display = type %in% c("density", "cdf")),
+                    dateRan = mwSharedValue(expr = .getDateRange(opts, timeStep) ),
+                    .compare = compare,
                    ...)
   
   

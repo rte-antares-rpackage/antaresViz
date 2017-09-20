@@ -30,7 +30,7 @@
 }
 
 .getClustersNames <- function(fid, timeStep){
-  antaresHdf5:::.getstructure(fid, paste0(timeStep, "/clusters/mcInd/structure"))$cluster
+ unique(unlist(lapply(strsplit(antaresHdf5:::.getstructure(fid, paste0(timeStep, "/clusters/mcInd/structure"))$cluster, "/"), function(X)X[1])))
 }
 
 .getElements <- function(opts, tables, fid, timeStep){

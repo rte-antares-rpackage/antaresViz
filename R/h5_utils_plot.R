@@ -16,6 +16,8 @@
                         select = variable,
                         timeStep = timeStep,
                         perf = FALSE)
+  if(nrow(data) == 0){return(data)}
+  
   colsId <- antaresRead::getIdCols(data)
 
   if("cluster" %in% colsId){
@@ -39,13 +41,12 @@
     setnames(data, idV, "newKey")
   }
   data$newKey <- as.character(data$newKey)
-  print(data)
+
   if(ncol(data) > 4){
     data <- melt(data, c("newKey", "timeId", "time"))
     data[, newKey := paste0(newKey, " - ",  as.character(variable)),by=1:nrow(data)]
     data[, variable := NULL]
     valueCol <- "value"
-    print(data)
   }
   
   
@@ -80,9 +81,10 @@
                     opts,
                     colorScaleOpts,
                     group){
-
+  
+  
   data <- .getData(ifelse(length(path) == 1 , path , path[.id]), table, mcYear, variable, elements, dateRange, timeStep)
- 
+  if(nrow(data) == 0){return(NULL)}
   f <- .getGraphFunction(type)
 
   f(
