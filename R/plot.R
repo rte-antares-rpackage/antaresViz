@@ -114,7 +114,7 @@
 #' plot(detailedData[mcYear == 1], detailedData[mcYear == 2])
 #' 
 #' # To do the same thing, with antaresDataList objects, one can use 'subset'
-#' detailedData <- readAntares(areas = "all" links = "all", mcYears = "all")
+#' detailedData <- readAntares(areas = "all", links = "all", mcYears = "all")
 #' plot(subset(detailedData, mcYears = 1), subset(detailedData, mcYears = 2))
 #' }
 #' 
@@ -138,8 +138,9 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
                    legend = TRUE,
                    legendItemsPerRow = 5,
                    colorScaleOpts = colorScaleOptions(20),
-                   width = NULL, height = NULL, ...) {
-  
+                   width = NULL, height = NULL, xyCompare = c("union","intersect"), ...) {
+  table <- NULL
+  xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
   aggregate <- match.arg(aggregate)
   colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
@@ -185,7 +186,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
         dt$element <- x$area
       } else stop("No Id column")
       
-      if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
+      if ("mcYear" %in% names(x)) {
         dt$mcYear <- x$mcYear
       }
       
@@ -207,6 +208,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
           return(combineWidgets())
         }
         
+
         dt <- .getTSData(
           x, dt, 
           variable = variable, elements = elements, 
@@ -214,7 +216,25 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
           mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
         )
         
-        if (nrow(dt) == 0) return(combineWidgets())
+        if (nrow(dt) == 0) return(combineWidgets("No data"))
+        
+        if(type == "ts"){
+          if(!is.null(dateRange))
+          {
+            if(dt$time[1] > dateRange[1]){
+              dt <- dt[c(NA, 1:nrow(dt))]
+              dt$time[1] <- dateRange[1]
+            }
+            nrowTp <- nrow(dt)
+            if(dt$time[nrowTp] < dateRange[2]){
+              dt <- dt[c(1:nrow(dt), NA)]
+              dt$time[nrowTp + 1] <- dateRange[2]
+            }
+          }
+          
+        }
+        
+        
         
         f <- switch(type,
                     "ts" = .plotTS,
@@ -279,59 +299,166 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   manipulateWidget({
-    print(params)
+
+    if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this data")))}
+    
     params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
-                                            maxValue, aggregate, legend)
+                                                 maxValue, aggregate, legend)
+    
   },
-  x = mwSharedValue({x}),
-  y = mwSharedValue({y}),
-  isH5 = mwSharedValue({"simOptions" %in% class(x) && !is.null(x$h5path)}),
-  paramsH5 = mwSharedValue({
-    if(isH5){
-      opts <- x
-      fid <- H5Fopen(opts$h5path)
-      timeStepS <- .getTimStep(fid)
-      timeStepS <- as.character(timeStepS)
-      mcYearS <- opts$mcYears
-      tabl <- .getTableInH5(fid, timeStepS[1])
-      list(
-        timeStepS = timeStepS,
-        opts = opts,
-        mcYearS = mcYearS,
-        tabl = tabl
-      )
+  x = mwSharedValue(x),
+  y = mwSharedValue(y),
+  
+  ###H5
+  x_Infos = mwSharedValue({
+    if(!is.null(x_Infos$isH5)){
+      list(dataInput = x_Infos$dataInput, isH5 = "simOptions" %in% class(x_Infos$dataInput) && !is.null(x_Infos$dataInput$h5path))
+      
     }else{
-      NULL
+      list(dataInput = x, isH5 = "simOptions" %in% class(x) && !is.null(x$h5path))
     }
+  }),
+  y_Infos = mwSharedValue({
+    if(!is.null(y_Infos$isH5)){
+      list(dataInput = y_Infos$dataInput, isH5 = "simOptions" %in% class(y_Infos$dataInput) && !is.null(y_Infos$dataInput$h5path))
+      
+    }else{
+      list(dataInput = y, isH5 = "simOptions" %in% class(y) && !is.null(y$h5path))
+    }
+  }),
+  
+  paramsH5 = mwSharedValue({
+    .giveParamH5(X_I = x_Infos, Y_I = y_Infos, xyCompare = xyCompare)
   }),
   
   #init_params = mwSharedValue({.getDataForComp(x_tranform, y_tranform, compare, compareOpts, function(x) {})}),
   H5request = mwGroup(
     timeSteph5 = mwSelect(choices = paramsH5$timeStepS, value =  paramsH5$timeStepS[1]
-                            , label = "timeStep", multiple = FALSE),
+                          , label = "timeStep", multiple = FALSE),
     tables = mwSelect(choices = paramsH5[["tabl"]], value = {
       if(.initial) {paramsH5[["tabl"]][1]}else{NULL}
     } , label = "table", multiple = TRUE),
     mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), value = {
       if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
     }, label = "mcYear", multiple = TRUE)
-    ,.display = isH5),#isH5
-  table = mwSelect(names(params$x[[max(1,.id)]]), value = {
-    if(.initial) table
-    else NULL
-  }, .display = length(params$x[[max(1,.id)]]) > 1),
+    ,.display = x_Infos$isH5),#isH5
+  
+  
+  
+  
+  table = mwSelect(
+    {
+      
+      if(!is.null(params)){
+        as.character(.compareopetation(lapply(params$x, function(vv){
+          unique(names(vv))
+        }), xyCompare))
+      }
+    }                   
+    , value = {
+      if(.initial) table
+      else NULL
+    }, .display = length(as.character(.compareopetation(lapply(params$x, function(vv){
+      unique(names(vv))
+    }), xyCompare))) > 1),
+  
+  
+  
   mcYear = mwSelect(
-    choices = c("average", params$x[[max(1,.id)]][[table]]$uniqueMcYears),
+    choices = {#c("average", params$x[[max(1,.id)]][[table]]$uniqueMcYears)
+      c("average",     if(!is.null(params)){
+        as.character(.compareopetation(lapply(params$x, function(vv){
+          unique(vv[[table]]$uniqueMcYears)
+        }), xyCompare))
+      })
+      
+      },
     value = {
       if(.initial) "average"
       else NULL
     }#, 
     # .display = params$x[[max(1,.id)]][[table]]$showConfInt
   ),
+  sharerequestX = mwSharedValue({
+    list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
+  }),
   
-
+  x_tranform = mwSharedValue({
+    if(x_Infos$isH5){
+      gc()
+      if(length(sharerequestX$mcYearh_l)==0) {mcYearh2 <- NULL}else{
+        if("all"%in%sharerequestX$mcYearh_l){
+          mcYearh2 <- "all"
+        }else{
+          mcYearh2 <- as.numeric(sharerequestX$mcYearh_l)
+        }
+      }
+      areas <- links <- clusters <- districts <- NULL
+      if("areas" %in% sharerequestX$tables_l){
+        areas <- "all"
+      }
+      if("links" %in% sharerequestX$tables_l){
+        links <- "all"
+      }
+      if("clusters" %in% sharerequestX$tables_l){
+        clusters <- "all"
+      }
+      if("districts" %in% sharerequestX$tables_l){
+        districts <- "all"
+      }
+      
+      readAntares(areas = areas, links = links, clusters = clusters,districts = districts , mcYears = mcYearh2,
+                  timeStep = sharerequestX$timeSteph5_l, opts = x_Infos$dataInput)
+    }else{
+      x_Infos$dataInput
+    }
+  }),
+  y_tranform = mwSharedValue({
+    if(y_Infos$isH5){
+      gc()
+      if(length(sharerequestX$mcYearh_l)==0) {mcYearh2 <- NULL}else{
+        if("all"%in%sharerequestX$mcYearh_l){
+          mcYearh2 <- "all"
+        }else{
+          mcYearh2 <- as.numeric(sharerequestX$mcYearh_l)
+        }
+      }
+      areas <- links <- clusters <- districts <- NULL
+      if("areas" %in% sharerequestX$tables_l){
+        areas <- "all"
+      }
+      if("links" %in% sharerequestX$tables_l){
+        links <- "all"
+      }
+      if("clusters" %in% sharerequestX$tables_l){
+        clusters <- "all"
+      }
+      if("districts" %in% sharerequestX$tables_l){
+        districts <- "all"
+      }
+      
+      readAntares(areas = areas, links = links, clusters = clusters,districts = districts , mcYears = mcYearh2,
+                  timeStep = sharerequestX$timeSteph5_l, opts = y_Infos$dataInput)
+    }else{
+      y_Infos$dataInput
+    }
+  }),
+  
+  
   variable = mwSelect(
-    choices = params$x[[max(1,.id)]][[table]]$valueCols,
+    
+    choices = {
+      if(!is.null(params)){
+        as.character(.compareopetation(lapply(params$x, function(vv){
+          unique(vv[[table]]$valueCols)
+        }), xyCompare))
+      }
+    },
+    
+    
+    #choices = params$x[[max(1,.id)]][[table]]$valueCols,
+    
+    
     value = {
       if(.initial) variable
       else NULL
@@ -349,23 +476,59 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     }, 
     .display = timeStepdataload != "annual"
   ),
-  dateRange = mwDateRange(
-    value = {
-      if(.initial) params$x[[1]][[table]]$dateRange
-      else NULL
-    },
-    min = params$x[[max(1,.id)]][[table]]$dataDateRange[1], 
-    max = params$x[[max(1,.id)]][[table]]$dataDateRange[2],
-    .display = timeStepdataload != "annual"
-  ),
+  # dateRange = mwDateRange(
+  #   value = {
+  #     if(.initial) params$x[[1]][[table]]$dateRange
+  #     else NULL
+  #   },
+  #   min = params$x[[max(1,.id)]][[table]]$dataDateRange[1], 
+  #   max = params$x[[max(1,.id)]][[table]]$dataDateRange[2],
+  #   .display = timeStepdataload != "annual"
+  # ),
+  
+  dateRange = mwDateRange(value = {
+    if(.initial){
+      res <- NULL
+      if(!is.null(params) & ! is.null(table)){
+        print(params)
+        print(table)
+      res <- c(.giveDateInfos(yD = y_Infos$dataInput, param = params, xyCompare = xyCompare, "min", tabl = table),
+               .giveDateInfos(yD = y_Infos$dataInput, param = params, xyCompare = xyCompare, "max", tabl = table))
+      }
+      res
+    }else{NULL}
+  }, min = 
+  {      
+    if(!is.null(params) & ! is.null(table)){
+    .giveDateInfos(yD = y_Infos$dataInput, params = params, xyCompare = xyCompare, "min", tabl = table)
+    }
+  }
+  ,
+  max = 
+  {      
+    if(!is.null(params) & ! is.null(table)){
+    .giveDateInfos(yD = y_Infos$dataInput, params = params, xyCompare = xyCompare, "max",  tabl = table)
+    }
+    
+  },.display = timeStepdataload != "annual"),
   confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval",
                      .display = params$x[[max(1,.id)]][[table]]$showConfInt & mcYear == "average"),
   minValue = mwNumeric(minValue, "min value", .display = type %in% c("density", "cdf")),
   maxValue = mwNumeric(maxValue, "max value", .display = type %in% c("density", "cdf")),
   elements = mwSelect(
-    choices = c("all", params$x[[max(1,.id)]][[table]]$uniqueElem),
+    choices = {
+      
+      c("all",       if(!is.null(params)){
+        as.character(.compareopetation(lapply(params$x, function(vv){
+          unique(vv[[table]]$uniqueElem)
+        }), xyCompare))
+      })#{params$x[[max(1,.id)]][[table]]$uniqueElem)
+      
+      },
     value = {
-      if(.initial) params$x[[max(1,.id)]][[table]]$uniqueElem[1]
+      if(.initial) {     as.character(.compareopetation(lapply(params$x, function(vv){
+        unique(vv[[table]]$uniqueElem)
+      }), xyCompare))[1]}
     }, 
     multiple = TRUE
   ),
@@ -375,65 +538,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
                          else NULL
                        }),
   legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
-
-  x_tranform = mwSharedValue({
-    if(isH5){
-      gc()
-      paramsH5
-      mcYearh
-      if("areas" %in% tables)
-      {areas <- "all"}else{areas <- NULL}
-      
-      if("links" %in% tables)
-      {links <- "all"}else{links <- NULL}
-      
-      if("clusters" %in% tables)
-      {clusters <- "all"}else{clusters <- NULL}
-      
-      if("districts" %in% tables)
-      {districts <- "all"}else{districts <- NULL}
-      if(length(mcYearh)==0) {mcYearh2 <- NULL}else{
-        if("all"%in%mcYearh){
-          mcYearh2 <- "all"
-        }else{
-          mcYearh2 <- as.numeric(mcYearh)
-        }
-      }
-      readAntares(areas = areas, links = links, clusters = clusters, districts = districts, mcYears = mcYearh2,
-                  timeStep = timeSteph5, opts = x)
-    }else{
-      x
-    }
-  }),
   
-  y_tranform = mwSharedValue({
-    if(isH5){
-      paramsH5
-      mcYearh
-      if("areas" %in% tables)
-      {areas <- "all"}else{areas <- NULL}
-      
-      if("links" %in% tables)
-      {links <- "all"}else{links <- NULL}
-      
-      if("clusters" %in% tables)
-      {clusters <- "all"}else{clusters <- NULL}
-      
-      if("districts" %in% tables)
-      {districts <- "all"}else{districts <- NULL}
-      if(length(mcYearh)==0) {mcYearh2 <- NULL}else{
-        if("all"%in%mcYearh){
-          mcYearh2 <- "all"
-        }else{
-          mcYearh2 <- as.numeric(mcYearh)
-        }
-      }
-      readAntares(areas = areas, links = links, clusters = clusters, districts = districts, mcYears = mcYearh2,
-                  timeStep = timeSteph5, opts = y)
-    }else{
-      y
-    }
-  }),
   
   timeStepdataload = mwSharedValue({
     attributes(x_tranform)$timeStep
@@ -448,8 +553,8 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     if(is.null(compare))
     {
       if(is.null(y)){
-
-      NULL        
+        
+        NULL        
       }else{""}
     }else{
       compare

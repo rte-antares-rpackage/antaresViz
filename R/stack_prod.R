@@ -250,8 +250,9 @@ prodStack <- function(x, y = NULL,
     },
     x = mwSharedValue(x),
     y = mwSharedValue(y),
+   
+    ###H5
     x_Infos = mwSharedValue({
-      
       if(!is.null(x_Infos$isH5)){
         list(dataInput = x_Infos$dataInput, isH5 = "simOptions" %in% class(x_Infos$dataInput) && !is.null(x_Infos$dataInput$h5path))
         
@@ -269,54 +270,10 @@ prodStack <- function(x, y = NULL,
     }),
     #isH5 = mwSharedValue({"simOptions" %in% class(x) && !is.null(x$h5path)}),
     paramsH5 = mwSharedValue({
-      if(x_Infos$isH5){
-        opts <- x_Infos$dataInput
-        fid <- H5Fopen(opts$h5path)
-        timeStepS <- .getTimStep(fid)
-        timeStepS <- as.character(timeStepS)
-        mcYearS <- opts$mcYears
-        tabl <- .getTableInH5(fid, timeStepS[1])
-        tabl <- tabl[tabl%in%c("areas", "districts")]
-        xPart = list(
-          timeStepS = timeStepS,
-          mcYearS = mcYearS,
-          tabl = tabl
-        )
-        
-      }else{
-        xPart = NULL
-      }
-      if(y_Infos$isH5){
-        opts <- y_Infos$dataInput
-        fid <- H5Fopen(opts$h5path)
-        timeStepS <- .getTimStep(fid)
-        timeStepS <- as.character(timeStepS)
-        mcYearS <- opts$mcYears
-        tabl <- .getTableInH5(fid, timeStepS[1])
-        tabl <- tabl[tabl%in%c("areas", "districts")]
-        yPart = list(
-          timeStepS = timeStepS,
-          mcYearS = mcYearS,
-          tabl = tabl
-        )
-      }else{
-        yPart = NULL
-      }
-      if(is.null(xPart) & is.null(yPart)){
-        ret <- NULL
-      }else if(is.null(xPart)){
-        ret <- yPart
-      }else if(is.null(yPart)){
-        ret <- xPart
-      }else{
-        ret <- list() 
-        ret$timeStepS <- .compareopetation(list(xPart$timeStepS, yPart$timeStepS), xyCompare)
-        ret$mcYearS <- sort(.compareopetation(list(xPart$mcYearS, yPart$mcYearS), xyCompare))
-        ret$tabl <- .compareopetation(list(xPart$tabl, yPart$tabl), xyCompare)
-      }
-      ret
+      parmH5 <- .giveParamH5(X_I = x_Infos, Y_I = y_Infos, xyCompare = xyCompare)
+      parmH5$tabl <-  parmH5$tabl[parmH5$tabl%in%c("areas", "districts")]
+      parmH5
     }),
-    
     #init_params = mwSharedValue({.getDataForComp(x_tranform, y_tranform, compare, compareOpts, function(x) {})}),
     H5request = mwGroup(
       timeSteph5 = mwSelect(choices = paramsH5$timeStepS, value =  paramsH5$timeStepS[1]
@@ -326,13 +283,13 @@ prodStack <- function(x, y = NULL,
       }, label = "mcYear", multiple = TRUE)
       ,.display = x_Infos$isH5),#isH5
     params = mwSharedValue({
-      .getDataForComp(x_tranform, y_tranform, compare, compareOpts = if(is.null(compare) && is.null(y_tranform)){compareOptions()}else{list(ncharts = 2, ncol = 1, nrow = 2)}, 
+      .getDataForComp(x_tranform, y_tranform, compare,
+                      compareOpts = if(is.null(compare) && is.null(y_tranform)){compareOptions()}else{list(ncharts = 2, ncol = 1, nrow = 2)}, 
                       processFun = processFun)
     }),
     sharerequestX = mwSharedValue({
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh)
     }),
-    
     x_tranform = mwSharedValue({
       if(x_Infos$isH5){
         gc()
@@ -349,7 +306,6 @@ prodStack <- function(x, y = NULL,
         x_Infos$dataInput
       }
     }),
-    
     y_tranform = mwSharedValue({
       if(y_Infos$isH5){
         gc()
@@ -367,12 +323,20 @@ prodStack <- function(x, y = NULL,
       }
     }),
     
+    ##End h5
+    
+    
+    
+    
+    
+    
     mcYear = mwSelect(
       {
         c("average",  .compareopetation(lapply(params$x, function(vv){
           unique(vv$x$mcYear)
         }), xyCompare))
       }),
+    
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(value = {
       if(.initial){
@@ -390,8 +354,7 @@ prodStack <- function(x, y = NULL,
     {      
       .giveDateInfos(yD = y_Infos$dataInput, params = params, xyCompare = xyCompare, "max")
       
-    })
-    ,
+    }),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     areas = mwSelect(
@@ -529,39 +492,4 @@ prodStackLegend <- function(stack = "eco2mix",
     legendItemsPerRow = legendItemsPerRow,
     legendId = legendId
   )
-}
-
-.giveDateInfos <- function(yD, params, xyCompare, minMax){
-  use <- NULL
-  if(!is.null(params))
-  {
-  if(minMax == "min")
-  {
-    if(is.null(yD)){
-      use <- params$x[[1]]$dataDateRange[1]
-    }else if(xyCompare == "union"){
-      use <- min(
-        do.call("c",(lapply(params$x, function(vv){
-          unique(vv$dataDateRange[1])}))))
-    } else if(xyCompare == "intersect"){
-      use <- max(
-        do.call("c",(lapply(params$x, function(vv){
-          unique(vv$dataDateRange[1])}))))
-    }
-  }
-  if(minMax == "max")
-  {
-    if(is.null(yD)){
-      use <- params$x[[1]]$dataDateRange[2]
-    }else if(xyCompare == "union"){
-      use <- max(
-        do.call("c",(lapply(params$x, function(vv){
-          unique(vv$dataDateRange[2])}))))
-    } else if(xyCompare == "intersect"){
-      use <- min(
-        do.call("c",(lapply(params$x, function(vv){
-          unique(vv$dataDateRange[2])}))))
-    }
-  }}
-  use
 }
