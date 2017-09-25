@@ -13,7 +13,7 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   compareOpts = list(), interactive = getInteractivity(), colors = NULL,
   main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  ...)
+  xyCompare = c("union", "intersect"), ...)
 
 \method{plot}{antaresData}(x, y = NULL, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
@@ -22,7 +22,7 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   compare = NULL, compareOpts = list(), interactive = getInteractivity(),
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, ...)
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"), ...)
 
 \method{plot}{simOptions}(x, y = NULL, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
@@ -31,7 +31,7 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   compare = NULL, compareOpts = list(), interactive = getInteractivity(),
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, ...)
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
@@ -116,7 +116,11 @@ usefull when one wants to create a shared legend with
 
 \item{colorScaleOpts}{A list of parameters that control the creation of color scales. It is used
 only for heatmaps. See \code{\link{colorScaleOptions}}() for available
-parameters.}
+parameters.
+@param xyCompare
+Use when you compare studies, can be "union" or "intersect". If union, all
+of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+studies will be selectable.}
 
 \item{width}{Width of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
@@ -179,7 +183,7 @@ detailedData <- readAntares("all", mcYears = "all")
 plot(detailedData[mcYear == 1], detailedData[mcYear == 2])
 
 # To do the same thing, with antaresDataList objects, one can use 'subset'
-detailedData <- readAntares(areas = "all" links = "all", mcYears = "all")
+detailedData <- readAntares(areas = "all", links = "all", mcYears = "all")
 plot(subset(detailedData, mcYears = 1), subset(detailedData, mcYears = 2))
 }
 
