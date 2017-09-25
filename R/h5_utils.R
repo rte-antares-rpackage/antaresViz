@@ -73,3 +73,9 @@
   })
   names(timeSteps[which(timeSteps == TRUE)])
 }
+
+.compareopetation <- function(a, opType){
+  if(length(a)==1)return(unlist(unique(a)))
+  if(opType == "union")return(Reduce(union, a))
+  if(opType == "intersect")return(Reduce(intersect, a))
+}

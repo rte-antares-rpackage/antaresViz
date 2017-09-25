@@ -43,7 +43,7 @@
 #' @noRd
 .plotStack <- function(x, timeStep, opts, colors, lines = NULL, lineColors = NULL, 
                        legendId = "", groupId = legendId, main = "", ylab = "",
-                       width = NULL, height = NULL) {
+                       width = NULL, height = NULL, dateRange = NULL) {
   
   variables <- setdiff(names(x), c("timeId", lines))
   
@@ -84,8 +84,28 @@
     dt$totalNeg <- dt$totalNeg + negValues
   }
   
+  
+  ##Add first and last row of not in range
+  if(!is.null(dateRange))
+  {
+  if(dt$time[1] > dateRange[1]){
+    dt <- dt[c(NA, 1:nrow(dt))]
+    dt$time[1] <- dateRange[1]
+  }
+  nrowTp <- nrow(dt)
+  if(dt$time[nrowTp] < dateRange[2]){
+    dt <- dt[c(1:nrow(dt), NA)]
+    dt$time[nrowTp + 1] <- dateRange[2]
+  }
+  }
+  
+  
+  
   # 5- Finally plot !!
   colors <- unname(c("#FFFFFF", rev(colors), colors))
+  
+  
+  
   
   g <- dygraph(as.xts.data.table(dt), main = main, group = groupId, width = width, height = height)  %>%
     dyOptions(
@@ -100,7 +120,7 @@
       useDataTimezone = TRUE 
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
-    dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg) * 1.1, NA)) %>% 
+    dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg, na.rm = TRUE) * 1.1, NA)) %>% 
     dyLegend(show = "never") %>% 
     dyCallbacks(
       highlightCallback = JS_updateLegend(legendId, timeStep),
