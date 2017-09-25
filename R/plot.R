@@ -60,6 +60,11 @@
 #'   A list of parameters that control the creation of color scales. It is used
 #'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available
 #'   parameters.
+#'   @param xyCompare
+#'   Use when you compare studies, can be "union" or "intersect". If union, all
+#'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+#'   studies will be selectable.
+#'   
 #' 
 #' @inheritParams prodStack
 #'   
