@@ -248,8 +248,8 @@ prodStack <- function(x, y = NULL,
     {
       params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
     },
-    # x = mwSharedValue(x),
-    # y = mwSharedValue(y),
+    x = mwSharedValue(x),
+    y = mwSharedValue(y),
     x_Infos = mwSharedValue({
       
       if(!is.null(x_Infos$isH5)){
@@ -352,7 +352,6 @@ prodStack <- function(x, y = NULL,
     
     y_tranform = mwSharedValue({
       if(y_Infos$isH5){
-        
         gc()
         if(length(sharerequestX$mcYearh_l)==0) {mcYearh2 <- NULL}else{
           if("all"%in%sharerequestX$mcYearh_l){
@@ -377,19 +376,19 @@ prodStack <- function(x, y = NULL,
     main = mwText(main, label = "title"),
     dateRange = mwDateRange(value = {
       if(.initial){
-        res <- c(.giveDateInfos(y = y, param = params, xyCompare = xyCompare, "min"),
-          .giveDateInfos(y = y, param = params, xyCompare = xyCompare, "max"))
+        res <- c(.giveDateInfos(yD = y_Infos$dataInput, param = params, xyCompare = xyCompare, "min"),
+          .giveDateInfos(yD = y_Infos$dataInput, param = params, xyCompare = xyCompare, "max"))
 
         res
         }else{NULL}
     }, min = 
     {      
-      .giveDateInfos(y = y, params = params, xyCompare = xyCompare, "min")
+      .giveDateInfos(yD = y_Infos$dataInput, params = params, xyCompare = xyCompare, "min")
     }
     ,
     max = 
     {      
-      .giveDateInfos(y = y, params = params, xyCompare = xyCompare, "max")
+      .giveDateInfos(yD = y_Infos$dataInput, params = params, xyCompare = xyCompare, "max")
       
     })
     ,
@@ -532,11 +531,14 @@ prodStackLegend <- function(stack = "eco2mix",
   )
 }
 
-.giveDateInfos <- function(y, params, xyCompare, minMax){
+.giveDateInfos <- function(yD, params, xyCompare, minMax){
+  use <- NULL
+  if(!is.null(params))
+  {
   if(minMax == "min")
   {
-    if(is.null(y)){
-      use <- params$x[[max(1,.id)]]$dataDateRange[1]
+    if(is.null(yD)){
+      use <- params$x[[1]]$dataDateRange[1]
     }else if(xyCompare == "union"){
       use <- min(
         do.call("c",(lapply(params$x, function(vv){
@@ -549,8 +551,8 @@ prodStackLegend <- function(stack = "eco2mix",
   }
   if(minMax == "max")
   {
-    if(is.null(y)){
-      use <- params$x[[max(1,.id)]]$dataDateRange[2]
+    if(is.null(yD)){
+      use <- params$x[[1]]$dataDateRange[2]
     }else if(xyCompare == "union"){
       use <- max(
         do.call("c",(lapply(params$x, function(vv){
@@ -560,6 +562,6 @@ prodStackLegend <- function(stack = "eco2mix",
         do.call("c",(lapply(params$x, function(vv){
           unique(vv$dataDateRange[2])}))))
     }
-  }
+  }}
   use
 }

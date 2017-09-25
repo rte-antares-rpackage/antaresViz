@@ -13,8 +13,10 @@
 #' @noRd
 #' 
 .getDataForComp <- function(x, y = NULL, compare = NULL, compareOpts = NULL, processFun = as.antaresDataList, ...) {
-  if (is.null(compareOpts)) compareOpts <- list()
   
+  if(!is.list(x)){return(NULL)}
+  if (is.null(compareOpts)) compareOpts <- list()
+
   assert_that(is.function(processFun))
   
   if (inherits(x, "antaresData")) {
