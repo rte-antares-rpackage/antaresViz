@@ -4,21 +4,21 @@
 \alias{plotMap}
 \title{Display results of a simulation on a map}
 \usage{
-plotMap(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
   uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
   labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
   mcYear = "average", main = "", compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), options = plotMapOptions(),
-  width = NULL, height = NULL, dateRange = NULL, ...)
+  width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
+  "intersect"), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
-\code{\link[antaresRead]{readAntares}} and containing areas and links data}
-
-\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
-maps are generated.}
+\code{\link[antaresRead]{readAntares}} and containing areas and links data.
+ It can be a list of \code{antaresData} objects. 
+ In this case, one chart is created for each object.}
 
 \item{mapLayout}{Object created with function \code{\link{mapLayout}}}
 
@@ -99,6 +99,10 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 \item{dateRange}{A vector of two dates. Only data points between these two dates are 
 displayed. If NULL, then all data is displayed.}
 
+\item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
+of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+studies will be selectable.}
+
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
@@ -122,18 +126,32 @@ mydata <- readAntares(areas = "all", links = "all", timeStep = "daily",
 # functions save and load
 
 layout <- readLayout()
-ml <- mapLayout(layout)
+ml <- mapLayout(layout = layout)
 save("ml", file = "ml.rda")
 
-plotMap(mydata, ml)
+plotMap(x = mydata, mapLayout = ml)
 
 # Specify the variables to use to control the color or size of elements.
-plotMap(mydata, ml, 
+plotMap(mydata, mapLayout =  ml, 
         sizeAreaVars = c("WIND", "SOLAR", "H. ROR"),
         sizeLinkVar = "FLOW LIN.")
 
 # Change default graphical properties
-plotMap(mydata, ml, options = list(colArea="red", colLink = "orange"))
+plotMap(x = mydata, mapLayout = ml, options = list(colArea="red", colLink = "orange"))
+plotMap(x = list(mydata, mydata), mapLayout =  ml)
+
+#' #Use h5 for dynamic request / exploration in a study
+#Set path of simulaiton
+setSimulationPath(path = path1)
+#Convert your study in h5 format
+writeAntaresH5(path = mynewpath)
+#Redifind sim path wich h5 file
+opts <- setSimulationPath(path = mynewpath)
+plotMap(x = opts, mapLayout = ml)
+# Compare elements in a single study
+plotMap(x = opts, mapLayout = ml,  .compare = "mcYear")
+# Compare 2 studies
+plotMap(x = list(opts, opts2), mapLayout = ml)
 
 }
 
