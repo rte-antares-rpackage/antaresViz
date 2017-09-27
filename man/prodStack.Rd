@@ -11,13 +11,12 @@ prodStackAliases()
 setProdStackAlias(name, variables, colors, lines = NULL, lineColors = NULL,
   description = NULL)
 
-prodStack(x, y = NULL, stack = "eco2mix", areas = NULL,
-  mcYear = "average", dateRange = NULL, main = "Production stack",
-  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
+prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
+  dateRange = NULL, main = "Production stack", unit = c("MWh", "GWh",
+  "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1000000000, 1), groupId = legendId,
-  legendItemsPerRow = 5, width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), ...)
+  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"), ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -45,10 +44,8 @@ should be \code{NULL} if there is no curve to trace or if parameter
 
 \item{x}{An object of class \code{antaresData} created with function 
 \code{\link[antaresRead]{readAntares}} containing data for areas and or
-districts.}
-
-\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
-charts are generated.}
+districts. it can be a list of \code{antaresData} objects. 
+In this case, one chart is created for each object.}
 
 \item{stack}{Name of the stack to use. One can visualize available stacks with 
 \code{prodStackAliases}}
@@ -126,10 +123,10 @@ with \code{setProdStackAlias}.
 mydata <- readAntares(areas = "all", timeStep = "daily")
 
 # Start a shiny gadget that permits to choose areas to display.
-prodStack(mydata, unit = "GWh")
+prodStack(x = mydata, unit = "GWh")
 
 # Use in a non-interactive way
-prodStack(mydata, unit = "GWh", areas = "fr", interactive = FALSE)
+prodStack(x = mydata, unit = "GWh", areas = "fr", interactive = FALSE)
 
 # Define a custom stack
 setProdStackAlias(
@@ -138,7 +135,7 @@ setProdStackAlias(
   colors = c("green", "orange")
 )
 
-prodStack(mydata, unit = "GWh", stack = "Wind and solar")
+prodStack(x = mydata, unit = "GWh", stack = "Wind and solar")
                 
 # In a custom stack it is possible to use computed values
 setProdStackAlias(
@@ -152,7 +149,28 @@ setProdStackAlias(
   lineColors = "#42EB09"
 )
 
-prodStack(mydata, unit = "GWh", stack = "renewable")
+prodStack(x = mydata, unit = "GWh", stack = "renewable")
+
+#Use compare
+prodStack(x = mydata, compare = "areas")
+
+#Compare studies
+prodStack(list(mydata, mydata))
+
+
+#Use h5 opts
+#Set path of simulaiton
+setSimulationPath(path = path1)
+#Convert your study in h5 format
+writeAntaresH5(path = mynewpath)
+#Redifind sim path wich h5 file
+opts <- setSimulationPath(path = mynewpath)
+prodStack(x = opts)
+# Compare elements in a single study
+prodStack(x = opts, .compare = "mcYear")
+# Compare 2 studies
+prodStack(x = list(opts, opts2))
+
                 
 }
 

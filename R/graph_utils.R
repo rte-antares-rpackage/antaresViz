@@ -31,20 +31,44 @@
 #' @noRd
 .dateRangeJoin <- function(params, xyCompare, minMax, tabl = NULL){
   if(minMax == "min" & xyCompare == "union"){
-    return(min(do.call("c",(lapply(params$x, function(X){
-      X[[tabl]]$dataDateRange[1]})))))
+    if(!is.null(tabl))
+    {
+      return(min(do.call("c",(lapply(params$x, function(X){
+        X[[tabl]]$dataDateRange[1]})))))
+    }else{
+      return(min(do.call("c",(lapply(params$x, function(X){
+        X$dataDateRange[1]})))))
+    }
   }
   if(minMax == "min" & xyCompare == "intersect"){
+    if(!is.null(tabl))
+    {
     return(max(do.call("c",(lapply(params$x, function(X){
       X[[tabl]]$dataDateRange[1]})))))
+    }else{
+      return(max(do.call("c",(lapply(params$x, function(X){
+        X$dataDateRange[1]})))))
+    }
   }
   if(minMax == "max" & xyCompare == "union"){
+    if(!is.null(tabl))
+    {
     return(max(do.call("c",(lapply(params$x, function(X){
       X[[tabl]]$dataDateRange[2]})))))
+    }else{
+      return(max(do.call("c",(lapply(params$x, function(X){
+        X$dataDateRange[2]})))))
+    }
   }
   if(minMax == "max" & xyCompare == "intersect"){
+    if(!is.null(tabl))
+    {
     return(min(do.call("c",(lapply(params$x, function(X){
       X[[tabl]]$dataDateRange[2]})))))
+    }else{
+      return(min(do.call("c",(lapply(params$x, function(X){
+        X$dataDateRange[2]})))))
+    }
   }
 }
 
@@ -193,7 +217,7 @@
       )
     }
   })
-  lapply(transpose(listParam), function(x){
+  lapply(purrr::transpose(listParam), function(x){
     .compareopetation(x, xyCompare)
   })
 }

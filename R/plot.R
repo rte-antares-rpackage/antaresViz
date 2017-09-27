@@ -193,10 +193,9 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   compareOptions <- .compOpts(x, compare)
   if(is.null(compare)){
     if(compareOptions$ncharts > 1){
-      compare <- ""
+      compare <- list()
     }
   }
-  print(compareOptions)
   
   
   processFun <- function(x, elements = NULL, dateRange = NULL) {

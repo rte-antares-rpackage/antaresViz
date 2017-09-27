@@ -8,17 +8,14 @@ exchangesStack(x, y = NULL, area = NULL, mcYear = "average",
   dateRange = NULL, colors = NULL, main = NULL, ylab = NULL,
   unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1000000000, 1), groupId = legendId,
-  legendItemsPerRow = 5, width = NULL, height = NULL, ...)
+  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
+  width = NULL, height = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
 \code{\link[antaresRead]{readAntares}}. It is required to contain link data.
 If it also contains area data with column `ROW BAL.`, then exchanges with
 the rest of the world are also displayed on the chart.}
-
-\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
-charts are generated.}
 
 \item{area}{Name of a single area. The flows from/to this area will be drawn by the
 function.}
