@@ -34,40 +34,40 @@
     if(!is.null(tabl))
     {
       return(min(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dataDateRange[1]})))))
+        X[[tabl]]$dateRange[1]})))))
     }else{
       return(min(do.call("c",(lapply(params$x, function(X){
-        X$dataDateRange[1]})))))
+        X$dateRange[1]})))))
     }
   }
   if(minMax == "min" & xyCompare == "intersect"){
     if(!is.null(tabl))
     {
     return(max(do.call("c",(lapply(params$x, function(X){
-      X[[tabl]]$dataDateRange[1]})))))
+      X[[tabl]]$dateRange[1]})))))
     }else{
       return(max(do.call("c",(lapply(params$x, function(X){
-        X$dataDateRange[1]})))))
+        X$dateRange[1]})))))
     }
   }
   if(minMax == "max" & xyCompare == "union"){
     if(!is.null(tabl))
     {
     return(max(do.call("c",(lapply(params$x, function(X){
-      X[[tabl]]$dataDateRange[2]})))))
+      X[[tabl]]$dateRange[2]})))))
     }else{
       return(max(do.call("c",(lapply(params$x, function(X){
-        X$dataDateRange[2]})))))
+        X$dateRange[2]})))))
     }
   }
   if(minMax == "max" & xyCompare == "intersect"){
     if(!is.null(tabl))
     {
     return(min(do.call("c",(lapply(params$x, function(X){
-      X[[tabl]]$dataDateRange[2]})))))
+      X[[tabl]]$dateRange[2]})))))
     }else{
       return(min(do.call("c",(lapply(params$x, function(X){
-        X$dataDateRange[2]})))))
+        X$dateRange[2]})))))
     }
   }
 }
