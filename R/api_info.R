@@ -1,3 +1,41 @@
+.giveH5DataToApi <- function(sharerequest, infos, areas = NULL, links = NULL, clusters = NULL, districts = NULL){
+  if(infos$isH5){
+    gc()
+    if(length(sharerequest$mcYearh_l)==0) {mcYearh2 <- NULL}else{
+      if("all"%in%sharerequest$mcYearh_l){
+        mcYearh2 <- "all"
+      }else{
+        mcYearh2 <- as.numeric(sharerequest$mcYearh_l)
+      }
+    }
+    if(!is.null(sharerequest$tables_l))
+    {
+    if("areas" %in% sharerequest$tables_l){
+      areas <- "all"
+    }
+    if("links" %in% sharerequest$tables_l){
+      links <- "all"
+    }
+    if("clusters" %in% sharerequest$tables_l){
+      clusters <- "all"
+    }
+    if("districts" %in% sharerequest$tables_l){
+      districts <- "all"
+    }
+    }
+    readAntares(areas = areas, links = links, clusters = clusters,districts = districts , mcYears = mcYearh2,
+                timeStep = sharerequest$timeSteph5_l, opts = infos$dataInput)
+  }else{
+    infos$dataInput
+  }
+}
+
+
+
+
+
+
+
 
 .giveDateInfos <- function(yD, params, xyCompare, minMax, tabl = NULL){
   use <- NULL

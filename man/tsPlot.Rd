@@ -4,9 +4,10 @@
 \alias{tsPlot}
 \alias{plot.antaresData}
 \alias{plot.simOptions}
+\alias{plot.list}
 \title{plot time series contained in an antaresData object}
 \usage{
-tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
+tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   mcYear = "average", type = c("ts", "barplot", "monotone", "density",
   "cdf", "heatmap"), dateRange = NULL, confInt = 0, minValue = NULL,
   maxValue = NULL, aggregate = c("none", "mean", "sum"), compare = NULL,
@@ -15,7 +16,7 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
   xyCompare = c("union", "intersect"), ...)
 
-\method{plot}{antaresData}(x, y = NULL, table = NULL, variable = NULL,
+\method{plot}{antaresData}(x, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
   "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
   minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
@@ -24,7 +25,7 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
   width = NULL, height = NULL, xyCompare = c("union", "intersect"), ...)
 
-\method{plot}{simOptions}(x, y = NULL, table = NULL, variable = NULL,
+\method{plot}{simOptions}(x, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
   "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
   minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
@@ -32,14 +33,20 @@ tsPlot(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
   width = NULL, height = NULL, xyCompare = c("union", "intersect"), ...)
+
+\method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
+  mcYear = "average", type = c("ts", "barplot", "monotone", "density",
+  "cdf", "heatmap"), dateRange = NULL, confInt = 0, minValue = NULL,
+  maxValue = NULL, aggregate = c("none", "mean", "sum"), compare = NULL,
+  compareOpts = list(), interactive = getInteractivity(), colors = NULL,
+  main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
 \code{antaresData} objects. In this case, one chart is created for each
 object.}
-
-\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
-charts are generated.}
 
 \item{table}{Name of the table to display when \code{x} is an \code{antaresDataList}
 object.}
@@ -116,17 +123,17 @@ usefull when one wants to create a shared legend with
 
 \item{colorScaleOpts}{A list of parameters that control the creation of color scales. It is used
 only for heatmaps. See \code{\link{colorScaleOptions}}() for available
-parameters.
-@param xyCompare
-Use when you compare studies, can be "union" or "intersect". If union, all
-of mcYears in one of studies will be selectable. If intersect, only mcYears in all
-studies will be selectable.}
+parameters.}
 
 \item{width}{Width of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
+of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+studies will be selectable.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
@@ -149,42 +156,64 @@ instead of a line chart.
 }
 \examples{
 \dontrun{
-setSimulationPath()
-mydata <- readAntares("all", timeStep = "monthly")
-plot(mydata)
-plot(mydata, "LOAD")
+setSimulationPath(path = path1)
+mydata <- readAntares(areas = "all", timeStep = "monthly")
+plot(x = mydata)
 
 # Plot only a few areas
-plot(mydata[area \%in\% c("area1", "area2", "area3")])
+plot(x = mydata[area \%in\% c("area1", "area2", "area3")])
 
 # If data contains detailed results, then the function adds a confidence
 # interval
-dataDetailed <- readAntares("all", timeStep = "monthly", synthesis = FALSE)
-plot(dataDetailed)
+dataDetailed <- readAntares(areas = "all", timeStep = "monthly", mcYears = 1:2)
+plot(x = dataDetailed)
 
 # If the time step is annual, the function creates a barplot instead of a
 # linechart
-dataAnnual <- readAntares("all", timeStep = "Annual")
-plot(dataAnnual)
+dataAnnual <- readAntares(areas = "all", timeStep = "annual")
+plot(x = dataAnnual)
 
+# Compare two simulaitons
 # Compare the results of two simulations
 setSimulationPath(path1)
-mydata1 <- readAntares("all", timeStep = "daily")
+mydata1 <- readAntares(areas = "all", timeStep = "daily")
 setSimulationPath(path2)
-mydata2 <- readAntares("all", timeStep = "daily")
+mydata2 <- readAntares(areas = "all", timeStep = "daily")
 
-plot(mydata1, mydata2)
+plot(x = list(mydata1, mydata2))
 
+#When you compare studies, you have 2 ways to defind inputs, union or intersect.
+#for example, if you chose union and you have mcYears 1 and 2 in the first study
+#and mcYears 2 and 3 in the second, mcYear input will be worth c(1, 2, 3)
+#In same initial condition (study 1 -> 1,2 ans study 2 -> 2, 3) if you choose intersect,
+#mcYear input will be wort 2.
+#You must specify union or intersect with xyCompare argument (default union).
+plot(x = list(mydata1[area \%in\% c("a", "b")], mydata1[area \%in\% c("b", "c")]), xyCompare = "union")
+plot(x = list(mydata1[area \%in\% c("a", "b")], mydata1[area \%in\% c("b", "c")]), xyCompare = "intersect")
+
+# Compare data in a single simulation
 # Compare two periods for the same simulation
-plot(mydata1, compare = "dateRange")
+plot(x = mydata1, compare = "dateRange")
 
 # Compare two Monte-Carlo scenarios
-detailedData <- readAntares("all", mcYears = "all")
-plot(detailedData[mcYear == 1], detailedData[mcYear == 2])
+detailedData <- readAntares(areas = "all", mcYears = "all")
+plot(x = detailedData, .compare = "mcYear")
 
-# To do the same thing, with antaresDataList objects, one can use 'subset'
-detailedData <- readAntares(areas = "all", links = "all", mcYears = "all")
-plot(subset(detailedData, mcYears = 1), subset(detailedData, mcYears = 2))
+#Use h5 for dynamic request / exploration in a study
+#Set path of simulaiton
+setSimulationPath(path = path1)
+#Convert your study in h5 format
+writeAntaresH5(path = mynewpath)
+#Redifind sim path wich h5 file
+opts <- setSimulationPath(path = mynewpath)
+plot(x = opts)
+# Compare elements in a single study
+plot(x = opts, .compare = "mcYear")
+# Compare 2 studies
+plot(x = list(opts, opts2))
+
 }
+
+
 
 }

@@ -84,6 +84,10 @@
 #' @param description
 #'   Description of the stack. It is displayed by function 
 #'   \code{prodStackAliases}.
+#' @param xyCompare
+#'   Use when you compare studies, can be "union" or "intersect". If union, all
+#'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+#'   studies will be selectable.
 #' @param ... Other arguments for \code{\link{manipulateWidget}}
 #'  
 #' @return 
@@ -287,40 +291,14 @@ prodStack <- function(x, y = NULL,
                       compareOpts = if(is.null(compare) && is.null(y_tranform)){compareOptions()}else{list(ncharts = 2, ncol = 1, nrow = 2)}, 
                       processFun = processFun)
     }),
-    sharerequestX = mwSharedValue({
+    sharerequest = mwSharedValue({
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh)
     }),
     x_tranform = mwSharedValue({
-      if(x_Infos$isH5){
-        gc()
-        if(length(sharerequestX$mcYearh_l)==0) {mcYearh2 <- NULL}else{
-          if("all"%in%sharerequestX$mcYearh_l){
-            mcYearh2 <- "all"
-          }else{
-            mcYearh2 <- as.numeric(sharerequestX$mcYearh_l)
-          }
-        }
-        readAntares(areas = "all", district = "all", mcYears = mcYearh2,
-                    timeStep = sharerequestX$timeSteph5_l, opts = x_Infos$dataInput)
-      }else{
-        x_Infos$dataInput
-      }
+      .giveH5DataToApi(sharerequest, x_Infos, areas = "all", districts = "all")
     }),
     y_tranform = mwSharedValue({
-      if(y_Infos$isH5){
-        gc()
-        if(length(sharerequestX$mcYearh_l)==0) {mcYearh2 <- NULL}else{
-          if("all"%in%sharerequestX$mcYearh_l){
-            mcYearh2 <- "all"
-          }else{
-            mcYearh2 <- as.numeric(sharerequestX$mcYearh_l)
-          }
-        }
-        readAntares(areas = "all", district = "all", mcYears = mcYearh2,
-                    timeStep = sharerequestX$timeSteph5_l, opts = y_Infos$dataInput)
-      }else{
-        y_Infos$dataInput
-      }
+      .giveH5DataToApi(sharerequest, y_Infos, areas = "all", districts = "all")
     }),
     
     ##End h5

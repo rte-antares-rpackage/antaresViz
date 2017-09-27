@@ -18,7 +18,7 @@ plotMap(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
 \code{\link[antaresRead]{readAntares}} and containing areas and links data}
 
 \item{y}{Optional object of class \code{antaresData}. If it is specified, then two
-charts are generated.}
+maps are generated.}
 
 \item{mapLayout}{Object created with function \code{\link{mapLayout}}}
 
