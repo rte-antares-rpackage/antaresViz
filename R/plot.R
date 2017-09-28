@@ -323,7 +323,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    params <- antaresViz:::.getDataForComp(x, compare, compareOpts, 
+    params <- antaresViz:::.getDataForComp(x, y = NULL, compare, compareOpts, 
                                            processFun = processFun, 
                                            elements = elements, dateRange = dateRange)
     

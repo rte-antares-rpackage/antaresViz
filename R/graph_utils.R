@@ -74,7 +74,7 @@
 
 
 
-#' Join date range
+#' Transform data
 #' 
 #' @param x list of data
 #' @param compare character
@@ -231,7 +231,7 @@
   fid <- H5Fopen(x$h5path)
   timeStepS <- .getTimStep(fid)
   timeStepS <- as.character(timeStepS)
-  mcYearS <- opts$mcYears
+  mcYearS <- x$mcYears
   tabl <- .getTableInH5(fid, timeStepS[1])
   xPart = list(
     timeStepS = timeStepS,

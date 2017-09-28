@@ -531,24 +531,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     .height = height,
     .return = function(w, e) combineWidgets(w, title = main, width = width, height = height),
     .compare = {
-      if(is.null(compare))
-      {
-        if(is.null(y)){
-          
-          NULL        
-        }else{""}
-      }else{
-        compare
-      }
+      compare
     },
     .compareOpts = {
-      if(is.null(compare) && is.null(y))
-      {
-        compareOptions()
-      }else{
-        #to review (temp version)
-        list(ncharts = 2, ncol = 1, nrow = 2)
-      }
+      compareOptions
     },
     ...
   )
