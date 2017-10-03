@@ -377,6 +377,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     {
       if(!is.null(params)){
         out <- as.character(.compareopetation(lapply(params$x, function(vv){
+
           unique(names(vv))
         }), xyCompare))
         if(length(out) > 0){out}else{"No Input"}
