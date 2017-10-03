@@ -377,7 +377,6 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   table = mwSelect(
     {
       if(!is.null(params)){
-        print(params)
         as.character(.compareopetation(lapply(params$x, function(vv){
           unique(names(vv))
         }), xyCompare))
