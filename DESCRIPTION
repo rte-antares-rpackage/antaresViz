@@ -43,7 +43,9 @@ Imports:
     leaflet.minicharts (>= 0.5.0),
     assertthat,
     rhdf5,
-    purrr
+    purrr,
+    miniUI,
+    antaresHdf5
 RoxygenNote: 6.0.1
 Suggests: testthat,
     covr

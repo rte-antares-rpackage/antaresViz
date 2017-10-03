@@ -188,8 +188,10 @@ plot(x = list(mydata1, mydata2))
 #In same initial condition (study 1 -> 1,2 ans study 2 -> 2, 3) if you choose intersect,
 #mcYear input will be wort 2.
 #You must specify union or intersect with xyCompare argument (default union).
-plot(x = list(mydata1[area \%in\% c("a", "b")], mydata1[area \%in\% c("b", "c")]), xyCompare = "union")
-plot(x = list(mydata1[area \%in\% c("a", "b")], mydata1[area \%in\% c("b", "c")]), xyCompare = "intersect")
+plot(x = list(mydata1[area \%in\% c("a", "b")],
+ mydata1[area \%in\% c("b", "c")]), xyCompare = "union")
+plot(x = list(mydata1[area \%in\% c("a", "b")],
+ mydata1[area \%in\% c("b", "c")]), xyCompare = "intersect")
 
 # Compare data in a single simulation
 # Compare two periods for the same simulation

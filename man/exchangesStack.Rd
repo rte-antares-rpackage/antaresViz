@@ -4,12 +4,13 @@
 \alias{exchangesStack}
 \title{Plot the exchanges of an area}
 \usage{
-exchangesStack(x, y = NULL, area = NULL, mcYear = "average",
-  dateRange = NULL, colors = NULL, main = NULL, ylab = NULL,
-  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
+exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
+  colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
+  "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1000000000, 1), groupId = legendId,
-  legendItemsPerRow = 5, width = NULL, height = NULL, ...)
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
@@ -69,6 +70,10 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
+of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+studies will be selectable.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

@@ -188,7 +188,6 @@ prodStack <- function(x,
       compare <- ""
     }
   }
-  print(compareOptions)
   
   init_areas <- areas
   init_dateRange <- dateRange
@@ -335,8 +334,8 @@ prodStack <- function(x,
       if(.initial){
         res <- NULL
         if(!is.null(params)){
-          res <- c(.dateRangeJoin(param = params, xyCompare = xyCompare, "min", tabl = table),
-                   .dateRangeJoin(param = params, xyCompare = xyCompare, "max", tabl = table))
+          res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table),
+                   .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table))
         }
         res
       }else{NULL}
@@ -344,6 +343,11 @@ prodStack <- function(x,
     {      
       if(!is.null(params)){
         .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
+      }
+    }, max = 
+    {      
+      if(!is.null(params)){
+        .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
       }
     }),
     

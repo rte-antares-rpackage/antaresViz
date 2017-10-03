@@ -323,7 +323,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   manipulateWidget(
     {
-      print(params)
       if(!is.null(params))
       {
         params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,

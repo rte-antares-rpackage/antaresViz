@@ -117,8 +117,10 @@
 #' #In same initial condition (study 1 -> 1,2 ans study 2 -> 2, 3) if you choose intersect,
 #' #mcYear input will be wort 2.
 #' #You must specify union or intersect with xyCompare argument (default union).
-#' plot(x = list(mydata1[area %in% c("a", "b")], mydata1[area %in% c("b", "c")]), xyCompare = "union")
-#' plot(x = list(mydata1[area %in% c("a", "b")], mydata1[area %in% c("b", "c")]), xyCompare = "intersect")
+#' plot(x = list(mydata1[area %in% c("a", "b")],
+#'  mydata1[area %in% c("b", "c")]), xyCompare = "union")
+#' plot(x = list(mydata1[area %in% c("a", "b")],
+#'  mydata1[area %in% c("b", "c")]), xyCompare = "intersect")
 #' 
 #' # Compare data in a single simulation
 #' # Compare two periods for the same simulation
@@ -145,7 +147,8 @@
 #' 
 #' 
 #' 
-#' @import rhdf5 purrr
+#' @import rhdf5 antaresHdf5
+#' @importFrom purrr transpose
 #' 
 #' @export
 tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL, 
@@ -323,7 +326,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    params <- antaresViz:::.getDataForComp(x, y = NULL, compare, compareOpts, 
+    params <- .getDataForComp(x, y = NULL, compare, compareOpts, 
                                            processFun = processFun, 
                                            elements = elements, dateRange = dateRange)
     
@@ -428,8 +431,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     if(.initial){
       res <- NULL
       if(!is.null(params) & ! is.null(table)){
-        res <- c(.dateRangeJoin(param = params, xyCompare = xyCompare, "min", tabl = table),
-                 .dateRangeJoin(param = params, xyCompare = xyCompare, "max", tabl = table))
+        res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table),
+                 .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table))
       }
       res
     }else{NULL}
@@ -437,6 +440,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   {      
     if(!is.null(params) & ! is.null(table)){
       .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
+    }
+  }
+  , max = 
+  {      
+    if(!is.null(params) & ! is.null(table)){
+      .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
     }
   }
   

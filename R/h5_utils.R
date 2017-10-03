@@ -21,7 +21,7 @@
 
 .getVariablesH5 <- function(fid, timeStep, tables){
   sapply(tables, function(X){
-    struct <- antaresHdf5:::.getstructure(fid, paste0(timeStep, "/", X, "/mcInd/", "/structure"))$variable
+    struct <- .getstructure(fid, paste0(timeStep, "/", X, "/mcInd/", "/structure"))$variable
     if("timeId"%in%struct){
       struct <- struct[struct!="timeId"]
     }
@@ -30,7 +30,7 @@
 }
 
 .getClustersNames <- function(fid, timeStep){
- unique(unlist(lapply(strsplit(antaresHdf5:::.getstructure(fid, paste0(timeStep, "/clusters/mcInd/structure"))$cluster, "/"), function(X)X[1])))
+ unique(unlist(lapply(strsplit(.getstructure(fid, paste0(timeStep, "/clusters/mcInd/structure"))$cluster, "/"), function(X)X[1])))
 }
 
 .getElements <- function(opts, tables, fid, timeStep){
