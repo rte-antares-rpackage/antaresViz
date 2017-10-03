@@ -14,7 +14,7 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   compareOpts = list(), interactive = getInteractivity(), colors = NULL,
   main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), ...)
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(), ...)
 
 \method{plot}{antaresData}(x, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
@@ -23,7 +23,8 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   compare = NULL, compareOpts = list(), interactive = getInteractivity(),
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"), ...)
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), ...)
 
 \method{plot}{simOptions}(x, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
@@ -32,7 +33,8 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   compare = NULL, compareOpts = list(), interactive = getInteractivity(),
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"), ...)
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), ...)
 
 \method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
   mcYear = "average", type = c("ts", "barplot", "monotone", "density",
@@ -41,7 +43,7 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   compareOpts = list(), interactive = getInteractivity(), colors = NULL,
   main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), ...)
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
@@ -134,6 +136,9 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 \item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
 of mcYears in one of studies will be selectable. If intersect, only mcYears in all
 studies will be selectable.}
+
+\item{h5requestFiltering}{Contains arguments used by default for h5 request,
+typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

@@ -12,7 +12,7 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   mcYear = "average", main = "", compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), options = plotMapOptions(),
   width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
-  "intersect"), ...)
+  "intersect"), h5requestFiltering = list(), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -102,6 +102,9 @@ displayed. If NULL, then all data is displayed.}
 \item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
 of mcYears in one of studies will be selectable. If intersect, only mcYears in all
 studies will be selectable.}
+
+\item{h5requestFiltering}{Contains arguments used by default for h5 request,
+typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

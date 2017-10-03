@@ -64,7 +64,6 @@
 #'   Use when you compare studies, can be "union" or "intersect". If union, all
 #'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
 #'   studies will be selectable.
-#'   
 #' 
 #' @inheritParams prodStack
 #'   
@@ -148,7 +147,6 @@
 #' 
 #' 
 #' @import rhdf5 antaresHdf5
-#' @importFrom purrr transpose
 #' 
 #' @export
 tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL, 
@@ -341,6 +339,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   manipulateWidget({
     # paramsOut <<- params
+    if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
     if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this data")))}
     params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
                                                  maxValue, aggregate, legend)
@@ -377,10 +376,10 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   table = mwSelect(
     {
       if(!is.null(params)){
-        print(params)
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        out <- as.character(.compareopetation(lapply(params$x, function(vv){
           unique(names(vv))
         }), xyCompare))
+        if(length(out) > 0){out}else{"No Input"}
       }
     }                   
     , value = {
@@ -407,9 +406,10 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   variable = mwSelect(
     choices = {
       if(!is.null(params)){
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        out <- as.character(.compareopetation(lapply(params$x, function(vv){
           unique(vv[[table]]$valueCols)
         }), xyCompare))
+        if(length(out) > 0){out}else{"No Input"}
       }
     },
     
@@ -437,19 +437,23 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       if(!is.null(params) & ! is.null(table)){
         res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table),
                  .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table))
+        if(any(is.infinite(c(res))))
+        {res <- NULL}
       }
       res
     }else{NULL}
   }, min = 
   {      
     if(!is.null(params) & ! is.null(table)){
-      .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
+      R <- .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
+      if(is.infinite(R)){NULL}else{R}
     }
   }
   , max = 
   {      
     if(!is.null(params) & ! is.null(table)){
-      .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
+      R <- .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
+      if(is.infinite(R)){NULL}else{R}
     }
   }
   

@@ -86,6 +86,8 @@
 #'   Use when you compare studies, can be "union" or "intersect". If union, all
 #'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
 #'   studies will be selectable.
+#' @param h5requestFiltering Contains arguments used by default for h5 request,
+#'   typically h5requestFiltering = list(select = "NUCLEAR")
 #' @param ... Other arguments for \code{\link{manipulateWidget}}
 #'  
 #' @return 
@@ -169,7 +171,8 @@ prodStack <- function(x,
                       legend = TRUE, legendId = sample(1e9, 1),
                       groupId = legendId,
                       legendItemsPerRow = 5,
-                      width = NULL, height = NULL, xyCompare = c("union","intersect"), ...) {
+                      width = NULL, height = NULL, xyCompare = c("union","intersect"),
+                      h5requestFiltering = list(), ...) {
   table <- NULL
   xyCompare <- match.arg(xyCompare)
   unit <- match.arg(unit)
@@ -249,7 +252,8 @@ prodStack <- function(x,
                               unit = unit,
                               legendId = legendId + id - 1, groupId = groupId, dateRange = dateRange), silent = TRUE)
       if("try-error" %in% class(p)){
-        return (paste0("Can't visualize stack '", stack, "'<br>", p[1]))
+        
+        return (combineWidgets(paste0("Can't visualize stack '", stack, "'<br>", p[1])))
       }
       if (legend) {
         l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId + id - 1)
@@ -283,6 +287,7 @@ prodStack <- function(x,
   
   manipulateWidget(
     {
+      print(params)
       params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
     },
     x = mwSharedValue({x}),
@@ -311,7 +316,17 @@ prodStack <- function(x,
     
     
     x_tranform = mwSharedValue({
-      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz)})
+      if(!is.null(sharerequest))
+      {
+        h5requestFilteringTp <- h5requestFiltering
+        if(sharerequest$tables == "areas"){
+          h5requestFilteringTp$districts = NULL
+        }
+        if(sharerequest$tables == "districts"){
+          h5requestFilteringTp$areas = NULL
+        }
+      }
+      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, h5requestFiltering = h5requestFilteringTp)})
     }),
     
     
@@ -357,7 +372,7 @@ prodStack <- function(x,
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     areas = mwSelect(
       {
-        as.character(.compareopetation(lapply(params$x, function(vv){
+       as.character(.compareopetation(lapply(params$x, function(vv){
           unique(vv$x$area)
         }), xyCompare))
       },

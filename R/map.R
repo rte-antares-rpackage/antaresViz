@@ -129,7 +129,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                      compareOpts = list(),
                      interactive = getInteractivity(),
                      options = plotMapOptions(),
-                     width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union","intersect"), ...) {
+                     width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union","intersect"),
+                     h5requestFiltering = list(), ...) {
   
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
@@ -325,6 +326,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     {
       if(!is.null(params))
       {
+        print(params)
         params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                 colAreaVar = colAreaVar,
                                 sizeAreaVars = sizeAreaVars,
@@ -371,7 +373,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     }),
     
     x_tranform = mwSharedValue({
-      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz)})
+      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, h5requestFiltering = h5requestFiltering)})
     }),
     
     

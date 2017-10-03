@@ -230,7 +230,7 @@
       )
     }
   })
-  lapply(purrr::transpose(listParam), function(x){
+  lapply(.transposeL(listParam), function(x){
     .compareopetation(x, xyCompare)
   })
 }
@@ -254,3 +254,6 @@
 }
 
 
+.transposeL <- function(data){
+  do.call(c, apply(do.call(rbind, data), 2, list)) 
+}

@@ -17,7 +17,7 @@ prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1000000000, 1), groupId = legendId,
   legendItemsPerRow = 5, width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), ...)
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(), ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -101,6 +101,9 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 \item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
 of mcYears in one of studies will be selectable. If intersect, only mcYears in all
 studies will be selectable.}
+
+\item{h5requestFiltering}{Contains arguments used by default for h5 request,
+typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

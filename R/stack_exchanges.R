@@ -40,7 +40,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            legend = TRUE, legendId = sample(1e9, 1), groupId = legendId,
                            legendItemsPerRow = 5,
                            width = NULL, height = NULL,
-                           xyCompare = c("union","intersect"), ...) {
+                           xyCompare = c("union","intersect"),
+                           h5requestFiltering = list(), ...) {
   
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
@@ -187,6 +188,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   
   manipulateWidget(
     {
+      
     params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend)
     },
     x = mwSharedValue(x),
@@ -214,7 +216,13 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     }),
     
     x_tranform = mwSharedValue({
-      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, areas = "all", links = "all")})
+      areas = "all"
+      links = "all"
+      if(length(h5requestFiltering) > 0){
+        areas <- NULL
+        links <- NULL
+      }
+      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, areas = areas, links = links, h5requestFiltering = h5requestFiltering)})
     }),
     
     
