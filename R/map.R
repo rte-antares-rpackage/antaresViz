@@ -347,7 +347,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       }
     },
     
-    
+    x = mwSharedValue({x}),
     x_in = mwSharedValue({
       .giveListFormat(x)
     }),

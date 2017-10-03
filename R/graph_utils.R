@@ -92,7 +92,6 @@
   assert_that(is.list(x))
   assert_that(all(sapply(x, inherits, what = "antaresData")), 
               msg = "'x' is not an antaresData or a list of antaresData objects")
-  print(x)
   x <- lapply(x, processFun, ...)
   compareOpts$ncharts <- length(x)
   if (is.null(compare)) compare <- list()
@@ -161,7 +160,7 @@
 #' @param districts character
 #' 
 #' @noRd
-.loadH5Data <- function(sharerequest, dta, areas = NULL, links = NULL, clusters = NULL, districts = NULL){
+.loadH5Data <- function(sharerequest, dta, areas = NULL, links = NULL, clusters = NULL, districts = NULL, h5requestFiltering = list()){
   if(.isSimOpts(dta)){
     gc()
     if(length(sharerequest$mcYearh_l)==0) {mcYearh2 <- NULL}else{
@@ -186,8 +185,22 @@
         districts <- "all"
       }
     }
-    as.antaresDataList(readAntares(areas = areas, links = links, clusters = clusters,districts = districts , mcYears = mcYearh2,
-                                   timeStep = sharerequest$timeSteph5_l, opts = dta))
+    
+    
+    argS <- list(areas = areas, links = links, clusters = clusters,districts = districts , mcYears = mcYearh2,
+         timeStep = sharerequest$timeSteph5_l, opts = dta)
+    argS[names(h5requestFiltering)] <- h5requestFiltering
+    dt <- do.call(readAntares,
+                  argS)
+    
+    dt <- as.antaresDataList(dt)
+    for(i in 1:length(dt)){
+      if(all(names(dt[[i]])%in%.idCols(dt[[i]]))){
+        dt[[i]] <- NULL
+      }
+    }
+    dt
+    
   }else{
     dta
   }

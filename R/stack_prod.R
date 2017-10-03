@@ -285,6 +285,7 @@ prodStack <- function(x,
     {
       params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
     },
+    x = mwSharedValue({x}),
     x_in = mwSharedValue({
       .giveListFormat(x)
     }),

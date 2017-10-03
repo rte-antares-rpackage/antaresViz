@@ -168,7 +168,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                     legend = TRUE,
                     legendItemsPerRow = 5,
                     colorScaleOpts = colorScaleOptions(20),
-                    width = NULL, height = NULL, xyCompare = c("union","intersect"), ...) {
+                    width = NULL, height = NULL, xyCompare = c("union","intersect"),
+                    h5requestFiltering = list(), ...) {
   table <- NULL
   xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
@@ -345,6 +346,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                                                  maxValue, aggregate, legend)
     
   },
+  x = mwSharedValue({x}),
   x_in = mwSharedValue({
     .giveListFormat(x)
   }),
@@ -368,12 +370,14 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   }),
   
   x_tranform = mwSharedValue({
-    lapply(x_in,function(zz){.loadH5Data(sharerequest, zz)})
+    dataInApp <- lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, h5requestFiltering = h5requestFiltering)})
+    dataInApp
   }),
   
   table = mwSelect(
     {
       if(!is.null(params)){
+        print(params)
         as.character(.compareopetation(lapply(params$x, function(vv){
           unique(names(vv))
         }), xyCompare))
