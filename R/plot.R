@@ -339,11 +339,14 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   manipulateWidget({
     # paramsOut <<- params
-    if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
-    if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this data")))}
-    params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
-                                                 maxValue, aggregate, legend)
-    
+    if(.id <= length(params$x)){
+      if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
+      if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this data")))}
+      params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
+                                                   maxValue, aggregate, legend)
+    } else {
+      combineWidgets("No data for this selection")
+    }
   },
   x = mwSharedValue({x}),
   x_in = mwSharedValue({
