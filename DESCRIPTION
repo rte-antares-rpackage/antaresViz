@@ -42,7 +42,6 @@ Imports:
     stats,
     leaflet.minicharts (>= 0.5.0),
     assertthat,
-    rhdf5,
     purrr,
     miniUI,
     antaresHdf5
