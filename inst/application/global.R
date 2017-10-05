@@ -11,7 +11,6 @@ require(antaresRead)
 require(antaresViz)
 require(manipulateWidget)
 require(magrittr)
-require(shinyFiles)
 require(DT)
 require(data.table)
 
