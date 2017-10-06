@@ -6,6 +6,10 @@ sudo: required
 cache: packages
 
 
+before_install:
+  sudo apt-get install -y libprotobuf-dev protobuf-compiler
+
+
 r: bioc-devel
 
 r_github_packages:
