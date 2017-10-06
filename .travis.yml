@@ -6,18 +6,6 @@ sudo: required
 cache: packages
 
 
-before_install:
-  sudo add-apt-repository -y ppa:opencpu/opencpu-2.0
-
-before_install:
-  sudo apt-get update
-
-before_install:
-  sudo apt-get upgrade
-  
-before_install:
-  sudo apt-get install -y opencpu-server 
-
 r: bioc-devel
 
 r_github_packages:

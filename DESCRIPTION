@@ -27,7 +27,6 @@ Imports:
     shiny (>= 0.13.0),
     magrittr,
     plotly (>= 4.5.6),
-    tibble,
     htmltools,
     htmlwidgets (>= 0.7.0),
     manipulateWidget (>= 0.9.0),
