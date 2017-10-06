@@ -8,8 +8,14 @@ cache: packages
 
 before_install:
   sudo add-apt-repository -y ppa:opencpu/jq
+
+before_install:
   sudo apt-get update
+
+before_install:
   sudo apt-get install libjq-dev
+  
+  
 
 r: bioc-devel
 
