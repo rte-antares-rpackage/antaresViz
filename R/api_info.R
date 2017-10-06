@@ -112,7 +112,7 @@
 .giveParamH5 <- function(X_I, Y_I, xyCompare){
   if(X_I$isH5){
     opts <- X_I$dataInput
-    fid <- H5Fopen(opts$h5path)
+    fid <- rhdf5::H5Fopen(opts$h5path)
     timeStepS <- .getTimStep(fid)
     timeStepS <- as.character(timeStepS)
     mcYearS <- opts$mcYears
@@ -128,7 +128,7 @@
   }
   if(Y_I$isH5){
     opts <- Y_I$dataInput
-    fid <- H5Fopen(opts$h5path)
+    fid <- rhdf5::H5Fopen(opts$h5path)
     timeStepS <- .getTimStep(fid)
     timeStepS <- as.character(timeStepS)
     mcYearS <- opts$mcYears

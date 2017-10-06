@@ -146,7 +146,6 @@
 #' 
 #' 
 #' 
-#' @import rhdf5 antaresHdf5
 #' 
 #' @export
 tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL, 

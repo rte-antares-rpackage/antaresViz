@@ -1,13 +1,13 @@
 
 .getData <- function(path, table, mcYear, variable, elements, dateRange, timeStep){
-  opts <- getOptionsH5(path)
+  opts <- antaresHdf5::getOptionsH5(path)
   if(mcYear == "MC-All")
   {
     mcYear <- NULL
   }
   areas <- links <- clusters <- districts <- NULL
   assign(table, as.character(elements))
-  data <- h5ReadAntares(path = path,
+  data <- antaresHdf5::h5ReadAntares(path = path,
                         areas = areas,
                         links = links,
                         clusters = clusters,
@@ -107,4 +107,19 @@
   )
   
 }
+
+
+.getstructure <- function(fid, strgp){
+  gid <- rhdf5::H5Gopen(fid,  strgp)
+  data <- rhdf5::h5dump(gid)
+  rhdf5::H5Gclose(gid)
+  if(length(which(data$reCalcVar!="")) > 0)
+  {
+    data$reCalcVar <- data$reCalcVar[which(data$reCalcVar!="")]
+    data$variable <- c(data$variable, data$reCalcVar)
+    data$reCalcVar <- NULL
+  }
+  data
+}
+
 

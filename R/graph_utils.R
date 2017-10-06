@@ -241,7 +241,7 @@
 #' 
 #' @noRd
 .h5Inf <- function(x){
-  fid <- H5Fopen(x$h5path)
+  fid <- rhdf5::H5Fopen(x$h5path)
   timeStepS <- .getTimStep(fid)
   timeStepS <- as.character(timeStepS)
   mcYearS <- x$mcYears
