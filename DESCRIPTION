@@ -1,7 +1,7 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.11.1
+Version: 0.11.2
 Date: 2017-07-17
 Authors@R: c(
     person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = c("aut", "cre")),
@@ -20,8 +20,8 @@ License: GPL (>= 2) | file LICENSE
 LazyData: TRUE
 Encoding: UTF-8
 Depends:
-    antaresRead (>= 0.14.0),
-    antaresProcessing (>= 0.11.0)
+    antaresRead (>= 1.1.5),
+    antaresProcessing (>= 0.12.0)
 Imports:
     dygraphs (>= 1.1.1),
     shiny (>= 0.13.0),
@@ -30,7 +30,7 @@ Imports:
     tibble,
     htmltools,
     htmlwidgets (>= 0.7.0),
-    manipulateWidget (>= 0.7.0),
+    manipulateWidget (>= 0.9.0),
     leaflet (>= 1.1.0),
     sp,
     webshot,
@@ -42,9 +42,9 @@ Imports:
     stats,
     leaflet.minicharts (>= 0.5.0),
     assertthat,
-    rhdf5,
-    miniUI,
-    antaresHdf5
+    miniUI
 RoxygenNote: 6.0.1
 Suggests: testthat,
-    covr
+    covr,
+    antaresHdf5 (>= 0.1.1),
+    rhdf5 (>= 2.21.2)

@@ -5,6 +5,17 @@ dist: trusty
 sudo: required
 cache: packages
 
+r: bioc-devel
+
+r_github_packages:
+ - hadley/devtools#1263
+ - rte-antares-rpackage/antares-rpackageRead@develop
+ - rte-antares-rpackage/antaresProcessing@developTit
+ - rte-antares-rpackage/manipulateWidget@develop
+ - Bioconductor-mirror/zlibbioc
+ - Bioconductor-mirror/rhdf5
+ - rte-antares-rpackage/antaresHDF5 
+
 addons:
   apt:
     packages:
