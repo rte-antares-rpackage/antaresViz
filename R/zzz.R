@@ -4,7 +4,6 @@
 #' @import antaresRead
 #' @import antaresProcessing
 #' @import dygraphs
-#' @import miniUI
 #' @import shiny
 #' @import htmltools
 #' @import manipulateWidget
