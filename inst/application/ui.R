@@ -6,7 +6,7 @@ navbarPage("antaresViz", id = "nav-id",
                       column(7, 
                              directoryInput('directory', label = 'Select a directory', value = 'C:\\Users\\Datastorm\\Desktop\\antares\\test_case')
                       ), 
-                      conditionalPanel(condition = "output.ctrl_is_antares_study", 
+                      conditionalPanel(condition = "output.ctrl_is_antares_study | output.ctrl_is_antares_h5", 
                                        column(3, 
                                               selectInput("study_path", "Study", choices = NULL, selected = NULL)
                                        ), 
@@ -17,7 +17,7 @@ navbarPage("antaresViz", id = "nav-id",
                                               )
                                        )
                       ),
-                      conditionalPanel(condition = "output.ctrl_is_antares_study === false", 
+                      conditionalPanel(condition = "output.ctrl_is_antares_study === false & output.ctrl_is_antares_h5 === false", 
                                        column(5, 
                                               h3("No antares output found in directory", 
                                                  style = "color : red")
@@ -26,6 +26,7 @@ navbarPage("antaresViz", id = "nav-id",
                     ), 
                     hr(), 
                     conditionalPanel(condition = "output.have_study", 
+                                     div(h3(textOutput("current_opts")), align = "center"),
                                      h3("readAntares parameters"),
                                      fluidRow(
                                        column(3, 
@@ -41,45 +42,56 @@ navbarPage("antaresViz", id = "nav-id",
                                               selectInput("read_districts", "Districts :", choices = NULL, selected = NULL, multiple = TRUE)
                                        )
                                      ), 
+                                     conditionalPanel(condition = "output.current_opts_h5 === false",
+                                                      fluidRow(
+                                                        column(3, 
+                                                               checkboxInput("read_misc", "misc", FALSE),
+                                                               checkboxInput("read_reserve", "reserve", FALSE)
+                                                        ),
+                                                        column(3, 
+                                                               checkboxInput("read_thermalAvailabilities", "thermalAvailabilities", FALSE),
+                                                               checkboxInput("read_linkCapacity", "linkCapacity", FALSE)
+                                                        ),
+                                                        column(3, 
+                                                               checkboxInput("read_hydroStorage", "hydroStorage", FALSE),
+                                                               checkboxInput("read_mustRun", "mustRun", FALSE)
+                                                        ),
+                                                        column(3, 
+                                                               checkboxInput("read_hydroStorageMaxPower", "hydroStorageMaxPower", FALSE),
+                                                               checkboxInput("read_thermalModulation", "thermalModulation", FALSE)
+                                                        )
+                                                      ),
+                                                      fluidRow(
+                                                        column(3, 
+                                                               selectInput("read_timeStep", "timeStep :", choices = c("hourly", "daily", "weekly",
+                                                                                                                      "monthly", "annual"))
+                                                        ),
+                                                        column(3, 
+                                                               radioButtons("read_type_mcYears", "mcYears :",
+                                                                            c("synthetic", "all", "custom"), inline = TRUE)
+                                                        ), 
+                                                        conditionalPanel(condition = "input.read_type_mcYears === 'custom'", 
+                                                                         column(3, 
+                                                                                selectInput("read_mcYears", "Choose mcYears :", choices = NULL, selected = NULL, multiple = TRUE)
+                                                                         )
+                                                        ),
+                                                        column(3, 
+                                                               checkboxInput("read_parallel", "parallel", FALSE)
+                                                        )
+                                                      )
+                                     ), 
                                      fluidRow(
-                                       column(3, 
-                                              checkboxInput("read_misc", "misc", FALSE),
-                                              checkboxInput("read_reserve", "reserve", FALSE)
-                                       ),
-                                       column(3, 
-                                              checkboxInput("read_thermalAvailabilities", "thermalAvailabilities", FALSE),
-                                              checkboxInput("read_linkCapacity", "linkCapacity", FALSE)
-                                       ),
-                                       column(3, 
-                                              checkboxInput("read_hydroStorage", "hydroStorage", FALSE),
-                                              checkboxInput("read_mustRun", "mustRun", FALSE)
-                                       ),
-                                       column(3, 
-                                              checkboxInput("read_hydroStorageMaxPower", "hydroStorageMaxPower", FALSE),
-                                              checkboxInput("read_thermalModulation", "thermalModulation", FALSE)
+                                       column(12, 
+                                              selectInput("read_select", "Select :", choices = NULL, selected = NULL, 
+                                                          width = "100%", multiple = TRUE)
                                        )
                                      ),
-                                     fluidRow(
-                                       column(3, 
-                                              selectInput("read_timeStep", "timeStep :", choices = c("hourly", "daily", "weekly",
-                                                                                                     "monthly", "annual"))
-                                       ),
-                                       column(3, 
-                                              radioButtons("read_type_mcYears", "mcYears :",
-                                                           c("synthetic", "all", "custom"), inline = TRUE)
-                                       ), 
-                                       conditionalPanel(condition = "input.read_type_mcYears === 'custom'", 
-                                                        column(3, 
-                                                               selectInput("read_mcYears", "Choose mcYears :", choices = NULL, selected = NULL, multiple = TRUE)
-                                                        )
-                                       ),
-                                       column(3, 
-                                              checkboxInput("read_parallel", "parallel", FALSE)
-                                       )
-                                     ), 
-                                     hr(), 
-                                     div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center")
-                    )
+                                     div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center"),
+                                     hr()
+                                     
+                    ),
+                    uiOutput("info_list"),
+                    div(actionButton("update_module", "Launch Analysis", icon = icon("upload")), align = "center")
            ),
            tabPanel("prodStack",
                     conditionalPanel(condition = "output.have_data",

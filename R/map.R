@@ -326,24 +326,28 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     {
       if(!is.null(params))
       {
-        print(params)
-        params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
-                                colAreaVar = colAreaVar,
-                                sizeAreaVars = sizeAreaVars,
-                                popupAreaVars = popupAreaVars,
-                                areaChartType = areaChartType,
-                                uniqueScale = uniqueScale,
-                                showLabels = showLabels,
-                                labelAreaVar = labelAreaVar,
-                                colLinkVar = colLinkVar,
-                                sizeLinkVar = sizeLinkVar, 
-                                popupLinkVars = popupLinkVars,
-                                type = type,
-                                mcYear = mcYear,
-                                initial = .initial,
-                                session = .session,
-                                outputId = .output,
-                                dateRange = dateRange)
+        # print(params)
+        if(.id <= length(params$x)){
+          params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
+                                  colAreaVar = colAreaVar,
+                                  sizeAreaVars = sizeAreaVars,
+                                  popupAreaVars = popupAreaVars,
+                                  areaChartType = areaChartType,
+                                  uniqueScale = uniqueScale,
+                                  showLabels = showLabels,
+                                  labelAreaVar = labelAreaVar,
+                                  colLinkVar = colLinkVar,
+                                  sizeLinkVar = sizeLinkVar, 
+                                  popupLinkVars = popupLinkVars,
+                                  type = type,
+                                  mcYear = mcYear,
+                                  initial = .initial,
+                                  session = .session,
+                                  outputId = .output,
+                                  dateRange = dateRange)
+        } else {
+          combineWidgets("No data for this selection")
+        }
       }else{
         combineWidgets()
       }

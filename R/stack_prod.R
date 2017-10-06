@@ -287,8 +287,11 @@ prodStack <- function(x,
   
   manipulateWidget(
     {
-      print(params)
-      params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
+      if(.id <= length(params$x)){
+        params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
+      } else {
+        combineWidgets("No data for this selection")
+      }
     },
     x = mwSharedValue({x}),
     x_in = mwSharedValue({
