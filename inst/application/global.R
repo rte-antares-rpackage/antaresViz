@@ -10,12 +10,10 @@ require(shiny)
 require(antaresRead)
 require(antaresViz)
 require(manipulateWidget)
-require(magrittr)
-require(DT)
 require(data.table)
 
 # choose a directory
-source("src/directoryInput.R")
+source("src/scripts/directoryInput.R")
 
 # shared inputs
 shared_prodStack <- data.frame(
@@ -55,7 +53,9 @@ build_input_data <- function(data){
 }
 
 
-
+ref_map_table <- antaresMaps::getEuropeReferenceTable()
+choices_map <- c("all", ref_map_table$code)
+names(choices_map) <- c("all", ref_map_table$name)
 
 # path <- tempdir()
 # 

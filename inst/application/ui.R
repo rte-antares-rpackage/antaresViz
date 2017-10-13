@@ -90,12 +90,19 @@ navbarPage("antaresViz", id = "nav-id",
                                      hr()
                                      
                     ),
-                    uiOutput("info_list"),
-                    div(actionButton("update_module", "Launch Analysis", icon = icon("upload")), align = "center")
+                    conditionalPanel(condition = "output.have_data === true",
+                                     uiOutput("info_list"),
+                                     div(actionButton("update_module", "Launch Analysis", icon = icon("upload")), align = "center")
+                    )
            ),
            tabPanel("prodStack",
                     conditionalPanel(condition = "output.have_data",
-                                     mwModuleUI(id = "prodStack", height = "800px")
+                                     conditionalPanel(condition = "output.have_data_areas", 
+                                                      mwModuleUI(id = "prodStack", height = "800px")
+                                     ), 
+                                     conditionalPanel(condition = "output.have_data_areas === false", 
+                                                      h3("No areas imported")
+                                     )
                     ),
                     conditionalPanel(condition = "output.have_data === false",
                                      h3("No data imported")
@@ -103,10 +110,10 @@ navbarPage("antaresViz", id = "nav-id",
            ),
            tabPanel("exchangesStack",
                     conditionalPanel(condition = "output.have_data",
-                                     conditionalPanel(condition = "output.have_links", 
+                                     conditionalPanel(condition = "output.have_data_links", 
                                                       mwModuleUI(id = "exchangesStack", height = "800px")
                                      ), 
-                                     conditionalPanel(condition = "output.have_links === false", 
+                                     conditionalPanel(condition = "output.have_data_links === false", 
                                                       h3("No links imported")
                                      )
                     ),
@@ -116,7 +123,12 @@ navbarPage("antaresViz", id = "nav-id",
            ),
            tabPanel("plotts", 
                     conditionalPanel(condition = "output.have_data",
-                                     mwModuleUI(id = "plotts", height = "800px")
+                                     conditionalPanel(condition = "output.have_data_areas", 
+                                                      mwModuleUI(id = "plotts", height = "800px")
+                                     ), 
+                                     conditionalPanel(condition = "output.have_data_areas === false", 
+                                                      h3("No areas imported")
+                                     )
                     ),
                     conditionalPanel(condition = "output.have_data === false",
                                      h3("No data imported")
@@ -125,6 +137,22 @@ navbarPage("antaresViz", id = "nav-id",
            navbarMenu("plotMap", 
                       tabPanel("Layout", 
                                conditionalPanel(condition = "output.have_data",
+                                                fluidRow(
+                                                  column(4, 
+                                                         selectInput("ml_countries", "Countries : ", width = "100%",
+                                                                     choices = choices_map, selected = "all", multiple = TRUE)
+                                                  ),
+                                                  column(4, 
+                                                         selectInput("ml_states", "States : ", width = "100%",
+                                                                     choices = choices_map, selected = NULL, multiple = TRUE)
+                                                  ),      
+                                                  column(2, 
+                                                         div(br(), actionButton("set_map_ml", "Set map"), align = "center")
+                                                  ),
+                                                  column(2, 
+                                                         div(br(), actionButton("reset_ml", "Re-Init layout"), align = "center")
+                                                  )
+                                                ),
                                                 antaresViz:::changeCoordsUI("ml")
                                ),
                                conditionalPanel(condition = "output.have_data === false",
