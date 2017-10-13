@@ -49,6 +49,8 @@
   dt <- dcast(dt, time ~ element, value.var = "value")
   
   # Graphical parameters
+  
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Evolution of", variable)
   if (is.null(colors)) {

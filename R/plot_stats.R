@@ -29,6 +29,7 @@
     }
   }
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Monotone of", variable)
   
@@ -51,6 +52,7 @@
   
   dt <- dt[, .getDensity(value), by = element]
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- "Density"
   if (is.null(main)) main <- paste("Density of", variable)
   
@@ -72,6 +74,7 @@
   
   dt <- dt[, .getCDF(value), by = element]
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- "Proportion of time steps"
   if (is.null(main)) main <- paste("Cumulated distribution of", variable)
   
