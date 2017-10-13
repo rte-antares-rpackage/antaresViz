@@ -5,10 +5,8 @@ dist: trusty
 sudo: required
 cache: packages
 
-
 before_install:
   sudo apt-get install -y libprotobuf-dev protobuf-compiler
-
 
 r: bioc-devel
 
@@ -27,6 +25,8 @@ addons:
       - libgdal-dev
       - libproj-dev
       - libv8-3.14-dev
+      - libjq-dev
+      - valgrind
 
 include:
   - r: release
