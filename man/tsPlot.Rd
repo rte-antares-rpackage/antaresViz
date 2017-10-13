@@ -102,7 +102,8 @@ averaged and if "sum" they are added.}
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
 be a named list with names corresponding to parameter names and values being
-list with the initial values of the given parameter for each chart.}
+list with the initial values of the given parameter for each chart. See details
+ if you are drawing a map.}
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 
@@ -162,7 +163,7 @@ instead of a line chart.
 \examples{
 \dontrun{
 setSimulationPath(path = path1)
-mydata <- readAntares(areas = "all", timeStep = "monthly")
+mydata <- readAntares(areas = "all", timeStep = "hourly")
 plot(x = mydata)
 
 # Plot only a few areas
@@ -170,7 +171,7 @@ plot(x = mydata[area \%in\% c("area1", "area2", "area3")])
 
 # If data contains detailed results, then the function adds a confidence
 # interval
-dataDetailed <- readAntares(areas = "all", timeStep = "monthly", mcYears = 1:2)
+dataDetailed <- readAntares(areas = "all", timeStep = "hourly", mcYears = 1:2)
 plot(x = dataDetailed)
 
 # If the time step is annual, the function creates a barplot instead of a

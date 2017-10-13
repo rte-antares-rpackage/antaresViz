@@ -69,7 +69,8 @@ displayed. If NULL, then all data is displayed.}
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
 be a named list with names corresponding to parameter names and values being
-list with the initial values of the given parameter for each chart.}
+list with the initial values of the given parameter for each chart. See details
+ if you are drawing a map.}
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 

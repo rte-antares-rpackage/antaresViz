@@ -46,7 +46,6 @@
     mcy <- mcYear # Just to avoid name confusion in the next line
     tpl <- tpl[mcYear %in% mcy]
   }
-  print(tpl)
   # if (length(elements) == 0) elements <- uniqueElement[1:5]
   if (!"all" %in% elements) tpl <- tpl[element %in% elements]
   if (!is.null(dateRange)) tpl <- tpl[as.Date(time) %between% dateRange]

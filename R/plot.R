@@ -178,9 +178,9 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   init_dateRange <- dateRange
   
   if(!is.null(compare) && class(x)[1] == "list"){
-    stop("You cant use compare argument and use more than one study")
+    #stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare)){
+  if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
   
@@ -340,6 +340,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     # paramsOut <<- params
     if(.id <= length(params$x)){
       if(length(variable) == 0){return(combineWidgets(paste0("No data")))}
+
       if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
       if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this data")))}
       params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
