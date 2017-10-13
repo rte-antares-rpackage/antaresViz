@@ -27,8 +27,6 @@ addons:
     packages:
       - libjq-dev
       - valgrind
-  apt:
-    packages:
       - libgdal-dev
       - libproj-dev
       - libv8-3.14-dev
