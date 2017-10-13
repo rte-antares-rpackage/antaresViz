@@ -153,6 +153,7 @@ navbarPage("antaresViz", id = "nav-id",
                                                          div(br(), actionButton("reset_ml", "Re-Init layout"), align = "center")
                                                   )
                                                 ),
+                                                hr(),
                                                 antaresViz:::changeCoordsUI("ml")
                                ),
                                conditionalPanel(condition = "output.have_data === false",

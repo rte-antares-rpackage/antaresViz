@@ -112,17 +112,6 @@ function(input, output, session) {
   })
   outputOptions(output, "have_data", suspendWhenHidden = FALSE)
   
-  
-  
-  # 
-  #   autoInvalidate <- reactiveTimer(2000)
-  #   
-  #   # observe({
-  #   #   autoInvalidate()
-  #   #   # d <- list_data_allt()
-  #   #   print(gc())
-  #   # })
-  
   ind_keep_list_data <- reactive({
     if(input$update_module > 0){
       isolate({
