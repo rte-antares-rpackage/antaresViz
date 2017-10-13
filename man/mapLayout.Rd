@@ -4,7 +4,7 @@
 \alias{mapLayout}
 \title{Place areas of a study on a map}
 \usage{
-mapLayout(layout, what = c("areas", "districts"), map = NULL)
+mapLayout(layout, what = c("areas", "districts"), map = getAntaresMap())
 }
 \arguments{
 \item{layout}{object returned by function \code{\link[antaresRead]{readLayout}}}
