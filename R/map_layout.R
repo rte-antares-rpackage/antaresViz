@@ -388,7 +388,8 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
     
     areaChartType <- match.arg(areaChartType)
     
-    map <- addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
+    # fix bug if set map wihout any intersection with areas...!
+    map <- tryCatch(addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
                          chartdata = dataAreas, fillColor = colAreas,
                          showLabels = !is.null(labelArea),
                          labelText = labelArea,
@@ -397,7 +398,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
                          layerId = x$coords$area, 
                          opacity = opacityArea,
                          labelMinSize = labelMinSize,
-                         labelMaxSize = labelMaxSize)
+                         labelMaxSize = labelMaxSize), error = function(e) map)
     
   }
   
