@@ -31,8 +31,9 @@
 #' }
 #' 
 #' @export
+#' @import antaresMaps
 #' 
-mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
+mapLayout <- function(layout, what = c("areas", "districts"), map = getAntaresMap()) {
   
   what <- match.arg(what)
   
@@ -42,7 +43,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = NULL) {
   
   server <- function(input, output, session) {
     callModule(changeCoordsServer, "ml", reactive(layout), what = reactive(what), 
-               map = map, stopApp = TRUE)
+               map = reactive(map), stopApp = TRUE)
   }
   
   mapCoords <- shiny::runApp(shiny::shinyApp(ui = ui, server = server))
@@ -89,7 +90,7 @@ changeCoordsUI <- function(id) {
 # changeCoords Module SERVER function
 changeCoordsServer <- function(input, output, session, 
                                layout, what = reactive("areas"), 
-                               map = NULL, stopApp = FALSE){
+                               map = reactive(NULL), stopApp = FALSE){
   
   ns <- session$ns
   
@@ -154,7 +155,7 @@ changeCoordsServer <- function(input, output, session,
   }
   
   # Initialize outputs
-  output$map <- renderLeafletDragPoints({leafletDragPoints(data_points$points[data_points$pt1, ], map)})
+  output$map <- renderLeafletDragPoints({leafletDragPoints(data_points$points[data_points$pt1, ], map())})
   output$order <- renderText("Please place the following point on the map.")
   output$info <- renderUI(HTML(data_points$points$info[data_points$pt1]))
   output$preview <- renderPreview(data_points$pt1)
@@ -187,6 +188,7 @@ changeCoordsServer <- function(input, output, session,
   observeEvent(input$done, {
     coords <- sp::SpatialPoints(coords()[, c("lon", "lat")],
                                 proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
+    map <- map()
     if (!is.null(map)) {
       map <- sp::spTransform(map, sp::CRS("+proj=longlat +datum=WGS84"))
       map$geoAreaId <- 1:length(map)
