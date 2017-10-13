@@ -154,8 +154,32 @@ changeCoordsServer <- function(input, output, session,
     })
   }
   
+  lfDragPoints <- reactiveValues(map = NULL)
+  
+  observe({
+    if (input$state == 0) {
+      lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt1, ], isolate(map()))
+    }
+  })
+  
+  observe({
+    if (input$state == 1) {
+      lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt2, ])
+    }
+  })
+  
+  observe({
+    if (input$state == 2) {
+      lfDragPoints$map <- leafletDragPoints(data_points$points[-c(data_points$pt1, data_points$pt2), ])
+    }
+  })
+  
+  observe({
+    lfDragPoints$map <- leafletDragPoints(NULL, map())
+  })
+  
   # Initialize outputs
-  output$map <- renderLeafletDragPoints({leafletDragPoints(data_points$points[data_points$pt1, ], map())})
+  output$map <- renderLeafletDragPoints({lfDragPoints$map})
   output$order <- renderText("Please place the following point on the map.")
   output$info <- renderUI(HTML(data_points$points$info[data_points$pt1]))
   output$preview <- renderPreview(data_points$pt1)
@@ -170,12 +194,10 @@ changeCoordsServer <- function(input, output, session,
     if (input$state == 1) {
       data_points$points$lat[data_points$pt2] <- input[[paste0("map", "_mapcenter")]]$lat
       data_points$points$lon[data_points$pt2] <- input[[paste0("map", "_mapcenter")]]$lng
-      output$map <- renderLeafletDragPoints({leafletDragPoints(data_points$points[data_points$pt2, ])})
       output$info <- renderUI(HTML(data_points$points$info[data_points$pt2]))
       output$preview <- renderPreview(data_points$pt2)
     } else if (input$state == 2) {
       data_points$points <- .changeCoordinates(data_points$points, coords(), c(data_points$pt1, data_points$pt2))
-      output$map <- renderLeafletDragPoints({leafletDragPoints(data_points$points[-c(data_points$pt1, data_points$pt2), ])})
       output$order <- renderText("Drag the markers on the map to adjust coordinates then click the 'Done' button")
       output$info <- renderUI(HTML("<p>You can click on a marker to display information about the corresponding point.</p>"))
     }
