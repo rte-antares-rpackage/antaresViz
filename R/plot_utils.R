@@ -18,23 +18,35 @@
                        mcYear = NULL, 
                        dateRange = NULL, aggregate = c("none", "mean", "sum")) {
   
-  aggregate <- match.arg(aggregate)
+  if(length(variable) == 0){return(tpl[0])}
   
+  aggregate <- match.arg(aggregate)
   assert_that(inherits(x, "data.table"))
   assert_that(inherits(tpl, "data.table"))
   assert_that(are_equal(nrow(x), nrow(tpl)))
-  assert_that(is.string(variable))
+  assert_that(all(sapply(variable, is.string)))
   if (!is.null(dateRange)) assert_that(are_equal(length(dateRange), 2))
   
-  tpl$value <- x[[variable]]
-  
+  listVar <- sapply(variable, function(V){
+    tpl$value <- x[,.SD, .SDcols = V]
+    tpl
+  }, simplify = FALSE)
+  if(length(listVar) > 1){
+    sapply(names(listVar), function(N){
+      listVar[[N]][,element := paste(element, '-' , N)]
+    })
+    tpl <- rbindlist(listVar)
+    elements <- as.vector(sapply(elements, function(X){paste(X, "-", variable)}))
+  }else{
+    tpl <- listVar[[1]]
+  }
+
   # Filtering data if required
   if (!is.null(mcYear) && mcYear != "average") {
     mcy <- mcYear # Just to avoid name confusion in the next line
-    tpl <- tpl[mcYear == mcy]
+    tpl <- tpl[mcYear %in% mcy]
   }
-  
-  if (length(elements) == 0) elements <- uniqueElement[1:5]
+  # if (length(elements) == 0) elements <- uniqueElement[1:5]
   if (!"all" %in% elements) tpl <- tpl[element %in% elements]
   if (!is.null(dateRange)) tpl <- tpl[as.Date(time) %between% dateRange]
   
@@ -48,6 +60,5 @@
                by = c(.idCols(tpl))]
     }
   }
-  
   tpl
 }

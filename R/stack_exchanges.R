@@ -54,12 +54,11 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   init_dateRange <- dateRange
   
   if(!is.null(compare) && class(x)[1] == "list"){
-    stop("You cant use compare argument and use more than one study")
+   # stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare)){
+  if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
-  
   # Generate a group number for dygraph objects
   if (!("dateRange" %in% compare)) {
     group <- sample(1e9, 1)

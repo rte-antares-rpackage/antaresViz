@@ -85,7 +85,7 @@
 #' @examples 
 #' \dontrun{
 #' setSimulationPath(path = path1)
-#' mydata <- readAntares(areas = "all", timeStep = "monthly")
+#' mydata <- readAntares(areas = "all", timeStep = "hourly")
 #' plot(x = mydata)
 #' 
 #' # Plot only a few areas
@@ -93,7 +93,7 @@
 #' 
 #' # If data contains detailed results, then the function adds a confidence
 #' # interval
-#' dataDetailed <- readAntares(areas = "all", timeStep = "monthly", mcYears = 1:2)
+#' dataDetailed <- readAntares(areas = "all", timeStep = "hourly", mcYears = 1:2)
 #' plot(x = dataDetailed)
 #' 
 #' # If the time step is annual, the function creates a barplot instead of a
@@ -178,9 +178,9 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   init_dateRange <- dateRange
   
   if(!is.null(compare) && class(x)[1] == "list"){
-    stop("You cant use compare argument and use more than one study")
+    #stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare)){
+  if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
   
@@ -246,7 +246,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         if (is.null(type) || !variable %in% names(x)) {
           return(combineWidgets())
         }
-        
+        if(variable[1] == "No Input") {return(combineWidgets("No data"))}
         
         dt <- .getTSData(
           x, dt, 
@@ -339,6 +339,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   manipulateWidget({
     # paramsOut <<- params
     if(.id <= length(params$x)){
+      if(length(variable) == 0){return(combineWidgets(paste0("No data")))}
+
       if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
       if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this data")))}
       params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
@@ -403,7 +405,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     value = {
       if(.initial) "average"
       else NULL
-    }
+    }, multiple = FALSE
+    
   ),
   
   variable = mwSelect(
@@ -417,9 +420,11 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     },
     
     value = {
-      if(.initial) variable
+      if(.initial) as.character(.compareopetation(lapply(params$x, function(vv){
+        unique(vv[[table]]$valueCols)
+      }), xyCompare))[1]
       else NULL
-    }
+    }, multiple = TRUE
   ),
   type = mwSelect(
     choices = {

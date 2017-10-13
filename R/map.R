@@ -67,6 +67,11 @@
 #' 
 #' @inheritParams prodStack
 #'   
+#'   
+#' @details 
+#'  Possibles values for compare are : colAreaVar sizeAreaVars areaChartType popupAreaVars labelAreaVar
+#'  colLinkVar sizeLinkVar popupLinkVars
+#'  
 #' @return 
 #' An htmlwidget of class "leaflet". It can be modified with package 
 #' \code{leaflet}. By default the function starts a shiny gadget that lets the
@@ -139,12 +144,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if (is.null(mcYear)) mcYear <- "average"
   
   if(!is.null(compare) && class(x)[1] == "list"){
-    stop("You cant use compare argument and use more than one study")
+    #stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare)){
+  if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
-  
   compareOptions <- .compOpts(x, compare)
   if(is.null(compare)){
     if(compareOptions$ncharts > 1){

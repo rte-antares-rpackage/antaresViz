@@ -78,7 +78,8 @@ averaged.}
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
 be a named list with names corresponding to parameter names and values being
-list with the initial values of the given parameter for each chart.}
+list with the initial values of the given parameter for each chart. See details
+ if you are drawing a map.}
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 
@@ -118,6 +119,10 @@ a leaflet map when the user clicks on the button \code{"done"}.
 This function generates an interactive map that let the user visually explore
 the results of an Antares simulation. By default the function starts a Shiny 
 gadget that let the user which variables to represent.
+}
+\details{
+Possibles values for compare are : colAreaVar sizeAreaVars areaChartType popupAreaVars labelAreaVar
+ colLinkVar sizeLinkVar popupLinkVars
 }
 \examples{
 \dontrun{

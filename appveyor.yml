@@ -20,6 +20,7 @@ build_script:
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresProcessing@developTit
   - ./travis-tool.sh install_github rte-antares-rpackage/manipulateWidget@develop
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresHdf5
+  - ./travis-tool.sh install_github rte-antares-rpackage/antaresMaps
 
 test_script:
   - travis-tool.sh run_tests
