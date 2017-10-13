@@ -491,7 +491,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           else NULL
         }, label = "Label", 
         .display = length(sizeAreaVars) < 2
-      )
+      ),
+      .display = "areas" %in% names(params$x[[max(1,.id)]]$x)
     ),
     
     Links = mwGroup(
