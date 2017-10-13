@@ -99,13 +99,8 @@
   }
   }
   
-  
-  
   # 5- Finally plot !!
   colors <- unname(c("#FFFFFF", rev(colors), colors))
-  
-  
-  
   
   g <- dygraph(as.xts.data.table(dt), main = main, group = groupId, width = width, height = height)  %>%
     dyOptions(
