@@ -14,20 +14,23 @@ r_github_packages:
  - hadley/devtools#1263
  - Bioconductor-mirror/zlibbioc
  - Bioconductor-mirror/rhdf5
- - rte-antares-rpackage/antares-rpackageRead@develop
+ - rte-antares-rpackage/manipulateWidget@develop
+ - rte-antares-rpackage/antaresMaps
  - rte-antares-rpackage/antaresProcessing@developTit
  - rte-antares-rpackage/manipulateWidget@develop
  - rte-antares-rpackage/antaresHDF5 
 
 addons:
   apt:
+    sources:
+      - sourceline: 'ppa:opencpu/jq'
     packages:
+      - libjq-dev
+      - valgrind
       - libgdal-dev
       - libproj-dev
       - libv8-3.14-dev
-      - libjq-dev
-      - valgrind
-
+      
 include:
   - r: release
   - r: oldrel
