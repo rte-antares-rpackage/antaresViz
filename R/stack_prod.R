@@ -185,6 +185,7 @@ prodStack <- function(x,
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
+  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
   compareOptions <- .compOpts(x, compare)
   if(is.null(compare)){
@@ -318,19 +319,26 @@ prodStack <- function(x,
     }),
     
     
+    h5requestFiltering = mwSharedValue({h5requestFiltering}),
     
     x_tranform = mwSharedValue({
       if(!is.null(sharerequest))
       {
         h5requestFilteringTp <- h5requestFiltering
+        
+        for(i in 1:length(h5requestFilteringTp))
+        {
         if(sharerequest$tables == "areas"){
-          h5requestFilteringTp$districts = NULL
+          h5requestFilteringTp[[i]]$districts = NULL
         }
         if(sharerequest$tables == "districts"){
-          h5requestFilteringTp$areas = NULL
+          h5requestFilteringTp[[i]]$areas = NULL
+        }
         }
       }
-      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, h5requestFiltering = h5requestFilteringTp)})
+      sapply(1:length(x_in),function(zz){
+        .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFilteringTp[[zz]])
+        }, simplify = FALSE)
     }),
     
     

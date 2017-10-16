@@ -59,6 +59,9 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
+  
+  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
+  
   # Generate a group number for dygraph objects
   if (!("dateRange" %in% compare)) {
     group <- sample(1e9, 1)
@@ -213,18 +216,26 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       .display = {
         any(unlist(lapply(x_in, .isSimOpts)))
       }),
+    
+    
     sharerequest = mwSharedValue({
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = NULL)
     }),
     
+    
+    h5requestFiltering = mwSharedValue({h5requestFiltering}),
+    
     x_tranform = mwSharedValue({
       areas = "all"
       links = "all"
-      if(length(h5requestFiltering) > 0){
+      if(length(h5requestFiltering[[1]]) > 0){
         areas <- NULL
         links <- NULL
       }
-      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, areas = areas, links = links, h5requestFiltering = h5requestFiltering)})
+      
+      sapply(1:length(x_in),function(zz){
+        .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFiltering = h5requestFiltering[[zz]])
+        }, simplify = FALSE)
     }),
     
     

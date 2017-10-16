@@ -167,12 +167,14 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                     colorScaleOpts = colorScaleOptions(20),
                     width = NULL, height = NULL, xyCompare = c("union","intersect"),
                     h5requestFiltering = list(), ...) {
+  
+  
+
   table <- NULL
   xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
   aggregate <- match.arg(aggregate)
   colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
-  
   
   init_elements <- elements
   init_dateRange <- dateRange
@@ -183,6 +185,9 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
+  
+  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
+  
   
   # Generate a group number for dygraph objects
   if (!("dateRange" %in% compare)) {
@@ -343,6 +348,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
 
       if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
       if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this data")))}
+      
       params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
                                                    maxValue, aggregate, legend)
     } else {
@@ -371,9 +377,15 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   sharerequest = mwSharedValue({
     list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
   }),
-  
+  h5requestFiltering = mwSharedValue({h5requestFiltering}),
   x_tranform = mwSharedValue({
-    dataInApp <- lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, h5requestFiltering = h5requestFiltering)})
+    dataInApp <- sapply(1:length(x_in),function(zz){
+
+      .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFiltering[[zz]])
+      
+      }, simplify = FALSE)
+    
+    
     dataInApp
   }),
   

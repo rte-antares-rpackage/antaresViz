@@ -149,6 +149,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
+  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
+  
+  
   compareOptions <- .compOpts(x, compare)
   if(is.null(compare)){
     if(compareOptions$ncharts > 1){
@@ -380,8 +383,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
     }),
     
+    h5requestFiltering = mwSharedValue({h5requestFiltering}),
+    
     x_tranform = mwSharedValue({
-      lapply(x_in,function(zz){.loadH5Data(sharerequest, zz, h5requestFiltering = h5requestFiltering)})
+      sapply(1:length(x_in),function(zz){
+        .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFiltering[[zz]])
+        }, simplify = FALSE)
     }),
     
     

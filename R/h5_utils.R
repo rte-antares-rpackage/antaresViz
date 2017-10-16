@@ -1,3 +1,29 @@
+.convertH5Filtering <- function(h5requestFiltering, x)
+{
+  if(length(h5requestFiltering)>0)
+  {
+    if(!is.list(h5requestFiltering[[1]])){
+      if(!"simOptions"%in%class(x))
+      {
+        h5requestFiltering <- rep(list(h5requestFiltering), length(x))
+      }else{
+        h5requestFiltering <- list(h5requestFiltering)
+      }
+    }else{
+      if(class(x) == "list"){
+        if(length(h5requestFiltering) != length(x)){
+          h5requestFiltering <- h5requestFiltering[1:length(x)%%length(h5requestFiltering) + 1]
+        }
+      }
+    }
+  }else{
+    h5requestFiltering <- list(rep(list(), length(x)))
+  }
+  h5requestFiltering
+}
+
+
+
 .getTableInH5 <- function(fid, timeStep){
   dataExist <- NULL
   if(rhdf5::H5Lexists(fid, paste0(timeStep, "/areas")))

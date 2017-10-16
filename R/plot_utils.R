@@ -25,6 +25,8 @@
   assert_that(inherits(tpl, "data.table"))
   assert_that(are_equal(nrow(x), nrow(tpl)))
   assert_that(all(sapply(variable, is.string)))
+  
+  variable <- variable[variable%in%names(x)]
   if (!is.null(dateRange)) assert_that(are_equal(length(dateRange), 2))
   
   listVar <- sapply(variable, function(V){
