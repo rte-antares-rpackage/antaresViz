@@ -149,27 +149,27 @@
 #' 
 #' @export
 tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL, 
-                    mcYear = "average",
-                    type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-                    dateRange = NULL,
-                    confInt = 0,
-                    minValue = NULL,
-                    maxValue = NULL,
-                    aggregate = c("none", "mean", "sum"),
-                    compare = NULL,
-                    compareOpts = list(),
-                    interactive = getInteractivity(),
-                    colors = NULL,
-                    main = NULL,
-                    ylab = NULL,
-                    legend = TRUE,
-                    legendItemsPerRow = 5,
-                    colorScaleOpts = colorScaleOptions(20),
-                    width = NULL, height = NULL, xyCompare = c("union","intersect"),
-                    h5requestFiltering = list(), ...) {
+                   mcYear = "average",
+                   type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
+                   dateRange = NULL,
+                   confInt = 0,
+                   minValue = NULL,
+                   maxValue = NULL,
+                   aggregate = c("none", "mean", "sum"),
+                   compare = NULL,
+                   compareOpts = list(),
+                   interactive = getInteractivity(),
+                   colors = NULL,
+                   main = NULL,
+                   ylab = NULL,
+                   legend = TRUE,
+                   legendItemsPerRow = 5,
+                   colorScaleOpts = colorScaleOptions(20),
+                   width = NULL, height = NULL, xyCompare = c("union","intersect"),
+                   h5requestFiltering = list(), ...) {
   
   
-
+  
   table <- NULL
   xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
@@ -202,7 +202,6 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       compare <- list()
     }
   }
-  
   
   processFun <- function(x, elements = NULL, dateRange = NULL) {
     assert_that(inherits(x, "antaresData"))
@@ -330,8 +329,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # to interactively explore the data
   if (!interactive) {
     params <- .getDataForComp(x, y = NULL, compare, compareOpts, 
-                                           processFun = processFun, 
-                                           elements = elements, dateRange = dateRange)
+                              processFun = processFun, 
+                              elements = elements, dateRange = dateRange)
     
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
@@ -341,103 +340,119 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   }
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
+  
   manipulateWidget({
-    # paramsOut <<- params
     if(.id <= length(params$x)){
-      if(length(variable) == 0){return(combineWidgets(paste0("No data")))}
-
-      if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
-      if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this data")))}
       
-      params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
-                                                   maxValue, aggregate, legend)
+      if(length(variable) == 0){return(combineWidgets(paste0("Please select some variables")))}
+      
+      if(length(elements) == 0){return(combineWidgets(paste0("Please select some elements")))}
+      
+      if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
+      
+      if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this study")))}
+      
+      params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, 
+                                                   dateRange, minValue, maxValue, aggregate, legend)
     } else {
       combineWidgets("No data for this selection")
     }
   },
   x = mwSharedValue({x}),
+  
   x_in = mwSharedValue({
     .giveListFormat(x)
   }),
+  
   paramsH5 = mwSharedValue({
     .h5ParamList(X_I = x_in, xyCompare = xyCompare)
   }),
+  
   H5request = mwGroup(
-    timeSteph5 = mwSelect(choices = paramsH5$timeStepS, value =  paramsH5$timeStepS[1]
-                          , label = "timeStep", multiple = FALSE),
-    tables = mwSelect(choices = paramsH5[["tabl"]], value = {
-      if(.initial) {paramsH5[["tabl"]][1]}else{NULL}
-    } , label = "table", multiple = TRUE),
-    mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), value = {
-      if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
-    }, label = "mcYear", multiple = TRUE),
+    timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
+                          value =  paramsH5$timeStepS[1], 
+                          label = "timeStep", 
+                          multiple = FALSE
+    ),
+    tables = mwSelect(choices = paramsH5[["tabl"]], 
+                      value = {
+                        if(.initial) {paramsH5[["tabl"]][1]}else{NULL}
+                      }, 
+                      label = "table", multiple = TRUE
+    ),
+    mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+                       value = {
+                         if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+                       }, 
+                       label = "mcYear", multiple = TRUE
+    ),
     .display = {
       any(unlist(lapply(x_in, .isSimOpts)))
     }),
+  
   sharerequest = mwSharedValue({
     list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
   }),
+  
   h5requestFiltering = mwSharedValue({h5requestFiltering}),
+  
   x_tranform = mwSharedValue({
     dataInApp <- sapply(1:length(x_in),function(zz){
-
       .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFiltering[[zz]])
-      
-      }, simplify = FALSE)
-    
-    
+    }, simplify = FALSE)
     dataInApp
   }),
   
   table = mwSelect(
     {
       if(!is.null(params)){
-        out <- as.character(.compareopetation(lapply(params$x, function(vv){
-
-          unique(names(vv))
-        }), xyCompare))
+        out <- as.character(.compareOperation(
+          lapply(params$x, function(vv){
+            unique(names(vv))
+          }), xyCompare))
         if(length(out) > 0){out}else{"No Input"}
       }
-    }                   
-    , value = {
+    }, 
+    value = {
       if(.initial) table
       else NULL
-    }, .display = length(as.character(.compareopetation(lapply(params$x, function(vv){
-      unique(names(vv))
-    }), xyCompare))) > 1),
+    }, .display = length(as.character(.compareOperation(
+      lapply(params$x, function(vv){
+        unique(names(vv))
+      }), xyCompare))) > 1
+  ),
+  
   mcYear = mwSelect(
     choices = {
       c("average",     if(!is.null(params)){
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv[[table]]$uniqueMcYears)
         }), xyCompare))
       })
-      
     },
     value = {
       if(.initial) "average"
       else NULL
     }, multiple = FALSE
-    
   ),
   
   variable = mwSelect(
     choices = {
       if(!is.null(params)){
-        out <- as.character(.compareopetation(lapply(params$x, function(vv){
+        out <- as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv[[table]]$valueCols)
         }), xyCompare))
-        if(length(out) > 0){out}else{"No Input"}
+        if(length(out) > 0){out} else {"No Input"}
       }
     },
-    
     value = {
-      if(.initial) as.character(.compareopetation(lapply(params$x, function(vv){
+      if(.initial) as.character(.compareOperation(lapply(params$x, function(vv){
         unique(vv[[table]]$valueCols)
       }), xyCompare))[1]
       else NULL
     }, multiple = TRUE
   ),
+  
   type = mwSelect(
     choices = {
       if (timeStepdataload == "annual") "barplot"
@@ -462,64 +477,73 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       }
       res
     }else{NULL}
-  }, min = 
-  {      
+  }, 
+  min = {      
     if(!is.null(params) & ! is.null(table)){
       R <- .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
       if(is.infinite(R)){NULL}else{R}
     }
-  }
-  , max = 
-  {      
+  }, 
+  max = {      
     if(!is.null(params) & ! is.null(table)){
       R <- .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
       if(is.infinite(R)){NULL}else{R}
     }
-  }
+  },
+  .display = timeStepdataload != "annual"
+  ),
   
-  ,.display = timeStepdataload != "annual"),
-  confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval",
-                     .display = params$x[[max(1,.id)]][[table]]$showConfInt & mcYear == "average"),
-  minValue = mwNumeric(minValue, "min value", .display = type %in% c("density", "cdf")),
-  maxValue = mwNumeric(maxValue, "max value", .display = type %in% c("density", "cdf")),
+  confInt = mwSlider(0, 1, confInt, step = 0.01, 
+                     label = "confidence interval",
+                     .display = params$x[[max(1,.id)]][[table]]$showConfInt & mcYear == "average"
+  ),
+  
+  minValue = mwNumeric(minValue, "min value", 
+                       .display = type %in% c("density", "cdf")
+  ),
+  
+  maxValue = mwNumeric(maxValue, "max value", 
+                       .display = type %in% c("density", "cdf")
+  ),
+  
   elements = mwSelect(
     choices = {
       c("all", if(!is.null(params)){
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv[[table]]$uniqueElem)
         }), xyCompare))
       })
-      
     },
     value = {
-      if(.initial) {as.character(.compareopetation(lapply(params$x, function(vv){
+      if(.initial) {as.character(.compareOperation(lapply(params$x, function(vv){
         unique(vv[[table]]$uniqueElem)
       }), xyCompare))[1]}
     }, 
     multiple = TRUE
   ),
+  
   aggregate = mwSelect(c("none", "mean", "sum"), 
                        value ={
                          if(.initial) aggregate
                          else NULL
-                       }),
-  legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
+                       }
+  ),
   
+  legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
   
   timeStepdataload = mwSharedValue({
     attributes(x_tranform[[1]])$timeStep
   }),
+  
   params = mwSharedValue({
-    prm <- .transformDataForComp(x_tranform, compare, compareOpts, 
-                                 processFun = processFun, 
-                                 elements = init_elements, dateRange = init_dateRange)
-    prm
+    .transformDataForComp(x_tranform, compare, compareOpts, processFun = processFun, 
+                          elements = init_elements, dateRange = init_dateRange)
   }),
+  
   .compare = {
     compare
   },
   .compareOpts = {
-    
     compareOptions
   },
   ...

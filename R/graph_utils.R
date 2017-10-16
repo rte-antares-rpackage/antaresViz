@@ -231,7 +231,7 @@
     }
   })
   lapply(.transposeL(listParam), function(x){
-    .compareopetation(x, xyCompare)
+    .compareOperation(x, xyCompare)
   })
 }
 
@@ -242,7 +242,7 @@
 #' @noRd
 .h5Inf <- function(x){
   fid <- rhdf5::H5Fopen(x$h5path)
-  timeStepS <- .getTimStep(fid)
+  timeStepS <- .getTimeStep(fid)
   timeStepS <- as.character(timeStepS)
   mcYearS <- x$mcYears
   tabl <- .getTableInH5(fid, timeStepS[1])

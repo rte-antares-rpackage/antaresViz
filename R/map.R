@@ -119,23 +119,23 @@
 #' 
 #' @export
 plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
-                     areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
-                     uniqueScale = FALSE,
-                     showLabels = FALSE,
-                     popupAreaVars = c(),
-                     labelAreaVar = "none",
-                     colLinkVar = "none", sizeLinkVar = "none", 
-                     popupLinkVars = c(),
-                     type = c("detail", "avg"),
-                     timeId = NULL,
-                     mcYear = "average",
-                     main = "",
-                     compare = NULL,
-                     compareOpts = list(),
-                     interactive = getInteractivity(),
-                     options = plotMapOptions(),
-                     width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union","intersect"),
-                     h5requestFiltering = list(), ...) {
+                    areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
+                    uniqueScale = FALSE,
+                    showLabels = FALSE,
+                    popupAreaVars = c(),
+                    labelAreaVar = "none",
+                    colLinkVar = "none", sizeLinkVar = "none", 
+                    popupLinkVars = c(),
+                    type = c("detail", "avg"),
+                    timeId = NULL,
+                    mcYear = "average",
+                    main = "",
+                    compare = NULL,
+                    compareOpts = list(),
+                    interactive = getInteractivity(),
+                    options = plotMapOptions(),
+                    width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union","intersect"),
+                    h5requestFiltering = list(), ...) {
   
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
@@ -333,7 +333,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     {
       if(!is.null(params))
       {
-        # print(params)
         if(.id <= length(params$x)){
           params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                   colAreaVar = colAreaVar,
@@ -368,41 +367,41 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .h5ParamList(X_I = x_in, xyCompare = xyCompare)
     }),
     H5request = mwGroup(
-      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, value =  paramsH5$timeStepS[1]
-                            , label = "timeStep", multiple = FALSE),
-      tables = mwSelect(choices = paramsH5[["tabl"]][paramsH5[["tabl"]]%in%c("areas", "links")], value = {
-        if(.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]]%in%c("areas", "districts")][1]}else{NULL}
-      } , label = "table", multiple = TRUE),
-      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), value = {
-        if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
-      }, label = "mcYear", multiple = TRUE),
-      .display = {
-        any(unlist(lapply(x_in, .isSimOpts)))
-      }),
+      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
+                            value =  paramsH5$timeStepS[1], 
+                            label = "timeStep", 
+                            multiple = FALSE),
+      tables = mwSelect(choices = paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "links")], 
+                        value = {
+                          if(.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "links")]} else {NULL}
+                        }, 
+                        label = "table", multiple = TRUE),
+      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+                         value = {
+                           if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+                         }, 
+                         label = "mcYear", multiple = TRUE),
+      .display = {any(unlist(lapply(x_in, .isSimOpts)))}
+    ),
     sharerequest = mwSharedValue({
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
     }),
-    
     h5requestFiltering = mwSharedValue({h5requestFiltering}),
-    
     x_tranform = mwSharedValue({
       sapply(1:length(x_in),function(zz){
         .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFiltering[[zz]])
-        }, simplify = FALSE)
+      }, simplify = FALSE)
     }),
     
-    
     ##Stop h5
-    
     mcYear = mwSelect({
-      c("average",     as.character(.compareopetation(lapply(params$x, function(vv){
+      c("average", as.character(.compareOperation(lapply(params$x, function(vv){
         unique(vv$x[[1]]$mcYear)
       }), xyCompare)))
     }, 
-    value = {
-      if(.initial) mcYear
-      else NULL
-    }, .display = any(unlist(lapply(params$x, function(X){X$showMcYear})))),
+    value = { if(.initial) mcYear else NULL}, 
+    .display = any(unlist(lapply(params$x, function(X){X$showMcYear})))
+    ),
     type = mwRadio(list("By time id"="detail", "Average" = "avg"), value = type),
     dateRange = mwDateRange(
       value = {
@@ -413,19 +412,17 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       max = params$x[[1]]$dateRange[2],label = "Daterange"
     ),
     
-    
-    
     Areas = mwGroup(
       colAreaVar = mwSelect(
         choices = {
           if (mcYear == "average") {
             c("none",
-              as.character(.compareopetation(lapply(params$x, function(vv){
+              as.character(.compareOperation(lapply(params$x, function(vv){
                 unique(vv$areaValColumnsSynt)
               }), xyCompare))
             )
           }else{
-            c("none", as.character(.compareopetation(lapply(params$x, function(vv){
+            c("none", as.character(.compareOperation(lapply(params$x, function(vv){
               unique(vv$areaValColumns)
             }), xyCompare)))
           }
@@ -436,13 +433,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         },
         label = "Color"
       ),
-      sizeAreaVars = mwSelect(#params$x[[max(1,.id)]]$areaNumValColumns
+      sizeAreaVars = mwSelect(
         {
-          as.character(.compareopetation(lapply(params$x, function(vv){
+          as.character(.compareOperation(lapply(params$x, function(vv){
             unique(vv$areaNumValColumns)
           }), xyCompare))
-        }
-        , 
+        }, 
         value = {
           if(.initial) sizeAreaVars
           else NULL
@@ -465,17 +461,16 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         {
           if (mcYear == "average") {
             c("none",
-              as.character(.compareopetation(lapply(params$x, function(vv){
+              as.character(.compareOperation(lapply(params$x, function(vv){
                 unique(vv$areaValColumnsSynt)
               }), xyCompare))
             )
           }else{
-            c("none", as.character(.compareopetation(lapply(params$x, function(vv){
+            c("none", as.character(.compareOperation(lapply(params$x, function(vv){
               unique(vv$areaValColumns)
             }), xyCompare)))
           }
-        }
-        , 
+        }, 
         value = {
           if(.initial) popupAreaVars
           else NULL
@@ -487,12 +482,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         choices =     {
           if (mcYear == "average") {
             c("none",
-              as.character(.compareopetation(lapply(params$x, function(vv){
+              as.character(.compareOperation(lapply(params$x, function(vv){
                 unique(vv$areaValColumnsSynt)
               }), xyCompare))
             )
           }else{
-            c("none", as.character(.compareopetation(lapply(params$x, function(vv){
+            c("none", as.character(.compareOperation(lapply(params$x, function(vv){
               unique(vv$areaValColumns)
             }), xyCompare)))
           }
@@ -503,24 +498,23 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         }, label = "Label", 
         .display = length(sizeAreaVars) < 2
       ),
-      .display = "areas" %in% names(params$x[[max(1,.id)]]$x)
+      .display = any(sapply(params$x, function(p) {"areas" %in% names(p$x)}))
     ),
     
     Links = mwGroup(
       colLinkVar = mwSelect(
         {
           c("none", 
-            as.character(.compareopetation(lapply(params$x, function(vv){
+            as.character(.compareOperation(lapply(params$x, function(vv){
               unique(vv$linkValColums)
             }), xyCompare)))
-        }
-        , 
+        }, 
         value = {
           if(.initial) colLinkVar
           else NULL
         }, label = "Color"),
       sizeLinkVar = mwSelect({c("none",
-                                as.character(.compareopetation(lapply(params$x, function(vv){
+                                as.character(.compareOperation(lapply(params$x, function(vv){
                                   unique(vv$linkNumValColumns)
                                 }), xyCompare))
       )}, 
@@ -529,7 +523,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         else NULL
       }, label = "Width"),
       popupLinkVars = mwSelect(  { c("none", 
-                                     as.character(.compareopetation(lapply(params$x, function(vv){
+                                     as.character(.compareOperation(lapply(params$x, function(vv){
                                        unique(vv$linkValColums)
                                      }), xyCompare)))
       },
@@ -537,7 +531,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         if(.initial) popupLinkVars
         else NULL
       }, label = "Popup", multiple = TRUE),
-      .display = "links" %in% names(params$x[[max(1,.id)]]$x)
+      .display = any(sapply(params$x, function(p) {"links" %in% names(p$x)}))
     ),
     mapLayout = mwSharedValue(mapLayout),
     params = mwSharedValue({

@@ -56,7 +56,7 @@
 }
 
 .getClustersNames <- function(fid, timeStep){
- unique(unlist(lapply(strsplit(.getstructure(fid, paste0(timeStep, "/clusters/mcInd/structure"))$cluster, "/"), function(X)X[1])))
+  unique(unlist(lapply(strsplit(.getstructure(fid, paste0(timeStep, "/clusters/mcInd/structure"))$cluster, "/"), function(X)X[1])))
 }
 
 .getElements <- function(opts, tables, fid, timeStep){
@@ -71,37 +71,37 @@
 }
 
 .getDateRange <- function(opts, timeStep){
-  tim <- .timeIdToDate(sort(unique(antaresHdf5::h5ReadAntares(opts$h5path, timeStep = timeStep, select = "timeId", areas = opts$areaList[1],
-                                     mcYears = opts$mcYears[1], perf = FALSE)$timeId)),
-                         timeStep = timeStep,opts = opts)
+  tim <- .timeIdToDate(sort(
+    unique(
+      antaresHdf5::h5ReadAntares(opts$h5path, timeStep = timeStep, select = "timeId", 
+                                 areas = opts$areaList[1], mcYears = opts$mcYears[1], perf = FALSE)$timeId)
+  ), timeStep = timeStep, opts = opts)
   dt <- as.Date(range(tim))
-  
   dt
 }
 
 
 .getGraphFunction <- function(type){
-  f <- switch(type,
-              "ts" = .plotTS,
-              "barplot" = .barplot,
-              "monotone" = .plotMonotone,
-              "density" = .density,
-              "cdf" = .cdf,
-              "heatmap" = .heatmap,
-              stop("Invalid type")
+  switch(type,
+         "ts" = .plotTS,
+         "barplot" = .barplot,
+         "monotone" = .plotMonotone,
+         "density" = .density,
+         "cdf" = .cdf,
+         "heatmap" = .heatmap,
+         stop("Invalid type")
   )
-  f
 }
 
-.getTimStep <- function(fid){
+.getTimeStep <- function(fid){
   timeSteps <- sapply(c("hourly", "daily", "weekly", "monthly", "annual"), function(X){
     rhdf5::H5Lexists(fid, X)
   })
   names(timeSteps[which(timeSteps == TRUE)])
 }
 
-.compareopetation <- function(a, opType){
-  if(length(a)==1)return(unlist(unique(a)))
-  if(opType == "union")return(Reduce(union, a))
-  if(opType == "intersect")return(Reduce(intersect, a))
+.compareOperation <- function(a, opType){
+  if(length(a) == 1) return(unlist(unique(a)))
+  if(opType == "union") return(Reduce(union, a))
+  if(opType == "intersect") return(Reduce(intersect, a))
 }

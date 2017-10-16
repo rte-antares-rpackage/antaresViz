@@ -180,7 +180,7 @@ prodStack <- function(x,
   if (is.null(mcYear)) mcYear <- "average"
   
   if(!is.null(compare) && class(x)[1] == "list"){
-   # stop("You cant use compare argument and use more than one study")
+    # stop("You cant use compare argument and use more than one study")
   }
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
@@ -242,9 +242,6 @@ prodStack <- function(x,
         return (combineWidgets("No data for this selection"))
       }
       
-      
-      
-      
       p <- try(.plotProdStack(dt,
                               stackOpts$variables,
                               stackOpts$colors,
@@ -253,8 +250,8 @@ prodStack <- function(x,
                               main = main,
                               unit = unit,
                               legendId = legendId + id - 1, groupId = groupId, dateRange = dateRange), silent = TRUE)
+      
       if("try-error" %in% class(p)){
-        
         return (combineWidgets(paste0("Can't visualize stack '", stack, "'<br>", p[1])))
       }
       if (legend) {
@@ -275,7 +272,6 @@ prodStack <- function(x,
       displayMcYear = displayMcYear,
       dataDateRange = dataDateRange,
       dateRange = init_dateRange
-      
     )
   }
   
@@ -303,21 +299,33 @@ prodStack <- function(x,
       .h5ParamList(X_I = x_in, xyCompare = xyCompare)
     }),
     H5request = mwGroup(
-      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, value =  paramsH5$timeStepS[1]
-                            , label = "timeStep", multiple = FALSE),
-      tables = mwSelect(choices = paramsH5[["tabl"]][paramsH5[["tabl"]]%in%c("areas", "districts")], value = {
-        if(.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]]%in%c("areas", "districts")][1]}else{NULL}
-      } , label = "table", multiple = FALSE),
-      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), value = {
-        if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
-      }, label = "mcYear", multiple = TRUE),
+      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
+                            value =  paramsH5$timeStepS[1], 
+                            label = "timeStep", 
+                            multiple = FALSE
+      ),
+      tables = mwSelect(choices = paramsH5[["tabl"]][paramsH5[["tabl"]]%in%c("areas", "districts")], 
+                        value = {
+                          if(.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]]%in%c("areas", "districts")][1]}else{NULL}
+                        }, 
+                        label = "table", 
+                        multiple = FALSE
+      ),
+      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+                         value = {
+                           if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+                         }, 
+                         label = "mcYear", 
+                         multiple = TRUE
+      ),
       .display = {
         any(unlist(lapply(x_in, .isSimOpts)))
-      }),
+      }
+    ),
+    
     sharerequest = mwSharedValue({
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
     }),
-    
     
     h5requestFiltering = mwSharedValue({h5requestFiltering}),
     
@@ -328,19 +336,18 @@ prodStack <- function(x,
         
         for(i in 1:length(h5requestFilteringTp))
         {
-        if(sharerequest$tables == "areas"){
-          h5requestFilteringTp[[i]]$districts = NULL
-        }
-        if(sharerequest$tables == "districts"){
-          h5requestFilteringTp[[i]]$areas = NULL
-        }
+          if(sharerequest$tables == "areas"){
+            h5requestFilteringTp[[i]]$districts = NULL
+          }
+          if(sharerequest$tables == "districts"){
+            h5requestFilteringTp[[i]]$areas = NULL
+          }
         }
       }
       sapply(1:length(x_in),function(zz){
         .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFilteringTp[[zz]])
-        }, simplify = FALSE)
+      }, simplify = FALSE)
     }),
-    
     
     params = mwSharedValue({
       .getDataForComp(x_tranform, NULL, compare,
@@ -349,15 +356,14 @@ prodStack <- function(x,
     }),
     
     ##End h5
-    
-    mcYear = mwSelect(
-      {
-        c("average",  .compareopetation(lapply(params$x, function(vv){
-          unique(vv$x$mcYear)
-        }), xyCompare))
-      }),
+    mcYear = mwSelect({
+      c("average",  .compareOperation(lapply(params$x, function(vv){
+        unique(vv$x$mcYear)
+      }), xyCompare))
+    }),
     
     main = mwText(main, label = "title"),
+    
     dateRange = mwDateRange(value = {
       if(.initial){
         res <- NULL
@@ -367,36 +373,36 @@ prodStack <- function(x,
         }
         res
       }else{NULL}
-    }, min = 
-    {      
+    }, 
+    min = {      
       if(!is.null(params)){
         .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
       }
-    }, max = 
-    {      
+    }, 
+    max = {      
       if(!is.null(params)){
         .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
       }
     }),
     
-    
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
-    unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
-    areas = mwSelect(
-      {
-       as.character(.compareopetation(lapply(params$x, function(vv){
-          unique(vv$x$area)
-        }), xyCompare))
-      },
-      value = {
-        if(.initial){
-          as.character(.compareopetation(lapply(params$x, function(vv){
-            unique(vv$x$area)
-          }), xyCompare))[1]
-        }
-        else{NULL}},
-      multiple = TRUE),
     
+    unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
+    
+    areas = mwSelect({
+      as.character(.compareOperation(lapply(params$x, function(vv){
+        unique(vv$x$area)
+      }), xyCompare))
+    },
+    value = {
+      if(.initial){
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv$x$area)
+        }), xyCompare))[1]
+      }
+      else{NULL}},
+    multiple = TRUE
+    ),
     
     legend = mwCheckbox(legend),
     

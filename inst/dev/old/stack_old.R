@@ -311,7 +311,7 @@ prodStack <- function(x, y = NULL,
 
     mcYear = mwSelect(
       {
-        c("average",  .compareopetation(lapply(params$x, function(vv){
+        c("average",  .compareOperation(lapply(params$x, function(vv){
           unique(vv$x$mcYear)
         }), xyCompare))
       }),
@@ -338,13 +338,13 @@ prodStack <- function(x, y = NULL,
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
     areas = mwSelect(
       {
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv$x$area)
         }), xyCompare))
       },
       value = {
         if(.initial){
-          as.character(.compareopetation(lapply(params$x, function(vv){
+          as.character(.compareOperation(lapply(params$x, function(vv){
             unique(vv$x$area)
           }), xyCompare))[1]
         }

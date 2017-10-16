@@ -349,7 +349,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   table = mwSelect(
     {
       if(!is.null(params)){
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        as.character(.compareOperation(lapply(params$x, function(vv){
           unique(names(vv))
         }), xyCompare))
       }
@@ -357,13 +357,13 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     , value = {
       if(.initial) table
       else NULL
-    }, .display = length(as.character(.compareopetation(lapply(params$x, function(vv){
+    }, .display = length(as.character(.compareOperation(lapply(params$x, function(vv){
       unique(names(vv))
     }), xyCompare))) > 1),
   mcYear = mwSelect(
     choices = {
       c("average",     if(!is.null(params)){
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv[[table]]$uniqueMcYears)
         }), xyCompare))
       })
@@ -389,7 +389,7 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
 
     choices = {
       if(!is.null(params)){
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv[[table]]$valueCols)
         }), xyCompare))
       }
@@ -443,14 +443,14 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
   elements = mwSelect(
     choices = {
       c("all", if(!is.null(params)){
-        as.character(.compareopetation(lapply(params$x, function(vv){
+        as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv[[table]]$uniqueElem)
         }), xyCompare))
       })#{params$x[[max(1,.id)]][[table]]$uniqueElem)
 
       },
     value = {
-      if(.initial) {     as.character(.compareopetation(lapply(params$x, function(vv){
+      if(.initial) {     as.character(.compareOperation(lapply(params$x, function(vv){
         unique(vv[[table]]$uniqueElem)
       }), xyCompare))[1]}
     },

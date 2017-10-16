@@ -54,7 +54,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   init_dateRange <- dateRange
   
   if(!is.null(compare) && class(x)[1] == "list"){
-   # stop("You cant use compare argument and use more than one study")
+    # stop("You cant use compare argument and use more than one study")
   }
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
@@ -76,8 +76,6 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     }
   }
   
-  
-  
   processFun <- function(x) {
     if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
     row <- NULL # exchanges with rest of the world
@@ -96,7 +94,6 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
           row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, 
                              flow = - `ROW BAL.`, to = "ROW", direction = 1)]
         }
-        
       }
       x <- x$links
     }
@@ -134,8 +131,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       } 
       dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                      .(link, timeId, flow = `FLOW LIN.`)],
-                  linksDef,
-                  by = "link")
+                  linksDef, by = "link")
       if (!is.null(row)) {
         row <- row[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange]
         dt <- rbind(dt, row[area == a])
@@ -167,9 +163,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            legendId = legendId + id - 1)
       } else legend <- NULL
       
-      
       combineWidgets(g, footer = legend, width = width, height = height)
-      
     }
     
     list(
@@ -197,31 +191,36 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       }
     },
     x = mwSharedValue(x),
+    
     x_in = mwSharedValue({
       .giveListFormat(x)
     }),
+    
     paramsH5 = mwSharedValue({
       .h5ParamList(X_I = x_in, xyCompare = xyCompare)
     }),
+    
     H5request = mwGroup(
-      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, value =  paramsH5$timeStepS[1]
-                            , label = "timeStep", multiple = FALSE),
-      # tables = mwSelect(choices = paramsH5[["tabl"]], value = {
-      #   if(.initial) {paramsH5[["tabl"]][1]}else{NULL}
-      # } , label = "table", multiple = TRUE),
-      
-      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), value = {
-        if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
-      }, label = "mcYear", multiple = TRUE),
+      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
+                            value =  paramsH5$timeStepS[1], 
+                            label = "timeStep", 
+                            multiple = FALSE
+      ),
+      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+                         value = {
+                           if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+                         }, 
+                         label = "mcYear", 
+                         multiple = TRUE
+      ),
       .display = {
         any(unlist(lapply(x_in, .isSimOpts)))
-      }),
-    
+      }
+    ),
     
     sharerequest = mwSharedValue({
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = NULL)
     }),
-    
     
     h5requestFiltering = mwSharedValue({h5requestFiltering}),
     
@@ -232,40 +231,39 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         areas <- NULL
         links <- NULL
       }
-      
       sapply(1:length(x_in),function(zz){
         .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFiltering = h5requestFiltering[[zz]])
-        }, simplify = FALSE)
+      }, simplify = FALSE)
     }),
     
-    
-    
     mcYear = mwSelect({
-                        c("average", if(!is.null(params)){
-                          as.character(.compareopetation(lapply(params$x, function(vv){
-                            unique(vv$x$mcYear)
-                          }), xyCompare))})
-                        }, 
-                      value = {
-                        if(.initial) mcYear
-                        else NULL
-                      }, 
-                      .display = {length( c("average", if(!is.null(params)){
-                        as.character(.compareopetation(lapply(params$x, function(vv){
-                          unique(vv$x$mcYear)
-                        }), xyCompare))}))==1}),
-    area = mwSelect(
-      {
-        if(!is.null(params)){
-        as.character(.compareopetation(lapply(params$x, function(vv){
+      c("average", if(!is.null(params)){
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv$x$mcYear)
+        }), xyCompare))})
+    }, 
+    value = {
+      if(.initial) mcYear
+      else NULL
+    }, 
+    .display = {
+      length(c("average", if(!is.null(params)){
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv$x$mcYear)
+        }), xyCompare))})) == 1}
+    ),
+    
+    area = mwSelect({
+      if(!is.null(params)){
+        as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv$areaList)
         }), xyCompare))}
-        }
-      , 
-                    value = {
-                      if(.initial) area
-                      else NULL
-                    }),
+    }, 
+    value = {
+      if(.initial) area
+      else NULL
+    }),
+    
     dateRange = mwDateRange(value = {
       if(.initial){
         res <- NULL
@@ -275,33 +273,37 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         }
         res
       }else{NULL}
-    }, min = 
-    {      
+    }, 
+    min = {      
       if(!is.null(params)){
         .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = NULL)
       }
-    }, max = 
-    {      
+    }, 
+    max = {      
       if(!is.null(params)){
         .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = NULL)
       }
-    }
+    },
+    .display = timeStepdataload != "annual"
+    ),
     
-    ,.display = timeStepdataload != "annual"),
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
+    
     legend = mwCheckbox(legend),
+    
     timeStepdataload = mwSharedValue({
       attributes(x_tranform[[1]])$timeStep
     }),
+    
     params = mwSharedValue({
       .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                       processFun = processFun)
     }),
+    
     .compare = {
       compare
     },
     .compareOpts = {
-      
       compareOptions
     },
     ...
