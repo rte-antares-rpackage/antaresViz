@@ -14,13 +14,13 @@ function(input, output, session) {
   list_data_all <- reactiveValues(antaresDataList = list(), params = list(), have_links = c(), have_areas = c())
   
   # current data for module stack, plotTS (must have areas)
-  list_data_areas <- reactiveValues(antaresDataList = list())
+  list_data_areas <- reactiveValues(antaresDataList = list(), h5requestFiltering = list())
   
   # current data for module exchange (must have link)
-  list_data_links <- reactiveValues(antaresDataList = list())
+  list_data_links <- reactiveValues(antaresDataList = list(), h5requestFiltering = list())
   
   # current data for module exchange (must have areas and/or link)
-  list_data_map <- reactiveValues(antaresDataList = list())
+  list_data_map <- reactiveValues(antaresDataList = list(), h5requestFiltering = list())
   
   # set of controls
   list_data_controls <- reactiveValues(have_links = FALSE, have_areas = FALSE, 
@@ -160,6 +160,7 @@ function(input, output, session) {
                                      interactive = TRUE, .runApp = FALSE)
             }
             list_data_areas$antaresDataList <- list_data_all$antaresDataList[ind_areas]
+            list_data_areas$h5requestFiltering <- list_data_all$params[ind_areas]
             list_data_controls$n_areas <- length(ind_areas)
             list_data_controls$have_areas <- TRUE
           } else {
@@ -174,6 +175,7 @@ function(input, output, session) {
                                                        interactive = TRUE, .runApp = FALSE)
             }
             list_data_links$antaresDataList <- list_data_all$antaresDataList[ind_links]
+            list_data_links$h5requestFiltering <- list_data_links$params[ind_links]
             list_data_controls$n_links <- length(ind_links)
             list_data_controls$have_links <- TRUE
           } else {
@@ -184,7 +186,7 @@ function(input, output, session) {
             showModal(modalDialog(
               easyClose = TRUE,
               footer = NULL,
-              "No study selected"
+              "No study with at least one area and/or link selected"
             ))
           }
         }
@@ -195,21 +197,27 @@ function(input, output, session) {
   # prodStack
   observe({
     if(!is.null(modules$prodStack)){
-      mwModule(id = "prodStack",  modules$prodStack, x = reactive(list_data_areas$antaresDataList))
+      mwModule(id = "prodStack",  modules$prodStack, 
+               x = reactive(list_data_areas$antaresDataList), 
+               h5requestFiltering = reactive(list_data_areas$h5requestFiltering))
     }
   })
   
   # exchange
   observe({
     if(!is.null(modules$exchangesStack)){
-      mwModule(id = "exchangesStack",  modules$exchangesStack, x = reactive(list_data_links$antaresDataList))
+      mwModule(id = "exchangesStack",  modules$exchangesStack, 
+               x = reactive(list_data_links$antaresDataList), 
+               h5requestFiltering = reactive(list_data_links$h5requestFiltering))
     }
   })
   
   # plotts
   observe({
     if(!is.null(modules$plotts)){
-      mwModule(id = "plotts",  modules$plotts, x = reactive(list_data_areas$antaresDataList))
+      mwModule(id = "plotts",  modules$plotts, 
+               x = reactive(list_data_areas$antaresDataList), 
+               h5requestFiltering = reactive(list_data_areas$h5requestFiltering))
     }
   })
   
@@ -268,6 +276,7 @@ function(input, output, session) {
                                            xyCompare = "intersect", .runApp = FALSE)
               }
               list_data_map$antaresDataList <- list_data_all$antaresDataList[ind_map]
+              list_data_map$h5requestFiltering <- list_data_all$params[ind_map]
               list_data_controls$n_maps <- length(ind_map)
             }
           }
@@ -279,7 +288,8 @@ function(input, output, session) {
 
   observe({
     if(!is.null(modules$plotMap)){
-      mwModule(id = "plotMap",  modules$plotMap, x = reactive(list_data_map$antaresDataList), mapLayout = ml)
+      mwModule(id = "plotMap",  modules$plotMap, x = reactive(list_data_map$antaresDataList), 
+               mapLayout = ml, h5requestFiltering = reactive(list_data_map$h5requestFiltering))
     }
   })
   
