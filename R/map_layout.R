@@ -14,8 +14,10 @@
 #'   on the map.
 #' @param map
 #'   An optional \code{\link[sp]{SpatialPolygons}} or 
-#'   \code{\link[sp]{SpatialPolygonsDataFrame}} object.
+#'   \code{\link[sp]{SpatialPolygonsDataFrame}} object. See \code{\link[antaresMaps]{getAntaresMap}}
 #'   
+#' @param map_builder \code{logical} Add inputs for build custom map ? Defaut to TRUE.
+#' 
 #' @return 
 #' An object of class \code{mapLayout}.
 #' 
@@ -33,17 +35,17 @@
 #' @export
 #' @import antaresMaps
 #' 
-mapLayout <- function(layout, what = c("areas", "districts"), map = getAntaresMap()) {
+mapLayout <- function(layout, what = c("areas", "districts"), map = getAntaresMap(), map_builder = TRUE) {
   
   what <- match.arg(what)
   
   ui <- fluidPage(
-    changeCoordsUI("ml")
+    changeCoordsUI("ml", map_builder = map_builder)
   )
   
   server <- function(input, output, session) {
     callModule(changeCoordsServer, "ml", reactive(layout), what = reactive(what), 
-               map = reactive(map), stopApp = TRUE)
+               map = reactive(map), map_builder = map_builder, stopApp = TRUE)
   }
   
   mapCoords <- shiny::runApp(shiny::shinyApp(ui = ui, server = server))
@@ -52,16 +54,43 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = getAntaresMa
 }
 
 # changeCoords Module UI function
-changeCoordsUI <- function(id) {
+changeCoordsUI <- function(id, map_builder = TRUE) {
   # Create a namespace function using the provided id
   ns <- NS(id)
   
+  ref_map_table <- antaresMaps::getEuropeReferenceTable()
+  choices_map <- c("all", ref_map_table$code)
+  names(choices_map) <- c("all", ref_map_table$name)
+  
   tagList(
     fluidRow(
-      column(width = 8, offset = 2, div(h3("Map Layout"), align = "center")),
+      column(5, 
+             if(map_builder){
+               selectInput(ns("ml_countries"), "Countries : ", width = "100%",
+                           choices = choices_map, selected = "all", multiple = TRUE)
+             }
+      ),
+      column(5, 
+             if(map_builder){
+               selectInput(ns("ml_states"), "States : ", width = "100%",
+                           choices = choices_map, selected = NULL, multiple = TRUE)
+             }
+      ),      
+      column(2, 
+             if(map_builder){
+               div(br(), actionButton(ns("set_map_ml"), "Set map"), align = "center")
+             }
+      )
+    ),
+    fluidRow(
+      column(2, 
+             div(br(), actionButton(ns("reset_ml"), "Re-Init layout"), align = "center")
+             
+      ),
+      column(width = 8, div(h3("Map Layout"), align = "center")),
       column(2, 
              conditionalPanel(
-               condition = paste0("input['", ns("state"), "'] >= 2"),
+               condition = paste0("output['", ns("control_state"), "'] >= 2"),
                div(br(), actionButton(ns("done"), "Done"), align = "center")
              )
       )
@@ -76,7 +105,7 @@ changeCoordsUI <- function(id) {
         tags$p(textOutput(ns("order"))),
         htmlOutput(ns("info")),
         conditionalPanel(
-          condition = paste0("input['", ns("state"), "'] < 2"),
+          condition = paste0("output['", ns("control_state"), "'] < 2"),
           imageOutput(ns("preview"), height="150px"),
           tags$p(),
           actionButton(ns("state"), "Next")
@@ -90,11 +119,33 @@ changeCoordsUI <- function(id) {
 # changeCoords Module SERVER function
 changeCoordsServer <- function(input, output, session, 
                                layout, what = reactive("areas"), 
-                               map = reactive(NULL), stopApp = FALSE){
+                               map = reactive(NULL), map_builder = TRUE, stopApp = FALSE){
   
   ns <- session$ns
   
+  lfDragPoints <- reactiveValues(map = NULL, init = FALSE)
+  
+  current_state <- reactiveValues(state = -1)
+  output$control_state <- reactive({
+    current_state$state
+  })
+  
+  outputOptions(output, "control_state", suspendWhenHidden = FALSE)
+  
+  current_map <- reactive({
+    if(!map_builder){
+      map()
+    } else {
+      if(!is.null(map()) & input$set_map_ml == 0){
+        map()
+      } else {
+        getAntaresMap(countries = input$ml_countries, states = input$ml_states)
+      }
+    }
+  })
+  
   data <- reactive({
+    input$reset_ml
     if(!is.null(layout())){
       if (what() == "areas") {
         coords <- copy(layout()$areas)
@@ -110,6 +161,8 @@ changeCoordsServer <- function(input, output, session,
       links$x1 <- as.numeric(links$x1)
       links$y0 <- as.numeric(links$y0)
       links$y1 <- as.numeric(links$y1)
+      
+      current_state$state <- 0
       
       list(coords = coords, info = info, links = links)
     } else {
@@ -135,6 +188,7 @@ changeCoordsServer <- function(input, output, session,
         
         data_points$pt1 <- pt1
         data_points$pt2 <- pt2
+        
       })
     }
   })
@@ -154,35 +208,46 @@ changeCoordsServer <- function(input, output, session,
     })
   }
   
-  lfDragPoints <- reactiveValues(map = NULL)
+  observeEvent(input$state, {
+    if(input$state > 0){
+      current_state$state <- current_state$state + 1
+    }
+  })
   
-  observe({
-    if (input$state == 0) {
-      lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt1, ], isolate(map()))
+  observeEvent(input$reset_ml, {
+    if(input$state >= 0){
+      current_state$state <- 0
     }
   })
   
   observe({
-    if (input$state == 1) {
-      lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt2, ])
+    if (current_state$state == 0) {
+      lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt1, ], isolate(current_map()), init = TRUE)
     }
   })
   
   observe({
-    if (input$state == 2) {
+    if (current_state$state == 1) {
+        lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt2, ])
+    }
+  })
+  
+  observe({
+    if (current_state$state == 2) {
       lfDragPoints$map <- leafletDragPoints(data_points$points[-c(data_points$pt1, data_points$pt2), ])
     }
   })
   
   observe({
-    lfDragPoints$map <- leafletDragPoints(NULL, map())
+    if(!is.null(input$map_init)){
+      if(input$map_init){
+        lfDragPoints$map <- leafletDragPoints(NULL, current_map())
+      }
+    }
   })
   
   # Initialize outputs
   output$map <- renderLeafletDragPoints({lfDragPoints$map})
-  output$order <- renderText("Please place the following point on the map.")
-  output$info <- renderUI(HTML(data_points$points$info[data_points$pt1]))
-  output$preview <- renderPreview(data_points$pt1)
   
   coords <- reactive({
     coords <- matrix(input[[paste0("map", "_coords")]], ncol = 2, byrow = TRUE)
@@ -190,16 +255,25 @@ changeCoordsServer <- function(input, output, session,
     as.data.frame(coords)
   })
   
-  observeEvent(input$state, {
-    if (input$state == 1) {
-      data_points$points$lat[data_points$pt2] <- input[[paste0("map", "_mapcenter")]]$lat
-      data_points$points$lon[data_points$pt2] <- input[[paste0("map", "_mapcenter")]]$lng
-      output$info <- renderUI(HTML(data_points$points$info[data_points$pt2]))
-      output$preview <- renderPreview(data_points$pt2)
-    } else if (input$state == 2) {
-      data_points$points <- .changeCoordinates(data_points$points, coords(), c(data_points$pt1, data_points$pt2))
-      output$order <- renderText("Drag the markers on the map to adjust coordinates then click the 'Done' button")
-      output$info <- renderUI(HTML("<p>You can click on a marker to display information about the corresponding point.</p>"))
+  observe({
+    if (current_state$state == 0) {
+      output$order <- renderText("Please place the following point on the map.")
+      output$info <- renderUI(HTML(data_points$points$info[data_points$pt1]))
+      output$preview <- renderPreview(data_points$pt1)
+    } else if (current_state$state == 1) {
+      isolate({
+        data_points$points$lat[data_points$pt2] <- input[[paste0("map", "_mapcenter")]]$lat
+        data_points$points$lon[data_points$pt2] <- input[[paste0("map", "_mapcenter")]]$lng
+        output$info <- renderUI(HTML(data_points$points$info[data_points$pt2]))
+        output$preview <- renderPreview(data_points$pt2)
+      })
+    } else if (current_state$state == 2) {
+      isolate({
+        data_points$points <- .changeCoordinates(data_points$points, coords(), c(data_points$pt1, data_points$pt2))
+        output$order <- renderText("Drag the markers on the map to adjust coordinates then click the 'Done' button")
+        output$info <- renderUI(HTML("<p>You can click on a marker to display information about the corresponding point.</p>"))
+        
+      })
     }
   })
   
@@ -210,7 +284,7 @@ changeCoordsServer <- function(input, output, session,
   observeEvent(input$done, {
     coords <- sp::SpatialPoints(coords()[, c("lon", "lat")],
                                 proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
-    map <- map()
+    map <- current_map()
     if (!is.null(map)) {
       map <- sp::spTransform(map, sp::CRS("+proj=longlat +datum=WGS84"))
       map$geoAreaId <- 1:length(map)
@@ -390,15 +464,15 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
     
     # fix bug if set map wihout any intersection with areas...!
     map <- tryCatch(addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
-                         chartdata = dataAreas, fillColor = colAreas,
-                         showLabels = !is.null(labelArea),
-                         labelText = labelArea,
-                         width = areaMaxSize,
-                         height = areaMaxHeight,
-                         layerId = x$coords$area, 
-                         opacity = opacityArea,
-                         labelMinSize = labelMinSize,
-                         labelMaxSize = labelMaxSize), error = function(e) map)
+                                  chartdata = dataAreas, fillColor = colAreas,
+                                  showLabels = !is.null(labelArea),
+                                  labelText = labelArea,
+                                  width = areaMaxSize,
+                                  height = areaMaxHeight,
+                                  layerId = x$coords$area, 
+                                  opacity = opacityArea,
+                                  labelMinSize = labelMinSize,
+                                  labelMaxSize = labelMaxSize), error = function(e) map)
     
   }
   

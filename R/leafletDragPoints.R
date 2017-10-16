@@ -1,5 +1,5 @@
 #' @noRd
-leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL) {
+leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL, init = FALSE) {
   if (!is.null(map)) map <- geojsonio::geojson_json(map)
 
   if(!is.null(geopoints)){
@@ -9,7 +9,7 @@ leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL
     secondPoint <- which.max(geopoints$avg)
   }
 
-  x = list(geopoints = geopoints, map = map)
+  x = list(geopoints = geopoints, map = map, init = init)
 
   attr(x, 'TOJSON_ARGS') <- list(dataframe = "rows")
   # create widget

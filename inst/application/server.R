@@ -245,19 +245,13 @@ function(input, output, session) {
     }
   })
   
-  current_map <- reactive({
-    input$set_map_ml
-    isolate({
-      getAntaresMap(countries = input$ml_countries, states = input$ml_states)
-    })
-  })
-  
-  ml <- callModule(antaresViz:::changeCoordsServer, "ml", layout, what = reactive("areas"), 
-                   map = current_map, stopApp = FALSE)
+  ml <- callModule(antaresViz:::changeCoordsServer, "ml", layout, 
+                   what = reactive("areas"), stopApp = FALSE)
   
   observe({
     ind_keep_list_data <- ind_keep_list_data()
     ml <- ml()
+    ml2 <<- ml
     isolate({
       if(input$update_module > 0){
         if(!is.null(ind_keep_list_data)){
@@ -285,9 +279,6 @@ function(input, output, session) {
 
   observe({
     if(!is.null(modules$plotMap)){
-      # print("alors ?")
-      # print(length(list_data_map$antaresDataList))
-      # print(is.null(ml))
       mwModule(id = "plotMap",  modules$plotMap, x = reactive(list_data_map$antaresDataList), mapLayout = ml)
     }
   })

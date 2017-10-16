@@ -15,10 +15,11 @@ HTMLWidgets.widget({
 
     var points = [];
     var mapLayer;
-
-function clear_polyline() {
-  map.removeLayer( linesFeatureLayer );
-}
+    var markersLayer = [];
+    
+    function clear_polyline() {
+      map.removeLayer( linesFeatureLayer );
+    }
 
     // Function that updates shiny input
     function updateShinyInput() {
@@ -37,7 +38,6 @@ function clear_polyline() {
     return {
 
       renderValue: function(x) {
-        
         // If x contains an element "map", add it to the map
         if (x.map) {
           if(mapLayer !== undefined){
@@ -45,9 +45,17 @@ function clear_polyline() {
           }
           mapLayer = L.geoJson(x.map, {color:"#66f", weight: 1});
           mapLayer.addTo(map);
-          current_map = x.map;
         }
 
+        if(x.init){
+          for(var i=0;i<markersLayer.length;i++) {
+            map.removeLayer(markersLayer[i]);
+          }  
+          map.setView([0, 0], 2);
+          markersLayer = [];
+          points = [];
+        }
+        
         // For each new point create a marker that will be placed in the map
         if(x.geopoints){
           x.geopoints.forEach(function(p) {
@@ -65,12 +73,17 @@ function clear_polyline() {
             p.marker.bindPopup(p.info);
             p.marker.on('dragend', updateShinyInput);
 
+
             p.marker.addTo(map);
 
+            markersLayer.push(p.marker);
             points.push(p);
           });
           updateShinyInput();
         }
+        
+        Shiny.onInputChange(el.id + "_init",  true);
+        
       },
 
       resize: function(width, height) {

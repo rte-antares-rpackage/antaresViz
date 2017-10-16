@@ -4,7 +4,8 @@
 \alias{mapLayout}
 \title{Place areas of a study on a map}
 \usage{
-mapLayout(layout, what = c("areas", "districts"), map = getAntaresMap())
+mapLayout(layout, what = c("areas", "districts"), map = getAntaresMap(),
+  map_builder = TRUE)
 }
 \arguments{
 \item{layout}{object returned by function \code{\link[antaresRead]{readLayout}}}
@@ -13,7 +14,9 @@ mapLayout(layout, what = c("areas", "districts"), map = getAntaresMap())
 on the map.}
 
 \item{map}{An optional \code{\link[sp]{SpatialPolygons}} or 
-\code{\link[sp]{SpatialPolygonsDataFrame}} object.}
+\code{\link[sp]{SpatialPolygonsDataFrame}} object. See \code{\link[antaresMaps]{getAntaresMap}}}
+
+\item{map_builder}{\code{logical} Add inputs for build custom map ? Defaut to TRUE.}
 }
 \value{
 An object of class \code{mapLayout}.

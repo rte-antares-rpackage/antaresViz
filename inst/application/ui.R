@@ -137,23 +137,6 @@ navbarPage("antaresViz", id = "nav-id",
            navbarMenu("plotMap", 
                       tabPanel("Layout", 
                                conditionalPanel(condition = "output.have_data",
-                                                fluidRow(
-                                                  column(4, 
-                                                         selectInput("ml_countries", "Countries : ", width = "100%",
-                                                                     choices = choices_map, selected = "all", multiple = TRUE)
-                                                  ),
-                                                  column(4, 
-                                                         selectInput("ml_states", "States : ", width = "100%",
-                                                                     choices = choices_map, selected = NULL, multiple = TRUE)
-                                                  ),      
-                                                  column(2, 
-                                                         div(br(), actionButton("set_map_ml", "Set map"), align = "center")
-                                                  ),
-                                                  column(2, 
-                                                         div(br(), actionButton("reset_ml", "Re-Init layout"), align = "center")
-                                                  )
-                                                ),
-                                                hr(),
                                                 antaresViz:::changeCoordsUI("ml")
                                ),
                                conditionalPanel(condition = "output.have_data === false",
