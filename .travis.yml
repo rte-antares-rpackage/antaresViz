@@ -16,7 +16,8 @@ r_github_packages:
  - Bioconductor-mirror/rhdf5
  - rte-antares-rpackage/manipulateWidget@develop
  - rte-antares-rpackage/antaresMaps
- - rte-antares-rpackage/antaresProcessing@developTit
+ - rte-antares-rpackage/antaresRead@develop
+ - rte-antares-rpackage/antaresProcessing@develop
  - rte-antares-rpackage/manipulateWidget@develop
  - rte-antares-rpackage/antaresHdf5
 
