@@ -113,7 +113,7 @@
   if(X_I$isH5){
     opts <- X_I$dataInput
     fid <- rhdf5::H5Fopen(opts$h5path)
-    timeStepS <- .getTimStep(fid)
+    timeStepS <- .getTimeStep(fid)
     timeStepS <- as.character(timeStepS)
     mcYearS <- opts$mcYears
     tabl <- .getTableInH5(fid, timeStepS[1])
@@ -129,7 +129,7 @@
   if(Y_I$isH5){
     opts <- Y_I$dataInput
     fid <- rhdf5::H5Fopen(opts$h5path)
-    timeStepS <- .getTimStep(fid)
+    timeStepS <- .getTimeStep(fid)
     timeStepS <- as.character(timeStepS)
     mcYearS <- opts$mcYears
     tabl <- .getTableInH5(fid, timeStepS[1])
@@ -150,9 +150,9 @@
     ret <- xPart
   }else{
     ret <- list() 
-    ret$timeStepS <- .compareopetation(list(xPart$timeStepS, yPart$timeStepS), xyCompare)
-    ret$mcYearS <- sort(.compareopetation(list(xPart$mcYearS, yPart$mcYearS), xyCompare))
-    ret$tabl <- .compareopetation(list(xPart$tabl, yPart$tabl), xyCompare)
+    ret$timeStepS <- .compareOperation(list(xPart$timeStepS, yPart$timeStepS), xyCompare)
+    ret$mcYearS <- sort(.compareOperation(list(xPart$mcYearS, yPart$mcYearS), xyCompare))
+    ret$tabl <- .compareOperation(list(xPart$tabl, yPart$tabl), xyCompare)
   }
   ret
 }
