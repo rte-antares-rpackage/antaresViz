@@ -12,6 +12,7 @@ require(antaresViz)
 require(manipulateWidget)
 require(data.table)
 
+
 # choose a directory
 source("src/scripts/directoryInput.R")
 
