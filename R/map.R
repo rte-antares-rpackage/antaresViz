@@ -137,6 +137,13 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union","intersect"),
                     h5requestFiltering = list(), ...) {
   
+  
+  if(!is.null(compare) && !interactive){
+    stop("You can't use compare in no interactive mode")
+  }
+  
+  
+  
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
   xyCompare <- match.arg(xyCompare)

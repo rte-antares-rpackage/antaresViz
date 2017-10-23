@@ -169,8 +169,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    h5requestFiltering = list(), ...) {
   
   
+  if(!is.null(compare) && !interactive){
+    stop("You can't use compare in no interactive mode")
+  }
   
-  table <- NULL
+  
+
   xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
   aggregate <- match.arg(aggregate)
@@ -328,18 +332,20 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    params <- .getDataForComp(x, y = NULL, compare, compareOpts, 
+    params <- .transformDataForComp(x, compare, compareOpts, 
                               processFun = processFun, 
                               elements = elements, dateRange = dateRange)
     
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
     
-    return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
+    return(params$x[[table]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
                                           minValue, maxValue, aggregate, legend))
   }
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
+  
+  table <- NULL
   
   manipulateWidget({
     if(.id <= length(params$x)){

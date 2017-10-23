@@ -174,7 +174,12 @@ prodStack <- function(x,
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL, xyCompare = c("union","intersect"),
                       h5requestFiltering = list(), ...) {
-  table <- NULL
+  
+  if(!is.null(compare) && !interactive){
+    stop("You can't use compare in no interactive mode")
+  }
+  
+
   xyCompare <- match.arg(xyCompare)
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
@@ -276,13 +281,14 @@ prodStack <- function(x,
   }
   
   if (!interactive) {
+
     params <- .getDataForComp(x = x, y = NULL, compare = compare,compareOpts = compareOptions, processFun = processFun)
     return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
   } else {
     # just init for compare & compareOpts
     # init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
-  
+  table <- NULL
   manipulateWidget(
     {
       if(.id <= length(params$x)){

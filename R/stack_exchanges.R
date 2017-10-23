@@ -43,12 +43,17 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            xyCompare = c("union","intersect"),
                            h5requestFiltering = list(), ...) {
   
+  
+  if(!is.null(compare) && !interactive){
+    stop("You can't use compare in no interactive mode")
+  }
+  
+  
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
   init_area <- area
-  
-  table <- NULL
+
   xyCompare <- match.arg(xyCompare)
   
   init_dateRange <- dateRange
@@ -182,6 +187,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend))
   }
   
+  table <- NULL
   manipulateWidget(
     {
       if(.id <= length(params$x)){
