@@ -1,14 +1,14 @@
-# Define UI for application that draws a histogram
+# Define UI for antaresViz app
 navbarPage("antaresViz", id = "nav-id",
            tabPanel("Data", 
-                    h3("Directory selection"),
+                    h3("Antares study selection"),
                     fluidRow(
                       column(7, 
-                             directoryInput('directory', label = 'Select a directory', value = 'C:\\Users\\Datastorm\\Desktop\\antares\\test_case')
+                             directoryInput('directory', label = 'Select an antares study', value = 'C:\\Users\\Datastorm\\Desktop\\antares\\test_case')
                       ), 
                       conditionalPanel(condition = "output.ctrl_is_antares_study | output.ctrl_is_antares_h5", 
                                        column(3, 
-                                              selectInput("study_path", "Study", choices = NULL, selected = NULL)
+                                              selectInput("study_path", "Select a simulation", choices = NULL, selected = NULL)
                                        ), 
                                        column(2, 
                                               div(br(), 
@@ -26,7 +26,14 @@ navbarPage("antaresViz", id = "nav-id",
                     ), 
                     hr(), 
                     conditionalPanel(condition = "output.have_study", 
-                                     div(h3(textOutput("current_opts")), align = "center"),
+                                     div(fluidRow(
+                                       column(6, 
+                                              h3("ANTARES Simulation :", align = "right")
+                                       ),
+                                       column(6, 
+                                              h3(textOutput("current_opts"), align = "left")
+                                              )
+                                     )),
                                      h3("readAntares parameters"),
                                      fluidRow(
                                        column(3, 
@@ -121,7 +128,7 @@ navbarPage("antaresViz", id = "nav-id",
                                      h3("No data imported")
                     )
            ),
-           tabPanel("plotts", 
+           tabPanel("tsPlot", 
                     conditionalPanel(condition = "output.have_data",
                                      conditionalPanel(condition = "output.have_data_areas", 
                                                       mwModuleUI(id = "plotts", height = "800px")
