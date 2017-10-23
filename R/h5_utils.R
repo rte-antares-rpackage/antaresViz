@@ -17,7 +17,7 @@
       }
     }
   }else{
-    h5requestFiltering <- list(rep(list(), length(x)))
+    h5requestFiltering <- replicate(length(x), list())
   }
   h5requestFiltering
 }
