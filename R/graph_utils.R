@@ -12,10 +12,12 @@
   if("list" == class(x)[1]){
     len <- length(x)
   }
+  if(length(x) > 1)
+  {
   ncol = ifelse(len > 2, 2 ,1)
   nrow = floor((len-1)/2) + 1 + ifelse(len == 2, 1, 0)
   return(list(ncharts = len, nrow = nrow, ncol = ncol))
-  
+  }
   if(!is.null(compare)){
     return(
       list(ncharts = 2,
