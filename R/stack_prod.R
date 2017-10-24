@@ -388,8 +388,6 @@ prodStack <- function(x,
     }),
     
     params = mwSharedValue({
-      print("here")
-      print(x_tranform)
       .getDataForComp(x_tranform, NULL, compare,
                       compareOpts = compareOptions, 
                       processFun = processFun)

@@ -357,7 +357,6 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
-    print(params$x[[1]][[table]])
     return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
                                           minValue, maxValue, aggregate, legend))
   }

@@ -327,7 +327,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if (!interactive) {
     params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
     map <-  params$x[[1]]$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
-                                  popupAreaVars = popupAreaVars,areaChartType = areaChartType,
+                                  popupAreaVars = popupAreaVars, areaChartType = areaChartType,
                                   uniqueScale = uniqueScale, showLabels = showLabels,
                                   labelAreaVar = labelAreaVar, colLinkVar = colLinkVar, 
                                   sizeLinkVar = sizeLinkVar, popupLinkVars = popupLinkVars,

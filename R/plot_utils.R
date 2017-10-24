@@ -18,7 +18,7 @@
                        mcYear = NULL, 
                        dateRange = NULL, aggregate = c("none", "mean", "sum")) {
   
-  if(!"mcYear" %in% names(x) & mcYear != "average"){
+  if(!"mcYear" %in% names(x) && !is.null(mcYear) && mcYear != "average"){
     warning("You have average data and you specify a mcYear. This specification will be ignore.")
   }
   
