@@ -8,9 +8,9 @@ exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
   colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
   "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), ...)
+  legendId = sample(1000000000, 1), groupId = legendId,
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
@@ -90,6 +90,15 @@ This function draws a stack representing the evolution of the exchanges of
 an area with its neighbours. Positive values denotes exports and negative 
 values imports.
 }
+\details{
+Compare argument can take following values :
+\itemize{
+   \item "mcYear"
+   \item "unit"
+   \item "area"
+   \item "legend"
+   }
+}
 \examples{
 \dontrun{
 mydata <- readAntares(links = "all", timeStep = "daily")
@@ -98,6 +107,13 @@ exchangesStack(mydata)
 # Also display exchanges with the rest of the world
 mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
 exchangesStack(mydata)
+
+#Use compare :
+exchangesStack(mydata, compare = "mcYear")
+exchangesStack(mydata, compare = "area")
+exchangesStack(mydata, compare = "unit")
+exchangesStack(mydata, compare = "legend")
+
 }
 
 }

@@ -10,7 +10,8 @@
 #'   An object of class \code{antaresData} created with function 
 #'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
 #'   districts. it can be a list of \code{antaresData} objects. 
-#'   In this case, one chart is created for each object.
+#'   In this case, one chart is created for each object. 
+#'   Can also contains opts who refer to a h5 file or list of opts.
 #' @param stack
 #'   Name of the stack to use. One can visualize available stacks with 
 #'   \code{prodStackAliases}
@@ -103,6 +104,16 @@
 #' 
 #' @seealso \code{\link{prodStackLegend}}
 #' 
+#' @details 
+#' compare argument can take following values :
+#' \itemize{
+#'    \item "mcYear"
+#'    \item "main"
+#'    \item "unit"
+#'    \item "areas"
+#'    \item "legend"
+#'    \item "stack"
+#'    }
 #' @examples
 #' \dontrun{
 #' mydata <- readAntares(areas = "all", timeStep = "daily")
@@ -138,6 +149,14 @@
 #' 
 #' #Use compare
 #' prodStack(x = mydata, compare = "areas")
+#' prodStack(x = mydata, unit = "GWh", compare = "mcYear")
+#' prodStack(x = mydata, unit = "GWh", compare = "main")
+#' prodStack(x = mydata, unit = "GWh", compare = "unit")
+#' prodStack(x = mydata, unit = "GWh", compare = "areas")
+#' prodStack(x = mydata, unit = "GWh", compare = "legend")
+#' prodStack(x = mydata, unit = "GWh", compare = "stack")
+#' prodStack(x = mydata, unit = "GWh", compare = c("mcYear", "areas"))
+#' 
 #' 
 #' #Compare studies
 #' prodStack(list(mydata, mydata))
@@ -155,6 +174,7 @@
 #' prodStack(x = opts, .compare = "mcYear")
 #' # Compare 2 studies
 #' prodStack(x = list(opts, opts2))
+#' 
 #' 
 #'                 
 #' }
@@ -179,7 +199,16 @@ prodStack <- function(x,
     stop("You can't use compare in no interactive mode")
   }
   
-
+  #Check compare
+  compareMath <- c("mcYear", "main", "unit", "areas", "legend", "stack")
+  if(!is.null(compare)){
+    if(!all(compare%in%compareMath)){
+      notCompare <- compare[!compare%in%compareMath]
+      stop(paste0("Following arguments are not availables for compare : ", paste0(notCompare, collapse = ";"),
+                  "  Only following parameters are availables : 'mcYear', 'main', 'unit', 'areas', 'legend', 'stack'"))
+    }
+  }
+  
   xyCompare <- match.arg(xyCompare)
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
@@ -190,6 +219,8 @@ prodStack <- function(x,
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
+  .testXclassAndInterractive(x, interactive)
+  
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
   compareOptions <- .compOpts(x, compare)
@@ -282,7 +313,7 @@ prodStack <- function(x,
   
   if (!interactive) {
 
-    params <- .getDataForComp(x = x, y = NULL, compare = compare,compareOpts = compareOptions, processFun = processFun)
+    params <- .getDataForComp(x = .giveListFormat(x), y = NULL, compare = compare,compareOpts = compareOptions, processFun = processFun)
     return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
   } else {
     # just init for compare & compareOpts
@@ -350,12 +381,15 @@ prodStack <- function(x,
           }
         }
       }
+
       sapply(1:length(x_in),function(zz){
         .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFilteringTp[[zz]])
       }, simplify = FALSE)
     }),
     
     params = mwSharedValue({
+      print("here")
+      print(x_tranform)
       .getDataForComp(x_tranform, NULL, compare,
                       compareOpts = compareOptions, 
                       processFun = processFun)

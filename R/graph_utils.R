@@ -257,3 +257,10 @@
 .transposeL <- function(data){
   do.call(c, apply(do.call(rbind, data), 2, list)) 
 }
+
+
+.testXclassAndInterractive <- function(x, interactive){
+  if(!"antaresData" %in% class(x) & !interactive){
+    stop("You cant't use no interactive mode wich more than one antares studie or with compare parameters")
+  }
+}

@@ -23,3 +23,13 @@ describe("plotMap, no interactive", {
   })
 
 })
+
+describe("plotMap, no interactive return error", {
+
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  load(system.file("mapLayout/ml.rda", package = "antaresViz"))
+  
+  expect_error(plotMap(list(dta, dta), interactive = FALSE))
+  expect_error(plotMap(dta, ml , interactive = FALSE, compare = "areas"))
+  
+})

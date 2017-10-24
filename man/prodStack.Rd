@@ -15,9 +15,9 @@ prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
   dateRange = NULL, main = "Production stack", unit = c("MWh", "GWh",
   "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), ...)
+  legendId = sample(1000000000, 1), groupId = legendId,
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(), ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -123,6 +123,17 @@ function returns an interactive html graphic when the user clicks on button
 User can see available stacks with \code{prodStackAliases} and create new ones
 with \code{setProdStackAlias}.
 }
+\details{
+Compare argument can take following values :
+\itemize{
+   \item "mcYear"
+   \item "main"
+   \item "unit"
+   \item "areas"
+   \item "legend"
+   \item "stack"
+   }
+}
 \examples{
 \dontrun{
 mydata <- readAntares(areas = "all", timeStep = "daily")
@@ -158,6 +169,15 @@ prodStack(x = mydata, unit = "GWh", stack = "renewable")
 
 #Use compare
 prodStack(x = mydata, compare = "areas")
+prodStack(x = mydata, unit = "GWh", compare = "mcYear")
+prodStack(x = mydata, unit = "GWh", compare = "main")
+prodStack(x = mydata, unit = "GWh", compare = "dateRange")# No work
+prodStack(x = mydata, unit = "GWh", compare = "unit")
+prodStack(x = mydata, unit = "GWh", compare = "areas")
+prodStack(x = mydata, unit = "GWh", compare = "legend")
+prodStack(x = mydata, unit = "GWh", compare = "stack")
+prodStack(x = mydata, unit = "GWh", compare = c("mcYear", "areas"))
+
 
 #Compare studies
 prodStack(list(mydata, mydata))
@@ -175,6 +195,7 @@ prodStack(x = opts)
 prodStack(x = opts, .compare = "mcYear")
 # Compare 2 studies
 prodStack(x = list(opts, opts2))
+
 
                 
 }

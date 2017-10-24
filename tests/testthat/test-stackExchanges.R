@@ -21,3 +21,12 @@ describe("stackExchanges, no interactive", {
   })
 
 })
+
+describe("stackExchanges, no interactive return error", {
+  
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  
+  expect_error(exchangesStack(list(dta, dta), interactive = FALSE))
+  expect_error(exchangesStack(dta, interactive = FALSE, compare = "areas"))
+  
+})

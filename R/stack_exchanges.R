@@ -21,6 +21,16 @@
 #' A htmlwidget of class \code{dygraph}. It can be modified with functions from
 #' package \code{dygraphs}.
 #' 
+#' 
+#' @details 
+#' Compare argument can take following values :
+#' \itemize{
+#'    \item "mcYear"
+#'    \item "unit"
+#'    \item "area"
+#'    \item "legend"
+#'    }
+#'  
 #' @examples 
 #' \dontrun{
 #' mydata <- readAntares(links = "all", timeStep = "daily")
@@ -29,6 +39,13 @@
 #' # Also display exchanges with the rest of the world
 #' mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
 #' exchangesStack(mydata)
+#' 
+#' #Use compare :
+#' exchangesStack(mydata, compare = "mcYear")
+#' exchangesStack(mydata, compare = "area")
+#' exchangesStack(mydata, compare = "unit")
+#' exchangesStack(mydata, compare = "legend")
+#' 
 #' }
 #' 
 #' @export
@@ -49,6 +66,19 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   }
   
   
+  
+  #Check compare
+  compareMath <- c("mcYear", "unit", "area", "legend")
+  if(!is.null(compare)){
+    if(!all(compare%in%compareMath)){
+      notCompare <- compare[!compare%in%compareMath]
+      stop(paste0("Following arguments are not availables for compare : ", paste0(notCompare, collapse = ";"),
+                  "  Only following parameters are availables : 'mcYear', 'unit', 'area', 'legend'"))
+    }
+  }
+  
+  
+  
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
@@ -64,6 +94,9 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
+  .testXclassAndInterractive(x, interactive)
+
+  
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
@@ -183,7 +216,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   }
   
   if (!interactive) {
-    params <- .getDataForComp(x, NULL, compare, compareOpts, processFun = processFun)
+    params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun)
     return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend))
   }
   
@@ -243,10 +276,11 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     }),
     
     mcYear = mwSelect({
-      c("average", if(!is.null(params)){
+     allMcY <-  c("average", if(!is.null(params)){
         as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv$x$mcYear)
         }), xyCompare))})
+     allMcY
     }, 
     value = {
       if(.initial) mcYear
@@ -256,7 +290,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       length(c("average", if(!is.null(params)){
         as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv$x$mcYear)
-        }), xyCompare))})) == 1}
+        }), xyCompare))})) != 1}
     ),
     
     area = mwSelect({

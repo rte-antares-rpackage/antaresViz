@@ -83,3 +83,14 @@ describe("tsPlot, no interactive", {
   })
 
 })
+
+
+
+describe("tsPlot, no interactive return error", {
+  
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  
+  expect_error(tsPlot(list(dta, dta), interactive = FALSE))
+  expect_error(tsPlot(dta, interactive = FALSE, compare = "areas"))
+  
+})

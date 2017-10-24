@@ -81,6 +81,16 @@
 #' If the input data has a annual time step, the function creates a barplot
 #' instead of a line chart.
 #' 
+#' compare argument can take following values :
+#' \itemize{
+#'    \item "mcYear"
+#'    \item "variable"
+#'    \item "type"
+#'    \item "confInt"
+#'    \item "elements"
+#'    \item "aggregate"
+#'    \item "legend"
+#'    }
 #' 
 #' @examples 
 #' \dontrun{
@@ -173,7 +183,15 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     stop("You can't use compare in no interactive mode")
   }
   
-  
+  #Check compare
+  compareMath <- c("mcYear", "variable", "type", "confInt", "elements", "aggregate", "legend")
+  if(!is.null(compare)){
+    if(!all(compare%in%compareMath)){
+      notCompare <- compare[!compare%in%compareMath]
+      stop(paste0("Following arguments are not availables for compare : ", paste0(notCompare, collapse = ";"),
+                  "  Only following parameters are availables : 'mcYear', 'variable', 'type', 'confInt', 'elements', 'aggregate', 'legend'"))
+    }
+  }
 
   xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
@@ -189,6 +207,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
+  .testXclassAndInterractive(x, interactive)
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
@@ -332,14 +351,14 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    params <- .transformDataForComp(x, compare, compareOpts, 
+    params <- .transformDataForComp(.giveListFormat(x), compare, compareOpts, 
                               processFun = processFun, 
                               elements = elements, dateRange = dateRange)
     
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
-    
-    return(params$x[[table]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
+    print(params$x[[1]][[table]])
+    return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
                                           minValue, maxValue, aggregate, legend))
   }
   

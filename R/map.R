@@ -156,6 +156,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
+  .testXclassAndInterractive(x, interactive)
+  
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
   
@@ -323,7 +325,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   if (!interactive) {
-    params <- .getDataForComp(x, NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
+    params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
     map <-  params$x[[1]]$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
                                   popupAreaVars = popupAreaVars,areaChartType = areaChartType,
                                   uniqueScale = uniqueScale, showLabels = showLabels,
