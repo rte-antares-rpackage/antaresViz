@@ -159,6 +159,17 @@ display the evolution of the average value. Moreover it will represent a
 
 If the input data has a annual time step, the function creates a barplot
 instead of a line chart.
+
+compare argument can take following values :
+\itemize{
+   \item "mcYear"
+   \item "variable"
+   \item "type"
+   \item "confInt"
+   \item "elements"
+   \item "aggregate"
+   \item "legend"
+   }
 }
 \examples{
 \dontrun{
@@ -212,7 +223,7 @@ plot(x = detailedData, .compare = "mcYear")
 setSimulationPath(path = path1)
 #Convert your study in h5 format
 writeAntaresH5(path = mynewpath)
-#Redifind sim path wich h5 file
+#Redifind sim path with h5 file
 opts <- setSimulationPath(path = mynewpath)
 plot(x = opts)
 # Compare elements in a single study

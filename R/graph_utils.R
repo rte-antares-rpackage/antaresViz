@@ -268,6 +268,6 @@
 
 .testXclassAndInterractive <- function(x, interactive){
   if(!"antaresData" %in% class(x) & !interactive){
-    stop("You cant't use no interactive mode wich more than one antares studie or with compare parameters")
+    stop("You cant't use no interactive mode with more than one antares studie or with compare parameters")
   }
 }

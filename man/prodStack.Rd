@@ -46,7 +46,8 @@ should be \code{NULL} if there is no curve to trace or if parameter
 \item{x}{An object of class \code{antaresData} created with function 
 \code{\link[antaresRead]{readAntares}} containing data for areas and or
 districts. it can be a list of \code{antaresData} objects. 
-In this case, one chart is created for each object.}
+In this case, one chart is created for each object. 
+Can also contains opts who refer to a h5 file or list of opts.}
 
 \item{stack}{Name of the stack to use. One can visualize available stacks with 
 \code{prodStackAliases}}
@@ -124,7 +125,7 @@ User can see available stacks with \code{prodStackAliases} and create new ones
 with \code{setProdStackAlias}.
 }
 \details{
-Compare argument can take following values :
+compare argument can take following values :
 \itemize{
    \item "mcYear"
    \item "main"
@@ -171,7 +172,6 @@ prodStack(x = mydata, unit = "GWh", stack = "renewable")
 prodStack(x = mydata, compare = "areas")
 prodStack(x = mydata, unit = "GWh", compare = "mcYear")
 prodStack(x = mydata, unit = "GWh", compare = "main")
-prodStack(x = mydata, unit = "GWh", compare = "dateRange")# No work
 prodStack(x = mydata, unit = "GWh", compare = "unit")
 prodStack(x = mydata, unit = "GWh", compare = "areas")
 prodStack(x = mydata, unit = "GWh", compare = "legend")
@@ -188,7 +188,7 @@ prodStack(list(mydata, mydata))
 setSimulationPath(path = path1)
 #Convert your study in h5 format
 writeAntaresH5(path = mynewpath)
-#Redifind sim path wich h5 file
+#Redifind sim path with h5 file
 opts <- setSimulationPath(path = mynewpath)
 prodStack(x = opts)
 # Compare elements in a single study

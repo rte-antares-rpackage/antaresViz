@@ -167,7 +167,7 @@
 #' setSimulationPath(path = path1)
 #' #Convert your study in h5 format
 #' writeAntaresH5(path = mynewpath)
-#' #Redifind sim path wich h5 file
+#' #Redifind sim path with h5 file
 #' opts <- setSimulationPath(path = mynewpath)
 #' prodStack(x = opts)
 #' # Compare elements in a single study
