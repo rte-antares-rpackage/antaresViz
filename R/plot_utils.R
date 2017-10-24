@@ -18,6 +18,11 @@
                        mcYear = NULL, 
                        dateRange = NULL, aggregate = c("none", "mean", "sum")) {
   
+  if(!"mcYear" %in% names(x) & mcYear != "average"){
+    warning("You have average data and you specify a mcYear. This specification will be ignore.")
+  }
+  
+  
   if(length(variable) == 0){return(tpl[0])}
   
   aggregate <- match.arg(aggregate)
