@@ -5,7 +5,17 @@
 #' 
 #' @noRd
 .compOpts <- function(x, compare){
+  
+  
   len <- 1
+  
+  if("list" == class(x)[1]){
+    len <- length(x)
+  }
+  ncol = ifelse(len > 2, 2 ,1)
+  nrow = floor((len-1)/2) + 1 + ifelse(len == 2, 1, 0)
+  return(list(ncharts = len, nrow = nrow, ncol = ncol))
+  
   if(!is.null(compare)){
     return(
       list(ncharts = 2,
@@ -13,12 +23,7 @@
            ncol = 1)
     )
   }
-  if("list" == class(x)[1]){
-    len <- length(x)
-  }
-  ncol = ifelse(len > 2, 2 ,1)
-  nrow = floor((len-1)/2) + 1 + ifelse(len == 2, 1, 0)
-  list(ncharts = len, nrow = nrow, ncol = ncol)
+
 }
 
 #' Join date range
