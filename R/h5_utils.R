@@ -73,7 +73,7 @@
 .getDateRange <- function(opts, timeStep){
   tim <- .timeIdToDate(sort(
     unique(
-      antaresRead::h5ReadAntares(opts$h5path, timeStep = timeStep, select = "timeId", 
+      antaresRead::.h5ReadAntares(opts$h5path, timeStep = timeStep, select = "timeId", 
                                  areas = opts$areaList[1], mcYears = opts$mcYears[1], perf = FALSE)$timeId)
   ), timeStep = timeStep, opts = opts)
   dt <- as.Date(range(tim))
