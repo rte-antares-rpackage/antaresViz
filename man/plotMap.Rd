@@ -121,8 +121,20 @@ the results of an Antares simulation. By default the function starts a Shiny
 gadget that let the user which variables to represent.
 }
 \details{
-Possibles values for compare are : colAreaVar sizeAreaVars areaChartType popupAreaVars labelAreaVar
- colLinkVar sizeLinkVar popupLinkVars
+compare argument can take following values :
+\itemize{
+   \item "mcYear"
+   \item "type"
+   \item "colAreaVar"
+   \item "sizeAreaVars"
+   \item "areaChartType"
+   \item "showLabels"
+   \item "popupAreaVars"
+   \item "labelAreaVar"
+   \item "colLinkVar"
+   \item "sizeLinkVar"
+   \item "popupLinkVars"
+   }
 }
 \examples{
 \dontrun{

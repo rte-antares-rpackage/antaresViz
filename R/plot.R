@@ -355,6 +355,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                               processFun = processFun, 
                               elements = elements, dateRange = dateRange)
     
+    # paramCoe <- .testParamsConsistency(params = params, mcYear = mcYear)
+    # mcYear <- paramCoe$mcYear
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
     return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
