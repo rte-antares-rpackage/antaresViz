@@ -93,7 +93,7 @@
 #' @param ... Other arguments for \code{\link{manipulateWidget}}
 #'  
 #' @return 
-#' \code{prodStackAliases} returns an interactive html graphic. If argument
+#' \code{prodStack} returns an interactive html graphic. If argument
 #' \code{interactive} is \code{TRUE}, then a shiny gadget is started and the
 #' function returns an interactive html graphic when the user clicks on button
 #' "Done".
