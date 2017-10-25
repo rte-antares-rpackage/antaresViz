@@ -5,7 +5,7 @@ navbarPage("antaresViz", id = "nav-id",
                     fluidRow(
                       column(7, 
                              directoryInput('directory', label = 'Select an antares study', 
-                                            value = 'C:\\Users\\Datastorm\\Desktop\\antares\\test_case')
+                                            value = '')
                       ), 
                       conditionalPanel(condition = "output.ctrl_is_antares_study | output.ctrl_is_antares_h5", 
                                        column(3, 
@@ -20,7 +20,7 @@ navbarPage("antaresViz", id = "nav-id",
                       ),
                       conditionalPanel(condition = "output.ctrl_is_antares_study === false & output.ctrl_is_antares_h5 === false", 
                                        column(5, 
-                                              h3("No antares output found in directory", style = "color : red")
+                                              h3(textOutput("directory_message"), style = "color : red")
                                        )
                       )
                     ), 

@@ -179,7 +179,11 @@ function(input, output, session) {
   
   layout <- reactive({
     if(!is.null(opts())){
-      readLayout(opts = opts())
+      if(class(opts()) %in% "simOptions"){
+        readLayout(opts = opts())
+      } else {
+        NULL
+      }
     }else{
       NULL
     }
