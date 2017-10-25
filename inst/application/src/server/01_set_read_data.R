@@ -17,6 +17,14 @@ observeEvent(
   }
 )
 
+output$directory_message <- renderText({
+  if(input$directory == 0){
+    "Please first choose a folder with antares output"
+  } else {
+    "No antares output found in directory"
+  }
+})
+
 # list files in directory
 dir_files <- reactive({
   files = list.files(readDirectoryInput(session, 'directory'), full.names = T)
