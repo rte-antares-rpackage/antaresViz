@@ -118,7 +118,7 @@
     timeStep,
     hourly = "%a %d %b %Y<br/>%H:%M",
     daily = "%a %d %b %Y",
-    weekly = "W%w %Y",
+    weekly = "W%V %Y",
     monthly = "%b %Y",
     yearly = "%Y"
   )
