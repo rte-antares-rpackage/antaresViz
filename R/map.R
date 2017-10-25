@@ -360,6 +360,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                                   labelAreaVar = labelAreaVar, colLinkVar = colLinkVar, 
                                   sizeLinkVar = sizeLinkVar, popupLinkVars = popupLinkVars,
                                   type = type, mcYear = mcYear, dateRange = dateRange)
+    
     return(combineWidgets(map, title = main, width = width, height = height))
   } else {
     # just init for compare & compareOpts
