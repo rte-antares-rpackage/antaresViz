@@ -18,7 +18,6 @@ r_github_packages:
  - rte-antares-rpackage/antaresMaps
  - rte-antares-rpackage/antaresRead@develop
  - rte-antares-rpackage/antaresProcessing@develop
- - rte-antares-rpackage/antaresHdf5
 
 addons:
   apt:

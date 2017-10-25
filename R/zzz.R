@@ -107,5 +107,3 @@ pkgEnv$prodStackAliases <- list(
 )
 
 rm(graphicalCharter, formulas, colors)
-
-#.getstructure <- antaresHdf5:::.getstructure

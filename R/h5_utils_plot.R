@@ -1,13 +1,13 @@
 
 .getData <- function(path, table, mcYear, variable, elements, dateRange, timeStep){
-  opts <- antaresHdf5::getOptionsH5(path)
+  opts <- antaresRead::getOptionsH5(path)
   if(mcYear == "MC-All")
   {
     mcYear <- NULL
   }
   areas <- links <- clusters <- districts <- NULL
   assign(table, as.character(elements))
-  data <- antaresHdf5::h5ReadAntares(path = path,
+  data <- antaresRead::h5ReadAntares(path = path,
                         areas = areas,
                         links = links,
                         clusters = clusters,

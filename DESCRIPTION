@@ -45,5 +45,4 @@ Imports:
 RoxygenNote: 6.0.1
 Suggests: testthat,
     covr,
-    antaresHdf5 (>= 0.1.1),
-    rhdf5 (>= 2.21.2)
+    rhdf5 (>= 2.20.2)
