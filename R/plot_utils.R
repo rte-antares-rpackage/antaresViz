@@ -47,7 +47,11 @@
   if (!is.null(mcYear) && mcYear != "average") {
     mcy <- mcYear # Just to avoid name confusion in the next line
     tpl <- tpl[mcYear %in% mcy]
+  }else{
+    if(!"mcYear" %in% names(tpl))
+    warning("You have mc-all data and you specify mcYear, it will be ignored")
   }
+  
   # if (length(elements) == 0) elements <- uniqueElement[1:5]
   if (!"all" %in% elements) tpl <- tpl[element %in% elements]
   if (!is.null(dateRange)) tpl <- tpl[as.Date(time) %between% dateRange]

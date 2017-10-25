@@ -249,6 +249,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     oldkeys <- lapply(x, key)
     
     if (attr(x, "synthesis")) {
+      
+      if(mcYear != "average"){
+        warning("You have mc-all data and you specify mcYear, it will be ignored")
+      }
+      
       mcYear <- "average"
     } else {
       if (areas) setkeyv(x$areas, "mcYear")

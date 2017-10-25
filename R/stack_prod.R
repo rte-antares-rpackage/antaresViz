@@ -216,7 +216,7 @@ prodStack <- function(x,
   if(!is.null(compare) && class(x)[1] == "list"){
     # stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare) && "antaresData"%in%class(x)){
+  if(!is.null(compare) && "antaresData" %in% class(x)){
     x <- list(x, x)
   }
   .testXclassAndInterractive(x, interactive)
@@ -262,13 +262,14 @@ prodStack <- function(x,
     plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend) {
       if (length(areas) == 0) return (combineWidgets("Please choose an area"))
       stackOpts <- .aliasToStackOptions(stack)
-      
       dt <- x[area %in% areas]
       
       if (mcYear == "average") dt <- synthesize(dt)
       else if ("mcYear" %in% names(dt)) {
         mcy <- mcYear
         dt <- dt[mcYear == mcy]
+      }else{
+        warning("You have mc-all data and you specify mcYear, it will be ignored")
       }
       
       if (!is.null(dateRange)) {
@@ -277,7 +278,6 @@ prodStack <- function(x,
       if(nrow(dt) == 0){
         return (combineWidgets("No data for this selection"))
       }
-      
       p <- try(.plotProdStack(dt,
                               stackOpts$variables,
                               stackOpts$colors,
@@ -310,10 +310,10 @@ prodStack <- function(x,
       dateRange = init_dateRange
     )
   }
-  
   if (!interactive) {
 
     params <- .getDataForComp(x = .giveListFormat(x), y = NULL, compare = compare,compareOpts = compareOptions, processFun = processFun)
+    
     return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
   } else {
     # just init for compare & compareOpts
