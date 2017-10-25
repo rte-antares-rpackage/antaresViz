@@ -19,6 +19,8 @@
 
   assert_that(is.function(processFun))
   
+  
+  
   if (inherits(x, "antaresData")) {
     x <- processFun(x, ...)
     

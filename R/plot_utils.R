@@ -18,11 +18,6 @@
                        mcYear = NULL, 
                        dateRange = NULL, aggregate = c("none", "mean", "sum")) {
   
-  if(!"mcYear" %in% names(x) && !is.null(mcYear) && mcYear != "average"){
-    warning("You have average data and you specify a mcYear. This specification will be ignore.")
-  }
-  
-  
   if(length(variable) == 0){return(tpl[0])}
   
   aggregate <- match.arg(aggregate)
@@ -47,12 +42,16 @@
   }else{
     tpl <- listVar[[1]]
   }
-
+  
   # Filtering data if required
   if (!is.null(mcYear) && mcYear != "average") {
     mcy <- mcYear # Just to avoid name confusion in the next line
     tpl <- tpl[mcYear %in% mcy]
+  }else{
+    if(!"mcYear" %in% names(tpl))
+    warning("You have mc-all data and you specify mcYear, it will be ignored")
   }
+  
   # if (length(elements) == 0) elements <- uniqueElement[1:5]
   if (!"all" %in% elements) tpl <- tpl[element %in% elements]
   if (!is.null(dateRange)) tpl <- tpl[as.Date(time) %between% dateRange]
@@ -61,11 +60,21 @@
   if (aggregate != "none" && length(uniqueElement) > 1) {
     if (aggregate == "mean") {
       tpl <- tpl[, .(element = as.factor(variable), value = mean(value)), 
-               by = c(.idCols(tpl))]
+                 by = c(.idCols(tpl))]
     } else if (aggregate == "sum") {
       tpl <- tpl[, .(element = as.factor(variable), value = sum(value)), 
-               by = c(.idCols(tpl))]
+                 by = c(.idCols(tpl))]
     }
   }
   tpl
 }
+
+
+# .testParamsConsistency <- function(params, mcYear)
+# {
+#   if(!"mcYear" %in% names(params$x[[1]][[1]]$x) && !is.null(mcYear) && mcYear != "average"){
+#     warning("You have average data and you specify a mcYear. This specification will be ignore.")
+#     mcYear <- NULL
+#   }
+#   list(mcYear = mcYear)
+# }

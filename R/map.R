@@ -69,9 +69,21 @@
 #'   
 #'   
 #' @details 
-#'  Possibles values for compare are : colAreaVar sizeAreaVars areaChartType popupAreaVars labelAreaVar
-#'  colLinkVar sizeLinkVar popupLinkVars
-#'  
+#' 
+#' compare argument can take following values :
+#' \itemize{
+#'    \item "mcYear"
+#'    \item "type"
+#'    \item "colAreaVar"
+#'    \item "sizeAreaVars"
+#'    \item "areaChartType"
+#'    \item "showLabels"
+#'    \item "popupAreaVars"
+#'    \item "labelAreaVar"
+#'    \item "colLinkVar"
+#'    \item "sizeLinkVar"
+#'    \item "popupLinkVars"
+#'    }
 #' @return 
 #' An htmlwidget of class "leaflet". It can be modified with package 
 #' \code{leaflet}. By default the function starts a shiny gadget that lets the
@@ -142,7 +154,18 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     stop("You can't use compare in no interactive mode")
   }
   
+  #Check compare
+  compareMath <- c("mcYear", "type", "colAreaVar", "sizeAreaVars", "areaChartType", "showLabels",
+  "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars")
   
+  if(!is.null(compare)){
+    if(!all(compare%in%compareMath)){
+      notCompare <- compare[!compare%in%compareMath]
+      stop(paste0("Following arguments are not availables for compare : ", paste0(notCompare, collapse = ";"),
+                  "  Only following parameters are availables : 'mcYear','type','colAreaVar','sizeAreaVars',
+                  'areaChartType','showLabels','popupAreaVars','labelAreaVar','colLinkVar','sizeLinkVar','popupLinkVars'"))
+    }
+  }
   
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
@@ -226,6 +249,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     oldkeys <- lapply(x, key)
     
     if (attr(x, "synthesis")) {
+      
+      if(mcYear != "average"){
+        warning("You have mc-all data and you specify mcYear, it will be ignored")
+      }
+      
       mcYear <- "average"
     } else {
       if (areas) setkeyv(x$areas, "mcYear")
