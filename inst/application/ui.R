@@ -24,8 +24,8 @@ navbarPage("antaresViz", id = "nav-id",
                                        )
                       )
                     ), 
-                    hr(), 
                     conditionalPanel(condition = "output.have_study", 
+                                     hr(), 
                                      div(fluidRow(
                                        column(6, 
                                               h3("ANTARES Simulation :", align = "right")
@@ -93,11 +93,10 @@ navbarPage("antaresViz", id = "nav-id",
                                                           width = "100%", multiple = TRUE)
                                        )
                                      ),
-                                     div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center"),
-                                     hr()
-                                     
+                                     div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center")
                     ),
                     conditionalPanel(condition = "output.have_data === true",
+                                     hr(),
                                      uiOutput("info_list"),
                                      div(actionButton("update_module", "Launch Analysis", icon = icon("upload")), align = "center")
                     )
@@ -159,7 +158,8 @@ navbarPage("antaresViz", id = "nav-id",
                                                 h3("No data imported")
                                )
                       )
-           )
+           ), 
+           footer = div(hr(), actionButton("quit", "Quit application", icon = icon("sign-out")), align = "center")
 )
 
 

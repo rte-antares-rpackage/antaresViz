@@ -415,4 +415,9 @@ function(input, output, session) {
   #----------------
   source("src/server/03_shared_input.R", local = T)
   
+  observe({
+    if(input$quit > 0){
+      stopApp()
+    }
+  })
 }
