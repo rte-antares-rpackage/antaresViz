@@ -8,5 +8,5 @@
 #' @importFrom shiny runApp
 #' @export
 runAppAntaresViz <- function() {
-  shiny::runApp('./inst/application')
+  shiny::runApp(system.file("application", package = "antaresViz"))
 }
