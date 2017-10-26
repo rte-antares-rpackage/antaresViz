@@ -262,7 +262,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       uniqueElem <- sort(as.character(unique(dt$element)))
       if (is.null(elements)) {
         elements <- uniqueElem
-        if (length(elements) > 5) elements <- elements[1:5]
+        # if (length(elements) > 5) elements <- elements[1:5]
       }
       
       # Function that generates the desired graphic.
@@ -274,7 +274,6 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           return(combineWidgets())
         }
         if(variable[1] == "No Input") {return(combineWidgets("No data"))}
-        
         dt <- .getTSData(
           x, dt, 
           variable = variable, elements = elements, 

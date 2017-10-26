@@ -19,7 +19,7 @@
                        dateRange = NULL, aggregate = c("none", "mean", "sum")) {
   
   if(length(variable) == 0){return(tpl[0])}
-  
+  if("all" %in% elements) elements <- uniqueElement
   aggregate <- match.arg(aggregate)
   assert_that(inherits(x, "data.table"))
   assert_that(inherits(tpl, "data.table"))
