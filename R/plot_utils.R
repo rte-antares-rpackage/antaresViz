@@ -49,7 +49,10 @@
     tpl <- tpl[mcYear %in% mcy]
   }else{
     if(!"mcYear" %in% names(tpl))
+      if(mcYear != "average")
+      {
       .printWarningMcYear()
+      }
   }
   
   # if (length(elements) == 0) elements <- uniqueElement[1:5]
