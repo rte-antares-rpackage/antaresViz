@@ -97,7 +97,6 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   .testXclassAndInterractive(x, interactive)
 
   
-  
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
   # Generate a group number for dygraph objects
