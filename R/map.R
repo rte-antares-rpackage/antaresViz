@@ -251,7 +251,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (attr(x, "synthesis")) {
       
       if(mcYear != "average"){
-        warning("You have mc-all data and you specify mcYear, it will be ignored")
+        .printWarningMcYear()
       }
       
       mcYear <- "average"

@@ -49,7 +49,7 @@
     tpl <- tpl[mcYear %in% mcy]
   }else{
     if(!"mcYear" %in% names(tpl))
-    warning("You have mc-all data and you specify mcYear, it will be ignored")
+      .printWarningMcYear()
   }
   
   # if (length(elements) == 0) elements <- uniqueElement[1:5]
@@ -78,3 +78,8 @@
 #   }
 #   list(mcYear = mcYear)
 # }
+
+
+.printWarningMcYear <- function(){
+  warning("You have mc-all data and you specify mcYear, it will be ignored")
+}

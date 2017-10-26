@@ -34,7 +34,7 @@
   
   data <- data[,.SD, .SDcols = c("timeId", "time", valueCol, idV)]
   if(length(idV) > 1){
-    data[, newKey := paste0(lapply(.SD, as.character), collapse = " < "), .SDcols = idV,by=1:nrow(data)]
+    data[, "newKey" := paste0(lapply(.SD, as.character), collapse = " < "), .SDcols = idV,by=1:nrow(data)]
     data[,c(idV) := NULL]
     idV <- "newKey"
   }else{
@@ -44,7 +44,7 @@
 
   if(ncol(data) > 4){
     data <- melt(data, c("newKey", "timeId", "time"))
-    data[, newKey := paste0(newKey, " - ",  as.character(variable)),by=1:nrow(data)]
+    data[, "newKey" := paste0(newKey, " - ",  as.character(variable)),by=1:nrow(data)]
     data[, variable := NULL]
     valueCol <- "value"
   }

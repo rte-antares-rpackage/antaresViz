@@ -167,8 +167,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         dt <- dt[mcYear == mcy]
         if (!is.null(row)) row <- row[mcYear == mcy, .(area, link, timeId, flow, to, direction)]
       }else{
-        warning("You have mc-all data and you specify mcYear, it will be ignored")
-      }
+        .printWarningMcYear()
+        }
       
       dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                      .(link, timeId, flow = `FLOW LIN.`)],

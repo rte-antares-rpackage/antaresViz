@@ -269,7 +269,7 @@ prodStack <- function(x,
         mcy <- mcYear
         dt <- dt[mcYear == mcy]
       }else{
-        warning("You have mc-all data and you specify mcYear, it will be ignored")
+        .printWarningMcYear()
       }
       
       if (!is.null(dateRange)) {
