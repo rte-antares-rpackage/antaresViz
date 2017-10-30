@@ -20,27 +20,27 @@ source("src/scripts/directoryInput.R")
 shared_prodStack <- data.frame(
   module = "prodStack", 
   panel = "prodStack", 
-  input = c("dateRange", "unit"),
-  type = c("dateRangeInput", "selectInput"), stringsAsFactors = FALSE)
+  input = c("dateRange", "unit", "mcYearh", "timeSteph5"),
+  type = c("dateRangeInput", "selectInput", "selectInput", "selectInput"), stringsAsFactors = FALSE)
 
 shared_plotts <- data.frame(
   module = "plotts", 
-  panel = "plotts", 
-  input = "dateRange", 
-  type = "dateRangeInput", stringsAsFactors = FALSE)
+  panel = "tsPlot", 
+  input = c("dateRange", "mcYearh", "timeSteph5"),
+  type = c("dateRangeInput", "selectInput", "selectInput"), stringsAsFactors = FALSE)
 
 
 shared_plotMap <- data.frame(
   module = "plotMap", 
   panel = "Map", 
-  input = "dateRange", 
-  type = "dateRangeInput", stringsAsFactors = FALSE)
+  input = c("dateRange", "mcYearh", "timeSteph5"),
+  type = c("dateRangeInput", "selectInput", "selectInput"), stringsAsFactors = FALSE)
 
 shared_exchangesStack <- data.frame(
   module = "exchangesStack", 
   panel = "exchangesStack", 
-  input = c("dateRange", "unit"),
-  type = c("dateRangeInput", "selectInput"), stringsAsFactors = FALSE)
+  input = c("dateRange", "unit", "mcYearh", "timeSteph5"),
+  type = c("dateRangeInput", "selectInput", "selectInput", "selectInput"), stringsAsFactors = FALSE)
 
 shared_input <- rbind(shared_prodStack, shared_plotts, shared_plotMap, shared_exchangesStack)
 
