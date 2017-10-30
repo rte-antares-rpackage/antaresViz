@@ -13,7 +13,7 @@
   }
   if(length(x) > 1)
   {
-
+    
     ncol = ifelse(len > 2, 2 ,1)
     nrow = floor((len-1)/2) + 1 + ifelse(len == 2, 1, 0)
     return(list(ncharts = len, nrow = nrow, ncol = ncol))
@@ -23,9 +23,9 @@
       list(ncharts = 2, nrow = 2, ncol = 1)
     )
   }
-
-   return(list(ncharts = 1, nrow = 1, ncol = 1))
-
+  
+  return(list(ncharts = 1, nrow = 1, ncol = 1))
+  
 }
 
 #' Join date range
@@ -40,41 +40,73 @@
   if(minMax == "min" & xyCompare == "union"){
     if(!is.null(tabl))
     {
-      return(min(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dateRange[1]})))))
+      date_range <- lapply(params$x, function(X){
+        X[[tabl]]$dateRange[1]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(min(do.call("c",date_range)))
     }else{
-      return(min(do.call("c",(lapply(params$x, function(X){
-        X$dateRange[1]})))))
+      date_range <- lapply(params$x, function(X){
+        X$dateRange[1]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(min(do.call("c",date_range)))
     }
   }
   if(minMax == "min" & xyCompare == "intersect"){
     if(!is.null(tabl))
     {
-      return(max(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dateRange[1]})))))
+      date_range <- lapply(params$x, function(X){
+        X[[tabl]]$dateRange[1]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(max(do.call("c",date_range)))
     }else{
-      return(max(do.call("c",(lapply(params$x, function(X){
-        X$dateRange[1]})))))
+      date_range <- lapply(params$x, function(X){
+        X$dateRange[1]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(max(do.call("c",date_range)))
     }
   }
   if(minMax == "max" & xyCompare == "union"){
     if(!is.null(tabl))
     {
-      return(max(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dateRange[2]})))))
+      date_range <- lapply(params$x, function(X){
+        X[[tabl]]$dateRange[2]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(max(do.call("c",date_range)))
     }else{
-      return(max(do.call("c",(lapply(params$x, function(X){
-        X$dateRange[2]})))))
+      date_range <- lapply(params$x, function(X){
+        X$dateRange[2]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+
+      return(max(do.call("c",date_range)))
     }
   }
   if(minMax == "max" & xyCompare == "intersect"){
     if(!is.null(tabl))
     {
-      return(min(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dateRange[2]})))))
+      date_range <- lapply(params$x, function(X){
+        X[[tabl]]$dateRange[2]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(min(do.call("c",date_range)))
     }else{
-      return(min(do.call("c",(lapply(params$x, function(X){
-        X$dateRange[2]})))))
+      date_range <- lapply(params$x, function(X){
+        X$dateRange[2]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(min(do.call("c",date_range)))
     }
   }
 }
