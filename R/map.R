@@ -402,7 +402,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .giveListFormat(x)
     }),
     paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare)
+      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
     }),
     H5request = mwGroup(
       timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 

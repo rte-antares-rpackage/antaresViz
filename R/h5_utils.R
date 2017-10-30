@@ -17,7 +17,12 @@
       }
     }
   }else{
-    h5requestFiltering <- replicate(length(x), list())
+    if(!"simOptions"%in%class(x))
+    {
+      h5requestFiltering <- replicate(length(x), list())
+    }else{
+      h5requestFiltering <- replicate(1, list())
+    }
   }
   h5requestFiltering
 }
