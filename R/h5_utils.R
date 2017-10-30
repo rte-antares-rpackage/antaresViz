@@ -3,7 +3,7 @@
   if(length(h5requestFiltering)>0)
   {
     if(!is.list(h5requestFiltering[[1]])){
-      if(!"simOptions"%in%class(x))
+      if(!any(c("simOptions", "antaresDataTable") %in%class(x)))
       {
         h5requestFiltering <- rep(list(h5requestFiltering), length(x))
       }else{
@@ -17,7 +17,7 @@
       }
     }
   }else{
-    if(!"simOptions"%in%class(x))
+    if(!any(c("simOptions", "antaresDataTable") %in%class(x)))
     {
       h5requestFiltering <- replicate(length(x), list())
     }else{
