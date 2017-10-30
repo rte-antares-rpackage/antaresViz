@@ -85,11 +85,12 @@ function(input, output, session) {
             if(length(ind_areas) != list_data_controls$n_areas){
               # module prodStack
               modules$prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
-                                             unit = "GWh", interactive = TRUE, .runApp = FALSE)
+                                             unit = "GWh", interactive = TRUE, 
+                                             .updateBtn = TRUE, .runApp = FALSE)
               
               # module plotts
               modules$plotts <- plot(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
-                                     interactive = TRUE, .runApp = FALSE)
+                                     interactive = TRUE, .updateBtn = TRUE, .runApp = FALSE)
             }
             list_data_areas$antaresDataList <- list_data_all$antaresDataList[ind_areas]
             list_data_areas$h5requestFiltering <- list_data_all$params[ind_areas]
@@ -104,7 +105,7 @@ function(input, output, session) {
           if(length(ind_links) > 0){
             if(length(ind_links) != list_data_controls$n_links){
               modules$exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
-                                                       interactive = TRUE, .runApp = FALSE)
+                                                       interactive = TRUE, .updateBtn = TRUE, .runApp = FALSE)
             }
             list_data_links$antaresDataList <- list_data_all$antaresDataList[ind_links]
             list_data_links$h5requestFiltering <- list_data_links$params[ind_links]
@@ -208,7 +209,7 @@ function(input, output, session) {
                 # module plotMap
                 modules$plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
                                            colAreaVar = "BALANCE", interactive = TRUE, 
-                                           xyCompare = "union", .runApp = FALSE)
+                                           xyCompare = "union", .updateBtn = TRUE, .runApp = FALSE)
               }
               list_data_map$antaresDataList <- list_data_all$antaresDataList[ind_map]
               list_data_map$h5requestFiltering <- list_data_all$params[ind_map]
