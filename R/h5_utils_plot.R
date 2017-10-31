@@ -44,7 +44,7 @@
 
   if(ncol(data) > 4){
     data <- melt(data, c("newKey", "timeId", "time"))
-    data[, "newKey" := paste0(newKey, " - ",  as.character(variable)),by=1:nrow(data)]
+    data[, "newKey" := paste0(data$newKey, " - ",  as.character(variable)),by=1:nrow(data)]
     data[, variable := NULL]
     valueCol <- "value"
   }

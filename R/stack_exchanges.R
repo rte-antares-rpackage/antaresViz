@@ -223,6 +223,17 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   }
   
   table <- NULL
+  
+  ##remove notes
+  mcYearh <- NULL
+  paramsH5 <- NULL
+  sharerequest <- NULL
+  timeStepdataload <- NULL
+  timeSteph5 <- NULL
+  x_in <- NULL
+  x_tranform <- NULL
+  
+  
   manipulateWidget(
     {
       if(.id <= length(params$x)){

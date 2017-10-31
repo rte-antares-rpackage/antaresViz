@@ -319,7 +319,20 @@ prodStack <- function(x,
     # just init for compare & compareOpts
     # init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
+  
+  
   table <- NULL
+  
+  ##remove notes
+  mcYearh <- NULL
+  paramsH5 <- NULL
+  sharerequest <- NULL
+  timeStepdataload <- NULL
+  timeSteph5 <- NULL
+  x_in <- NULL
+  x_tranform <- NULL
+  
+  
   manipulateWidget(
     {
       if(.id <= length(params$x)){

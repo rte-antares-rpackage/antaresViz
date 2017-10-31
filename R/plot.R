@@ -364,9 +364,18 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   
+  ##remove notes
   table <- NULL
+  x_in <- NULL
+  paramsH5 <- NULL
+  timeSteph5 <- NULL
+  mcYearh <- NULL
+  sharerequest <- NULL
+  timeStepdataload <- NULL
+  x_tranform <- NULL
   
   manipulateWidget({
+    
     if(.id <= length(params$x)){
       
       if(length(variable) == 0){return(combineWidgets(paste0("Please select some variables")))}
@@ -384,6 +393,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     }
   },
   x = mwSharedValue({x}),
+  
+  # #Output
+  #  outPutGraph = mwSharedValue({
+  #    ls()
+  # }),
+  
   
   x_in = mwSharedValue({
     .giveListFormat(x)
