@@ -249,7 +249,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     }),
     
     paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare)
+      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
     }),
     
     H5request = mwGroup(

@@ -219,6 +219,7 @@ prodStack <- function(x,
   if(!is.null(compare) && "antaresData" %in% class(x)){
     x <- list(x, x)
   }
+  
   .testXclassAndInterractive(x, interactive)
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
@@ -346,7 +347,7 @@ prodStack <- function(x,
       .giveListFormat(x)
     }),
     paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare)
+      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
     }),
     H5request = mwGroup(
       timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
@@ -377,7 +378,9 @@ prodStack <- function(x,
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
     }),
     
-    h5requestFiltering = mwSharedValue({h5requestFiltering}),
+    h5requestFiltering = mwSharedValue({
+      h5requestFiltering
+    }),
     
     x_tranform = mwSharedValue({
       if(!is.null(sharerequest))

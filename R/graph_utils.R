@@ -13,7 +13,7 @@
   }
   if(length(x) > 1)
   {
-
+    
     ncol = ifelse(len > 2, 2 ,1)
     nrow = floor((len-1)/2) + 1 + ifelse(len == 2, 1, 0)
     return(list(ncharts = len, nrow = nrow, ncol = ncol))
@@ -23,9 +23,9 @@
       list(ncharts = 2, nrow = 2, ncol = 1)
     )
   }
-
-   return(list(ncharts = 1, nrow = 1, ncol = 1))
-
+  
+  return(list(ncharts = 1, nrow = 1, ncol = 1))
+  
 }
 
 #' Join date range
@@ -40,41 +40,73 @@
   if(minMax == "min" & xyCompare == "union"){
     if(!is.null(tabl))
     {
-      return(min(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dateRange[1]})))))
+      date_range <- lapply(params$x, function(X){
+        X[[tabl]]$dateRange[1]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(min(do.call("c",date_range)))
     }else{
-      return(min(do.call("c",(lapply(params$x, function(X){
-        X$dateRange[1]})))))
+      date_range <- lapply(params$x, function(X){
+        X$dateRange[1]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(min(do.call("c",date_range)))
     }
   }
   if(minMax == "min" & xyCompare == "intersect"){
     if(!is.null(tabl))
     {
-      return(max(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dateRange[1]})))))
+      date_range <- lapply(params$x, function(X){
+        X[[tabl]]$dateRange[1]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(max(do.call("c",date_range)))
     }else{
-      return(max(do.call("c",(lapply(params$x, function(X){
-        X$dateRange[1]})))))
+      date_range <- lapply(params$x, function(X){
+        X$dateRange[1]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(max(do.call("c",date_range)))
     }
   }
   if(minMax == "max" & xyCompare == "union"){
     if(!is.null(tabl))
     {
-      return(max(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dateRange[2]})))))
+      date_range <- lapply(params$x, function(X){
+        X[[tabl]]$dateRange[2]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(max(do.call("c",date_range)))
     }else{
-      return(max(do.call("c",(lapply(params$x, function(X){
-        X$dateRange[2]})))))
+      date_range <- lapply(params$x, function(X){
+        X$dateRange[2]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+
+      return(max(do.call("c",date_range)))
     }
   }
   if(minMax == "max" & xyCompare == "intersect"){
     if(!is.null(tabl))
     {
-      return(min(do.call("c",(lapply(params$x, function(X){
-        X[[tabl]]$dateRange[2]})))))
+      date_range <- lapply(params$x, function(X){
+        X[[tabl]]$dateRange[2]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(min(do.call("c",date_range)))
     }else{
-      return(min(do.call("c",(lapply(params$x, function(X){
-        X$dateRange[2]})))))
+      date_range <- lapply(params$x, function(X){
+        X$dateRange[2]
+      })
+      date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
+      
+      return(min(do.call("c",date_range)))
     }
   }
 }
@@ -167,7 +199,8 @@
 #' @param districts character
 #' 
 #' @noRd
-.loadH5Data <- function(sharerequest, dta, areas = NULL, links = NULL, clusters = NULL, districts = NULL, h5requestFiltering = list()){
+.loadH5Data <- function(sharerequest, dta, areas = NULL, links = NULL, clusters = NULL, 
+                        districts = NULL, h5requestFiltering = list()){
   if(.isSimOpts(dta)){
     gc()
     if(length(sharerequest$mcYearh_l)==0) {mcYearh2 <- NULL}else{
@@ -222,10 +255,23 @@
 #' @param xyCompare, character
 #' 
 #' @noRd
-.h5ParamList <- function(X_I, xyCompare){
-  listParam <- lapply(X_I, function(x){
+.h5ParamList <- function(X_I, xyCompare, h5requestFiltering = NULL){
+  listParam <- lapply(1:length(X_I), function(i){
+    x <- X_I[[i]]
     if(.isSimOpts(x)){
-      .h5Inf(x)
+      tmp <- .h5Inf(x)
+      h5_filter <- h5requestFiltering[[i]]
+      h5_tables <- c("areas", "districts", "clusters", "links")
+      if(!is.null(h5_filter)){
+        if(!(is.null(h5_filter$areas) & is.null(h5_filter$districts) & 
+           is.null(h5_filter$links) & is.null(h5_filter$clusters))){
+          h5_tables <- c("areas", "districts", "clusters", "links")
+          h5_tables <- h5_tables[which(c(!is.null(h5_filter$areas), !is.null(h5_filter$districts),
+                                           !is.null(h5_filter$clusters), !is.null(h5_filter$links)))]
+        }
+      }
+      tmp$tabl <- intersect(tmp$tabl, h5_tables)
+      tmp
     }else{
       mcY <- unique(unlist(lapply(x, function(y){unique(y$mcYears)})))
       timeStepS <- attributes(x)$timeStep

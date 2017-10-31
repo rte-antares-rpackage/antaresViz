@@ -17,32 +17,71 @@ observe({
           }
           
           # import data
-          data <- readAntares(areas = input$read_areas, links = input$read_links, clusters = input$read_clusters,
-                              districts = input$read_districts, misc = input$read_misc, 
-                              thermalAvailabilities = input$read_thermalAvailabilities,
-                              hydroStorage = input$read_hydroStorage, hydroStorageMaxPower = input$read_hydroStorageMaxPower, 
-                              reserve = input$read_reserve, 
-                              linkCapacity = if(!is.null(input$read_links)) input$read_linkCapacity else FALSE, 
-                              mustRun = input$read_mustRun, thermalModulation = input$read_thermalModulation,
-                              select = input$read_select, mcYears = mcYears, timeStep = input$read_timeStep, 
-                              opts = opts(), parallel = input$read_parallel,
-                              simplify = TRUE, showProgress = FALSE)
-          
-          # save params
-          params <- list(
-            areas = input$read_areas, links = input$read_links, clusters = input$read_clusters,
-            districts = input$read_districts, misc = input$read_misc, 
-            thermalAvailabilities = input$read_thermalAvailabilities,
-            hydroStorage = input$read_hydroStorage, hydroStorageMaxPower = input$read_hydroStorageMaxPower, 
-            reserve = input$read_reserve, 
-            linkCapacity = if(!is.null(input$read_links)) input$read_linkCapacity else FALSE, 
-            mustRun = input$read_mustRun, thermalModulation = input$read_thermalModulation,
-            select = input$read_select, mcYears = mcYears, timeStep = input$read_timeStep, 
-            parallel = input$read_parallel
+          data <- withCallingHandlers({
+            tryCatch({
+              readAntares(areas = input$read_areas, links = input$read_links, clusters = input$read_clusters,
+                          districts = input$read_districts, misc = input$read_misc, 
+                          thermalAvailabilities = input$read_thermalAvailabilities,
+                          hydroStorage = input$read_hydroStorage, hydroStorageMaxPower = input$read_hydroStorageMaxPower, 
+                          reserve = input$read_reserve, 
+                          linkCapacity = if(!is.null(input$read_links)) input$read_linkCapacity else FALSE, 
+                          mustRun = input$read_mustRun, thermalModulation = input$read_thermalModulation,
+                          select = input$read_select, mcYears = mcYears, timeStep = input$read_timeStep, 
+                          opts = opts(), parallel = input$read_parallel,
+                          simplify = TRUE, showProgress = FALSE)},
+              error = function(e){
+                showModal(modalDialog(
+                  title = "Error reading data",
+                  easyClose = TRUE,
+                  footer = NULL,
+                  paste("Pleas update input. Error : ", e, sep = "\n")
+                ))
+                list()
+              })}, 
+            warning = function(w){
+              showModal(modalDialog(
+                title = "Warning reading data",
+                easyClose = TRUE,
+                footer = NULL,
+                w
+              ))
+            }
           )
           
-          n_list <- length(list_data_all$antaresDataList) + 1
-          list_data_all$antaresDataList[[n_list]] <- data
+          if(length(data) > 0){
+            # save params
+            params <- list(
+              areas = input$read_areas, links = input$read_links, clusters = input$read_clusters,
+              districts = input$read_districts, misc = input$read_misc, 
+              thermalAvailabilities = input$read_thermalAvailabilities,
+              hydroStorage = input$read_hydroStorage, hydroStorageMaxPower = input$read_hydroStorageMaxPower, 
+              reserve = input$read_reserve, 
+              linkCapacity = if(!is.null(input$read_links)) input$read_linkCapacity else FALSE, 
+              mustRun = input$read_mustRun, thermalModulation = input$read_thermalModulation,
+              select = input$read_select, mcYears = mcYears, timeStep = input$read_timeStep, 
+              parallel = input$read_parallel
+            )
+            
+            n_list <- length(list_data_all$antaresDataList) + 1
+            list_data_all$antaresDataList[[n_list]] <- data
+            
+            # write params and links control
+            list_data_all$params[[n_list]] <- params
+            list_data_all$opts[[n_list]] <- opts()
+            if(!is.null(input$read_links)){
+              list_data_all$have_links[n_list] <- TRUE
+            } else {
+              list_data_all$have_links[n_list] <- FALSE
+            }
+            have_areas <- is.null(input$read_areas) & is.null(input$read_links) & is.null(input$read_clusters) & 
+              is.null(input$read_districts) | !is.null(input$read_areas)
+            if(have_areas){
+              list_data_all$have_areas[n_list] <- TRUE
+            } else {
+              list_data_all$have_areas[n_list] <- FALSE
+            }
+            names(list_data_all$antaresDataList)[[n_list]] <- current_study_path()
+          }
           
         } else {
           params <- list(
@@ -54,25 +93,24 @@ observe({
           # a .h5 file, so return opts...
           n_list <- length(list_data_all$antaresDataList) + 1
           list_data_all$antaresDataList[[n_list]] <- opts()
+          
+          # write params and links control
+          list_data_all$params[[n_list]] <- params
+          list_data_all$opts[[n_list]] <- opts()
+          if(!is.null(input$read_links)){
+            list_data_all$have_links[n_list] <- TRUE
+          } else {
+            list_data_all$have_links[n_list] <- FALSE
+          }
+          have_areas <- is.null(input$read_areas) & is.null(input$read_links) & is.null(input$read_clusters) & 
+            is.null(input$read_districts) | !is.null(input$read_areas)
+          if(have_areas){
+            list_data_all$have_areas[n_list] <- TRUE
+          } else {
+            list_data_all$have_areas[n_list] <- FALSE
+          }
+          names(list_data_all$antaresDataList)[[n_list]] <- current_study_path()
         }
-        
-        # write params and links control
-        list_data_all$params[[n_list]] <- params
-        list_data_all$opts[[n_list]] <- opts()
-        if(!is.null(input$read_links)){
-          list_data_all$have_links[n_list] <- TRUE
-        } else {
-          list_data_all$have_links[n_list] <- FALSE
-        }
-        have_areas <- is.null(input$read_areas) & is.null(input$read_links) & is.null(input$read_clusters) & 
-          is.null(input$read_districts) | !is.null(input$read_areas)
-        if(have_areas){
-          list_data_all$have_areas[n_list] <- TRUE
-        } else {
-          list_data_all$have_areas[n_list] <- FALSE
-        }
-        names(list_data_all$antaresDataList)[[n_list]] <- current_study_path()
-        
       }
     })
   }

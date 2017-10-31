@@ -76,9 +76,32 @@ observe({
 # init opts after validation
 opts <- reactive({
   if(input$init_sim > 0){
-    opts <- setSimulationPath(isolate(input$study_path))
-    if(is.null(opts$h5)){
-      opts$h5 <- FALSE
+    opts <- 
+      tryCatch({
+        setSimulationPath(isolate(input$study_path))
+      }, error = function(e){
+        showModal(modalDialog(
+          easyClose = TRUE,
+          footer = NULL,
+          "Directory/file is not an Antares study."
+        ))
+        NULL
+      })
+    if(!is.null(opts)){
+      if(is.null(opts$h5)){
+        opts$h5 <- FALSE
+      }
+      # bad h5 control
+      if(opts$h5){
+        if(length(setdiff(names(opts), c("h5", "h5path"))) == 0){
+          showModal(modalDialog(
+            easyClose = TRUE,
+            footer = NULL,
+            "Invalid h5 file : not an Antares study."
+          ))
+          opts <- NULL
+        }
+      }
     }
     opts
   } else {
