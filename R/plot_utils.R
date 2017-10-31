@@ -62,13 +62,14 @@
   # Aggregating values
   if (aggregate != "none" && length(uniqueElement) > 1) {
     if (aggregate == "mean") {
-      tpl <- tpl[, .(element = as.factor(variable), value = mean(value)), 
+      tpl <- tpl[, .(element = as.factor("Mean"), value = mean(value)), 
                  by = c(.idCols(tpl))]
     } else if (aggregate == "sum") {
-      tpl <- tpl[, .(element = as.factor(variable), value = sum(value)), 
+      tpl <- tpl[, .(element = as.factor("Sum"), value = sum(value)), 
                  by = c(.idCols(tpl))]
     }
   }
+  
   tpl
 }
 
