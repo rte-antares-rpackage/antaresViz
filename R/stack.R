@@ -98,6 +98,15 @@
     dt$time[nrowTp + 1] <- dateRange[2]
   }
   }
+
+  if(is.null(getOption("sizeGraph"))){
+    options(sizeGraph = 1)
+  }
+  
+  if(nrow(dt) > getOption("sizeGraph") * 1500){
+    return(data.table(error = "To mutch data, please reduce selection. If you work with hourly data, you can reduce dateRange selection. You can also use limitSizeGraph function to remove limit of size."))
+  }
+  
   
   # 5- Finally plot !!
   colors <- unname(c("#FFFFFF", rev(colors), colors))
