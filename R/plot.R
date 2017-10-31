@@ -282,7 +282,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         )
         
         if (nrow(dt) == 0) return(combineWidgets("No data"))
-        
+        if("error" %in% names(dt)) return(combineWidgets(dt$error))
         if(type == "ts"){
           if(!is.null(dateRange))
           {

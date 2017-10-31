@@ -276,6 +276,16 @@ prodStack <- function(x,
       if (!is.null(dateRange)) {
         dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = opts)) %between% dateRange]
       }
+      
+      if(is.null(getOption("sizeGraph"))){
+        options(sizeGraph = 1)
+      }
+      
+      if(nrow(dt) > getOption("sizeGraph") * 1500){
+        return(combineWidgets("To mutch data, please reduce selection. If you work with hourly data, you can reduce dateRange selection. You can also use limitSizeGraph function to remove limit of size."))
+      }
+      
+      
       if(nrow(dt) == 0){
         return (combineWidgets("No data for this selection"))
       }
