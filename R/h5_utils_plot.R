@@ -122,4 +122,7 @@
   data
 }
 
+.tryCloseH5 <- function(){
+  try(rhdf5::H5close(), silent = TRUE)
+}
 

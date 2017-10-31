@@ -271,6 +271,7 @@
         }
       }
       tmp$tabl <- intersect(tmp$tabl, h5_tables)
+      rhdf5::H5close()
       tmp
     }else{
       mcY <- unique(unlist(lapply(x, function(y){unique(y$mcYears)})))
@@ -299,6 +300,7 @@
   timeStepS <- as.character(timeStepS)
   mcYearS <- x$mcYears
   tabl <- .getTableInH5(fid, timeStepS[1])
+  rhdf5::H5Fclose(fid)
   xPart = list(
     timeStepS = timeStepS,
     mcYearS = mcYearS,

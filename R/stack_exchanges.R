@@ -236,6 +236,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   
   manipulateWidget(
     {
+      .tryCloseH5()
       if(.id <= length(params$x)){
         params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend)
       } else {

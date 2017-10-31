@@ -375,7 +375,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   x_tranform <- NULL
   
   manipulateWidget({
-    
+    .tryCloseH5()
     if(.id <= length(params$x)){
       
       if(length(variable) == 0){return(combineWidgets(paste0("Please select some variables")))}

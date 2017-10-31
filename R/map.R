@@ -384,6 +384,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       if(!is.null(params))
       {
         if(.id <= length(params$x)){
+          .tryCloseH5()
           params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                   colAreaVar = colAreaVar,
                                   sizeAreaVars = sizeAreaVars,
@@ -414,7 +415,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .giveListFormat(x)
     }),
     paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
+      paramsH5List <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
+      rhdf5::H5close()
+      paramsH5List
     }),
     H5request = mwGroup(
       timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 

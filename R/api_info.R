@@ -117,6 +117,7 @@
     timeStepS <- as.character(timeStepS)
     mcYearS <- opts$mcYears
     tabl <- .getTableInH5(fid, timeStepS[1])
+    rhdf5::H5Fclose(fid)
     xPart = list(
       timeStepS = timeStepS,
       mcYearS = mcYearS,
@@ -134,6 +135,7 @@
     mcYearS <- opts$mcYears
     tabl <- .getTableInH5(fid, timeStepS[1])
     tabl <- tabl[tabl%in%c("areas", "districts")]
+    rhdf5::H5Fclose(fid)
     yPart = list(
       timeStepS = timeStepS,
       mcYearS = mcYearS,
@@ -154,5 +156,6 @@
     ret$mcYearS <- sort(.compareOperation(list(xPart$mcYearS, yPart$mcYearS), xyCompare))
     ret$tabl <- .compareOperation(list(xPart$tabl, yPart$tabl), xyCompare)
   }
+  rhdf5::H5close()
   ret
 }
