@@ -516,6 +516,17 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         if(any(is.infinite(c(res))))
         {res <- NULL}
       }
+      ##Lock 7 days for hourly data
+      if(!is.null(params$x[[1]][[table]]$timeStep))
+      {
+      if(params$x[[1]][[table]]$timeStep == "hourly"){
+        if(params$x[[1]][[table]]$dateRange[2] - params$x[[1]][[table]]$dateRange[1]>7){
+          res[1] <- params$x[[1]][[table]]$dateRange[2] - 7
+        }
+      }
+        
+      }
+      
       res
     }else{NULL}
   }, 

@@ -269,7 +269,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       x$links[,time := .timeIdToDate(x$links$timeId, attr(x, "timeStep"), opts)]
     }
     
-    
     if(is.null(init_dateRange)){
       if(!is.null(x$areas)){
         init_dateRange <- range(as.Date(x$areas$time))
@@ -284,7 +283,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                         popupLinkVars, 
                         type = c("detail", "avg"), mcYear,
                         initial = TRUE, session = NULL, outputId = "output1", dateRange = NULL) {
-      
       type <- match.arg(type)
       if (type == "avg") t <- NULL
       else if (is.null(t)) t <- 0
@@ -292,9 +290,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       # Prepare data
       if (mcYear == "average") x <- syntx
       
-      
       if(!is.null(dateRange)){
         dateRange <- sort(dateRange)
+        
         if(!is.null(x$areas))
         {
           x$areas  <- x$areas[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2] + 1, tz = "UTC")]
@@ -353,7 +351,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   if (!interactive) {
     params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
-    
+
     map <-  params$x[[1]]$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
                                   popupAreaVars = popupAreaVars, areaChartType = areaChartType,
                                   uniqueScale = uniqueScale, showLabels = showLabels,
@@ -588,6 +586,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     ),
     mapLayout = mwSharedValue(mapLayout),
     params = mwSharedValue({
+      
+      #To correct
+      .getDataForComp(x_tranform, NULL, compare, compareOpts, 
+                      processFun = processFun, mapLayout = mapLayout)
       .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                       processFun = processFun, mapLayout = mapLayout)
     }),

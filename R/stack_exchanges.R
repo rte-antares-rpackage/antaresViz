@@ -325,6 +325,17 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
           res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = NULL),
                    .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = NULL))
         }
+        paramsS <<- params
+        ##Lock 7 days for hourly data
+        if(!is.null(attributes(params$x[[1]]$x)$timeStep))
+        {
+        if(attributes(params$x[[1]]$x)$timeStep == "hourly"){
+          if(params$x[[1]]$dateRange[2] - params$x[[1]]$dateRange[1]>7){
+            res[1] <- params$x[[1]]$dateRange[2] - 7
+          }
+        }
+        }
+        
         res
       }else{NULL}
     }, 

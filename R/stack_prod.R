@@ -435,7 +435,18 @@ prodStack <- function(x,
         if(!is.null(params)){
           res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table),
                    .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table))
+          ##Lock 7 days for hourly data
+          if(params$x[[1]]$timeStep == "hourly"){
+            if(params$x[[1]]$dateRange[2] - params$x[[1]]$dateRange[1]>7){
+              res[1] <- params$x[[1]]$dateRange[2] - 7
+          }
+          
+          
         }
+        }
+        
+        
+        
         res
       }else{NULL}
     }, 
@@ -448,7 +459,10 @@ prodStack <- function(x,
       if(!is.null(params)){
         .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
       }
-    }),
+    }
+    ),
+    
+    
     
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
     
