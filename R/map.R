@@ -590,6 +590,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       #To correct
       .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                       processFun = processFun, mapLayout = mapLayout)
+      
       .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                       processFun = processFun, mapLayout = mapLayout)
     }),
