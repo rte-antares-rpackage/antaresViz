@@ -202,6 +202,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   env_plotFun <- new.env()
   
   processFun <- function(x, mapLayout) {
+    
     if (!is(x, "antaresData")) {
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
     } else {
@@ -295,10 +296,18 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         
         if(!is.null(x$areas))
         {
+          # in case of missing transformation...
+          if("character" %in% class(x$areas$time)){
+            x$areas[,time := .timeIdToDate(x$areas$timeId, attr(x, "timeStep"), simOptions(x))]
+          }
           x$areas  <- x$areas[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2] + 1, tz = "UTC")]
         }
         if(!is.null(x$links))
         {
+          # in case of missing transformation...
+          if("character" %in% class(x$links$time)){
+            x$links[,time := .timeIdToDate(x$links$timeId, attr(x, "timeStep"), simOptions(x))]
+          }
           x$links <- x$links[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2] + 1, tz = "UTC")]
         }
       }
@@ -586,11 +595,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     ),
     mapLayout = mwSharedValue(mapLayout),
     params = mwSharedValue({
-      
-      #To correct
-      .getDataForComp(x_tranform, NULL, compare, compareOpts, 
-                      processFun = processFun, mapLayout = mapLayout)
-      
       .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                       processFun = processFun, mapLayout = mapLayout)
     }),
