@@ -220,7 +220,7 @@ prodStack <- function(x,
     x <- list(x, x)
   }
   
-  .testXclassAndInterractive(x, interactive)
+  .testXclassAndInteractive(x, interactive)
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   

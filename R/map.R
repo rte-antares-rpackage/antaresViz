@@ -179,7 +179,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
-  .testXclassAndInterractive(x, interactive)
+  .testXclassAndInteractive(x, interactive)
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
