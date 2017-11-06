@@ -152,7 +152,12 @@ navbarPage("antaresViz", id = "nav-id",
                       ),
                       tabPanel("Map", 
                                conditionalPanel(condition = "output.have_data",
-                                                mwModuleUI(id = "plotMap", height = "800px")
+                                                conditionalPanel(condition = "output.must_print_map", 
+                                                                 mwModuleUI(id = "plotMap", height = "800px")
+                                                ), 
+                                                conditionalPanel(condition = "output.must_print_map === false", 
+                                                                 h3("Please set a map layout before.")
+                                                )
                                ),
                                conditionalPanel(condition = "output.have_data === false",
                                                 h3("No data imported")

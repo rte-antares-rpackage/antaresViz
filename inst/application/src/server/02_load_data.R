@@ -34,7 +34,7 @@ observe({
                   title = "Error reading data",
                   easyClose = TRUE,
                   footer = NULL,
-                  paste("Pleas update input. Error : ", e, sep = "\n")
+                  paste("Please update input. Error : ", e, sep = "\n")
                 ))
                 list()
               })}, 

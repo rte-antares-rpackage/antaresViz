@@ -9,33 +9,25 @@ output$info_list <- renderUI({
       study <- lapply(1:length(list_data), function(i) {
         study_name <- paste0("list_study_", i)
         div(
-          # conditionalPanel(condition = paste0("input.list_study_rm", i, " < 1"),
           h4(textOutput(study_name)), style = 'height:24px', align = "center")
-        # )
       })
       # checkbox de selection
       check_list <- lapply(1:length(list_data), function(i) {
         check_name <- paste0("list_study_check", i)
         div(
-          # conditionalPanel(condition = paste0("input.list_study_rm", i, " < 1"),
           checkboxInput(check_name, "Include study in analysis", value = TRUE), align = "center")
-        # )
       })
       # bouton pour afficher les parametres
       params_list <- lapply(1:length(list_data), function(i) {
         btn_name <- paste0("list_study_params", i)
         div(
-          # conditionalPanel(condition = paste0("input.list_study_rm", i, " < 1"),
           actionButton(btn_name, "View parameters"), align = "center")
-        # )
       })
       # bouton pour supprimer les donnees
       rm_list <- lapply(1:length(list_data), function(i) {
         btn_name <- paste0("list_study_rm", i)
         div(
-          # conditionalPanel(condition = paste0("input.list_study_rm", i, " < 1"),
           actionButton(btn_name, "Remove study"), align = "center")
-        # )
       })
       # format et retour
       fluidRow(
@@ -47,9 +39,7 @@ output$info_list <- renderUI({
     })
   }else {
     # element vide si pas de donnees
-    fluidRow(
-      # div(h4("Veuillez sélectionner des indicateurs et valider votre choix", style = "color: darkblue;"), align = "center")
-    )
+    fluidRow()
   }
 })
 

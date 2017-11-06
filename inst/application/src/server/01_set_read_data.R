@@ -81,9 +81,10 @@ opts <- reactive({
         setSimulationPath(isolate(input$study_path))
       }, error = function(e){
         showModal(modalDialog(
+          title = "Error setting file",
           easyClose = TRUE,
           footer = NULL,
-          "Directory/file is not an Antares study."
+          paste("Directory/file is not an Antares study : ", e, sep = "\n")
         ))
         NULL
       })
