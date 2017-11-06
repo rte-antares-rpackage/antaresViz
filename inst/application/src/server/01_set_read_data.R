@@ -164,6 +164,10 @@ observe({
       slt <- unique(do.call("c", opts$variables))
       updateSelectInput(session, "read_select", "Select :", choices = slt, selected = NULL)
       
+      # removeVirtualAreas
+      updateSelectInput(session, "rmva_storageFlexibility", "storageFlexibility :", choices = opts$areaList, selected = NULL)
+      updateSelectInput(session, "rmva_production", "production :", choices = opts$areaList, selected = NULL)
+      
     })
   }
 })

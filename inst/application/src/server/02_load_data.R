@@ -48,6 +48,37 @@ observe({
             }
           )
           
+          # removeVirtualAreas
+          if(input$rmva_ctrl){
+            if(length(data) > 0){
+              data <- withCallingHandlers({
+                tryCatch({
+                  removeVirtualAreas(x = data, 
+                                     storageFlexibility = input$rmva_storageFlexibility, 
+                                     production = input$rmva_production,
+                                     reassignCosts = input$rmva_reassignCosts, 
+                                     newCols = input$rmva_newCols)},
+                  error = function(e){
+                    showModal(modalDialog(
+                      title = "removeVirtualAreas : error",
+                      easyClose = TRUE,
+                      footer = NULL,
+                      paste("Please update input. Error : ", e, sep = "\n")
+                    ))
+                    list()
+                  })}, 
+                warning = function(w){
+                  showModal(modalDialog(
+                    title = "removeVirtualAreas : warning",
+                    easyClose = TRUE,
+                    footer = NULL,
+                    w
+                  ))
+                }
+              )
+            }
+          }
+          
           if(length(data) > 0){
             # save params
             params <- list(

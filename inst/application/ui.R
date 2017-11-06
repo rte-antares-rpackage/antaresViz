@@ -32,7 +32,7 @@ navbarPage("antaresViz", id = "nav-id",
                                        ),
                                        column(6, 
                                               h3(textOutput("current_opts"), align = "left")
-                                              )
+                                       )
                                      )),
                                      h3("readAntares parameters"),
                                      fluidRow(
@@ -93,6 +93,37 @@ navbarPage("antaresViz", id = "nav-id",
                                                           width = "100%", multiple = TRUE)
                                        )
                                      ),
+                                     conditionalPanel(condition = "output.current_opts_h5 === false",
+                                                      fluidRow(
+                                                        column(3, 
+                                                               h4("removeVirtualAreas :")
+                                                        ),
+                                                        column(3, 
+                                                               checkboxInput("rmva_ctrl", "enabled", FALSE)
+                                                        )
+                                                      ),
+                                                      conditionalPanel(condition = "input.rmva_ctrl",
+                                                                       fluidRow(
+                                                                         column(3, 
+                                                                                selectInput("rmva_storageFlexibility", "storageFlexibility :", choices = NULL, selected = NULL, multiple = TRUE)
+                                                                         ),
+                                                                         column(3, 
+                                                                                selectInput("rmva_production", "production :", choices = NULL, selected = NULL, multiple = TRUE)
+                                                                         ), 
+                                                                         
+                                                                         column(3, 
+                                                                                br(),
+                                                                                checkboxInput("rmva_reassignCosts", "reassignCosts", FALSE)
+                                                                         ),
+                                                                         
+                                                                         column(3, 
+                                                                                br(),
+                                                                                checkboxInput("rmva_newCols", "newCols", FALSE)
+                                                                         )
+                                                                       )
+                                                      )
+                                     ),
+                                     
                                      div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center")
                     ),
                     conditionalPanel(condition = "output.have_data === true",
