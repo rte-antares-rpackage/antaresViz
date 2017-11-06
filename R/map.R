@@ -319,7 +319,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         assign("currentMapLayout", mapLayout)
         map <- .initMap(x, mapLayout, options) %>% syncWith(group)
       } else {
-        map <- leafletProxy(outputId, session)
+        # in some case, map doesn't existed yet....!
+        if("output_1_zoom" %in% names(session$input)){
+          map <- leafletProxy(outputId, session)
+        } else {
+          map <- .initMap(x, mapLayout, options) %>% syncWith(group)
+        }
       }
       map %>% 
         .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
