@@ -200,7 +200,7 @@
 #' 
 #' @noRd
 .loadH5Data <- function(sharerequest, dta, areas = NULL, links = NULL, clusters = NULL, 
-                        districts = NULL, h5requestFiltering = list()){
+                        districts = NULL, h5requestFilter = list()){
   if(.isSimOpts(dta)){
     gc()
     if(length(sharerequest$mcYearh_l)==0) {mcYearh2 <- NULL}else{
@@ -229,7 +229,7 @@
     
     argS <- list(areas = areas, links = links, clusters = clusters,districts = districts , mcYears = mcYearh2,
                  timeStep = sharerequest$timeSteph5_l, opts = dta)
-    argS[names(h5requestFiltering)] <- h5requestFiltering
+    argS[names(h5requestFilter)] <- h5requestFilter
     dt <- do.call(readAntares,
                   argS)
     
@@ -254,12 +254,12 @@
 #' @param xyCompare, character
 #' 
 #' @noRd
-.h5ParamList <- function(X_I, xyCompare, h5requestFiltering = NULL){
+.h5ParamList <- function(X_I, xyCompare, h5requestFilter = NULL){
   listParam <- lapply(1:length(X_I), function(i){
     x <- X_I[[i]]
     if(.isSimOpts(x)){
       tmp <- .h5Inf(x)
-      h5_filter <- h5requestFiltering[[i]]
+      h5_filter <- h5requestFilter[[i]]
       h5_tables <- c("areas", "districts", "clusters", "links")
       if(!is.null(h5_filter)){
         if(!(is.null(h5_filter$areas) & is.null(h5_filter$districts) & 
@@ -283,9 +283,12 @@
       )
     }
   })
-  lapply(.transposeL(listParam), function(x){
+  res <- lapply(.transposeL(listParam), function(x){
     .compareOperation(x, xyCompare)
   })
+  
+  res$h5requestFilter <- h5requestFilter
+  res
 }
 
 #' Load information from h5 file

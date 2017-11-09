@@ -354,7 +354,9 @@ prodStack <- function(x,
       h5requestFiltering
     }),
     paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilt = h5requestFiltering)
+      tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
+      tmp2 <<- tmp
+      tmp
     }),
     H5request = mwGroup(
       timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
@@ -389,7 +391,7 @@ prodStack <- function(x,
     
     x_tranform = mwSharedValue({
       
-      h5requestFilteringTp <- paramsH5$h5requestFilt
+      h5requestFilteringTp <- paramsH5$h5requestFilter
       if(!is.null(sharerequest))
       {
         
@@ -406,7 +408,7 @@ prodStack <- function(x,
       }
 
       sapply(1:length(x_in),function(zz){
-        .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFilteringTp[[zz]])
+        .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = h5requestFilteringTp[[zz]])
       }, simplify = FALSE)
     }),
     

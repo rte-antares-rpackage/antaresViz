@@ -281,7 +281,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
         )
         
-        if (nrow(dt) == 0) return(combineWidgets("No data"))
+        if (nrow(dt) == 0 | !variable %in% colnames(dt)) return(combineWidgets("No data"))
         if("error" %in% names(dt)) return(combineWidgets(dt$error))
         if(type == "ts"){
           if(!is.null(dateRange))
@@ -378,7 +378,6 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     .tryCloseH5()
     if(.id <= length(params$x)){
       
-
       if(length(variable) == 0){return(combineWidgets(paste0("Please select some variables")))}
       
       if(length(elements) == 0){return(combineWidgets(paste0("Please select some elements")))}
@@ -409,7 +408,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   h5requestFiltering = mwSharedValue({h5requestFiltering}),
   
   paramsH5 = mwSharedValue({
-    .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilt = h5requestFiltering)
+    .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
   }),
   
   
@@ -441,7 +440,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   
   x_tranform = mwSharedValue({
     dataInApp <- sapply(1:length(x_in),function(zz){
-      .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = paramsH5$h5requestFilt[[zz]])
+      .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = paramsH5$h5requestFilter[[zz]])
     }, simplify = FALSE)
     dataInApp
   }),
