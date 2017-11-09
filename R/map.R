@@ -426,8 +426,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     x_in = mwSharedValue({
       .giveListFormat(x)
     }),
+    h5requestFiltering = mwSharedValue({h5requestFiltering}),
+    
     paramsH5 = mwSharedValue({
-      paramsH5List <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
+      paramsH5List <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilt = h5requestFiltering)
       rhdf5::H5close()
       paramsH5List
     }),
@@ -451,10 +453,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     sharerequest = mwSharedValue({
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
     }),
-    h5requestFiltering = mwSharedValue({h5requestFiltering}),
     x_tranform = mwSharedValue({
       sapply(1:length(x_in),function(zz){
-        .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFiltering[[zz]])
+        .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = paramsH5$h5requestFilt[[zz]])
       }, simplify = FALSE)
     }),
     

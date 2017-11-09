@@ -350,8 +350,11 @@ prodStack <- function(x,
     x_in = mwSharedValue({
       .giveListFormat(x)
     }),
+    h5requestFiltering = mwSharedValue({
+      h5requestFiltering
+    }),
     paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
+      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilt = h5requestFiltering)
     }),
     H5request = mwGroup(
       timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
@@ -382,13 +385,11 @@ prodStack <- function(x,
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
     }),
     
-    h5requestFiltering = mwSharedValue({
-      h5requestFiltering
-    }),
+
     
     x_tranform = mwSharedValue({
       
-      h5requestFilteringTp <- h5requestFiltering
+      h5requestFilteringTp <- paramsH5$h5requestFilt
       if(!is.null(sharerequest))
       {
         

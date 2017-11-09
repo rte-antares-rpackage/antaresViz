@@ -245,13 +245,14 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       }
     },
     x = mwSharedValue(x),
+    h5requestFiltering = mwSharedValue({h5requestFiltering}),
     
     x_in = mwSharedValue({
       .giveListFormat(x)
     }),
     
     paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
+      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilt = h5requestFiltering)
     }),
     
     H5request = mwGroup(
@@ -276,17 +277,16 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = NULL)
     }),
     
-    h5requestFiltering = mwSharedValue({h5requestFiltering}),
-    
+
     x_tranform = mwSharedValue({
       areas = "all"
       links = "all"
-      if(length(h5requestFiltering[[1]]) > 0){
+      if(length(paramsH5$h5requestFilt[[1]]) > 0){
         areas <- NULL
         links <- NULL
       }
       sapply(1:length(x_in),function(zz){
-        .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFiltering = h5requestFiltering[[zz]])
+        .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFiltering = paramsH5$h5requestFilt[[zz]])
       }, simplify = FALSE)
     }),
     

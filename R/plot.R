@@ -406,9 +406,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     .giveListFormat(x)
   }),
   
+  h5requestFiltering = mwSharedValue({h5requestFiltering}),
+  
   paramsH5 = mwSharedValue({
-    .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFiltering = h5requestFiltering)
+    .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilt = h5requestFiltering)
   }),
+  
   
   H5request = mwGroup(
     timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
@@ -436,11 +439,9 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
   }),
   
-  h5requestFiltering = mwSharedValue({h5requestFiltering}),
-  
   x_tranform = mwSharedValue({
     dataInApp <- sapply(1:length(x_in),function(zz){
-      .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = h5requestFiltering[[zz]])
+      .loadH5Data(sharerequest, x_in[[zz]], h5requestFiltering = paramsH5$h5requestFilt[[zz]])
     }, simplify = FALSE)
     dataInApp
   }),
