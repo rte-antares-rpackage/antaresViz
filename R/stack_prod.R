@@ -387,9 +387,11 @@ prodStack <- function(x,
     }),
     
     x_tranform = mwSharedValue({
+      
+      h5requestFilteringTp <- h5requestFiltering
       if(!is.null(sharerequest))
       {
-        h5requestFilteringTp <- h5requestFiltering
+        
         
         for(i in 1:length(h5requestFilteringTp))
         {
