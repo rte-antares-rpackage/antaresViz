@@ -49,30 +49,21 @@ observe({
         ind_map <- unique(sort(c(ind_keep_list_data$ind_areas, ind_keep_list_data$ind_links)))
         if(length(ind_map) > 0){
           if(!is.null(ml)){
-            if(length(ind_map) != list_data_controls$n_maps & !is.null(ml)){
-              # init / re-init module plotMap
-              modules$plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
-                                         colAreaVar = "BALANCE", interactive = TRUE, 
-                                         xyCompare = "union", .updateBtn = TRUE, 
-                                         .updateBtnInit = TRUE, .runApp = FALSE)
-            }
+            # init / re-init module plotMap
+            modules$plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
+                                       colAreaVar = "BALANCE", interactive = TRUE, 
+                                       h5requestFiltering = list_data_all$params[ind_map],
+                                       xyCompare = "union", .updateBtn = TRUE, 
+                                       .updateBtnInit = TRUE, .runApp = FALSE)
+            
+            mwModule(id = "plotMap",  modules$plotMap)
             # save data and params
-            list_data_map$antaresDataList <- list_data_all$antaresDataList[ind_map]
-            list_data_map$h5requestFiltering <- list_data_all$params[ind_map]
             list_data_controls$n_maps <- length(ind_map)
           }
         }
       }
     }
   })
-})
-
-# update map module
-observe({
-  if(!is.null(modules$plotMap)){
-    mwModule(id = "plotMap",  modules$plotMap, x = reactive(list_data_map$antaresDataList), 
-             mapLayout = ml, h5requestFiltering = reactive(list_data_map$h5requestFiltering))
-  }
 })
 
 # change page

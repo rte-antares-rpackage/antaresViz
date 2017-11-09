@@ -15,15 +15,6 @@ function(input, output, session) {
   list_data_all <- reactiveValues(antaresDataList = list(), params = list(), 
                                   have_links = c(), have_areas = c(), opts = list())
   
-  # current data for module stack, plotTS (must have areas)
-  list_data_areas <- reactiveValues(antaresDataList = list(), h5requestFiltering = list())
-  
-  # current data for module exchange (must have link)
-  list_data_links <- reactiveValues(antaresDataList = list(), h5requestFiltering = list())
-  
-  # current data for module maps (must have areas and/or link)
-  list_data_map <- reactiveValues(antaresDataList = list(), h5requestFiltering = list())
-  
   # set of controls
   list_data_controls <- reactiveValues(have_links = FALSE, have_areas = FALSE, 
                                        n_links = -1, n_areas = -1, n_maps = -1)
