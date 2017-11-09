@@ -5,7 +5,11 @@ layout <- reactive({
     if(!is.null(ind_keep_list_data)){
       ind_map <- unique(sort(c(ind_keep_list_data$ind_areas, ind_keep_list_data$ind_links)))
       if(length(ind_map) > 0){
-        readLayout(opts = list_data_all$opts[ind_map])
+        if(packageVersion("antaresRead") <= '2.0.0'){
+          readLayout(opts = list_data_all$opts[ind_map][[1]])
+        } else {
+          readLayout(opts = list_data_all$opts[ind_map])
+        }
       }else{
         NULL
       }
