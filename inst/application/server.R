@@ -88,12 +88,27 @@ function(input, output, session) {
   #------------
   
   source("src/server/06_module_map.R", local = T)
-
+  
   #----------------
   # shared inputs
   #----------------
   
   source("src/server/04_shared_input.R", local = T)
+  
+  #----------------
+  # memory options
+  #----------------
+  observe({
+    if(!is.na(input$ram_limit)){
+      antaresRead::setRam(input$ram_limit)
+    }
+  })
+  
+  observe({
+    if(!is.na(input$data_module)){
+      limitSizeGraph(input$data_module)
+    }
+  })
   
   #----------------
   # quit

@@ -32,7 +32,7 @@
       dt <- dt[, .getConfInt(value), by = .(element)]
     }
   }
-  print(dt)
+  # print(dt)
   dt[,"element" := as.character(element)]
   variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable

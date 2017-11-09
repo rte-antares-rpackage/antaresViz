@@ -38,6 +38,7 @@ pkgEnv <- antaresRead:::pkgEnv
 
 .onLoad <- function(libname, pkgname) {
   setInteractivity("auto")
+  options(antaresVizSizeGraph = 200)
 }
 
 # Generate the list of aliases for function prodStack()
@@ -107,3 +108,7 @@ pkgEnv$prodStackAliases <- list(
 )
 
 rm(graphicalCharter, formulas, colors)
+
+# message limit size
+antaresVizSizeGraphError = "Too much data, please reduce selection. If you work with hourly data, you can reduce dateRange selection. 
+You can also use 'limitSizeGraph' function in R or 'Memory Controls' panel in shiny to update this."

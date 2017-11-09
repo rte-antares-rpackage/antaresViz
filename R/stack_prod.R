@@ -277,15 +277,6 @@ prodStack <- function(x,
         dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = opts)) %between% dateRange]
       }
       
-      if(is.null(getOption("sizeGraph"))){
-        options(sizeGraph = 1)
-      }
-      
-      if(nrow(dt) > getOption("sizeGraph") * 1500){
-        return(combineWidgets("To mutch data, please reduce selection. If you work with hourly data, you can reduce dateRange selection. You can also use limitSizeGraph function to remove limit of size."))
-      }
-      
-      
       if(nrow(dt) == 0){
         return (combineWidgets("No data for this selection"))
       }
@@ -301,6 +292,7 @@ prodStack <- function(x,
       if("try-error" %in% class(p)){
         return (combineWidgets(paste0("Can't visualize stack '", stack, "'<br>", p[1])))
       }
+      
       if (legend) {
         l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId + id - 1)
       } else {
@@ -348,7 +340,8 @@ prodStack <- function(x,
     {
       .tryCloseH5()
       if(.id <= length(params$x)){
-        params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
+        widget <- params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
+        controlWidgetSize(widget)
       } else {
         combineWidgets("No data for this selection")
       }

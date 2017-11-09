@@ -2,19 +2,19 @@
 % Please edit documentation in R/limitSizeGraph.R
 \name{limitSizeGraph}
 \alias{limitSizeGraph}
-\title{Use to change limit size of graph}
+\title{Use to change limit size of graph (in Mb)}
 \usage{
 limitSizeGraph(size)
 }
 \arguments{
-\item{size}{\code{numeric} size autorize of graphs in modules (default 1)}
+\item{size}{\code{numeric} widget size autorized in modules (default 200)}
 }
 \description{
-Use to change limit size of graph
+Use to change limit size of graph (in Mb)
 }
 \examples{
 \dontrun{
-limitSizeGraph(10)
+limitSizeGraph(500)
 }
 
 }

@@ -238,7 +238,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     {
       .tryCloseH5()
       if(.id <= length(params$x)){
-        params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend)
+        widget <- params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend)
+        controlWidgetSize(widget)
       } else {
         combineWidgets("No data for this selection")
       }

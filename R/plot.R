@@ -387,8 +387,9 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       
       if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this study")))}
       
-      params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, 
+      widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, 
                                                    dateRange, minValue, maxValue, aggregate, legend)
+      controlWidgetSize(widget)
     } else {
       combineWidgets("No data for this selection")
     }

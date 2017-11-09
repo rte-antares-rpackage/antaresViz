@@ -60,6 +60,7 @@
   }
   
   legendId <- sample(1e9, 1)
+  
   g <- dygraph(as.xts.data.table(dt), main = main, group = group) %>% 
     dyOptions(
       includeZero = TRUE, 
