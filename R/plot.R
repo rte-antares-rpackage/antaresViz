@@ -281,8 +281,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
         )
         
-        if (nrow(dt) == 0 | !variable %in% colnames(dt)) return(combineWidgets("No data"))
-        if("error" %in% names(dt)) return(combineWidgets(dt$error))
+        if (nrow(dt) == 0) return(combineWidgets("No data"))
+
         if(type == "ts"){
           if(!is.null(dateRange))
           {
