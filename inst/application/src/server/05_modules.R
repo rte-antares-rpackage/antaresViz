@@ -77,9 +77,11 @@ outputOptions(output, "have_data_areas", suspendWhenHidden = FALSE)
 
 # change page
 observe({
-  if(list_data_controls$have_areas & list_data_controls$n_areas >= 1){
-    updateNavbarPage(session, inputId = "nav-id", selected = "prodStack")
-  } else if(list_data_controls$have_links & list_data_controls$n_links >= 1){
-    updateNavbarPage(session, inputId = "nav-id", selected = "exchangesStack")
+  if(input$update_module > 0){
+    if(list_data_controls$have_areas & list_data_controls$n_areas >= 1){
+      updateNavbarPage(session, inputId = "nav-id", selected = "prodStack")
+    } else if(list_data_controls$have_links & list_data_controls$n_links >= 1){
+      updateNavbarPage(session, inputId = "nav-id", selected = "exchangesStack")
+    }
   }
 })

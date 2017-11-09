@@ -29,7 +29,7 @@ observe({
                                end = isolate({input[[last_update_input[1, input_id]]][2]}))
         } else if(data_shared_input[i, type] %in% "selectInput"){
           updateSelectInput(session, data_shared_input[i, input_id], 
-                            selected = isolate({input[[last_update_input[1, input_id]]][1]}))
+                            selected = isolate({input[[last_update_input[1, input_id]]]}))
         }
       }
     }
