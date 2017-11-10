@@ -122,6 +122,7 @@
       unhighlightCallback = JS_resetLegend(legendId)
     )
   
+  
   if (length(lines) > 0) {
     for (i in 1:length(lines)) {
       g <- g %>% dySeries(name = paste0("opp", lines[i]), color = lineColors[i], 

@@ -23,7 +23,7 @@
                     legend = TRUE,
                     legendItemsPerRow = 5,
                     group = NULL,
-                    width = NULL, height = NULL, ...) {
+                    width = NULL, height = NULL, highlight = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -78,7 +78,11 @@
     dyCallbacks(
       highlightCallback = JS_updateLegend(legendId, timeStep),
       unhighlightCallback = JS_resetLegend(legendId)
-    )
+    ) 
+  if(highlight)
+  {
+    g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
+  }
   
   if (plotConfInt) {
     for (v in uniqueElements) {

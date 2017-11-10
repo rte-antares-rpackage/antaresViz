@@ -64,6 +64,7 @@
 #'   Use when you compare studies, can be "union" or "intersect". If union, all
 #'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
 #'   studies will be selectable.
+#' @param highlight highlight curve when mouse over
 #' 
 #' @inheritParams prodStack
 #'   
@@ -176,7 +177,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    legendItemsPerRow = 5,
                    colorScaleOpts = colorScaleOptions(20),
                    width = NULL, height = NULL, xyCompare = c("union","intersect"),
-                   h5requestFiltering = list(), ...) {
+                   h5requestFiltering = list(), highlight = FALSE, ...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -267,7 +268,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       
       # Function that generates the desired graphic.
       plotFun <- function(mcYear, id, variable, elements, type, confInt, dateRange, 
-                          minValue, maxValue, aggregate, legend) {
+                          minValue, maxValue, aggregate, legend, highlight) {
         if (is.null(variable)) variable <- valueCols[1]
         if (is.null(dateRange)) dateRange <- dateRange
         if (is.null(type) || !variable %in% names(x)) {
@@ -325,7 +326,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           height = height,
           opts = opts,
           colorScaleOpts = colorScaleOpts,
-          group = group
+          group = group,
+          highlight = highlight
         )
         
       }
@@ -359,7 +361,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
     return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
-                                          minValue, maxValue, aggregate, legend))
+                                          minValue, maxValue, aggregate, legend, highlight))
   }
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
@@ -387,7 +389,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this study")))}
       
       widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, 
-                                                   dateRange, minValue, maxValue, aggregate, legend)
+                                                   dateRange, minValue, maxValue, aggregate, legend, 
+                                                   highlight)
       controlWidgetSize(widget)
     } else {
       combineWidgets("No data for this selection")
@@ -583,7 +586,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   ),
   
   legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
-  
+  highlight = mwCheckbox(highlight),
   timeStepdataload = mwSharedValue({
     attributes(x_tranform[[1]])$timeStep
   }),

@@ -4,7 +4,7 @@
 #' value over time steps.
 #' 
 #' @noRd 
-#'  
+#'
 .barplot <- function(dt, timeStep, variable, confInt = 0, maxValue,
                      colors = NULL,
                      main = NULL,

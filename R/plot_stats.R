@@ -1,5 +1,5 @@
 .plotMonotone <- function(dt, timeStep, variable, confInt = NULL, maxValue,
-                          main = NULL, ylab = NULL, ...) {
+                          main = NULL, ylab = NULL, highlight = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -33,12 +33,12 @@
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Monotone of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, ...)
   
 }
 
 .density <- function(dt, timeStep, variable, minValue = NULL, maxValue = NULL, 
-                     main = NULL, ylab = NULL, ...) {
+                     main = NULL, ylab = NULL, highlight = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   
@@ -56,12 +56,12 @@
   if (is.null(ylab)) ylab <- "Density"
   if (is.null(main)) main <- paste("Density of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, ...)
   
 }
 
 .cdf <- function(dt, timeStep, variable, minValue = NULL, maxValue = NULL,
-                 main = NULL, ylab = NULL, ...) {
+                 main = NULL, ylab = NULL, highlight = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   
@@ -78,7 +78,7 @@
   if (is.null(ylab)) ylab <- "Proportion of time steps"
   if (is.null(main)) main <- paste("Cumulated distribution of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, ...)
   
 }
 
@@ -110,7 +110,7 @@
 
 .plotStat <- function(dt, ylab, main, colors, uniqueElements, 
                       legend, legendItemsPerRow, width, height,
-                      plotConfInt = FALSE, ...) {
+                      plotConfInt = FALSE, highlight = FALSE, ...) {
   dt <- dcast(dt, x ~ element, value.var = "y")
   
   if (is.null(colors)) {
@@ -135,6 +135,10 @@
       highlightCallback = JS_updateLegend(legendId, timeStep = "none"),
       unhighlightCallback = JS_resetLegend(legendId)
     )
+  if(highlight)
+  {
+    g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
+  }
   
   if (plotConfInt) {
     for (v in uniqueElements) {
