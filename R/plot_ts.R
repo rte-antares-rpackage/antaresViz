@@ -23,7 +23,7 @@
                     legend = TRUE,
                     legendItemsPerRow = 5,
                     group = NULL,
-                    width = NULL, height = NULL, highlight = FALSE, ...) {
+                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -69,7 +69,8 @@
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE,
       colors = colors, 
-      useDataTimezone = TRUE 
+      useDataTimezone = TRUE,
+      stepPlot = stepPlot
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60, rangePad = 10) %>% 

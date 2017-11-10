@@ -1,5 +1,5 @@
 .plotMonotone <- function(dt, timeStep, variable, confInt = NULL, maxValue,
-                          main = NULL, ylab = NULL, highlight = FALSE, ...) {
+                          main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -33,12 +33,12 @@
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Monotone of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, stepPlot = stepPlot, ...)
   
 }
 
 .density <- function(dt, timeStep, variable, minValue = NULL, maxValue = NULL, 
-                     main = NULL, ylab = NULL, highlight = FALSE, ...) {
+                     main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   
@@ -56,12 +56,12 @@
   if (is.null(ylab)) ylab <- "Density"
   if (is.null(main)) main <- paste("Density of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, stepPlot = stepPlot, ...)
   
 }
 
 .cdf <- function(dt, timeStep, variable, minValue = NULL, maxValue = NULL,
-                 main = NULL, ylab = NULL, highlight = FALSE, ...) {
+                 main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   
@@ -78,7 +78,7 @@
   if (is.null(ylab)) ylab <- "Proportion of time steps"
   if (is.null(main)) main <- paste("Cumulated distribution of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, highlight = highlight, stepPlot = stepPlot, ...)
   
 }
 
@@ -110,7 +110,7 @@
 
 .plotStat <- function(dt, ylab, main, colors, uniqueElements, 
                       legend, legendItemsPerRow, width, height,
-                      plotConfInt = FALSE, highlight = FALSE, ...) {
+                      plotConfInt = FALSE, highlight = FALSE, stepPlot = FALSE, ...) {
   dt <- dcast(dt, x ~ element, value.var = "y")
   
   if (is.null(colors)) {
@@ -127,7 +127,8 @@
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
-      labelsKMB = TRUE
+      labelsKMB = TRUE,
+      stepPlot = stepPlot
     ) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
     dyLegend(show = "never") %>% 
