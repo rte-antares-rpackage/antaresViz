@@ -177,7 +177,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    legendItemsPerRow = 5,
                    colorScaleOpts = colorScaleOptions(20),
                    width = NULL, height = NULL, xyCompare = c("union","intersect"),
-                   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE, ...) {
+                   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -268,7 +268,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       
       # Function that generates the desired graphic.
       plotFun <- function(mcYear, id, variable, elements, type, confInt, dateRange, 
-                          minValue, maxValue, aggregate, legend, highlight, stepPlot) {
+                          minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints) {
         if (is.null(variable)) variable <- valueCols[1]
         if (is.null(dateRange)) dateRange <- dateRange
         if (is.null(type) || !variable %in% names(x)) {
@@ -328,7 +328,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           colorScaleOpts = colorScaleOpts,
           group = group,
           highlight = highlight,
-          stepPlot = stepPlot
+          stepPlot = stepPlot,
+          drawPoints = drawPoints
         )
         
       }
@@ -362,7 +363,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
     return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
-                                          minValue, maxValue, aggregate, legend, highlight, stepPlot))
+                                          minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints))
   }
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
@@ -391,7 +392,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       
       widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, 
                                                    dateRange, minValue, maxValue, aggregate, legend, 
-                                                   highlight, stepPlot)
+                                                   highlight, stepPlot, drawPoints)
       controlWidgetSize(widget)
     } else {
       combineWidgets("No data for this selection")
@@ -589,6 +590,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
   highlight = mwCheckbox(highlight),
   stepPlot = mwCheckbox(stepPlot),
+  drawPoints = mwCheckbox(drawPoints),
   timeStepdataload = mwSharedValue({
     attributes(x_tranform[[1]])$timeStep
   }),

@@ -59,7 +59,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            width = NULL, height = NULL,
                            xyCompare = c("union","intersect"),
                            h5requestFiltering = list(),
-                           stepPlot = FALSE, ...) {
+                           stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -151,7 +151,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     
     if (is.null(init_area)) init_area = areaList[1]
     
-    plotFun <- function(id, area, dateRange, unit, mcYear, legend, stepPlot) {
+    plotFun <- function(id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints) {
       # Prepare data for stack creation
       a <- area
       linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
@@ -195,7 +195,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       # Stack
       g <- .plotStack(dt, timeStep, opts, colors,
                       legendId = legendId + id - 1, groupId = groupId, 
-                      main = main, ylab = ylab, stepPlot = stepPlot)
+                      main = main, ylab = ylab, stepPlot = stepPlot, drawPoints = drawPoints)
       
       if (legend) {
         # Add a nice legend
@@ -220,7 +220,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   
   if (!interactive) {
     params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun)
-    return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend, stepPlot))
+    return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend, stepPlot, drawPoints))
   }
   
   table <- NULL
@@ -239,7 +239,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     {
       .tryCloseH5()
       if(.id <= length(params$x)){
-        widget <- params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot)
+        widget <- params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints)
         controlWidgetSize(widget)
       } else {
         combineWidgets("No data for this selection")
@@ -358,6 +358,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     
     legend = mwCheckbox(legend),
     stepPlot = mwCheckbox(stepPlot),
+    drawPoints = mwCheckbox(drawPoints), 
     timeStepdataload = mwSharedValue({
       attributes(x_tranform[[1]])$timeStep
     }),

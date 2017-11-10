@@ -43,7 +43,7 @@
 #' @noRd
 .plotStack <- function(x, timeStep, opts, colors, lines = NULL, lineColors = NULL, 
                        legendId = "", groupId = legendId, main = "", ylab = "",
-                       width = NULL, height = NULL, dateRange = NULL, stepPlot = FALSE) {
+                       width = NULL, height = NULL, dateRange = NULL, stepPlot = FALSE, drawPoints = FALSE) {
   
   variables <- setdiff(names(x), c("timeId", lines))
   
@@ -113,7 +113,8 @@
       axisLabelColor = gray(0.6), 
       strokeWidth = 0,
       useDataTimezone = TRUE ,
-      stepPlot = stepPlot
+      stepPlot = stepPlot,
+      drawPoints = drawPoints
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg, na.rm = TRUE) * 1.1, NA)) %>% 
