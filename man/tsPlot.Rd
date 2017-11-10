@@ -14,7 +14,8 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   compareOpts = list(), interactive = getInteractivity(), colors = NULL,
   main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(), ...)
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  highlight = FALSE, ...)
 
 \method{plot}{antaresData}(x, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
@@ -24,7 +25,7 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), ...)
+  h5requestFiltering = list(), highlight = FALSE, ...)
 
 \method{plot}{simOptions}(x, table = NULL, variable = NULL,
   elements = NULL, mcYear = "average", type = c("ts", "barplot",
@@ -34,7 +35,7 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), ...)
+  h5requestFiltering = list(), highlight = FALSE, ...)
 
 \method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
   mcYear = "average", type = c("ts", "barplot", "monotone", "density",
@@ -43,7 +44,8 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   compareOpts = list(), interactive = getInteractivity(), colors = NULL,
   main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(), ...)
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  highlight = FALSE, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
@@ -140,6 +142,8 @@ studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
 typically h5requestFiltering = list(select = "NUCLEAR")}
+
+\item{highlight}{highlight curve when mouse over}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

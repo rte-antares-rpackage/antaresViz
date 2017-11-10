@@ -15,6 +15,7 @@
 #' @importFrom graphics plot par
 #' @importFrom methods is
 #' @importFrom stats density quantile lm predict
+#' @importFrom utils object.size
 #' 
 globalVariables(
   c("value", "element", "mcYear", "suffix", "time", "timeId", "dt", ".", 

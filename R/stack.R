@@ -43,7 +43,7 @@
 #' @noRd
 .plotStack <- function(x, timeStep, opts, colors, lines = NULL, lineColors = NULL, 
                        legendId = "", groupId = legendId, main = "", ylab = "",
-                       width = NULL, height = NULL, dateRange = NULL) {
+                       width = NULL, height = NULL, dateRange = NULL, stepPlot = FALSE) {
   
   variables <- setdiff(names(x), c("timeId", lines))
   
@@ -112,7 +112,8 @@
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
       strokeWidth = 0,
-      useDataTimezone = TRUE 
+      useDataTimezone = TRUE ,
+      stepPlot = stepPlot
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg, na.rm = TRUE) * 1.1, NA)) %>% 
@@ -121,7 +122,6 @@
       highlightCallback = JS_updateLegend(legendId, timeStep),
       unhighlightCallback = JS_resetLegend(legendId)
     )
-  
   
   if (length(lines) > 0) {
     for (i in 1:length(lines)) {

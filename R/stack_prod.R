@@ -90,6 +90,7 @@
 #'   studies will be selectable.
 #' @param h5requestFiltering Contains arguments used by default for h5 request,
 #'   typically h5requestFiltering = list(select = "NUCLEAR")
+#' @param stepPlot \code{boolean}, step style for curves.
 #' @param ... Other arguments for \code{\link{manipulateWidget}}
 #'  
 #' @return 
@@ -193,7 +194,7 @@ prodStack <- function(x,
                       groupId = legendId,
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL, xyCompare = c("union","intersect"),
-                      h5requestFiltering = list(), ...) {
+                      h5requestFiltering = list(), stepPlot = FALSE, ...) {
   
   if(!is.null(compare) && !interactive){
     stop("You can't use compare in no interactive mode")
@@ -260,7 +261,7 @@ prodStack <- function(x,
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
     if (length(init_dateRange) < 2) init_dateRange <- dataDateRange
     
-    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend) {
+    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend, stepPlot) {
       if (length(areas) == 0) return (combineWidgets("Please choose an area"))
       stackOpts <- .aliasToStackOptions(stack)
       dt <- x[area %in% areas]
@@ -287,7 +288,10 @@ prodStack <- function(x,
                               stackOpts$lineColors,
                               main = main,
                               unit = unit,
-                              legendId = legendId + id - 1, groupId = groupId, dateRange = dateRange), silent = TRUE)
+                              legendId = legendId + id - 1,
+                              groupId = groupId,
+                              dateRange = dateRange,
+                              stepPlot = stepPlot), silent = TRUE)
       
       if("try-error" %in% class(p)){
         return (combineWidgets(paste0("Can't visualize stack '", stack, "'<br>", p[1])))
@@ -317,7 +321,7 @@ prodStack <- function(x,
 
     params <- .getDataForComp(x = .giveListFormat(x), y = NULL, compare = compare,compareOpts = compareOptions, processFun = processFun)
     
-    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
+    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend, stepPlot))
   } else {
     # just init for compare & compareOpts
     # init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
@@ -340,7 +344,7 @@ prodStack <- function(x,
     {
       .tryCloseH5()
       if(.id <= length(params$x)){
-        widget <- params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
+        widget <- params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend, stepPlot)
         controlWidgetSize(widget)
       } else {
         combineWidgets("No data for this selection")
@@ -355,7 +359,7 @@ prodStack <- function(x,
     }),
     paramsH5 = mwSharedValue({
       tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
-      tmp2 <<- tmp
+      # tmp2 <<- tmp
       tmp
     }),
     H5request = mwGroup(
@@ -482,7 +486,7 @@ prodStack <- function(x,
     ),
     
     legend = mwCheckbox(legend),
-    
+    stepPlot = mwCheckbox(stepPlot),
     .compare = {
       compare
     },
@@ -554,7 +558,7 @@ prodStack <- function(x,
 .plotProdStack <- function(x, variables, colors, lines, lineColors, 
                            main = NULL, unit = "MWh", legendId = "",
                            groupId = legendId,
-                           width = NULL, height = NULL, dateRange = NULL) {
+                           width = NULL, height = NULL, dateRange = NULL, stepPlot = FALSE) {
   
   timeStep <- attr(x, "timeStep")
   
@@ -570,7 +574,7 @@ prodStack <- function(x,
   .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, legendId,
              groupId,
              main = main, ylab = sprintf("Production (%s)", unit), 
-             width = width, height = height, dateRange = dateRange)
+             width = width, height = height, dateRange = dateRange, stepPlot = stepPlot)
 }
 
 #' @rdname tsLegend

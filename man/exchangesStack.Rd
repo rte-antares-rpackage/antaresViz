@@ -10,7 +10,7 @@ exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), ...)
+  h5requestFiltering = list(), stepPlot = FALSE, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
@@ -78,6 +78,8 @@ studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
 typically h5requestFiltering = list(select = "NUCLEAR")}
+
+\item{stepPlot}{\code{boolean}, step style for curves.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
