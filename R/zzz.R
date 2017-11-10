@@ -10,7 +10,7 @@
 #' @import leaflet
 #' @import leaflet.minicharts
 #' @import assertthat
-#' @importFrom plotly plot_ly layout config add_bars add_heatmap
+#' @importFrom plotly plot_ly layout config add_bars add_heatmap add_text
 #' @importFrom grDevices col2rgb colorRampPalette colors gray rainbow
 #' @importFrom graphics plot par
 #' @importFrom methods is
