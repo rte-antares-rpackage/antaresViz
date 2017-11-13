@@ -25,6 +25,7 @@
                     group = NULL,
                     width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
+  
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
   if (is.null(group)) group <- sample(1e9, 1)
