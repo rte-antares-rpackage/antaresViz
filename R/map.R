@@ -202,7 +202,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   env_plotFun <- new.env()
   
   processFun <- function(x, mapLayout) {
-    
     if (!is(x, "antaresData")) {
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
     } else {
