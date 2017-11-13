@@ -65,6 +65,7 @@
 #'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
 #'   studies will be selectable.
 #' @param highlight highlight curve when mouse over
+#' @param secondAxis add second axis to graph
 #' 
 #' @inheritParams prodStack
 #'   
@@ -160,6 +161,7 @@
 #' 
 #' @export
 tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL, 
+                   variable2Axe = NULL,
                    mcYear = "average",
                    type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                    dateRange = NULL,
@@ -177,7 +179,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    legendItemsPerRow = 5,
                    colorScaleOpts = colorScaleOptions(20),
                    width = NULL, height = NULL, xyCompare = c("union","intersect"),
-                   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
+                   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
+                   secondAxis = FALSE, ...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -267,7 +270,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       }
       
       # Function that generates the desired graphic.
-      plotFun <- function(mcYear, id, variable, elements, type, confInt, dateRange, 
+      plotFun <- function(mcYear, id, variable, variable2Axe, elements, type, confInt, dateRange, 
                           minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints) {
         if (is.null(variable)) variable <- valueCols[1]
         if (is.null(dateRange)) dateRange <- dateRange
@@ -277,7 +280,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         if(variable[1] == "No Input") {return(combineWidgets("No data"))}
         dt <- .getTSData(
           x, dt, 
-          variable = variable, elements = elements, 
+          variable = c(variable, variable2Axe), elements = elements, 
           uniqueElement = uniqueElem, 
           mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
         )
@@ -310,10 +313,14 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                     stop("Invalid type")
         )
         
+        variable2Axe <- apply(expand.grid(elements, variable2Axe), 1, function(X){paste(X, collapse = " - ")})
+        
+        
         f(
           dt, 
           timeStep = timeStep, 
           variable = variable, 
+          variable2Axe = variable2Axe,
           confInt = confInt, 
           minValue = minValue,
           maxValue = maxValue, 
@@ -362,7 +369,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     # mcYear <- paramCoe$mcYear
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
-    return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, elements, type, confInt, dateRange, 
+    return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, variable2Axe, elements, type, confInt, dateRange, 
                                           minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints))
   }
   
@@ -390,7 +397,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       
       if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this study")))}
       
-      widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, elements, type, confInt, 
+      widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, confInt, 
                                                    dateRange, minValue, maxValue, aggregate, legend, 
                                                    highlight, stepPlot, drawPoints)
       controlWidgetSize(widget)
@@ -500,6 +507,22 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     }, multiple = TRUE
   ),
   
+  secondAxis = mwCheckbox(secondAxis),
+  variable2Axe = mwSelect(label = "Variables 2nd axis",
+    choices = {
+      if(!is.null(params)){
+        out <- as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv[[table]]$valueCols)
+        }), xyCompare))
+        out <- out[!out%in%variable]
+        if(length(out) > 0){out} else {"No Input"}
+      }
+    },
+    value = {
+      if(.initial) NULL
+      else NULL
+    }, multiple = TRUE, .display = secondAxis
+  ),
   type = mwSelect(
     choices = {
       if (timeStepdataload == "annual") "barplot"
@@ -566,7 +589,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   
   elements = mwSelect(
     choices = {
-      c("all", if(!is.null(params)){
+      c( if(!is.null(params)){
         as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv[[table]]$uniqueElem)
         }), xyCompare))
