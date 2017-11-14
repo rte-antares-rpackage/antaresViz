@@ -23,5 +23,4 @@ if (sourcedir != "") {
   assign("nweeks", 2, envir = globalenv())
 }
 
-
 setSimulationPath(get("studyPath", envir = globalenv()))
