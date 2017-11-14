@@ -222,7 +222,7 @@ prodStack <- function(x,
     x <- list(x, x)
   }
   
-  .testXclassAndInteractive(x, interactive)
+  # .testXclassAndInteractive(x, interactive)
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
@@ -322,7 +322,13 @@ prodStack <- function(x,
 
     params <- .getDataForComp(x = .giveListFormat(x), y = NULL, compare = compare,compareOpts = compareOptions, processFun = processFun)
     
-    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend, stepPlot, drawPoints))
+    
+    
+    L_w <- lapply(params$x, function(X){
+      X$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend, stepPlot, drawPoints)
+    })
+    return(combineWidgets(list = L_w))
+    
   } else {
     # just init for compare & compareOpts
     # init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})

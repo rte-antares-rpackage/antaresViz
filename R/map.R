@@ -64,7 +64,8 @@
 #' @param options
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
-#' 
+#' @param timeSteph5 \code{character} timeStep to read in h5 file
+#' @param mcYearh \code{numeric} mcYearh to read for h5
 #' @inheritParams prodStack
 #'   
 #'   
@@ -147,7 +148,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     interactive = getInteractivity(),
                     options = plotMapOptions(),
                     width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union","intersect"),
-                    h5requestFiltering = list(), ...) {
+                    h5requestFiltering = list(),
+                    timeSteph5 = "hourly",
+                    mcYearh = NULL, ...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -179,7 +182,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
-  .testXclassAndInteractive(x, interactive)
+  # .testXclassAndInteractive(x, interactive)
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
@@ -363,16 +366,24 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   if (!interactive) {
-    params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
-
-    map <-  params$x[[1]]$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
-                                  popupAreaVars = popupAreaVars, areaChartType = areaChartType,
-                                  uniqueScale = uniqueScale, showLabels = showLabels,
-                                  labelAreaVar = labelAreaVar, colLinkVar = colLinkVar, 
-                                  sizeLinkVar = sizeLinkVar, popupLinkVars = popupLinkVars,
-                                  type = type, mcYear = mcYear, dateRange = dateRange)
+    share <- list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = c("areas", "links"))
+    x <- .giveListFormat(x)
+    x <- sapply(1:length(x),function(zz){
+      .loadH5Data(share, x[[zz]], h5requestFilter = h5requestFiltering[[zz]])
+    }, simplify = FALSE)
     
-    return(combineWidgets(map, title = main, width = width, height = height))
+    params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
+    L_w <- lapply(params$x, function(X){
+      X$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
+                 popupAreaVars = popupAreaVars, areaChartType = areaChartType,
+                 uniqueScale = uniqueScale, showLabels = showLabels,
+                 labelAreaVar = labelAreaVar, colLinkVar = colLinkVar, 
+                 sizeLinkVar = sizeLinkVar, popupLinkVars = popupLinkVars,
+                 type = type, mcYear = mcYear, dateRange = dateRange)
+    })
+    return(combineWidgets(list = L_w,  title = main, width = width, height = height))  
+    
+    
   } else {
     # just init for compare & compareOpts
     #init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})

@@ -211,7 +211,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
-  .testXclassAndInteractive(x, interactive)
+  # .testXclassAndInteractive(x, interactive)
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
@@ -361,6 +361,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
+
     params <- .transformDataForComp(.giveListFormat(x), compare, compareOpts, 
                               processFun = processFun, 
                               elements = elements, dateRange = dateRange)
@@ -369,8 +370,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     # mcYear <- paramCoe$mcYear
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
-    return(params$x[[1]][[table]]$plotFun(mcYear, 1, variable, variable2Axe, elements, type, confInt, dateRange, 
-                                          minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints))
+    L_w <- lapply(params$x, function(X){
+      X[[table]]$plotFun(mcYear, 1, variable, variable2Axe, elements, type, confInt, dateRange, 
+               minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints)
+    })
+    return(combineWidgets(list = L_w))
+    
   }
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
