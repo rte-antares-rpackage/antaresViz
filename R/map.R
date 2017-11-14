@@ -64,8 +64,6 @@
 #' @param options
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
-#' @param timeSteph5 \code{character} timeStep to read in h5 file
-#' @param mcYearh \code{numeric} mcYearh to read for h5
 #' @inheritParams prodStack
 #'   
 #'   
@@ -150,7 +148,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union","intersect"),
                     h5requestFiltering = list(),
                     timeSteph5 = "hourly",
-                    mcYearh = NULL, ...) {
+                    mcYearh5 = NULL,
+                    tablesh5 = c("areas", "links"),...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -366,11 +365,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   if (!interactive) {
-    share <- list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = c("areas", "links"))
-    x <- .giveListFormat(x)
-    x <- sapply(1:length(x),function(zz){
-      .loadH5Data(share, x[[zz]], h5requestFilter = h5requestFiltering[[zz]])
-    }, simplify = FALSE)
+    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    
     
     params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
     L_w <- lapply(params$x, function(X){

@@ -92,6 +92,9 @@
 #'   typically h5requestFiltering = list(select = "NUCLEAR")
 #' @param stepPlot \code{boolean}, step style for curves.
 #' @param drawPoints \code{boolean}, add points on graph
+#' @param timeSteph5 \code{character} timeStep to read in h5 file
+#' @param mcYearh5 \code{numeric} mcYearh to read for h5
+#' @param tables \code{character} tables for h5 ("areas" "links", "clusters" or "disticts")
 #' @param ... Other arguments for \code{\link{manipulateWidget}}
 #'  
 #' @return 
@@ -195,7 +198,10 @@ prodStack <- function(x,
                       groupId = legendId,
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL, xyCompare = c("union","intersect"),
-                      h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE, ...) {
+                      h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
+                      timeSteph5 = "hourly",
+                      mcYearh5 = NULL,
+                      tablesh5 = c("areas", "links"),...) {
   
   if(!is.null(compare) && !interactive){
     stop("You can't use compare in no interactive mode")
@@ -319,7 +325,9 @@ prodStack <- function(x,
     )
   }
   if (!interactive) {
-
+    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    
+    
     params <- .getDataForComp(x = .giveListFormat(x), y = NULL, compare = compare,compareOpts = compareOptions, processFun = processFun)
     
     

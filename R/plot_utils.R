@@ -99,3 +99,14 @@
 .printWarningMcYear <- function(){
   warning("You have mc-all data and you specify mcYear, it will be ignored")
 }
+
+
+.cleanH5 <- function(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+{
+  share <- list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh5, tables_l = tablesh5)
+  x <- .giveListFormat(x)
+  x <- sapply(1:length(x),function(zz){
+    .loadH5Data(share, x[[zz]], h5requestFilter = h5requestFiltering[[zz]])
+  }, simplify = FALSE)
+  x
+}

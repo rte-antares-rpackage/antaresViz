@@ -180,7 +180,10 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    colorScaleOpts = colorScaleOptions(20),
                    width = NULL, height = NULL, xyCompare = c("union","intersect"),
                    h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
-                   secondAxis = FALSE, ...) {
+                   secondAxis = FALSE,
+                   timeSteph5 = "hourly",
+                   mcYearh5 = NULL,
+                   tablesh5 = c("areas", "links"),...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -362,6 +365,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # to interactively explore the data
   if (!interactive) {
 
+
+    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
     params <- .transformDataForComp(.giveListFormat(x), compare, compareOpts, 
                               processFun = processFun, 
                               elements = elements, dateRange = dateRange)
