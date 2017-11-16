@@ -34,8 +34,15 @@ study. The result should then be saved in an external file and be reused.
 layout <- readLayout()
 ml <- mapLayout(layout)
 
+# visualize mapLayout
+plotMapLayout(ml)
+
 # Save the result for future use
 save(ml, file = "ml.rda")
+
 }
 
+}
+\seealso{
+\code{\link{plotMapLayout}}
 }
