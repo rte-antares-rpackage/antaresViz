@@ -139,7 +139,7 @@ changeCoordsServer <- function(input, output, session,
       if(!is.null(map()) & input$set_map_ml == 0){
         map()
       } else {
-        getAntaresMap(countries = input$ml_countries, states = input$ml_states)
+        getAntaresMap(countries = isolate(input$ml_countries), states = isolate(input$ml_states))
       }
     }
   })
@@ -241,7 +241,7 @@ changeCoordsServer <- function(input, output, session,
   observe({
     if(!is.null(input$map_init)){
       if(input$map_init){
-        lfDragPoints$map <- leafletDragPoints(NULL, current_map())
+        lfDragPoints$map <- leafletDragPoints(NULL, current_map(), reset_map = TRUE)
       }
     }
   })

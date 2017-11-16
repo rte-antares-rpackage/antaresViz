@@ -38,15 +38,6 @@ HTMLWidgets.widget({
     return {
 
       renderValue: function(x) {
-        // If x contains an element "map", add it to the map
-        if (x.map) {
-          if(mapLayer !== undefined){
-            map.removeLayer(mapLayer);
-          }
-          mapLayer = L.geoJson(x.map, {color:"#66f", weight: 1});
-          mapLayer.addTo(map);
-        }
-
         if(x.init){
           for(var i=0;i<markersLayer.length;i++) {
             map.removeLayer(markersLayer[i]);
@@ -54,6 +45,25 @@ HTMLWidgets.widget({
           map.setView([0, 0], 2);
           markersLayer = [];
           points = [];
+          if(mapLayer !== undefined){
+            map.removeLayer(mapLayer);
+            mapLayer = undefined;
+          }
+        }
+        
+        // If x contains an element "map", add it to the map
+        if (x.map) {
+          if(mapLayer !== undefined){
+            map.removeLayer(mapLayer);
+          }
+          mapLayer = L.geoJson(x.map, {color:"#66f", weight: 1});
+          mapLayer.addTo(map);
+        } else {
+          if(x.reset_map){
+            if(mapLayer !== undefined){
+              map.removeLayer(mapLayer);
+            }
+          }
         }
         
         // For each new point create a marker that will be placed in the map
