@@ -26,8 +26,10 @@ HTMLWidgets.widget({
       var coords = points.map(function(p) {
         return p.marker.getLatLng();
       });
-      Shiny.onInputChange(el.id + "_coords",  coords);
-      Shiny.onInputChange(el.id + "_mapcenter",  map.getCenter());
+      if(HTMLWidgets.shinyMode){
+        Shiny.onInputChange(el.id + "_coords",  coords);
+        Shiny.onInputChange(el.id + "_mapcenter",  map.getCenter());
+      }
     }
 
     map.on("moveend", updateShinyInput);
@@ -77,7 +79,7 @@ HTMLWidgets.widget({
 
             p.marker =  L.marker(
               [p.lat, p.lon],
-              {draggable: true, icon: markerIcon}
+              {draggable: x.draggable, icon: markerIcon}
             );
 
             p.marker.bindPopup(p.info);
@@ -92,8 +94,9 @@ HTMLWidgets.widget({
           updateShinyInput();
         }
         
-        Shiny.onInputChange(el.id + "_init",  true);
-        
+        if(HTMLWidgets.shinyMode){
+          Shiny.onInputChange(el.id + "_init",  true);
+        }
       },
 
       resize: function(width, height) {

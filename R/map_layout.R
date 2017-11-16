@@ -28,13 +28,18 @@
 #' layout <- readLayout()
 #' ml <- mapLayout(layout)
 #' 
+#' # visualize mapLayout
+#' plotMapLayout(ml)
+#' 
 #' # Save the result for future use
 #' save(ml, file = "ml.rda")
+#' 
 #' }
 #' 
 #' @export
 #' @import antaresMaps
-#' 
+#'
+#' @seealso \code{\link{plotMapLayout}}
 mapLayout <- function(layout, what = c("areas", "districts"), map = getAntaresMap(), map_builder = TRUE) {
   
   what <- match.arg(what)
@@ -51,6 +56,46 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = getAntaresMa
   mapCoords <- shiny::runApp(shiny::shinyApp(ui = ui, server = server))
   
   mapCoords
+}
+
+#' Visualize mapLayout output.
+#' 
+#' @param mapLayout
+#'   object returned by function \code{\link{mapLayout}}
+#'   
+#' @examples 
+#' 
+#' \dontrun{
+#' # Read the coordinates of the areas in the Antares interface, then convert it
+#' # in a map layout.
+#' layout <- readLayout()
+#' ml <- mapLayout(layout)
+#' 
+#' # visualize mapLayout
+#' plotMapLayout(ml)
+#' 
+#' }
+#' 
+#' @export
+#' 
+#' @seealso \code{\link{mapLayout}}
+plotMapLayout <- function(mapLayout){
+  
+  if(!is.null(mapLayout$all_coords)){
+    coords <- data.frame(mapLayout$all_coords)
+    colnames(coords) <- gsub("^x$", "lon", colnames(coords))
+    colnames(coords) <- gsub("^y$", "lat", colnames(coords))
+    coords$info <- coords$area
+  } else if(is.null(mapLayout$all_coords)){
+    coords <- data.frame(mapLayout$coords)
+    colnames(coords) <- gsub("^x$", "lon", colnames(coords))
+    colnames(coords) <- gsub("^y$", "lat", colnames(coords))
+    coords$info <- coords$area
+  } else {
+    stop("No coordinates found in layout")
+  }
+  
+  leafletDragPoints(coords, map = mapLayout$map, init = TRUE, draggable = FALSE)
 }
 
 # changeCoords Module UI function
@@ -311,12 +356,14 @@ changeCoordsServer <- function(input, output, session,
     
     if (!is.null(map)) {
       final_coords$geoAreaId <- mapCoords$geoAreaId
-      final_coords <- final_coords[!is.na(final_coords$geoAreaId),]
+      final_coords_map <- final_coords[!is.na(final_coords$geoAreaId),]
+      map <- map[final_coords_map$geoAreaId,]
       
-      map <- map[final_coords$geoAreaId,]
+      res <- list(coords = final_coords_map, links = final_links, map = map, all_coords = final_coords)
+    } else {
+      res <- list(coords = final_coords, links = final_links, map = map, all_coords = final_coords)
     }
     
-    res <- list(coords = final_coords, links = final_links, map = map)
     class(res) <- "mapLayout"
     attr(res, "type") <- what()
     
