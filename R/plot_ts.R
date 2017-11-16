@@ -91,7 +91,7 @@
   if(length(variable2Axe)>0){
     for( i in variable2Axe)
     {
-    g <- g %>%   dySeries(i, axis = 'y2')
+    g <- g %>% dySeries(i, axis = 'y2')
     }
   }
   
