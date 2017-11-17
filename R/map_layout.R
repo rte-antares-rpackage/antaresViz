@@ -461,7 +461,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   if (areas) {
     
     areaChartType <- match.arg(areaChartType)
-    
+
     # fix bug if set map wihout any intersection with areas...!
     map <- tryCatch(addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
                                   chartdata = dataAreas, fillColor = colAreas,

@@ -144,17 +144,17 @@
 .redrawCircles <- function(map, x, mapLayout, mcy, t, colAreaVar, sizeAreaVars,
                            popupAreaVars, uniqueScale, showLabels, labelAreaVar,
                            areaChartType,
-                           options) {
+                           options, sizeMiniPlot = FALSE) {
   
   if (is.null(x$areas)) return(map)
   if (nrow(x$areas) == 0) return(map)
-
+  
   
   timeStep <- attr(x, "timeStep")
   
   # Just in case, we do not want to accidentally modify the original map layout.
   ml <- copy(mapLayout)
-
+  
   # Compute color and size of areas for the given time step.
   optsArea <- .getColAndSize(x$areas, ml$coords, "area", mcy, t,
                              colAreaVar, sizeAreaVars, popupAreaVars,
@@ -216,10 +216,25 @@
     }
   }
   
+  if(sizeMiniPlot)
+  {
+    if(is.matrix(optsArea$size))
+    {
+      if(ncol(optsArea$size) > 1 )
+      {
+        optsArea$Va <- rowSums(optsArea$size)
+        optsArea$VaP <- optsArea$Va / max(optsArea$Va)
+        fM <- 3
+        optsArea$Ra <- 1 + (optsArea$VaP * fM * 30)/2
+      }
+    }
+  }
+  
+  if(is.null(optsArea$Ra)){optsArea$Ra <- width}
   # Update areas
   map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
                           time = optsArea$coords$time,
-                          maxValues = optsArea$maxSize, width = width,
+                          maxValues = optsArea$maxSize, width = optsArea$Ra,
                           height = options$areaMaxHeight,
                           showLabels = showLabels, labelText = labels, 
                           type = areaChartType[[1]], 
@@ -269,7 +284,7 @@
                          popupLinkVars, options) {
   if (is.null(x$links)) return(map)
   if (nrow(x$links) == 0) return(map)
- 
+  
   
   timeStep <- attr(x, "timeStep")
   
@@ -302,7 +317,7 @@
                                labels = sizeLinkVar,
                                digits = 2,
                                supValues = optsLink$coords[, optsLink$popupVars, with = FALSE]
-                              ),
+                             ),
                              opacity = 1)
   
   # Update the legend
