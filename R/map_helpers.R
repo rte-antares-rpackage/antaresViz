@@ -74,8 +74,6 @@
           colorScaleOpts$colors <- c( colorScaleOpts$colors, "noColor")
         }
       }
-      print("i am here")
-      print(colorScaleOpts)
       
       # Special case of FLOW LIN
       if (colVar == "FLOW LIN.") rangevar <- c(0, max(abs(rangevar)))
