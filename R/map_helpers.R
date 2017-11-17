@@ -29,6 +29,9 @@
 #' @noRd
 .getColAndSize <- function(data, coords, mergeBy, mcy, t, colVar, sizeVar, 
                            popupVars, colorScaleOpts, labelVar = NULL) {
+
+  
+  
   if (mcy != "average") data <- data[J(as.numeric(mcy))]
   
   neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars, labelVar)), "none")
@@ -59,13 +62,28 @@
   if (colVar != "none") {
     if (is.numeric(data[[colVar]])) {
       rangevar <- range(data[[colVar]])
+      print(rangevar)
+      if(length(colorScaleOpts$breaks) > 1 ){
+        if(min(rangevar) < min(colorScaleOpts$breaks)){
+          colorScaleOpts$breaks <- c(min(rangevar), colorScaleOpts$breaks)
+          colorScaleOpts$colors <- c("noColor", colorScaleOpts$colors)
+        }
+        
+        if(max(rangevar) > max(colorScaleOpts$breaks)){
+          colorScaleOpts$breaks <- c( colorScaleOpts$breaks, max(rangevar))
+          colorScaleOpts$colors <- c( colorScaleOpts$colors, "noColor")
+        }
+      }
+      print("i am here")
+      print(colorScaleOpts)
+      
       # Special case of FLOW LIN
       if (colVar == "FLOW LIN.") rangevar <- c(0, max(abs(rangevar)))
       
       if (rangevar[1] >= 0) {
         domain <- rangevar
       } else {
-        domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
+        domain <- c(-min(rangevar), max(rangevar))
       }
       
       if (colVar == "FLOW LIN.") colorScaleOpts$x <- abs(data[[colVar]])
