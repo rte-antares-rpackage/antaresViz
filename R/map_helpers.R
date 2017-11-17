@@ -62,7 +62,6 @@
   if (colVar != "none") {
     if (is.numeric(data[[colVar]])) {
       rangevar <- range(data[[colVar]])
-      print(rangevar)
       if(length(colorScaleOpts$breaks) > 1 ){
         if(min(rangevar) < min(colorScaleOpts$breaks)){
           colorScaleOpts$breaks <- c(min(rangevar), colorScaleOpts$breaks)
