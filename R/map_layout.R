@@ -14,7 +14,7 @@
 #'   on the map.
 #' @param map
 #'   An optional \code{\link[sp]{SpatialPolygons}} or 
-#'   \code{\link[sp]{SpatialPolygonsDataFrame}} object. See \code{\link[antaresMaps]{getAntaresMap}}
+#'   \code{\link[sp]{SpatialPolygonsDataFrame}} object. See \code{\link[spMaps]{getSpMaps}}
 #'   
 #' @param map_builder \code{logical} Add inputs for build custom map ? Defaut to TRUE.
 #' 
@@ -37,10 +37,10 @@
 #' }
 #' 
 #' @export
-#' @import antaresMaps
+#' @import spMaps
 #'
 #' @seealso \code{\link{plotMapLayout}}
-mapLayout <- function(layout, what = c("areas", "districts"), map = getAntaresMap(), map_builder = TRUE) {
+mapLayout <- function(layout, what = c("areas", "districts"), map = getSpMaps(), map_builder = TRUE) {
   
   what <- match.arg(what)
   
@@ -103,7 +103,7 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
   # Create a namespace function using the provided id
   ns <- NS(id)
   
-  ref_map_table <- antaresMaps::getEuropeReferenceTable()
+  ref_map_table <- spMaps::getEuropeReferenceTable()
   choices_map <- c("all", ref_map_table$code)
   names(choices_map) <- c("all", ref_map_table$name)
   
@@ -184,7 +184,7 @@ changeCoordsServer <- function(input, output, session,
       if(!is.null(map()) & input$set_map_ml == 0){
         map()
       } else {
-        getAntaresMap(countries = isolate(input$ml_countries), states = isolate(input$ml_states))
+        getSpMaps(countries = isolate(input$ml_countries), states = isolate(input$ml_states))
       }
     }
   })

@@ -13,19 +13,42 @@ observe({
         ind_areas <- ind_keep_list_data$ind_areas
         if(length(ind_areas) > 0){
           # init / re-init module prodStack
+          id_prodStack <- paste0("prodStack_", round(runif(1, 1, 100000000)))
+          
+          output[["prodStack_ui"]] <- renderUI({
+            mwModuleUI(id = id_prodStack, height = "800px")
+          })
+          
+          # if(!is.null(modules$prodStack)){
+          #   cleanModule(modules$prodStack)
+          #   modules$prodStack <- NULL
+          # }
+          
           modules$prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                          h5requestFiltering = list_data_all$params[ind_areas],
                                          unit = "GWh", interactive = TRUE, .updateBtn = TRUE, 
                                          .updateBtnInit = TRUE, .runApp = FALSE)
-          mwModule(id = "prodStack",  modules$prodStack)
+          
+          mwModule(id = id_prodStack,  modules$prodStack)
           
           # init / re-init module plotts
+          id_ts <- paste0("plotts_", round(runif(1, 1, 100000000)))
+          
+          output[["plotts_ui"]] <- renderUI({
+            mwModuleUI(id = id_ts, height = "800px")
+          })
+          
+          # if(!is.null(modules$plotts)){
+          #   cleanModule(modules$plotts)
+          #   modules$plotts <- NULL
+          # }
+
           modules$plotts <- plot(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                  h5requestFiltering = list_data_all$params[ind_areas],
                                  interactive = TRUE, .updateBtn = TRUE, 
                                  .updateBtnInit = TRUE, .runApp = FALSE)
           
-          mwModule(id = "plotts",  modules$plotts)
+          mwModule(id = id_ts,  modules$plotts)
           
           list_data_controls$n_areas <- length(ind_areas)
           list_data_controls$have_areas <- TRUE
@@ -37,12 +60,23 @@ observe({
         ind_links <- ind_keep_list_data$ind_links
         if(length(ind_links) > 0){
           # init / re-init module exchangesStack
+          id_exchangesStack  <- paste0("exchangesStack_", round(runif(1, 1, 100000000)))
+          
+          output[["exchangesStack_ui"]] <- renderUI({
+            mwModuleUI(id = id_exchangesStack, height = "800px")
+          })
+          
+          # if(!is.null(modules$exchangesStack)){
+          #   cleanModule(modules$exchangesStack)
+          #   modules$exchangesStack <- NULL
+          # }
+          
           modules$exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
                                                    h5requestFiltering = list_data_all$params[ind_links],
                                                    interactive = TRUE, .updateBtn = TRUE, 
                                                    .updateBtnInit = TRUE, .runApp = FALSE)
           
-          mwModule(id = "exchangesStack",  modules$exchangesStack)
+          mwModule(id = id_exchangesStack,  modules$exchangesStack)
           
           # save data and params
           list_data_controls$n_links <- length(ind_links)

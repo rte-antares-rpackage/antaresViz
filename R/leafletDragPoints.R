@@ -42,13 +42,13 @@ leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL
 #'
 #' @name placeGeoPoints-shiny
 #'
-#' @noRd
+#' @export
 leafletDragPointsOutput <- function(outputId, width = '100%', height = '400px'){
   htmlwidgets::shinyWidgetOutput(outputId, 'leafletDragPoints', width, height, package = 'antaresViz')
 }
 
 #' @rdname placeGeoPoints-shiny
-#' @noRd
+#' @export
 renderLeafletDragPoints <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, leafletDragPointsOutput, env, quoted = TRUE)
