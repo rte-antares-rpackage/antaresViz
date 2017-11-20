@@ -54,7 +54,7 @@ build_input_data <- function(data){
 }
 
 
-ref_map_table <- antaresMaps::getEuropeReferenceTable()
+ref_map_table <- spMaps::getEuropeReferenceTable()
 choices_map <- c("all", ref_map_table$code)
 names(choices_map) <- c("all", ref_map_table$name)
 
