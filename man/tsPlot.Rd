@@ -77,6 +77,8 @@ data, this parameter has to be the concatenation of the area name and the
 cluster name, separated by \code{" > "}. This is to prevent confusion 
 when two clusters from different areas have the same name.}
 
+\item{variable2Axe}{\code{character}, variables on second axis.}
+
 \item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
 determine which scenario is displayed. Must be an integer representing the
 index of the scenario or the word "average". In this case data are 
@@ -164,6 +166,8 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 \item{timeSteph5}{\code{character} timeStep to read in h5 file}
 
 \item{mcYearh5}{\code{numeric} mcYearh to read for h5}
+
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

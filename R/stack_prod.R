@@ -94,7 +94,7 @@
 #' @param drawPoints \code{boolean}, add points on graph
 #' @param timeSteph5 \code{character} timeStep to read in h5 file
 #' @param mcYearh5 \code{numeric} mcYearh to read for h5
-#' @param tables \code{character} tables for h5 ("areas" "links", "clusters" or "disticts")
+#' @param tablesh5 \code{character} tables for h5 ("areas" "links", "clusters" or "disticts")
 #' @param ... Other arguments for \code{\link{manipulateWidget}}
 #'  
 #' @return 

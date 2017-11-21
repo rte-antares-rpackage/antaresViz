@@ -117,9 +117,9 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{mcYearh5}{\code{numeric} mcYearh to read for h5}
 
-\item{...}{Other arguments for \code{\link{manipulateWidget}}}
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
 
-\item{tables}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
+\item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
 \code{prodStack} returns an interactive html graphic. If argument

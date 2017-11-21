@@ -64,6 +64,7 @@
 #' @param options
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
+#' @param sizeMiniPlot \code{boolean} variable size for miniplot
 #' @inheritParams prodStack
 #'   
 #'   
@@ -149,7 +150,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     h5requestFiltering = list(),
                     timeSteph5 = "hourly",
                     mcYearh5 = NULL,
-                    tablesh5 = c("areas", "links"),...) {
+                    tablesh5 = c("areas", "links"),
+                    sizeMiniPlot = FALSE,...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -610,6 +612,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       ),
       mapLayout = mwSharedValue(mapLayout),
       params = mwSharedValue({
+        
         .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                         processFun = processFun, mapLayout = mapLayout)
       }),

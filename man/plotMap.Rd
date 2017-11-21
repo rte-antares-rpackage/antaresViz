@@ -13,7 +13,8 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   interactive = getInteractivity(), options = plotMapOptions(),
   width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
   "intersect"), h5requestFiltering = list(), timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), sizeMiniPlot = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -111,6 +112,10 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 \item{timeSteph5}{\code{character} timeStep to read in h5 file}
 
 \item{mcYearh5}{\code{numeric} mcYearh to read for h5}
+
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
+
+\item{sizeMiniPlot}{\code{boolean} variable size for miniplot}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

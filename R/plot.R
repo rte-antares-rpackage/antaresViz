@@ -23,6 +23,7 @@
 #'   data, this parameter has to be the concatenation of the area name and the
 #'   cluster name, separated by \code{" > "}. This is to prevent confusion 
 #'   when two clusters from different areas have the same name.
+#' @param variable2Axe \code{character}, variables on second axis.
 #' @param type
 #'   Type of plot to draw. "ts" creates a time series plot, "barplot" creates
 #'   a barplot with one bar per element representing the average value of the

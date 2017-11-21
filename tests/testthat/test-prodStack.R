@@ -22,8 +22,6 @@ describe("prodStack, no interactive", {
 describe("prodStack, no interactive return error", {
   
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-
-  expect_error(prodStack(list(dta, dta), interactive = FALSE))
   expect_error(prodStack(dta, interactive = FALSE, compare = "areas"))
   
 })
