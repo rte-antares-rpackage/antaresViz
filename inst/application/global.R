@@ -54,9 +54,26 @@ build_input_data <- function(data){
 }
 
 
-ref_map_table <- antaresMaps::getEuropeReferenceTable()
+ref_map_table <- spMaps::getEuropeReferenceTable()
 choices_map <- c("all", ref_map_table$code)
 names(choices_map) <- c("all", ref_map_table$name)
+
+
+# cleanModule <- function(module){
+#   if(!is.null(module$envs$shared)){
+#     rm(list = ls(envir = module$envs$shared), envir = module$envs$shared)
+#   }
+#   
+#   if(!is.null(module$envs$ind)){
+#     ctrl <- lapply(module$envs$ind, function(x){
+#       print("la")
+#       print(ls(envir = x))
+#       rm(list = ls(envir = x), envir = x)
+#     })
+#   }
+#   gc(reset = TRUE)
+#   invisible()
+# }
 
 # path <- tempdir()
 # 

@@ -67,6 +67,8 @@ myData <- readAntares(areas = "all", links = "all")
 plotMap(myData, myMapLayout)
 ```
 
+You can use `spMaps` to set a map background or download some files at http://www.gadm.org/country.
+
 ## Contributing:
 
 Contributions to the library are welcome and can be submitted in the form of pull requests to this repository.

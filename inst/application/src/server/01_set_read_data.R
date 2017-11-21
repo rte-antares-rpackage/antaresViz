@@ -68,7 +68,7 @@ observe({
       } else {
         choices <- NULL
       }
-      updateSelectInput(session, "study_path", "Study", choices = choices)
+      updateSelectInput(session, "study_path", "Select a simulation", choices = choices)
     })
   }
 })
