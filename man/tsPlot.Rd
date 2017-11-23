@@ -10,45 +10,21 @@
 tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
   "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
-  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
-  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
-  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
-  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
-  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
+  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum",
+  "mean by areas", "sum by areas"), compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
+  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
+  tablesh5 = c("areas", "links"), ...)
 
 \method{plot}{antaresData}(x, table = NULL, variable = NULL,
   elements = NULL, variable2Axe = NULL, mcYear = "average",
   type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
   dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
-  aggregate = c("none", "mean", "sum"), compare = NULL,
-  compareOpts = list(), interactive = getInteractivity(), colors = NULL,
-  main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
-  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
-  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"), ...)
-
-\method{plot}{simOptions}(x, table = NULL, variable = NULL,
-  elements = NULL, variable2Axe = NULL, mcYear = "average",
-  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-  dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
-  aggregate = c("none", "mean", "sum"), compare = NULL,
-  compareOpts = list(), interactive = getInteractivity(), colors = NULL,
-  main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
-  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
-  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"), ...)
-
-\method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
-  variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
-  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
-  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
+  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
   compare = NULL, compareOpts = list(), interactive = getInteractivity(),
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
@@ -56,6 +32,32 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
   drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
   mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
+
+\method{plot}{simOptions}(x, table = NULL, variable = NULL,
+  elements = NULL, variable2Axe = NULL, mcYear = "average",
+  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
+  dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
+  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
+  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
+  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
+  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
+
+\method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
+  variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
+  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
+  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum",
+  "mean by areas", "sum by areas"), compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
+  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
+  tablesh5 = c("areas", "links"), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
@@ -111,7 +113,7 @@ values are displayed.}
 
 \item{aggregate}{When multiple elements are selected, should the data be aggregated. If
 "none", each element is represented separetly. If "mean" values are
-averaged and if "sum" they are added.}
+averaged and if "sum" they are added. You can also compute mean ans sum by areas.}
 
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
