@@ -80,17 +80,16 @@
                    by = c(.idCols(tpl))]
       }
     } else if (aggregate == "mean by areas"){
-      tpltp <<- tpl
-      
-      tpl$areas <- unlist(lapply(strsplit(tpltp$element, "__"),function(X) X[1]))
-      tpl$element <- unlist(lapply(strsplit(tpltp$element, "__"),function(X) X[2]))
+
+      tpl$areas <- unlist(lapply(strsplit(tpl$element, "__"),function(X) X[1]))
+      tpl$element <- unlist(lapply(strsplit(tpl$element, "__"),function(X) X[2]))
       
       tpl <- tpl[, .(value = mean(value)), 
                  by = c(.idCols(tpl), "element")]
     } else if (aggregate == "sum by areas"){
 
-      tpl$areas <- unlist(lapply(strsplit(tpltp$element, "__"),function(X) X[1]))
-      tpl$element <- unlist(lapply(strsplit(tpltp$element, "__"),function(X) X[2]))
+      tpl$areas <- unlist(lapply(strsplit(tpl$element, "__"),function(X) X[1]))
+      tpl$element <- unlist(lapply(strsplit(tpl$element, "__"),function(X) X[2]))
       
       tpl <- tpl[, .(value = sum(value)), 
                         by = c(.idCols(tpl), "element")]

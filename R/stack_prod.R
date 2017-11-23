@@ -374,7 +374,6 @@ prodStack <- function(x,
     }),
     paramsH5 = mwSharedValue({
       tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
-      # tmp2 <<- tmp
       tmp
     }),
     H5request = mwGroup(
