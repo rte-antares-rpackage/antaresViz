@@ -135,7 +135,7 @@ navbarPage("antaresViz", id = "nav-id",
            tabPanel("prodStack",
                     conditionalPanel(condition = "output.have_data",
                                      conditionalPanel(condition = "output.have_data_areas", 
-                                                      mwModuleUI(id = "prodStack", height = "800px")
+                                                      uiOutput("prodStack_ui")
                                      ), 
                                      conditionalPanel(condition = "output.have_data_areas === false", 
                                                       h3("No areas imported")
@@ -147,8 +147,8 @@ navbarPage("antaresViz", id = "nav-id",
            ),
            tabPanel("exchangesStack",
                     conditionalPanel(condition = "output.have_data",
-                                     conditionalPanel(condition = "output.have_data_links", 
-                                                      mwModuleUI(id = "exchangesStack", height = "800px")
+                                     conditionalPanel(condition = "output.have_data_links",
+                                                      uiOutput("exchangesStack_ui")
                                      ), 
                                      conditionalPanel(condition = "output.have_data_links === false", 
                                                       h3("No links imported")
@@ -161,7 +161,7 @@ navbarPage("antaresViz", id = "nav-id",
            tabPanel("tsPlot", 
                     conditionalPanel(condition = "output.have_data",
                                      conditionalPanel(condition = "output.have_data_areas", 
-                                                      mwModuleUI(id = "plotts", height = "800px")
+                                                      uiOutput("plotts_ui")
                                      ), 
                                      conditionalPanel(condition = "output.have_data_areas === false", 
                                                       h3("No areas imported")
@@ -172,7 +172,7 @@ navbarPage("antaresViz", id = "nav-id",
                     )
            ),
            navbarMenu("plotMap", 
-                      tabPanel("Layout", 
+                      tabPanel("Layout Builder", 
                                conditionalPanel(condition = "output.have_data",
                                                 antaresViz:::changeCoordsUI("ml")
                                ),
@@ -181,13 +181,40 @@ navbarPage("antaresViz", id = "nav-id",
                                )
                                
                       ),
+                      tabPanel("Current Layout",
+                               conditionalPanel(condition = "output.must_print_map",
+                                                div(h3("Current map layout"), align = "center"),
+                                                leafletDragPointsOutput("current_layout", height = "700px")
+                               ),
+                               conditionalPanel(condition = "output.must_print_map === false",
+                                                h3("Please set or import a map layout before.")
+                               ),
+                               hr(),
+                               fluidRow(
+                                 column(6,
+                                        
+                                        conditionalPanel(condition = "output.must_print_map",
+                                                         div(br(), downloadButton('download_layout', 'Download Layout'), align = "center")
+                                        )
+                                        
+                                 ),
+                                 column(6,
+                                        div(fileInput("import_layout", "Import a layout", 
+                                                      accept = c(".RDS", ".rds", ".Rds")
+                                        ), align = "center")
+                                 )
+                               )
+                               
+                               
+                               
+                      ),
                       tabPanel("Map", 
                                conditionalPanel(condition = "output.have_data",
                                                 conditionalPanel(condition = "output.must_print_map", 
-                                                                 mwModuleUI(id = "plotMap", height = "800px")
+                                                                 uiOutput("plotMap_ui")
                                                 ), 
                                                 conditionalPanel(condition = "output.must_print_map === false", 
-                                                                 h3("Please set a map layout before.")
+                                                                 h3("Please set or import a map layout before.")
                                                 )
                                ),
                                conditionalPanel(condition = "output.have_data === false",
@@ -199,18 +226,18 @@ navbarPage("antaresViz", id = "nav-id",
                     fluidRow(
                       column(3, h4("readAntares RAM limit (in Go) : ")),
                       column(3, div(numericInput("ram_limit", label = NULL, 
-                                             min = 1, max = 10, value = {
-                                               if(!is.null(getOption("maxSizeLoad"))){
-                                                 getOption("maxSizeLoad")
-                                               } else {10}
-                                             }), align = "center")),
+                                                 min = 1, max = 10, value = {
+                                                   if(!is.null(getOption("maxSizeLoad"))){
+                                                     getOption("maxSizeLoad")
+                                                   } else {10}
+                                                 }), align = "center")),
                       column(3, h4("antaresViz data module (in Mb) : ")),
                       column(3, div(numericInput("data_module", label = NULL, 
-                                             min = 1, max = 10, value = {
-                                               if(!is.null(getOption("antaresVizSizeGraph"))){
-                                                 getOption("antaresVizSizeGraph")
-                                               } else {200}
-                                             }), align = "center"))
+                                                 min = 1, max = 10, value = {
+                                                   if(!is.null(getOption("antaresVizSizeGraph"))){
+                                                     getOption("antaresVizSizeGraph")
+                                                   } else {200}
+                                                 }), align = "center"))
                     )
            ),
            footer = div(hr(), actionButton("quit", "Quit application", icon = icon("sign-out")), align = "center")

@@ -19,9 +19,31 @@ layout <- reactive({
   })
 })
 
+ml <- reactiveVal()
 # module for set and save layout
-ml <- callModule(antaresViz:::changeCoordsServer, "ml", layout, 
-                 what = reactive("areas"), stopApp = FALSE)
+ml_builder <- callModule(antaresViz:::changeCoordsServer, "ml", layout, 
+                         what = reactive("areas"), stopApp = FALSE)
+
+observe({
+  ml(ml_builder())
+})
+
+observe({
+  ml_file <- input$import_layout
+  if (!is.null(ml_file)){
+    tmp_ml <- try(readRDS(ml_file$datapath), silent = TRUE)
+    if("mapLayout" %in% class(tmp_ml)){
+      ml(tmp_ml)
+    } else {
+      showModal(modalDialog(
+        title = "Invalid map layout file",
+        easyClose = TRUE,
+        footer = NULL,
+        "Must be a valid .RDS file (class 'mapLayout')"
+      ))
+    }
+  }
+})
 
 # control : have a not null layout, and so print map module ?
 print_map <- reactiveValues(value = FALSE)
@@ -31,6 +53,13 @@ observe({
     print_map$value <- TRUE
   } else {
     print_map$value <- FALSE
+  }
+})
+
+
+output$current_layout <- renderLeafletDragPoints({
+  if(!is.null(ml())){
+    plotMapLayout(ml())
   }
 })
 
@@ -50,13 +79,23 @@ observe({
         if(length(ind_map) > 0){
           if(!is.null(ml)){
             # init / re-init module plotMap
-            modules$plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
-                                       colAreaVar = "BALANCE", interactive = TRUE, 
-                                       h5requestFiltering = list_data_all$params[ind_map],
-                                       xyCompare = "union", .updateBtn = TRUE, 
-                                       .updateBtnInit = TRUE, .runApp = FALSE)
+            id_plotMap   <- paste0("plotMap_", round(runif(1, 1, 100000000)))
             
-            mwModule(id = "plotMap",  modules$plotMap)
+            output[["plotMap_ui"]] <- renderUI({
+              mwModuleUI(id = id_plotMap, height = "800px")
+            })
+            
+            # if(!is.null(modules$plotMap)){
+            #   cleanModule(modules$plotMap)
+            #   modules$plotMap <- NULL
+            # }
+            
+            modules$plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
+                                       interactive = TRUE, 
+                                       h5requestFiltering = list_data_all$params[ind_map],
+                                       xyCompare = "union", .runApp = FALSE)
+            
+            mwModule(id = id_plotMap,  modules$plotMap)
             # save data and params
             list_data_controls$n_maps <- length(ind_map)
           }
@@ -65,6 +104,16 @@ observe({
     }
   })
 })
+
+# download layout
+output$download_layout <- downloadHandler(
+  filename = function() {
+    paste('mapLayout-', Sys.Date(), '.RDS', sep='')
+  },
+  content = function(con) {
+    saveRDS(ml(), file = con)
+  }
+)
 
 # change page
 observe({
