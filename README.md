@@ -73,6 +73,9 @@ You can use `spMaps` to set a map background or download some files at http://ww
 
 Contributions to the library are welcome and can be submitted in the form of pull requests to this repository.
 
+## ANTARES :
+ Antares is a powerful software developed by RTE to simulate and study electric power systems (more information about Antares here : <https://antares.rte-france.com>).
+
 ## License Information:
 
 Copyright 2015-2016 RTE (France)

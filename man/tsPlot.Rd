@@ -8,46 +8,56 @@
 \title{plot time series contained in an antaresData object}
 \usage{
 tsPlot(x, table = NULL, variable = NULL, elements = NULL,
-  mcYear = "average", type = c("ts", "barplot", "monotone", "density",
-  "cdf", "heatmap"), dateRange = NULL, confInt = 0, minValue = NULL,
-  maxValue = NULL, aggregate = c("none", "mean", "sum"), compare = NULL,
-  compareOpts = list(), interactive = getInteractivity(), colors = NULL,
-  main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
+  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
+  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum",
+  "mean by areas", "sum by areas"), compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
   xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...)
+  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
+  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
+  tablesh5 = c("areas", "links"), ...)
 
 \method{plot}{antaresData}(x, table = NULL, variable = NULL,
-  elements = NULL, mcYear = "average", type = c("ts", "barplot",
-  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
-  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
+  elements = NULL, variable2Axe = NULL, mcYear = "average",
+  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
+  dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
+  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
   compare = NULL, compareOpts = list(), interactive = getInteractivity(),
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
-  drawPoints = FALSE, ...)
+  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
 
 \method{plot}{simOptions}(x, table = NULL, variable = NULL,
-  elements = NULL, mcYear = "average", type = c("ts", "barplot",
-  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
-  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum"),
+  elements = NULL, variable2Axe = NULL, mcYear = "average",
+  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
+  dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
+  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
   compare = NULL, compareOpts = list(), interactive = getInteractivity(),
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
-  drawPoints = FALSE, ...)
+  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
 
 \method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
-  mcYear = "average", type = c("ts", "barplot", "monotone", "density",
-  "cdf", "heatmap"), dateRange = NULL, confInt = 0, minValue = NULL,
-  maxValue = NULL, aggregate = c("none", "mean", "sum"), compare = NULL,
-  compareOpts = list(), interactive = getInteractivity(), colors = NULL,
-  main = NULL, ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
+  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
+  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum",
+  "mean by areas", "sum by areas"), compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
   xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...)
+  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
+  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
+  tablesh5 = c("areas", "links"), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
@@ -68,6 +78,8 @@ this parameter should be a vector of area names. If data contains clusters
 data, this parameter has to be the concatenation of the area name and the
 cluster name, separated by \code{" > "}. This is to prevent confusion 
 when two clusters from different areas have the same name.}
+
+\item{variable2Axe}{\code{character}, variables on second axis.}
 
 \item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
 determine which scenario is displayed. Must be an integer representing the
@@ -101,7 +113,7 @@ values are displayed.}
 
 \item{aggregate}{When multiple elements are selected, should the data be aggregated. If
 "none", each element is represented separetly. If "mean" values are
-averaged and if "sum" they are added.}
+averaged and if "sum" they are added. You can also compute mean ans sum by areas.}
 
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
@@ -150,6 +162,14 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 \item{stepPlot}{\code{boolean}, step style for curves.}
 
 \item{drawPoints}{\code{boolean}, add points on graph}
+
+\item{secondAxis}{add second axis to graph}
+
+\item{timeSteph5}{\code{character} timeStep to read in h5 file}
+
+\item{mcYearh5}{\code{numeric} mcYearh to read for h5}
+
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

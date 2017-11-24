@@ -17,7 +17,9 @@ prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE, ...)
+  h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
+  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
+  ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -110,6 +112,12 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 \item{stepPlot}{\code{boolean}, step style for curves.}
 
 \item{drawPoints}{\code{boolean}, add points on graph}
+
+\item{timeSteph5}{\code{character} timeStep to read in h5 file}
+
+\item{mcYearh5}{\code{numeric} mcYearh to read for h5}
+
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
