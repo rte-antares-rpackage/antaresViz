@@ -1,4 +1,4 @@
-#' Plot for Thermal Capacities
+#' Plot for Thermal Group Capacities
 #' 
 #' @param data data.table of Thermal Group capacities
 #' @param area areas to select, default all
