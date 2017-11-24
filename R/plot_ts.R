@@ -23,7 +23,7 @@
                     legend = TRUE,
                     legendItemsPerRow = 5,
                     group = NULL,
-                    width = NULL, height = NULL, ...) {
+                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -49,6 +49,8 @@
   dt <- dcast(dt, time ~ element, value.var = "value")
   
   # Graphical parameters
+  
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Evolution of", variable)
   if (is.null(colors)) {
@@ -67,7 +69,9 @@
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE,
       colors = colors, 
-      useDataTimezone = TRUE 
+      useDataTimezone = TRUE,
+      stepPlot = stepPlot,
+      drawPoints = drawPoints
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60, rangePad = 10) %>% 
@@ -76,7 +80,11 @@
     dyCallbacks(
       highlightCallback = JS_updateLegend(legendId, timeStep),
       unhighlightCallback = JS_resetLegend(legendId)
-    )
+    ) 
+  if(highlight)
+  {
+    g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
+  }
   
   if (plotConfInt) {
     for (v in uniqueElements) {

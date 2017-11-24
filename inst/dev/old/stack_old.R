@@ -1,0 +1,379 @@
+
+
+
+#' Visualize the production stack of an area
+#'
+#' \code{prodStack} draws the production stack for a set of areas or districts.
+#' User can see available stacks with \code{prodStackAliases} and create new ones
+#' with \code{setProdStackAlias}.
+#'
+#' @param x
+#'   An object of class \code{antaresData} created with function
+#'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
+#'   districts.
+#' @param y
+#'   Optional object of class \code{antaresData}. If it is specified, then two
+#'   charts are generated.
+#' @param stack
+#'   Name of the stack to use. One can visualize available stacks with
+#'   \code{prodStackAliases}
+#' @param areas
+#'   Vector of area or district names. The data of these areas or districts is
+#'   aggregated by the function to construct the production stack.
+#' @param mcYear
+#'   If \code{x}, contains multiple Monte-Carlo scenarios, this parameter
+#'   determine which scenario is displayed. Must be an integer representing the
+#'   index of the scenario or the word "average". In this case data are
+#'   averaged.
+#' @param dateRange
+#'   A vector of two dates. Only data points between these two dates are
+#'   displayed. If NULL, then all data is displayed.
+#' @param main
+#'   Title of the graph.
+#' @param unit
+#'   Unit used in the graph. Possible values are "MWh", "GWh" or "TWh".
+#' @param compare
+#'   An optional character vector containing names of parameters. When it is set,
+#'   two charts are outputed with their own input controls. Alternatively, it can
+#'   be a named list with names corresponding to parameter names and values being
+#'   list with the initial values of the given parameter for each chart.
+#' @param compareOpts
+#'   List of options that indicates the number of charts to create and their
+#'   position. Check out the documentation of
+#'   \code{\link[manipulateWidget]{compareOptions}} to see available options.
+#' @param width
+#'   Width of the graph expressed in pixels or in percentage of
+#'   the parent element. For instance "500px" and "100\%" are valid values.
+#' @param height
+#'   Height of the graph expressed in pixels or in percentage of
+#'   the parent element. For instance "500px" and "100\%" are valid values.
+#' @param interactive
+#'   LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
+#'   the user interactively choose the areas or districts to display.
+#' @param legend
+#'   Logical value indicating if a legend should be drawn. This argument is
+#'   usefull when one wants to create a shared legend with
+#'   \code{\link{prodStackLegend}}
+#' @param legendId Id of the legend linked to the graph. This argument is
+#'   usefull when one wants to create a shared legend with
+#'   \code{\link{prodStackLegend}}
+#' @param groupId Parameter that can be used to synchronize the horizontal
+#'   zoom of multiple charts. All charts that need to be synchronized must
+#'   have the same group.
+#' @param legendItemsPerRow
+#'   Number of elements to put in each row of the legend.
+#' @param name
+#'   name of the stack to create or update
+#' @param variables
+#'   A named list of expressions created with \code{\link[base]{alist}}. The
+#'   name of each element is the name of the variable to draw in the stacked
+#'   graph. The element itself is an expression explaining how to compute the
+#'   variable (see examples).
+#' @param colors
+#'   Vector of colors with same length as parameter \code{variables}. If
+#'   \code{variables} is an alias, then this argument should be \code{NULL} in
+#'   order to use default colors.
+#' @param lines
+#'   A named list of expressions created with \code{\link[base]{alist}}
+#'   indicating how to compute the curves to display on top of the stacked graph.
+#'   It should be \code{NULL} if there is no curve to trace or if parameter
+#'   \code{variables} is an alias.
+#' @param lineColors
+#'   Vector of colors with same length as parameter \code{lines}. This argument
+#'   should be \code{NULL} if there is no curve to trace or if parameter
+#'   \code{variables} is an alias.
+#' @param description
+#'   Description of the stack. It is displayed by function
+#'   \code{prodStackAliases}.
+#' @param xyCompare
+#'   Use when you compare studies, can be "union" or "intersect". If union, all
+#'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+#'   studies will be selectable.
+#' @param ... Other arguments for \code{\link{manipulateWidget}}
+#'
+#' @return
+#' \code{prodStackAliases} returns an interactive html graphic. If argument
+#' \code{interactive} is \code{TRUE}, then a shiny gadget is started and the
+#' function returns an interactive html graphic when the user clicks on button
+#' "Done".
+#'
+#' \code{prodStackAliases} displays the list of available aliases.
+#'
+#' \code{setProdStackAlias} creates or updates a stack alias.
+#'
+#' @seealso \code{\link{prodStackLegend}}
+#'
+#' @examples
+#' \dontrun{
+#' mydata <- readAntares(areas = "all", timeStep = "daily")
+#'
+#' # Start a shiny gadget that permits to choose areas to display.
+#' prodStack(mydata, unit = "GWh")
+#'
+#' # Use in a non-interactive way
+#' prodStack(mydata, unit = "GWh", areas = "fr", interactive = FALSE)
+#'
+#' # Define a custom stack
+#' setProdStackAlias(
+#'   name = "Wind and solar",
+#'   variables = alist(wind = WIND, solar = SOLAR),
+#'   colors = c("green", "orange")
+#' )
+#'
+#' prodStack(mydata, unit = "GWh", stack = "Wind and solar")
+#'
+#' # In a custom stack it is possible to use computed values
+#' setProdStackAlias(
+#'   name = "Renewable",
+#'   variables = alist(
+#'     renewable = WIND + SOLAR + `H. ROR` + `H. STOR` + `MISC. NDG`,
+#'     thermal = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`
+#'   ),
+#'   colors = c("green", gray(0.3)),
+#'   lines = alist(goalRenewable = LOAD * 0.23),
+#'   lineColors = "#42EB09"
+#' )
+#'
+#' prodStack(mydata, unit = "GWh", stack = "renewable")
+#'
+#' }
+#'
+#' @export
+prodStack <- function(x, y = NULL,
+                      stack = "eco2mix",
+                      areas = NULL,
+                      mcYear = "average",
+                      dateRange = NULL,
+                      main = "Production stack", unit = c("MWh", "GWh", "TWh"),
+                      compare = NULL,
+                      compareOpts = list(),
+                      interactive = getInteractivity(),
+                      legend = TRUE, legendId = sample(1e9, 1),
+                      groupId = legendId,
+                      legendItemsPerRow = 5,
+                      width = NULL, height = NULL, xyCompare = c("union","intersect"), ...) {
+  table <- NULL
+  xyCompare <- match.arg(xyCompare)
+  unit <- match.arg(unit)
+  if (is.null(mcYear)) mcYear <- "average"
+
+  init_areas <- areas
+  init_dateRange <- dateRange
+
+  processFun <- function(x) {
+
+    # Check that input contains area or district data
+    if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
+
+    if (is(x, "antaresDataTable")) {
+      if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
+    } else if (is(x, "antaresDataList")) {
+      if (is.null(x$areas) & is.null(x$districts)) stop("'x' should contain area or district data")
+      if (!is.null(x$areas)) x <- x$areas
+      else x <- x$districts
+    }
+
+    if (is.null(x$area)) x$area <- x$district
+    timeStep <- attr(x, "timeStep")
+    opts <- simOptions(x)
+    if (is.null(init_areas)) {
+      init_areas <- unique(x$area)[1]
+    }
+
+    # should mcYear parameter be displayed on the UI?
+    displayMcYear <- !attr(x, "synthesis") && length(unique(x$mcYear)) > 1
+
+    dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
+    if (length(init_dateRange) < 2) init_dateRange <- dataDateRange
+
+    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend) {
+      if (length(areas) == 0) return (combineWidgets("Please choose an area"))
+      stackOpts <- .aliasToStackOptions(stack)
+
+      dt <- x[area %in% areas]
+
+      if (mcYear == "average") dt <- synthesize(dt)
+      else if ("mcYear" %in% names(dt)) {
+        mcy <- mcYear
+        dt <- dt[mcYear == mcy]
+      }
+
+      if (!is.null(dateRange)) {
+        dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = opts)) %between% dateRange]
+      }
+      if(nrow(dt) == 0){
+        return (combineWidgets("No data for this selection"))
+      }
+
+
+
+
+      p <- try(.plotProdStack(dt,
+                              stackOpts$variables,
+                              stackOpts$colors,
+                              stackOpts$lines,
+                              stackOpts$lineColors,
+                              main = main,
+                              unit = unit,
+                              legendId = legendId + id - 1, groupId = groupId, dateRange = dateRange), silent = TRUE)
+      if("try-error" %in% class(p)){
+        return (paste0("Can't visualize stack '", stack, "'<br>", p[1]))
+      }
+      if (legend) {
+        l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId + id - 1)
+      } else {
+        l <- NULL
+      }
+
+      combineWidgets(p, footer = l, width = width, height = height)
+    }
+
+    list(
+      plotWithLegend = plotWithLegend,
+      x = x,
+      timeStep = timeStep,
+      opts = opts,
+      areas = init_areas,
+      displayMcYear = displayMcYear,
+      dataDateRange = dataDateRange,
+      dateRange = init_dateRange
+
+    )
+  }
+
+  if (!interactive) {
+    params <- .getDataForComp(x, y, compare, compareOpts, processFun = processFun)
+    return(params$x[[1]]$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend))
+  } else {
+    # just init for compare & compareOpts
+    # init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
+  }
+
+  manipulateWidget(
+    {
+      params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend)
+    },
+    x = mwSharedValue(x),
+    y = mwSharedValue(y),
+
+    ###H5
+    x_Infos = mwSharedValue({
+      if(!is.null(x_Infos$isH5)){
+        list(dataInput = x_Infos$dataInput, isH5 = "simOptions" %in% class(x_Infos$dataInput) && !is.null(x_Infos$dataInput$h5path))
+
+      }else{
+        list(dataInput = x, isH5 = "simOptions" %in% class(x) && !is.null(x$h5path))
+      }
+    }),
+    y_Infos = mwSharedValue({
+      if(!is.null(y_Infos$isH5)){
+        list(dataInput = y_Infos$dataInput, isH5 = "simOptions" %in% class(y_Infos$dataInput) && !is.null(y_Infos$dataInput$h5path))
+
+      }else{
+        list(dataInput = y, isH5 = "simOptions" %in% class(y) && !is.null(y$h5path))
+      }
+    }),
+    #isH5 = mwSharedValue({"simOptions" %in% class(x) && !is.null(x$h5path)}),
+    paramsH5 = mwSharedValue({
+      parmH5 <- .giveParamH5(X_I = x_Infos, Y_I = y_Infos, xyCompare = xyCompare)
+      parmH5$tabl <-  parmH5$tabl[parmH5$tabl%in%c("areas", "districts")]
+      parmH5
+    }),
+    #init_params = mwSharedValue({.getDataForComp(x_tranform, y_tranform, compare, compareOpts, function(x) {})}),
+    H5request = mwGroup(
+      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, value =  paramsH5$timeStepS[1]
+                            , label = "timeStep", multiple = FALSE),
+      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), value = {
+        if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+      }, label = "mcYear", multiple = TRUE)
+      ,.display = x_Infos$isH5),#isH5
+    params = mwSharedValue({
+      .getDataForComp(x_tranform, y_tranform, compare,
+                      compareOpts = if(is.null(compare) && is.null(y_tranform)){compareOptions()}else{list(ncharts = 2, ncol = 1, nrow = 2)},
+                      processFun = processFun)
+    }),
+    sharerequest = mwSharedValue({
+      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh)
+    }),
+    x_tranform = mwSharedValue({
+      .giveH5DataToApi(sharerequest, x_Infos, areas = "all", districts = "all")
+    }),
+    y_tranform = mwSharedValue({
+      .giveH5DataToApi(sharerequest, y_Infos, areas = "all", districts = "all")
+    }),
+
+    ##End h5
+
+
+
+
+
+
+    mcYear = mwSelect(
+      {
+        c("average",  .compareOperation(lapply(params$x, function(vv){
+          unique(vv$x$mcYear)
+        }), xyCompare))
+      }),
+
+    main = mwText(main, label = "title"),
+    dateRange = mwDateRange(value = {
+      if(.initial){
+        res <- c(.giveDateInfos(yD = y_Infos$dataInput, param = params, xyCompare = xyCompare, "min"),
+                 .giveDateInfos(yD = y_Infos$dataInput, param = params, xyCompare = xyCompare, "max"))
+
+        res
+      }else{NULL}
+    }, min =
+    {
+      .giveDateInfos(yD = y_Infos$dataInput, params = params, xyCompare = xyCompare, "min")
+    }
+    ,
+    max =
+    {
+      .giveDateInfos(yD = y_Infos$dataInput, params = params, xyCompare = xyCompare, "max")
+
+    }),
+    stack = mwSelect(names(pkgEnv$prodStackAliases), stack),
+    unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
+    areas = mwSelect(
+      {
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv$x$area)
+        }), xyCompare))
+      },
+      value = {
+        if(.initial){
+          as.character(.compareOperation(lapply(params$x, function(vv){
+            unique(vv$x$area)
+          }), xyCompare))[1]
+        }
+        else{NULL}},
+      multiple = TRUE),
+
+
+    legend = mwCheckbox(legend),
+
+    .compare = {
+      if(is.null(compare))
+      {
+        if(is.null(y)){
+
+          NULL
+        }else{""}
+      }else{
+        compare
+      }
+    },
+    .compareOpts = {
+      if(is.null(compare) && is.null(y))
+      {
+        compareOptions()
+      }else{
+        #to review (temp version)
+        list(ncharts = 2, ncol = 1, nrow = 2)
+      }
+    },
+    ...
+  )
+}

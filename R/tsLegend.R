@@ -67,13 +67,11 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
   
   legendItems <- tags$div(
     fillRow(do.call(fillCol, legendRows), height = i * 20),
-    height = i * 20,
-    style = "padding-left: 100px;"
+    style = sprintf("padding-left: 100px; height:%spx", i * 20)
   )
   
   tags$div(
-    style="position:relative;",
-    height = max(i * 20, 40),
+    style=sprintf("position:relative;height:%spx", max(i * 20, 40)),
     tags$div(
       style = "position:absolute;top:0;bottom:0;width:100px;
 ",

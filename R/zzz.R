@@ -4,17 +4,18 @@
 #' @import antaresRead
 #' @import antaresProcessing
 #' @import dygraphs
-#' @import miniUI
 #' @import shiny
 #' @import htmltools
 #' @import manipulateWidget
 #' @import leaflet
 #' @import leaflet.minicharts
-#' @importFrom plotly plot_ly layout config add_bars add_heatmap
+#' @import assertthat
+#' @importFrom plotly plot_ly layout config add_bars add_heatmap add_text
 #' @importFrom grDevices col2rgb colorRampPalette colors gray rainbow
 #' @importFrom graphics plot par
 #' @importFrom methods is
 #' @importFrom stats density quantile lm predict
+#' @importFrom utils object.size
 #' 
 globalVariables(
   c("value", "element", "mcYear", "suffix", "time", "timeId", "dt", ".", 
@@ -38,6 +39,7 @@ pkgEnv <- antaresRead:::pkgEnv
 
 .onLoad <- function(libname, pkgname) {
   setInteractivity("auto")
+  options(antaresVizSizeGraph = 200)
 }
 
 # Generate the list of aliases for function prodStack()
@@ -107,3 +109,7 @@ pkgEnv$prodStackAliases <- list(
 )
 
 rm(graphicalCharter, formulas, colors)
+
+# message limit size
+antaresVizSizeGraphError = "Too much data, please reduce selection. If you work with hourly data, you can reduce dateRange selection. 
+You can also use 'limitSizeGraph' function in R or 'Memory Controls' panel in shiny to update this."

@@ -1,5 +1,5 @@
 .plotMonotone <- function(dt, timeStep, variable, confInt = NULL, maxValue,
-                          main = NULL, ylab = NULL, ...) {
+                          main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -29,15 +29,17 @@
     }
   }
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
   if (is.null(main)) main <- paste("Monotone of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements,
+            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
   
 }
 
 .density <- function(dt, timeStep, variable, minValue = NULL, maxValue = NULL, 
-                     main = NULL, ylab = NULL, ...) {
+                     main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   
@@ -51,15 +53,17 @@
   
   dt <- dt[, .getDensity(value), by = element]
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- "Density"
   if (is.null(main)) main <- paste("Density of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements,
+            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
   
 }
 
 .cdf <- function(dt, timeStep, variable, minValue = NULL, maxValue = NULL,
-                 main = NULL, ylab = NULL, ...) {
+                 main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   
@@ -72,10 +76,12 @@
   
   dt <- dt[, .getCDF(value), by = element]
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- "Proportion of time steps"
   if (is.null(main)) main <- paste("Cumulated distribution of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements,
+            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
   
 }
 
@@ -107,7 +113,7 @@
 
 .plotStat <- function(dt, ylab, main, colors, uniqueElements, 
                       legend, legendItemsPerRow, width, height,
-                      plotConfInt = FALSE, ...) {
+                      plotConfInt = FALSE, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   dt <- dcast(dt, x ~ element, value.var = "y")
   
   if (is.null(colors)) {
@@ -124,7 +130,9 @@
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
-      labelsKMB = TRUE
+      labelsKMB = TRUE,
+      stepPlot = stepPlot,
+      drawPoints = drawPoints
     ) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
     dyLegend(show = "never") %>% 
@@ -132,6 +140,10 @@
       highlightCallback = JS_updateLegend(legendId, timeStep = "none"),
       unhighlightCallback = JS_resetLegend(legendId)
     )
+  if(highlight)
+  {
+    g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
+  }
   
   if (plotConfInt) {
     for (v in uniqueElements) {

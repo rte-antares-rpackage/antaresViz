@@ -1,13 +1,16 @@
 #' @noRd
-leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL) {
+leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL, 
+                              init = FALSE, reset_map = FALSE, draggable = TRUE) {
   if (!is.null(map)) map <- geojsonio::geojson_json(map)
 
-  geopoints$avg <- (geopoints$lat + geopoints$lon) / 2
+  if(!is.null(geopoints)){
+    geopoints$avg <- (geopoints$lat + geopoints$lon) / 2
+    
+    firstPoint <- which.min(geopoints$avg)
+    secondPoint <- which.max(geopoints$avg)
+  }
 
-  firstPoint <- which.min(geopoints$avg)
-  secondPoint <- which.max(geopoints$avg)
-
-  x = list(geopoints = geopoints, map = map)
+  x = list(geopoints = geopoints, map = map, init = init, reset_map = reset_map, draggable = draggable)
 
   attr(x, 'TOJSON_ARGS') <- list(dataframe = "rows")
   # create widget
@@ -39,13 +42,13 @@ leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL
 #'
 #' @name placeGeoPoints-shiny
 #'
-#' @noRd
+#' @export
 leafletDragPointsOutput <- function(outputId, width = '100%', height = '400px'){
   htmlwidgets::shinyWidgetOutput(outputId, 'leafletDragPoints', width, height, package = 'antaresViz')
 }
 
 #' @rdname placeGeoPoints-shiny
-#' @noRd
+#' @export
 renderLeafletDragPoints <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, leafletDragPointsOutput, env, quoted = TRUE)

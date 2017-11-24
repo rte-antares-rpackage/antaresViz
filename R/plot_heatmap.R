@@ -108,6 +108,7 @@
       res
     }
     
+    variable <- paste0(variable, collapse = " ; ")
     if (is.null(ylab)) ylab <- variable
     
     plot_ly(x) %>% config(displayModeBar = FALSE) %>% 
@@ -130,5 +131,5 @@
       )
   })
   
-  combineWidgets(list=plots, title = main, width = width, height = height)
+  combineWidgets(list=unname(plots), title = main, width = width, height = height)
 }

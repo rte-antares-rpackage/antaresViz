@@ -29,7 +29,6 @@
 #' @noRd
 .getColAndSize <- function(data, coords, mergeBy, mcy, t, colVar, sizeVar, 
                            popupVars, colorScaleOpts, labelVar = NULL) {
-  
   if (mcy != "average") data <- data[J(as.numeric(mcy))]
   
   neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars, labelVar)), "none")
@@ -56,6 +55,7 @@
   res <- list(coords = data, dir = 0)
   
   # color
+  if (!colVar %in% names(data)) colVar <- "none"
   if (colVar != "none") {
     if (is.numeric(data[[colVar]])) {
       rangevar <- range(data[[colVar]])
@@ -92,6 +92,7 @@
   }
   
   # size
+  sizeVar <- intersect(sizeVar, names(data))
   if (length(sizeVar) > 0 && !("none" %in% sizeVar)) {
     res$size <- as.matrix(data[, sizeVar, with = FALSE])
     res$maxSize <- apply(abs(as.matrix(data[, sizeVar, with = FALSE])), 2, max)
@@ -117,7 +118,7 @@
     timeStep,
     hourly = "%a %d %b %Y<br/>%H:%M",
     daily = "%a %d %b %Y",
-    weekly = "W%w %Y",
+    weekly = "W%V %Y",
     monthly = "%b %Y",
     yearly = "%Y"
   )
@@ -146,16 +147,20 @@
                            options) {
   
   if (is.null(x$areas)) return(map)
+  if (nrow(x$areas) == 0) return(map)
+
+  
   timeStep <- attr(x, "timeStep")
   
   # Just in case, we do not want to accidentally modify the original map layout.
   ml <- copy(mapLayout)
-  
+
   # Compute color and size of areas for the given time step.
   optsArea <- .getColAndSize(x$areas, ml$coords, "area", mcy, t,
                              colAreaVar, sizeAreaVars, popupAreaVars,
                              options$areaColorScaleOpts, labelVar = labelAreaVar)
   ml$coords <- optsArea$coords
+  
   
   # Use default values if needed.
   if (is.null(optsArea$color)) optsArea$color <- options$areaDefaultCol
@@ -263,6 +268,8 @@
 .redrawLinks <- function(map, x, mapLayout, mcy, t, colLinkVar, sizeLinkVar, 
                          popupLinkVars, options) {
   if (is.null(x$links)) return(map)
+  if (nrow(x$links) == 0) return(map)
+ 
   
   timeStep <- attr(x, "timeStep")
   
