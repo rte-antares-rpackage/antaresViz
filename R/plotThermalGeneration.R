@@ -1,6 +1,6 @@
-#' Plot for Thermal Generation
+#' Plot for Thermal Capacities
 #' 
-#' @param data data.table of Thermal generation
+#' @param data data.table of Thermal capacities
 #' @param area areas to select, default all
 #' @param main title
 #' 
