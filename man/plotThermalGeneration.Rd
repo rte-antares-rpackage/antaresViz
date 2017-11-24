@@ -2,19 +2,19 @@
 % Please edit documentation in R/plotThermalGeneration.R
 \name{plotThermalGeneration}
 \alias{plotThermalGeneration}
-\title{Plot for Thermal Generation}
+\title{Plot for Thermal Capacities}
 \usage{
 plotThermalGeneration(data, area = "all", main = "Thermal generation")
 }
 \arguments{
-\item{data}{data.table of Thermal generation}
+\item{data}{data.table of Thermal capacities}
 
 \item{area}{areas to select, default all}
 
 \item{main}{title}
 }
 \description{
-Plot for Thermal Generation
+Plot for Thermal Capacities
 }
 \examples{
 \dontrun{
