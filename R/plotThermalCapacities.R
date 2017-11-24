@@ -1,22 +1,22 @@
 #' Plot for Thermal Capacities
 #' 
-#' @param data data.table of Thermal capacities
+#' @param data data.table of Thermal Group capacities
 #' @param area areas to select, default all
 #' @param main title
 #' 
 #' @examples
 #' \dontrun{
 #' opts <- setSimulationPath(getwd())
-#' plotThermalGeneration( thermalGeneration(opts))
+#' plotThermalGroupCapacities( thermalGroupCapacities(opts))
 #' }
 #' 
 #' @export
-plotThermalGeneration <- function(data, area = 'all', main = "Thermal generation"){
+plotThermalGeneration <- function(data, area = 'all', main = "Thermal group capacities"){
   if(area != 'all'){
     areaTp <- area
     data <- data[area %in% areaTp]
   }
-  data <- data.table::dcast(data, area~group, value.var = "thermalGeneration")
+  data <- data.table::dcast(data, area~group, value.var = "thermalGroupCapacity")
   data <- data[,lapply(.SD, function(X){X[is.na(X)] <- 0;X}), .SDcols = 1:ncol(data)]
   toPLot <- names(data)[names(data)!="area"]
   p <- plot_ly(data,  type = 'bar') %>%
