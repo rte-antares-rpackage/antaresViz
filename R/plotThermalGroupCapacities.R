@@ -11,7 +11,7 @@
 #' }
 #' 
 #' @export
-plotThermalGeneration <- function(data, area = 'all', main = "Thermal group capacities"){
+plotThermalGroupCapacities <- function(data, area = 'all', main = "Thermal group capacities"){
   if(area != 'all'){
     areaTp <- area
     data <- data[area %in% areaTp]
