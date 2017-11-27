@@ -18,8 +18,8 @@
 #' setSimulationPath("Mystud")
 #' dta <- readAntares()
 #' 
-#' bokeyHex(dta, "COAL", "LOAD", precision = 50,
-#'    sizeOnCount = FALSE, transform = log)
+#' bokeyHex(dta, "NODU", "LOAD", precision = 50,
+#'          sizeOnCount = FALSE)
 #' }
 #'    
 #' @export
@@ -29,6 +29,7 @@ bokeyHex <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLine = 
   if(!requireNamespace("rbokeh")){
     stop("You should install 'rbokeh' library")
   }
+
   suppressWarnings(p <- rbokeh::figure() %>%
                      rbokeh::ly_hexbin(x, y, data, xbins = precision, 
                                style = ifelse(sizeOnCount,"lattice", "colorramp"),
