@@ -20,14 +20,16 @@ source("src/scripts/directoryInput.R")
 shared_prodStack <- data.frame(
   module = "prodStack", 
   panel = "prodStack", 
-  input = c("dateRange", "unit", "mcYear", "mcYearh", "timeSteph5"),
-  type = c("dateRangeInput", "selectInput", "selectInput", "selectInput", "selectInput"), stringsAsFactors = FALSE)
+  input = c("dateRange", "unit", "mcYear", "mcYearh", "timeSteph5", "legend", "drawPoints", "stepPlot"),
+  type = c("dateRangeInput", "selectInput", "selectInput", "selectInput", "selectInput", 
+           "checkboxInput", "checkboxInput", "checkboxInput"), stringsAsFactors = FALSE)
 
 shared_plotts <- data.frame(
   module = "plotts", 
   panel = "tsPlot", 
-  input = c("dateRange", "mcYear", "mcYearh", "timeSteph5"),
-  type = c("dateRangeInput", "selectInput", "selectInput", "selectInput"), stringsAsFactors = FALSE)
+  input = c("dateRange", "mcYear", "mcYearh", "timeSteph5", "legend", "drawPoints", "stepPlot"),
+  type = c("dateRangeInput", "selectInput", "selectInput", "selectInput", 
+           "checkboxInput", "checkboxInput", "checkboxInput"), stringsAsFactors = FALSE)
 
 
 shared_plotMap <- data.frame(
@@ -39,8 +41,9 @@ shared_plotMap <- data.frame(
 shared_exchangesStack <- data.frame(
   module = "exchangesStack", 
   panel = "exchangesStack", 
-  input = c("dateRange", "unit", "mcYear", "mcYearh", "timeSteph5"),
-  type = c("dateRangeInput", "selectInput", "selectInput", "selectInput", "selectInput"), stringsAsFactors = FALSE)
+  input = c("dateRange", "unit", "mcYear", "mcYearh", "timeSteph5", "legend", "drawPoints", "stepPlot"),
+  type = c("dateRangeInput", "selectInput", "selectInput", "selectInput", "selectInput", 
+           "checkboxInput", "checkboxInput", "checkboxInput"), stringsAsFactors = FALSE)
 
 shared_input <- rbind(shared_prodStack, shared_plotts, shared_plotMap, shared_exchangesStack)
 
@@ -48,60 +51,12 @@ shared_input <- rbind(shared_prodStack, shared_plotts, shared_plotMap, shared_ex
 build_input_data <- function(data){
   data$input_id <- paste0(data$module, "-shared_", data$input)
   data$last_update <- NA
+  data$update_call <- ""
   class(data$last_update) <- c("character")
   data <- data.table(data)
   data
 }
 
-
-ref_map_table <- antaresMaps::getEuropeReferenceTable()
+ref_map_table <- spMaps::getEuropeReferenceTable()
 choices_map <- c("all", ref_map_table$code)
 names(choices_map) <- c("all", ref_map_table$name)
-
-
-# cleanModule <- function(module){
-#   if(!is.null(module$envs$shared)){
-#     rm(list = ls(envir = module$envs$shared), envir = module$envs$shared)
-#   }
-#   
-#   if(!is.null(module$envs$ind)){
-#     ctrl <- lapply(module$envs$ind, function(x){
-#       print("la")
-#       print(ls(envir = x))
-#       rm(list = ls(envir = x), envir = x)
-#     })
-#   }
-#   gc(reset = TRUE)
-#   invisible()
-# }
-
-# path <- tempdir()
-# 
-# path <- "C:\\Users\\Datastorm\\Desktop"
-# sourcedir <- system.file("testdata", package = "antaresRead")
-# 
-# if (sourcedir != "") {
-#   if (Sys.info()['sysname'] == "Windows") {
-#     untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path,
-#           extras = "--force-local")
-#   } else {
-#     untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path)
-#   }
-# 
-#   assign("studyPath", file.path(path, "test_case"), envir = globalenv())
-#   assign("nweeks", 2, envir = globalenv())
-# }
-# 
-# opts <- setSimulationPath("C:\\Users\\Datastorm\\Desktop\\antares\\test_case", 1)
-# mydata <- readAntares(areas = "all",
-#                       links = "all",
-#                       timeStep = "daily",
-#                       select = "nostat", mcYears = "all")
-# layout <- readLayout()
-# ml <- mapLayout(layout)
-# save("ml", file = "ml.RDS")
-#
-# ml <- readRDS("C:/Users/Datastorm/Documents/git/antaresViz/ml.RDS")
-#
-# module_plotmap <- plotMap(mydata, ml, .runApp = FALSE)
-

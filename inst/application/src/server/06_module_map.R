@@ -81,21 +81,23 @@ observe({
             # init / re-init module plotMap
             id_plotMap   <- paste0("plotMap_", round(runif(1, 1, 100000000)))
             
+            # update shared input table
+            input_data$data[grepl("^plotMap", input_id), input_id := paste0(id_plotMap, "-shared_", input)]
+        
             output[["plotMap_ui"]] <- renderUI({
               mwModuleUI(id = id_plotMap, height = "800px")
             })
             
-            # if(!is.null(modules$plotMap)){
-            #   cleanModule(modules$plotMap)
-            #   modules$plotMap <- NULL
-            # }
-            
-            modules$plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
+            mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
                                        interactive = TRUE, 
                                        h5requestFiltering = list_data_all$params[ind_map],
                                        xyCompare = "union", .runApp = FALSE)
             
-            mwModule(id = id_plotMap,  modules$plotMap)
+            if("MWController" %in% class(modules$plotMap)){
+              modules$plotMap$clear()
+            }
+            
+            modules$plotMap <- mwModule(id = id_plotMap,  mod_plotMap)
             # save data and params
             list_data_controls$n_maps <- length(ind_map)
           }

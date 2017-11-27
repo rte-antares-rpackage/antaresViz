@@ -1,5 +1,9 @@
 function(input, output, session) {
   
+  # observe({
+  #   print(names(input))
+  # })
+  
   #----------------
   # set / read data
   #----------------
@@ -106,7 +110,7 @@ function(input, output, session) {
   #----------------
   observe({
     if(input$quit > 0){
-      stopApp()
+      stopApp(returnValue = TRUE)
     }
   })
 }

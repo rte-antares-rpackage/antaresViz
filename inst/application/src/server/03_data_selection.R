@@ -87,9 +87,16 @@ for(j in 1:16){
       if(!is.null(input[[paste0("list_study_rm", l_j)]])){
         if(input[[paste0("list_study_rm", l_j)]] > 0){
           isolate({
-            list_data_all$antaresDataList[l_j] <- NULL
+            # print("remove")
+            # print(l_j)
+            # print(object_size(list_data_all$antaresDataList))
+            # print(object_size(list_data_all$antaresDataList[l_j]))
+            # print(mem_change(list_data_all$antaresDataList[l_j] <- NULL))
+            # print(object_size(list_data_all$antaresDataList))
+            # print(object_size(list_data_all$antaresDataList[l_j]))
             list_data_all$params[l_j] <- NULL
-            gc()
+            gc(reset = TRUE)
+            
           })
         }
       }
