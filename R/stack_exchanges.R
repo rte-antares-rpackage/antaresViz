@@ -59,7 +59,10 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            width = NULL, height = NULL,
                            xyCompare = c("union","intersect"),
                            h5requestFiltering = list(),
-                           stepPlot = FALSE, drawPoints = FALSE, ...) {
+                           stepPlot = FALSE, drawPoints = FALSE,  
+                           timeSteph5 = "hourly",
+                           mcYearh5 = NULL,
+                           tablesh5 = c("areas", "links"), ...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -95,7 +98,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   if(!is.null(compare) && "antaresData"%in%class(x)){
     x <- list(x, x)
   }
-  .testXclassAndInteractive(x, interactive)
+  # .testXclassAndInteractive(x, interactive)
 
   
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
@@ -219,8 +222,15 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   }
   
   if (!interactive) {
+    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    
     params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun)
-    return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend, stepPlot, drawPoints))
+    L_w <- lapply(params$x, function(X){
+      X$plotFun(1, X$area, X$dateRange, unit, mcYear, legend, stepPlot, drawPoints)
+    })
+    return(combineWidgets(list = L_w))  
+    
+    
   }
   
   table <- NULL
