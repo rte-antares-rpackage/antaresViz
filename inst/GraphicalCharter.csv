@@ -1,29 +1,29 @@
-name	red	green	blue	formula
-pumpedStorage	17	71	185	PSP
-"import/export"	150	150	150	-(BALANCE + `ROW BAL.`)
-mustRunTotal	120	136	194	mustRunTotal
-mustRunPartial	120	236	194	mustRunPartial
-mustRun	220	236	94	mustRun
-bioenergy	22	106	87	`MISC. NDG`
-wind	116	205	185	WIND
-solar	242	116	6	SOLAR
-nuclear	245	179	0	NUCLEAR
-hydraulic	39	114	178	`H. ROR`+`H. STOR`
-gas	243	10	10	GAS
-coal	172	140	53	COAL
-other	173	255	47	`MISC. DTG` + `MIX. FUEL`
-load	135	86	39	LOAD
-renewable	0	255	0	WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG`
-renewableNoDispatchable	0	255	0	WIND+SOLAR+`H. ROR`+`MISC. NDG`
-thermal	77	77	77	NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`
-thermalDispatchable	100	100	100	NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`
-hydraulicDispatchable	39	114	178	`H. STOR`
-lignite	180	130	43	LIGNITE
-oil	131	86	162	OIL
-mixFuel	127	84	156	`MIX. FUEL`
-"misc. DTG"	173	255	47	`MISC. DTG`
-hydraulicRor	61	96	125	`H. ROR`
-hydraulicStor	84	151	208	`H. STOR`
-totalProduction	235	155	166	NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`+WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG` + pmax(0, PSP)
-netLoad	101	180	197	netLoad
-thermalAvailability	1	1	1	`AVL DTG`
+name;red;green;blue;formula;Needed_Col
+pumpedStorage;17;71;185;PSP;PSP
+import/export;150;150;150;-(BALANCE + `ROW BAL.`);BALANCE,ROW BAL.
+mustRunTotal;120;136;194;mustRunTotal;mustRunTotal
+mustRunPartial;120;236;194;mustRunPartial;mustRunPartial
+mustRun;220;236;94;mustRun;mustRun
+bioenergy;22;106;87;`MISC. NDG`;MISC. NDG
+wind;116;205;185;WIND;WIND
+solar;242;116;6;SOLAR;SOLAR
+nuclear;245;179;0;NUCLEAR;NUCLEAR
+hydraulic;39;114;178;`H. ROR`+`H. STOR`;H. ROR,H. STOR
+gas;243;10;10;GAS;GAS
+coal;172;140;53;COAL;COAL
+other;173;255;47;`MISC. DTG` + `MIX. FUEL`;MISC. DTG,MIX. FUEL
+load;135;86;39;LOAD;LOAD
+renewable;0;255;0;WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG`;WIND,SOLAR,H. ROR,H. STOR,MISC. NDG
+renewableNoDispatchable;0;255;0;WIND+SOLAR+`H. ROR`+`MISC. NDG`;WIND,SOLAR,H. ROR,MISC. NDG
+thermal;77;77;77;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`;NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG
+thermalDispatchable;100;100;100;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`;NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG
+hydraulicDispatchable;39;114;178;`H. STOR`;H. STOR
+lignite;180;130;43;LIGNITE;LIGNITE
+oil;131;86;162;OIL;OIL
+mixFuel;127;84;156;`MIX. FUEL`;MIX. FUEL
+misc. DTG;173;255;47;`MISC. DTG`;MISC. DTG
+hydraulicRor;61;96;125;`H. ROR`;H. ROR
+hydraulicStor;84;151;208;`H. STOR`;H. STOR
+totalProduction;235;155;166;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`+WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG` + pmax(0, PSP);NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG,WIND,SOLAR,H. ROR,H. STOR,MISC. NDG,PSP
+netLoad;101;180;197;netLoad;netLoad
+thermalAvailability;1;1;1;`AVL DTG`;AVL DTG

@@ -55,12 +55,17 @@ names(formulas) <- graphicalCharter$name
 colors <- graphicalCharter[, rgb(red, green, blue, maxColorValue = 255)]
 names(colors) <- graphicalCharter$name
 
+
+needed <- graphicalCharter$Needed_Col
+names(needed) <- graphicalCharter$name
+needed <- strsplit(needed, ",")
 # Private function that generates a production stack alias, given a list of 
 # variable names. The variable names need to be present in file 
 # GraphicalCharter.csv
 .getProdStackAlias <- function(description = "", var = NULL, lines = NULL) {
   list(
     description = description,
+    nedded_col = unique(unlist(needed[var])),
     variables = formulas[var],
     colors = unname(colors[var]),
     lines = formulas[lines],
