@@ -94,6 +94,7 @@ for(j in 1:16){
             # print(mem_change(list_data_all$antaresDataList[l_j] <- NULL))
             # print(object_size(list_data_all$antaresDataList))
             # print(object_size(list_data_all$antaresDataList[l_j]))
+            list_data_all$antaresDataList[l_j] <- NULL
             list_data_all$params[l_j] <- NULL
             gc(reset = TRUE)
             
