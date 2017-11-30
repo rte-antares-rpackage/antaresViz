@@ -21,6 +21,7 @@
 #' @export
 stackMap <- function(x, mapLayout)
 {
+  colorArea <- colorLink <- sizeArea <- dateRange <- NULL
   manipulateWidget(.expr = {
     ColorArea2 <- colorArea
     if(is.null(ColorArea2)){
