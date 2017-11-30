@@ -7,7 +7,7 @@
 #' @param x
 #'   Object of class \code{antaresData}. Alternatively, it can be a list of 
 #'   \code{antaresData} objects. In this case, one chart is created for each
-#'   object.
+#'   object. Can also be opts object from h5 file or list of opts object from h5 file.
 #' @param table
 #'   Name of the table to display when \code{x} is an \code{antaresDataList}
 #'   object.
