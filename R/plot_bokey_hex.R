@@ -15,15 +15,15 @@
 #' @examples 
 #' \dontrun{
 #' 
-#' setSimulationPath("Mystud")
-#' dta <- readAntares()
+#' setSimulationPath("myStudy")
+#' myData <- readAntares()
 #' 
-#' bokeyHex(dta, "NODU", "LOAD", precision = 50,
+#' plotBokeyHex(myData, "NODU", "LOAD", precision = 50,
 #'          sizeOnCount = FALSE)
 #' }
 #'    
 #' @export
-bokeyHex <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLine = TRUE,
+plotBokeyHex <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLine = TRUE,
                      transform = NULL)
 {
   if(!requireNamespace("rbokeh")){
