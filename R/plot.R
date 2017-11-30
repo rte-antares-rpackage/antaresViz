@@ -317,7 +317,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                     stop("Invalid type")
         )
         
-        variable2Axe <- apply(expand.grid(elements, variable2Axe), 1, function(X){paste(X, collapse = " - ")})
+        variable2Axe <- apply(expand.grid(elements, variable2Axe), 1, function(X){paste(X, collapse = " __ ")})
         
         
         f(
