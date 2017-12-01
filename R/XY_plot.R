@@ -27,8 +27,11 @@ plotXY <- function(x, xyCompare = c("union","intersect"))
       if(transformFunction == "log"){
         transform <- log
       }
-      print(x_tranform[[.id]][timeId>=dateRange[1] & timeId<=dateRange[1]])
-      bock <- try(plotBokeyHex(x_tranform[[.id]][timeId>=dateRange[1] & timeId<=dateRange[2]],
+      if(!is.null(x_tranform[[.id]]))
+      {
+      dt <- .selectByRange(x_tranform[[.id]], dateRange)
+      }
+      bock <- try(plotBokeyHex(dt,
                                x = variableX,y = variableY, transform = transform), silent = TRUE)
       if(class(bock)[1] == "try-error"){combineWidgets("Impossible to draw")}else{
         combineWidgets(bock)
@@ -38,8 +41,6 @@ plotXY <- function(x, xyCompare = c("union","intersect"))
     x_in = mwSharedValue({
       .giveListFormat(x)
     }),
-    
-    
     paramsH5 = mwSharedValue({
       paramsH5List <- .h5ParamList(X_I = x_in, xyCompare = xyCompare)
       rhdf5::H5close()
@@ -68,9 +69,7 @@ plotXY <- function(x, xyCompare = c("union","intersect"))
     x_tranform = mwSharedValue({
       sapply(1:length(x_in),function(zz){
         dta <- mergeAllAntaresData(.loadH5Data(sharerequest, x_in[[zz]]))
-        print("here")
         dta$timeId <- .timeIdToDate(dta$timeId, timeSteph5,  x_in[[zz]])
-        print(dta)
         dta
       }, simplify = FALSE)
    
@@ -91,4 +90,8 @@ plotXY <- function(x, xyCompare = c("union","intersect"))
       max = if(!is.null(x_tranform))range(x_tranform[[1]]$timeId)[2],label = "Daterange"
     )
   )
+}
+
+.selectByRange <- function(X, dateRange){
+  X[timeId>=dateRange[1] & timeId<=dateRange[2]]
 }
