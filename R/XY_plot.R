@@ -20,6 +20,9 @@
 #' @export
 plotXY <- function(x, xyCompare = c("union","intersect"))
 {
+  compareOptions <- .compOpts(x, NULL)
+  compare <- NULL
+  if(compareOptions$ncharts>1)compare<-""
   xyCompare <- match.arg(xyCompare)
   manipulateWidget(
     {
@@ -27,14 +30,12 @@ plotXY <- function(x, xyCompare = c("union","intersect"))
       if(transformFunction == "log"){
         transform <- log
       }
+      dt <- list()
+      bock <- list()
       if(!is.null(x_tranform[[.id]]))
       {
-      dt <- .selectByRange(x_tranform[[.id]], dateRange)
-      }
-      bock <- try(plotBokeyHex(dt,
+     try(plotBokeyHex(.selectByRange(x_tranform[[.id]], dateRange),
                                x = variableX,y = variableY, transform = transform), silent = TRUE)
-      if(class(bock)[1] == "try-error"){combineWidgets("Impossible to draw")}else{
-        combineWidgets(bock)
       }
     },
     x = mwSharedValue({x}),
@@ -88,7 +89,13 @@ plotXY <- function(x, xyCompare = c("union","intersect"))
       },
       min = if(!is.null(x_tranform))range(x_tranform[[1]]$timeId)[1], 
       max = if(!is.null(x_tranform))range(x_tranform[[1]]$timeId)[2],label = "Daterange"
-    )
+    ),
+    .compare = {
+      compare
+    },
+    .compareOpts = {
+      compareOptions
+    }
   )
 }
 
