@@ -4,7 +4,7 @@
 #' 
 #' This function take somes arguments from rbokeh and make plot.
 #' 
-#' @param data \code{data.frame}
+#' @param data \code{data.frame} can be antaresData object
 #' @param x \code{character}, x variable 
 #' @param y \code{character}, y variable 
 #' @param precision \code{numeric} precision for plot
@@ -20,6 +20,13 @@
 #' 
 #' plotBokeyHex(myData, "NODU", "LOAD", precision = 50,
 #'          sizeOnCount = FALSE)
+#'          
+#' myData <- readAntares(areas = "all", links = "all")    
+#' myData <- mergeAllAntaresData(myData)  
+#' plotBokeyHex(myData, "OP. COST_max_b", "OP. COST_max_c", precision = 50,
+#'          sizeOnCount = FALSE)
+#'          
+#'          
 #' }
 #'    
 #' @export
@@ -28,6 +35,9 @@ plotBokeyHex <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLin
 {
   if(!requireNamespace("rbokeh")){
     stop("You should install 'rbokeh' library")
+  }
+  if(!"data.frame"%in%class(data)){
+    stop("data should be a data.frame")
   }
 
   suppressWarnings(p <- rbokeh::figure() %>%

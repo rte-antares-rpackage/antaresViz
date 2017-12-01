@@ -8,7 +8,7 @@ plotBokeyHex(data, x, y, precision = 30, sizeOnCount = FALSE,
   outLine = TRUE, transform = NULL)
 }
 \arguments{
-\item{data}{\code{data.frame}}
+\item{data}{\code{data.frame} can be antaresData object}
 
 \item{x}{\code{character}, x variable}
 
@@ -33,6 +33,13 @@ myData <- readAntares()
 
 plotBokeyHex(myData, "NODU", "LOAD", precision = 50,
          sizeOnCount = FALSE)
+         
+myData <- readAntares(areas = "all", links = "all")    
+myData <- mergeAllAntaresData(myData)  
+plotBokeyHex(myData, "OP. COST_max_b", "OP. COST_max_c", precision = 50,
+         sizeOnCount = FALSE)
+         
+         
 }
    
 }
