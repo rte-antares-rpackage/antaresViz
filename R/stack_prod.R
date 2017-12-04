@@ -328,12 +328,17 @@ prodStack <- function(x,
     x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
     
     
-    params <- .getDataForComp(x = .giveListFormat(x), y = NULL, compare = compare,compareOpts = compareOptions, processFun = processFun)
+    params <- .getDataForComp(x = .giveListFormat(x),
+                              y = NULL, compare = compare,
+                              compareOpts = compareOptions,
+                              processFun = processFun)
     
     
     
     L_w <- lapply(params$x, function(X){
-      X$plotWithLegend(1, areas, main, unit, stack, params$x[[1]]$dateRange, mcYear, legend, stepPlot, drawPoints)
+      X$plotWithLegend(1, areas, main, unit,
+                       stack, params$x[[1]]$dateRange,
+                       mcYear, legend, stepPlot, drawPoints)
     })
     return(combineWidgets(list = L_w))
     
@@ -359,7 +364,10 @@ prodStack <- function(x,
     {
       .tryCloseH5()
       if(.id <= length(params$x)){
-        widget <- params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main, unit, stack, dateRange, mcYear, legend, stepPlot, drawPoints)
+        widget <- params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main,
+                                                        unit, stack, dateRange,
+                                                        mcYear, legend,
+                                                        stepPlot, drawPoints)
         controlWidgetSize(widget)
       } else {
         combineWidgets("No data for this selection")
@@ -373,7 +381,8 @@ prodStack <- function(x,
       h5requestFiltering
     }),
     paramsH5 = mwSharedValue({
-      tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
+      tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare,
+                          h5requestFilter = h5requestFiltering)
       tmp
     }),
     H5request = mwGroup(
@@ -412,8 +421,6 @@ prodStack <- function(x,
       h5requestFilteringTp <- paramsH5$h5requestFilter
       if(!is.null(sharerequest))
       {
-        
-        
         for(i in 1:length(h5requestFilteringTp))
         {
           if(sharerequest$tables == "areas"){
@@ -585,7 +592,6 @@ prodStack <- function(x,
   for (n in names(formulas)) {
     dt[,c(n) := x[, eval(formulas[[n]]) / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]]
   }
-  
   .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, legendId,
              groupId,
              main = main, ylab = sprintf("Production (%s)", unit), 

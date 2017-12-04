@@ -171,10 +171,23 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     }
   }
   
+
+  runScale <- ifelse(!identical(options[names(options)!="preprocess"] ,
+                                tpMap[names(tpMap)!="preprocess"]), FALSE, TRUE)
+  
   type <- match.arg(type)
   areaChartType <- match.arg(areaChartType)
   xyCompare <- match.arg(xyCompare)
-  options <- do.call(plotMapOptions, options)
+  
+  if(colAreaVar != "none" & colAreaVar%in%colorsVars$Column & runScale)
+  {
+  raw <- colorsVars[Column == colAreaVar]
+  options <- plotMapOptions(areaColorScaleOpts = colorScaleOptions(
+    negCol = "#FFFFFF",
+    zeroCol = rgb(raw$red, raw$green, raw$blue,  maxColorValue = 255),
+    posCol = rgb(raw$red/2, raw$green/2, raw$blue/2, maxColorValue = 255)))
+  
+  }
   if (is.null(mcYear)) mcYear <- "average"
   
   if(!is.null(compare) && class(x)[1] == "list"){
@@ -286,7 +299,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                         uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
                         popupLinkVars, 
                         type = c("detail", "avg"), mcYear,
-                        initial = TRUE, session = NULL, outputId = "output1", dateRange = NULL, sizeMiniPlot = FALSE) {
+                        initial = TRUE, session = NULL, outputId = "output1",
+                        dateRange = NULL, sizeMiniPlot = FALSE, options = NULL) {
       type <- match.arg(type)
       if (type == "avg") t <- NULL
       else if (is.null(t)) t <- 0
@@ -377,7 +391,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                 uniqueScale = uniqueScale, showLabels = showLabels,
                 labelAreaVar = labelAreaVar, colLinkVar = colLinkVar, 
                 sizeLinkVar = sizeLinkVar, popupLinkVars = popupLinkVars,
-                type = type, mcYear = mcYear, dateRange = dateRange, sizeMiniPlot = sizeMiniPlot)
+                type = type, mcYear = mcYear, dateRange = dateRange,
+                sizeMiniPlot = sizeMiniPlot, options = options)
     })
     return(combineWidgets(list = L_w,  title = main, width = width, height = height))  
     
@@ -422,7 +437,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                                   session = .session,
                                   outputId = .output,
                                   dateRange = dateRange,
-                                  sizeMiniPlot = sizeMiniPlot)
+                                  sizeMiniPlot = sizeMiniPlot,
+                                  options = optionsT)
         } else {
           combineWidgets("No data for this selection")
         }
@@ -434,6 +450,21 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     x = mwSharedValue({x}),
     x_in = mwSharedValue({
       .giveListFormat(x)
+    }),
+    options = mwSharedValue({options}),
+    optionsT = mwSharedValue({
+      
+      if(colAreaVar%in%colorsVars$Column & runScale){
+        raw <- colorsVars[Column == colAreaVar]
+        plotMapOptions(areaColorScaleOpts = colorScaleOptions(
+          
+          negCol = "#FFFFFF",
+          zeroCol = rgb(raw$red, raw$green, raw$blue,  maxColorValue = 255),
+          posCol = rgb(raw$red/2, raw$green/2, raw$blue/2, maxColorValue = 255)))
+          
+      }else{
+        options
+      }
     }),
     h5requestFiltering = mwSharedValue({h5requestFiltering}),
     

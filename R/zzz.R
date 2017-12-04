@@ -116,6 +116,11 @@ pkgEnv$prodStackAliases <- list(
 
 rm(graphicalCharter, formulas, colors)
 
+
+colorsVars <- fread(input=system.file("color.csv", package = "antaresViz"))
+colorsVars$colors <- rgb(colorsVars$red, colorsVars$green, colorsVars$blue, maxColorValue = 255)
+
+
 # message limit size
 antaresVizSizeGraphError = "Too much data, please reduce selection. If you work with hourly data, you can reduce dateRange selection. 
 You can also use 'limitSizeGraph' function in R or 'Memory Controls' panel in shiny to update this."
