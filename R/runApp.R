@@ -2,6 +2,8 @@
 #' 
 #' \code{runAppAntaresViz} run antaresViz App.
 #' 
+#' @param browser \code{boolean} run app in browser
+#' 
 #' @return 
 #' an App Shiny. 
 #' 
