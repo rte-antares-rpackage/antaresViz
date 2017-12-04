@@ -141,123 +141,144 @@ tabPanel("Data",
 ),
 tabPanel("prodStack",
          fluidRow(column(12,
-           conditionalPanel(condition = "output.have_data",
-                            conditionalPanel(condition = "output.have_data_areas",
-                                             uiOutput("prodStack_ui")
-                            ),
-                            conditionalPanel(condition = "output.have_data_areas === false",
-                                             h3("No areas imported")
-                            )
-           ),
-           conditionalPanel(condition = "output.have_data === false",
-                            h3("No data imported")
-           )
+                         conditionalPanel(condition = "output.have_data",
+                                          conditionalPanel(condition = "output.have_data_areas",
+                                                           uiOutput("prodStack_ui")
+                                          ),
+                                          conditionalPanel(condition = "output.have_data_areas === false",
+                                                           h3("No areas imported")
+                                          )
+                         ),
+                         conditionalPanel(condition = "output.have_data === false",
+                                          h3("No data imported")
+                         )
          ))
 ),
 tabPanel("exchangesStack",
          fluidRow(column(12,
-           conditionalPanel(condition = "output.have_data",
-                            conditionalPanel(condition = "output.have_data_links",
-                                             uiOutput("exchangesStack_ui")
-                            ),
-                            conditionalPanel(condition = "output.have_data_links === false",
-                                             h3("No links imported")
-                            )
-           ),
-           conditionalPanel(condition = "output.have_data === false",
-                            h3("No data imported")
-           )
+                         conditionalPanel(condition = "output.have_data",
+                                          conditionalPanel(condition = "output.have_data_links",
+                                                           uiOutput("exchangesStack_ui")
+                                          ),
+                                          conditionalPanel(condition = "output.have_data_links === false",
+                                                           h3("No links imported")
+                                          )
+                         ),
+                         conditionalPanel(condition = "output.have_data === false",
+                                          h3("No data imported")
+                         )
          ))
 ),
 tabPanel("tsPlot",
          fluidRow(column(12,
-           conditionalPanel(condition = "output.have_data",
-                            conditionalPanel(condition = "output.have_data_areas",
-                                             uiOutput("plotts_ui")
-                            ),
-                            conditionalPanel(condition = "output.have_data_areas === false",
-                                             h3("No areas imported")
-                            )
-           ),
-           conditionalPanel(condition = "output.have_data === false",
-                            h3("No data imported")
-           )
+                         conditionalPanel(condition = "output.have_data",
+                                          conditionalPanel(condition = "output.have_data_areas",
+                                                           uiOutput("plotts_ui")
+                                          ),
+                                          conditionalPanel(condition = "output.have_data_areas === false",
+                                                           h3("No areas imported")
+                                          )
+                         ),
+                         conditionalPanel(condition = "output.have_data === false",
+                                          h3("No data imported")
+                         )
          ))
 ),
 navbarMenu("plotMap", 
            tabPanel("Layout Builder", 
                     fluidRow(column(12,
-                      conditionalPanel(condition = "output.have_data",
-                                       antaresViz:::changeCoordsUI("ml")
-                      ),
-                      conditionalPanel(condition = "output.have_data === false",
-                                       h3("No data imported")
-                      )
-                      
+                                    conditionalPanel(condition = "output.have_data",
+                                                     antaresViz:::changeCoordsUI("ml")
+                                    ),
+                                    conditionalPanel(condition = "output.have_data === false",
+                                                     h3("No data imported")
+                                    )
+                                    
                     ))
            ),
            tabPanel("Current Layout",
                     fluidRow(column(12,
-                      conditionalPanel(condition = "output.must_print_map",
-                                       div(h3("Current map layout"), align = "center"),
-                                       leafletDragPointsOutput("current_layout", height = "700px")
-                      ),
-                      conditionalPanel(condition = "output.must_print_map === false",
-                                       h3("Please set or import a map layout before.")
-                      ),
-                      hr(),
-                      fluidRow(
-                        column(6,
-                               
-                               conditionalPanel(condition = "output.must_print_map",
-                                                div(br(), downloadButton('download_layout', 'Download Layout'), align = "center")
-                               )
-                               
-                        ),
-                        column(6,
-                               div(fileInput("import_layout", "Import a layout", 
-                                             accept = c(".RDS", ".rds", ".Rds")
-                               ), align = "center")
-                        )
-                      )
-                      
+                                    conditionalPanel(condition = "output.must_print_map",
+                                                     div(h3("Current map layout"), align = "center"),
+                                                     leafletDragPointsOutput("current_layout", height = "700px")
+                                    ),
+                                    conditionalPanel(condition = "output.must_print_map === false",
+                                                     h3("Please set or import a map layout before.")
+                                    ),
+                                    hr(),
+                                    fluidRow(
+                                      column(6,
+                                             
+                                             conditionalPanel(condition = "output.must_print_map",
+                                                              div(br(), downloadButton('download_layout', 'Download Layout'), align = "center")
+                                             )
+                                             
+                                      ),
+                                      column(6,
+                                             div(fileInput("import_layout", "Import a layout", 
+                                                           accept = c(".RDS", ".rds", ".Rds")
+                                             ), align = "center")
+                                      )
+                                    )
+                                    
                     ))
                     
            ),
            tabPanel("Map", 
                     fluidRow(column(12,
-                      conditionalPanel(condition = "output.have_data",
-                                       conditionalPanel(condition = "output.must_print_map", 
-                                                        uiOutput("plotMap_ui")
-                                       ), 
-                                       conditionalPanel(condition = "output.must_print_map === false", 
-                                                        h3("Please set or import a map layout before.")
-                                       )
-                      ),
-                      conditionalPanel(condition = "output.have_data === false",
-                                       h3("No data imported")
-                      )
+                                    conditionalPanel(condition = "output.have_data",
+                                                     conditionalPanel(condition = "output.must_print_map", 
+                                                                      uiOutput("plotMap_ui")
+                                                     ), 
+                                                     conditionalPanel(condition = "output.must_print_map === false", 
+                                                                      h3("Please set or import a map layout before.")
+                                                     )
+                                    ),
+                                    conditionalPanel(condition = "output.have_data === false",
+                                                     h3("No data imported")
+                                    )
                     ))
            )
 ), 
 tabPanel("Memory Controls", 
-           fluidRow(
-             column(3, h4("readAntares RAM limit (in Go) : ")),
-             column(3, div(numericInput("ram_limit", label = NULL, 
-                                        min = 1, max = 10, value = {
-                                          if(!is.null(getOption("maxSizeLoad"))){
-                                            getOption("maxSizeLoad")
-                                          } else {10}
-                                        }), align = "center")),
-             column(3, h4("antaresViz data module (in Mb) : ")),
-             column(3, div(numericInput("data_module", label = NULL, 
-                                        min = 1, max = 10, value = {
-                                          if(!is.null(getOption("antaresVizSizeGraph"))){
-                                            getOption("antaresVizSizeGraph")
-                                          } else {200}
-                                        }), align = "center"))
+         fluidRow(
+           column(3, h4("readAntares RAM limit (in Go) : ")),
+           column(3, div(numericInput("ram_limit", label = NULL, 
+                                      min = 1, max = 10, value = {
+                                        if(!is.null(getOption("maxSizeLoad"))){
+                                          getOption("maxSizeLoad")
+                                        } else {10}
+                                      }), align = "center")),
+           column(3, h4("antaresViz data module (in Mb) : ")),
+           column(3, div(numericInput("data_module", label = NULL, 
+                                      min = 1, max = 10, value = {
+                                        if(!is.null(getOption("antaresVizSizeGraph"))){
+                                          getOption("antaresVizSizeGraph")
+                                        } else {200}
+                                      }), align = "center"))
            
          )
+),
+tabPanel("Help", 
+         fluidRow(
+           column(width = 12,
+                  HTML(text = "For any questions, please contact <a href='mailto:rte-antares-rpackage@rte-france.com;'> RTE-ANTARES-RPACKAGE Team </a>.<br> <hr>"),
+                  tabsetPanel(
+                    tabPanel("R function readAntares", 
+                             fluidRow(
+                               column(12, includeHTML("www/readAntares.html"))
+                             )
+                    ),
+                    tabPanel("R function removeVirtualAreas", 
+                             fluidRow(
+                               column(12, includeHTML("www/removeVirtualAreas.html"))
+                             )
+                    )
+                    
+                  )
+           )
+         )
+         
 ),
 footer = div(hr(), actionButton("quit", "Quit application", icon = icon("sign-out")), align = "center")
 )

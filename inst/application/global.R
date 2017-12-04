@@ -52,3 +52,14 @@ build_input_data <- function(data){
 ref_map_table <- spMaps::getEuropeReferenceTable()
 choices_map <- c("all", ref_map_table$code)
 names(choices_map) <- c("all", ref_map_table$name)
+
+#----- generate help for antaresRead function
+# library(tools)
+# add.html.help <- function(package, func, tempsave = paste0(getwd(), "/temp.html")) {
+#   pkgRdDB = tools:::fetchRdDB(file.path(find.package(package), "help", package))
+#   topics = names(pkgRdDB)
+#   rdfunc <- pkgRdDB[[func]]
+#   tools::Rd2HTML(pkgRdDB[[func]], out = tempsave)
+# }
+# add.html.help("antaresRead", "readAntares", "inst/application/www/readAntares.html")
+# add.html.help("antaresRead", "removeVirtualAreas", "inst/application/www/removeVirtualAreas.html")
