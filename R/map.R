@@ -157,7 +157,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if(!is.null(compare) && !interactive){
     stop("You can't use compare in no interactive mode")
   }
-  
+  tpMap <- Column <- optionsT <- NULL
   #Check compare
   compareMath <- c("mcYear", "type", "colAreaVar", "sizeAreaVars", "areaChartType", "showLabels",
                    "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars")

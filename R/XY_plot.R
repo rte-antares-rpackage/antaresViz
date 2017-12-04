@@ -20,6 +20,9 @@
 #' @export
 plotXY <- function(x, xyCompare = c("union","intersect"))
 {
+  #remove notes
+  x_in <- timeSteph5 <- allVar <- NULL
+  transformFunction <- x_tranform <- dateRange <- variableX <- variableY <- paramsH5 <- mcYearh <- sharerequest <- NULL
   compareOptions <- .compOpts(x, NULL)
   compare <- NULL
   if(compareOptions$ncharts>1)compare<-""

@@ -44,5 +44,6 @@ plotBokeyHex <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLin
                      rbokeh::ly_hexbin(x, y, data, xbins = precision, 
                                style = ifelse(sizeOnCount,"lattice", "colorramp"),
                                palette = c("Spectral10"), line = !outLine, trans = transform))
+
   p
 }
