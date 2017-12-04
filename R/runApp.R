@@ -7,8 +7,8 @@
 #' 
 #' @importFrom shiny runApp
 #' @export
-runAppAntaresViz <- function() {
-  ctrl <- shiny::runApp(system.file("application", package = "antaresViz"))
+runAppAntaresViz <- function(browser = FALSE) {
+  ctrl <- shiny::runApp(system.file("application", package = "antaresViz") , launch.browser = browser)
   gc(reset = TRUE)
   invisible(TRUE)
 }
