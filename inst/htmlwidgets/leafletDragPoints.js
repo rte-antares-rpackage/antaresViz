@@ -100,7 +100,6 @@ HTMLWidgets.widget({
       },
 
       resize: function(width, height) {
-
       }
 
     };

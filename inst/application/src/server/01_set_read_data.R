@@ -171,3 +171,51 @@ observe({
     })
   }
 })
+
+observe({
+  RL <- input$read_links
+  isolate({
+    if(!is.null(RL)) {
+      if(length(RL) == 0) {
+        updateCheckboxInput(session, "read_linkCapacity", "linkCapacity", FALSE)
+      }
+    } else {
+      updateCheckboxInput(session, "read_linkCapacity", "linkCapacity", FALSE)
+    }
+  })
+  
+})
+
+observe({
+  RC <- input$read_clusters
+  opts <- opts()
+  isolate({
+    if(!is.null(RC)) {
+      if(length(RC) == 0) {
+        updateCheckboxInput(session, "read_thermalAvailabilities", "thermalAvailabilities", FALSE)
+        updateCheckboxInput(session, "read_thermalModulation", "thermalModulation", FALSE)
+      }
+    } else {
+      updateCheckboxInput(session, "read_thermalAvailabilities", "thermalAvailabilities", FALSE)
+      updateCheckboxInput(session, "read_thermalModulation", "thermalModulation", FALSE)
+    }
+  })
+  
+})
+
+observe({
+  opts <- opts()
+  if(!is.null(opts)) {
+    isolate({
+      # browser()
+      if(!opts$parameters$general$`year-by-year`){
+        updateRadioButtons(session, "read_type_mcYears", "mcYears :",
+                           c("synthetic"), inline = TRUE)
+        updateCheckboxInput(session, "read_hydroStorage", "hydroStorage", FALSE)
+      } else {
+        updateRadioButtons(session, "read_type_mcYears", "mcYears :",
+                           c("synthetic", "all", "custom"), inline = TRUE)
+      }
+    })
+  }
+})

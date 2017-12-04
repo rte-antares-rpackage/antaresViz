@@ -26,7 +26,8 @@ observe({
                           reserve = input$read_reserve, linkCapacity = input$read_linkCapacity, 
                           mustRun = input$read_mustRun, thermalModulation = input$read_thermalModulation,
                           select = input$read_select, mcYears = mcYears, timeStep = input$read_timeStep, 
-                          opts = opts(), parallel = input$read_parallel,
+                          opts = opts(), 
+                          # parallel = input$read_parallel,
                           simplify = TRUE, showProgress = FALSE)},
               error = function(e){
                 showModal(modalDialog(
