@@ -89,7 +89,8 @@ observe({
             })
             
             mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
-                                       interactive = TRUE, 
+                                       interactive = TRUE, .updateBtn = TRUE, 
+                                        .updateBtnInit = TRUE,
                                        h5requestFiltering = list_data_all$params[ind_map],
                                        xyCompare = "union", .runApp = FALSE)
             
