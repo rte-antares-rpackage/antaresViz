@@ -1,11 +1,9 @@
 # Define UI for antaresViz app
-navbarPage(title = fluidRow(
-  column(8, "antaresViz"),
-  column(4,tags$div(id = "import_busy",
-                    tags$img(src= "spinner.gif", height = 22), align = 'center'))
-), id = "nav-id", inverse= TRUE, collapsible = TRUE, position = "fixed-top",
+navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRUE, position = "fixed-top",
 header = fluidRow(
-  column(12, br(), br(), br(), singleton(tags$script(src = 'events.js')))
+  column(12, br(), br(), br(), singleton(tags$script(src = 'events.js')), 
+         div(id = "import_busy", tags$img(src= "spinner.gif", height = 100, 
+        style = "position: fixed;top: 50%;z-index:10;left: 48%;")), align = "center")
 ), windowTitle = "antaresViz",
 tabPanel("Data", 
          h3("Antares study selection"),
