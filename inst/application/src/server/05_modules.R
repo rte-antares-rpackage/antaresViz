@@ -19,7 +19,7 @@ observe({
           input_data$data[grepl("^prodStack", input_id), input_id := paste0(id_prodStack, "-shared_", input)]
           
           output[["prodStack_ui"]] <- renderUI({
-            mwModuleUI(id = id_prodStack, height = "800px")
+            mwModuleUI(id = id_prodStack, height = "800px", fluidRow = TRUE)
           })
           
           mod_prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
@@ -40,7 +40,7 @@ observe({
           input_data$data[grepl("^plotts", input_id), input_id := paste0(id_ts, "-shared_", input)]
 
           output[["plotts_ui"]] <- renderUI({
-            mwModuleUI(id = id_ts, height = "800px")
+            mwModuleUI(id = id_ts, height = "800px", fluidRow = TRUE)
           })
           
 
@@ -71,7 +71,7 @@ observe({
           input_data$data[grepl("^exchangesStack", input_id), input_id := paste0(id_exchangesStack, "-shared_", input)]
           
           output[["exchangesStack_ui"]] <- renderUI({
-            mwModuleUI(id = id_exchangesStack, height = "800px")
+            mwModuleUI(id = id_exchangesStack, height = "800px", fluidRow = TRUE)
           })
           
           mod_exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
