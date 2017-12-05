@@ -142,7 +142,7 @@ navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRU
                                )
                       ),
                       tabPanel("Convert to h5",
-                               conditionalPanel(condition = "output.have_study", 
+                               conditionalPanel(condition = "output.have_study && output.current_opts_h5 === false", 
                                                 fluidRow(
                                                   column(12,
                                                          h3("writeAntaresH5 parameters"),
