@@ -4,6 +4,12 @@ function(input, output, session) {
   #   print(names(input))
   # })
   
+  
+  #----------------
+  #Write h5
+  #----------------
+  source("src/server/07_write_h5.R", local = T)
+  
   #----------------
   # set / read data
   #----------------
