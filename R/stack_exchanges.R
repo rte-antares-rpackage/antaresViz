@@ -72,17 +72,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   
   
   #Check compare
-  compareMath <- c("mcYear", "unit", "area", "legend")
-  if(!is.null(compare)){
-    if(!all(compare%in%compareMath)){
-      notCompare <- compare[!compare%in%compareMath]
-      stop(paste0("Following arguments are not availables for compare : ", paste0(notCompare, collapse = ";"),
-                  "  Only following parameters are availables : 'mcYear', 'unit', 'area', 'legend'"))
-    }
-  }
-  
-  
-  
+  .validCompare(compare,  c("mcYear", "main", "unit", "area", "legend", "stepPlot", "drawPoints"))
+
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
@@ -154,7 +145,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     
     if (is.null(init_area)) init_area = areaList[1]
     
-    plotFun <- function(id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints) {
+    plotFun <- function(id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main) {
       # Prepare data for stack creation
       a <- area
       linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
@@ -187,7 +178,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       dt <- dcast(dt, timeId ~ to, value.var = "flow")
       
       # Graphical parameters
-      if (is.null(main)) main <- paste("Flows from/to", area)
+      if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Flows from/to", area)
       if (is.null(ylab)) ylab <- sprintf("Flows (%s)", unit)
       if (is.null(colors)) {
         colors <- substring(rainbow(ncol(dt) - 1, s = 0.7, v = 0.7), 1, 7)
@@ -226,7 +217,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     
     params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun)
     L_w <- lapply(params$x, function(X){
-      X$plotFun(1, X$area, X$dateRange, unit, mcYear, legend, stepPlot, drawPoints)
+      X$plotFun(1, X$area, X$dateRange, unit, mcYear, legend, stepPlot, drawPoints, main)
     })
     return(combineWidgets(list = L_w))  
     
@@ -249,7 +240,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     {
       .tryCloseH5()
       if(.id <= length(params$x)){
-        widget <- params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints)
+        widget <- params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main)
         controlWidgetSize(widget)
       } else {
         combineWidgets("No data for this selection")
@@ -372,6 +363,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     timeStepdataload = mwSharedValue({
       attributes(x_tranform[[1]])$timeStep
     }),
+    
+    main = mwText(main, label = "title"),
     
     params = mwSharedValue({
       .getDataForComp(x_tranform, NULL, compare, compareOpts, 

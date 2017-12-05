@@ -31,7 +31,7 @@
   
   variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
-  if (is.null(main)) main <- paste("Monotone of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Monotone of", variable)
   
   .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, variable2Axe = variable2Axe,
             highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
@@ -55,7 +55,7 @@
   
   variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- "Density"
-  if (is.null(main)) main <- paste("Density of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Density of", variable)
   
   .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements,variable2Axe = variable2Axe, 
             highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints,...)
@@ -78,7 +78,7 @@
   
   variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- "Proportion of time steps"
-  if (is.null(main)) main <- paste("Cumulated distribution of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Cumulated distribution of", variable)
   
   .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, variable2Axe = variable2Axe,
             highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)

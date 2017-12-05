@@ -192,14 +192,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   }
   
   #Check compare
-  compareMath <- c("mcYear", "variable", "type", "confInt", "elements", "aggregate", "legend")
-  if(!is.null(compare)){
-    if(!all(compare%in%compareMath)){
-      notCompare <- compare[!compare%in%compareMath]
-      stop(paste0("Following arguments are not availables for compare : ", paste0(notCompare, collapse = ";"),
-                  "  Only following parameters are availables : 'mcYear', 'variable', 'type', 'confInt', 'elements', 'aggregate', 'legend'"))
-    }
-  }
+  .validCompare(compare,  c("mcYear", "main", "variable", "type", "confInt", "elements", "aggregate", "legend", 
+                            "highlight", "stepPlot", "drawPoints", "secondAxis"))
 
   xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
@@ -275,7 +269,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       
       # Function that generates the desired graphic.
       plotFun <- function(mcYear, id, variable, variable2Axe, elements, type, confInt, dateRange, 
-                          minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints) {
+                          minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints, main) {
         if (is.null(variable)) variable <- valueCols[1]
         if (is.null(dateRange)) dateRange <- dateRange
         if (is.null(type) || !variable %in% names(x)) {
@@ -329,7 +323,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           minValue = minValue,
           maxValue = maxValue, 
           colors = colors, 
-          main = if(length(main) == 1) main else main[id], 
+          main = main, 
           ylab = if(length(ylab) == 1) ylab else ylab[id], 
           legend = legend, 
           legendItemsPerRow = legendItemsPerRow, 
@@ -378,7 +372,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     if (is.null(mcYear)) mcYear <- "average"
     L_w <- lapply(params$x, function(X){
       X[[table]]$plotFun(mcYear, 1, variable, variable2Axe, elements, type, confInt, dateRange, 
-               minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints)
+               minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints, main)
     })
     return(combineWidgets(list = L_w))
     
@@ -410,7 +404,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       
       widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, confInt, 
                                                    dateRange, minValue, maxValue, aggregate, legend, 
-                                                   highlight, stepPlot, drawPoints)
+                                                   highlight, stepPlot, drawPoints, main)
       controlWidgetSize(widget)
     } else {
       combineWidgets("No data for this selection")
@@ -628,6 +622,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   timeStepdataload = mwSharedValue({
     attributes(x_tranform[[1]])$timeStep
   }),
+  
+  main = mwText(main, label = "title"),
   
   params = mwSharedValue({
     .transformDataForComp(x_tranform, compare, compareOpts, processFun = processFun, 

@@ -88,9 +88,15 @@ observe({
               mwModuleUI(id = id_plotMap, height = "800px", fluidRow = TRUE)
             })
             
+            if(length(ind_map) == 1){
+              .compare = NULL
+            } else {
+              .compare = list(main = names(list_data_all$antaresDataList[ind_map]))
+            }
+            
             mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
                                        interactive = TRUE, .updateBtn = TRUE, 
-                                        .updateBtnInit = TRUE,
+                                        .updateBtnInit = TRUE, compare = .compare,
                                        h5requestFiltering = list_data_all$params[ind_map],
                                        xyCompare = "union", .runApp = FALSE)
             

@@ -36,7 +36,7 @@
   dt[,"element" := as.character(element)]
   variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
-  if (is.null(main)) main <- paste("Comparison of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Comparison of", variable)
   
   g <- plot_ly(dt,  textfont = list(color = '#000000')) %>% 
     config(displayModeBar = FALSE) %>% 

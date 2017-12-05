@@ -99,17 +99,6 @@
   tpl
 }
 
-
-# .testParamsConsistency <- function(params, mcYear)
-# {
-#   if(!"mcYear" %in% names(params$x[[1]][[1]]$x) && !is.null(mcYear) && mcYear != "average"){
-#     warning("You have average data and you specify a mcYear. This specification will be ignore.")
-#     mcYear <- NULL
-#   }
-#   list(mcYear = mcYear)
-# }
-
-
 .printWarningMcYear <- function(){
   warning("You have mc-all data and you specify mcYear, it will be ignored")
 }
@@ -123,4 +112,23 @@
     .loadH5Data(share, x[[zz]], h5requestFilter = h5requestFiltering[[zz]])
   }, simplify = FALSE)
   x
+}
+
+
+.validCompare <- function(compare, values){
+  if(!is.null(compare)){
+    if(is.list(compare)){
+      compare_values <- names(compare)
+    } else if(is.vector(compare)){
+      compare_values <- compare
+    } else {
+      stop("'compare' must be a vector or a named list")
+    }
+    if(!all(compare_values %in% values)){
+      invalid <- compare_values[!compare_values %in% values]
+      stop(paste0("Invalid arguments for 'compare' : '", paste0(invalid, collapse = "', '"),
+                  "'. Possible values : '", paste0(values, collapse = "', '"), "'."))
+    }
+  }
+  invisible(TRUE)
 }

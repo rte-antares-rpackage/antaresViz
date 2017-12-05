@@ -208,15 +208,8 @@ prodStack <- function(x,
   }
   
   #Check compare
-  compareMath <- c("mcYear", "main", "unit", "areas", "legend", "stack")
-  if(!is.null(compare)){
-    if(!all(compare%in%compareMath)){
-      notCompare <- compare[!compare%in%compareMath]
-      stop(paste0("Following arguments are not availables for compare : ", paste0(notCompare, collapse = ";"),
-                  "  Only following parameters are availables : 'mcYear', 'main', 'unit', 'areas', 'legend', 'stack'"))
-    }
-  }
-  
+  .validCompare(compare,  c("mcYear", "main", "unit", "areas", "legend", "stack", "stepPlot", "drawPoints"))
+
   xyCompare <- match.arg(xyCompare)
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"

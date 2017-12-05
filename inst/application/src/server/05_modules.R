@@ -22,10 +22,15 @@ observe({
             mwModuleUI(id = id_prodStack, height = "800px", fluidRow = TRUE)
           })
           
+          if(length(ind_areas) == 1){
+            .compare = NULL
+          } else {
+            .compare = list(main = names(list_data_all$antaresDataList[ind_areas]))
+          }
           mod_prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                          h5requestFiltering = list_data_all$params[ind_areas],
                                          unit = "GWh", interactive = TRUE, .updateBtn = TRUE, 
-                                         .updateBtnInit = TRUE, .runApp = FALSE)
+                                         .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$prodStack)){
             modules$prodStack$clear()
@@ -43,11 +48,10 @@ observe({
             mwModuleUI(id = id_ts, height = "800px", fluidRow = TRUE)
           })
           
-
           mod_plotts <- plot(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                  h5requestFiltering = list_data_all$params[ind_areas],
                                  interactive = TRUE, .updateBtn = TRUE, 
-                                 .updateBtnInit = TRUE, .runApp = FALSE)
+                                 .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$plotts)){
             modules$plotts$clear()
@@ -74,10 +78,16 @@ observe({
             mwModuleUI(id = id_exchangesStack, height = "800px", fluidRow = TRUE)
           })
           
+          if(length(ind_links) == 1){
+            .compare = NULL
+          } else {
+            .compare = list(main = names(list_data_all$antaresDataList[ind_links]))
+          }
+          
           mod_exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
                                                    h5requestFiltering = list_data_all$params[ind_links],
                                                    interactive = TRUE, .updateBtn = TRUE, 
-                                                   .updateBtnInit = TRUE, .runApp = FALSE)
+                                                   .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$exchangesStack)){
             modules$exchangesStack$clear()

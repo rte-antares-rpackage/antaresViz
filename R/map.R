@@ -158,20 +158,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     stop("You can't use compare in no interactive mode")
   }
   tpMap <- Column <- optionsT <- NULL
+  
   #Check compare
-  compareMath <- c("mcYear", "type", "colAreaVar", "sizeAreaVars", "areaChartType", "showLabels",
-                   "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars")
+  .validCompare(compare,  c("mcYear", "type", "colAreaVar", "sizeAreaVars", "areaChartType", "showLabels",
+                            "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars", "main"))
   
-  if(!is.null(compare)){
-    if(!all(compare%in%compareMath)){
-      notCompare <- compare[!compare%in%compareMath]
-      stop(paste0("Following arguments are not availables for compare : ", paste0(notCompare, collapse = ";"),
-                  "  Only following parameters are availables : 'mcYear','type','colAreaVar','sizeAreaVars',
-                  'areaChartType','showLabels','popupAreaVars','labelAreaVar','colLinkVar','sizeLinkVar','popupLinkVars'"))
-    }
-  }
-  
-
   runScale <- ifelse(!identical(options[names(options)!="preprocess"] ,
                                 tpMap[names(tpMap)!="preprocess"]), FALSE, TRUE)
   
@@ -397,9 +388,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     return(combineWidgets(list = L_w,  title = main, width = width, height = height))  
     
     
-  } else {
-    # just init for compare & compareOpts
-    #init_params <- .getDataForComp(x, y, compare, compareOpts, function(x) {})
   }
   
   ##remove notes
@@ -411,16 +399,14 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   x_in <- NULL
   x_tranform <- NULL
   
-  
-  
-  
   manipulateWidget(
     {
       if(!is.null(params))
       {
         if(.id <= length(params$x)){
           .tryCloseH5()
-          params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
+          
+          w <- params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                   colAreaVar = colAreaVar,
                                   sizeAreaVars = sizeAreaVars,
                                   popupAreaVars = popupAreaVars,
@@ -439,6 +425,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                                   dateRange = dateRange,
                                   sizeMiniPlot = sizeMiniPlot,
                                   options = optionsT)
+          
+          combineWidgets(w, title = main, width = width, height = height)
+          
         } else {
           combineWidgets("No data for this selection")
         }
@@ -642,6 +631,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         .display = any(sapply(params$x, function(p) {"links" %in% names(p$x)}))
       ),
       mapLayout = mwSharedValue(mapLayout),
+      main = mwText(main, label = "title"),
       params = mwSharedValue({
         
         .getDataForComp(x_tranform, NULL, compare, compareOpts, 
@@ -649,7 +639,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       }),
       .width = width,
       .height = height,
-      .return = function(w, e) combineWidgets(w, title = main, width = width, height = height),
       .compare = {
         compare
       },
