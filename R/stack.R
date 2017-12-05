@@ -84,7 +84,6 @@
     dt$totalNeg <- dt$totalNeg + negValues
   }
   
-  
   ##Add first and last row of not in range
   if(!is.null(dateRange))
   {
@@ -93,6 +92,7 @@
     dt$time[1] <- dateRange[1]
   }
   nrowTp <- nrow(dt)
+
   if(dt$time[nrowTp] < dateRange[2]){
     dt <- dt[c(1:nrow(dt), NA)]
     dt$time[nrowTp + 1] <- dateRange[2]
