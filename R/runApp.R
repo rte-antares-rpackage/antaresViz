@@ -2,15 +2,13 @@
 #' 
 #' \code{runAppAntaresViz} run antaresViz App.
 #' 
-#' @param browser \code{boolean} run app in browser
-#' 
 #' @return 
 #' an App Shiny. 
 #' 
 #' @importFrom shiny runApp
 #' @export
-runAppAntaresViz <- function(browser = FALSE) {
-  ctrl <- shiny::runApp(system.file("application", package = "antaresViz") , launch.browser = browser)
+runAppAntaresViz <- function() {
+  ctrl <- shiny::runApp(system.file("application", package = "antaresViz") , launch.browser = TRUE)
   gc(reset = TRUE)
   invisible(TRUE)
 }
