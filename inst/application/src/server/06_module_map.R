@@ -85,7 +85,7 @@ observe({
             input_data$data[grepl("^plotMap", input_id), input_id := paste0(id_plotMap, "-shared_", input)]
         
             output[["plotMap_ui"]] <- renderUI({
-              mwModuleUI(id = id_plotMap, height = "800px")
+              mwModuleUI(id = id_plotMap, height = "800px", fluidRow = TRUE)
             })
             
             mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 

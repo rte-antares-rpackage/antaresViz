@@ -337,14 +337,51 @@ navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRU
                                         )
                                )
                                
+
+           )
+))), 
+tabPanel("Parameters", 
+         fluidRow(
+           column(2, checkboxInput("is_shared_input", label = "Share inputs between modules ?", value = TRUE)),
+           column(2, h4("readAntares RAM limit (in Go) : ")),
+           column(3, div(numericInput("ram_limit", label = NULL, 
+                                      min = 1, max = 10, value = {
+                                        if(!is.null(getOption("maxSizeLoad"))){
+                                          getOption("maxSizeLoad")
+                                        } else {10}
+                                      }), align = "center")),
+           column(2, h4("antaresViz data module (in Mb) : ")),
+           column(3, div(numericInput("data_module", label = NULL, 
+                                      min = 1, max = 10, value = {
+                                        if(!is.null(getOption("antaresVizSizeGraph"))){
+                                          getOption("antaresVizSizeGraph")
+                                        } else {200}
+                                      }), align = "center"))
+           
+         )
+),
+tabPanel("Help", 
+         fluidRow(
+           column(width = 12,
+                  HTML(text = "For any questions, please contact <a href='mailto:rte-antares-rpackage@rte-france.com;'> RTE-ANTARES-RPACKAGE Team </a>.<br> <hr>"),
+                  tabsetPanel(
+                    tabPanel("R function readAntares", 
+                             fluidRow(
+                               column(12, includeHTML("www/readAntares.html"))
+                             )
+                    ),
+                    tabPanel("R function removeVirtualAreas", 
+                             fluidRow(
+                               column(12, includeHTML("www/removeVirtualAreas.html"))
                              )
                       )
                     )
                     
-           ),
-           footer = div(hr(), actionButton("quit", "Quit application", icon = icon("sign-out")), align = "center")
+           )
+           
 )
-
+), footer = div(hr(), actionButton("quit", "Quit application", icon = icon("sign-out")), align = "center")
+)
 
 
 
