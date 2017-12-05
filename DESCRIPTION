@@ -50,5 +50,6 @@ Suggests: testthat,
     covr,
     rhdf5 (>= 2.20.2),
     rbokeh,
+    knitr,
     visNetwork
 VignetteBuilder: knitr

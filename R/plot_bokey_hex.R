@@ -4,7 +4,7 @@
 #' 
 #' This function take somes arguments from rbokeh and make plot.
 #' 
-#' @param data \code{data.frame}
+#' @param data \code{data.frame} can be antaresData object
 #' @param x \code{character}, x variable 
 #' @param y \code{character}, y variable 
 #' @param precision \code{numeric} precision for plot
@@ -15,23 +15,35 @@
 #' @examples 
 #' \dontrun{
 #' 
-#' setSimulationPath("Mystud")
-#' dta <- readAntares()
+#' setSimulationPath("myStudy")
+#' myData <- readAntares()
 #' 
-#' bokeyHex(dta, "COAL", "LOAD", precision = 50,
-#'    sizeOnCount = FALSE, transform = log)
+#' plotBokeyHex(myData, "NODU", "LOAD", precision = 50,
+#'          sizeOnCount = FALSE)
+#'          
+#' myData <- readAntares(areas = "all", links = "all")    
+#' myData <- mergeAllAntaresData(myData)  
+#' plotBokeyHex(myData, "OP. COST_max_b", "OP. COST_max_c", precision = 50,
+#'          sizeOnCount = FALSE)
+#'          
+#'          
 #' }
 #'    
 #' @export
-bokeyHex <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLine = TRUE,
+plotBokeyHex <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLine = TRUE,
                      transform = NULL)
 {
   if(!requireNamespace("rbokeh")){
     stop("You should install 'rbokeh' library")
   }
+  if(!"data.frame"%in%class(data)){
+    stop("data should be a data.frame")
+  }
+
   suppressWarnings(p <- rbokeh::figure() %>%
                      rbokeh::ly_hexbin(x, y, data, xbins = precision, 
                                style = ifelse(sizeOnCount,"lattice", "colorramp"),
                                palette = c("Spectral10"), line = !outLine, trans = transform))
+
   p
 }

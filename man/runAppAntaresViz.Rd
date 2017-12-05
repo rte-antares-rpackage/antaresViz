@@ -4,7 +4,10 @@
 \alias{runAppAntaresViz}
 \title{Run app antaresViz}
 \usage{
-runAppAntaresViz()
+runAppAntaresViz(browser = FALSE)
+}
+\arguments{
+\item{browser}{\code{boolean} run app in browser}
 }
 \value{
 an App Shiny.

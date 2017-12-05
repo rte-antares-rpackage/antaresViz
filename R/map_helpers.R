@@ -240,7 +240,7 @@
         optsArea$Va <- rowSums(optsArea$size)
         optsArea$VaP <- optsArea$Va / max(optsArea$Va)
         fM <- 3
-        optsArea$Ra <- 1 + (optsArea$VaP * fM * 30)/2
+        optsArea$Ra <- 15 + (optsArea$VaP * fM * 30)/2
       }
     }
   }
