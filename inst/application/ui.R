@@ -147,18 +147,26 @@ navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRU
                                                   column(12,
                                                          h3("writeAntaresH5 parameters"),
                                                          fluidRow(
-                                                           column(3,
-                                                                  textInput('output_h5', label = 'Select where study will be write', 
+                                                           column(6,
+                                                                  directoryInput('output_h5', label = 'Select where study will be write', 
                                                                             value = getwd())),
-                                                           column(3,
-                                                                  checkboxInput("overwrite_h5", label = "overwrite" , TRUE)),
+                                                           
                                                            column(3,
                                                                   selectInput("timeSteps_h5", label = "timeStep :",
                                                                               choices = c("hourly", "daily", "weekly","monthly", "annual"),
-                                                                              multiple = TRUE, selected = "hourly")),
+                                                                              multiple = TRUE, selected = "hourly"))
+                                                           ),
+                                                         
+                                                         
+                                                         fluidRow(
+                                                           column(3,
+                                                                  checkboxInput("overwrite_h5", label = "overwrite" , TRUE)),
                                                            column(3,
                                                                   checkboxInput("writeMcAll_h5", label = "writeMcAll" , TRUE)
-                                                           )),
+                                                           )
+                                                           
+                                                         ),
+                                                         
                                                          fluidRow(
                                                            
                                                            column(3,

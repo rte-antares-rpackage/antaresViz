@@ -3,12 +3,12 @@
 observe({
   if(input$write_h5 > 0){
     isolate({
-          print(input$output_h5)
+          print(readDirectoryInput(session, 'output_h5'))
           # Write h5
           withCallingHandlers({
             tryCatch({
               writeAntaresH5(
-                path = input$output_h5,  timeSteps = input$timeSteps_h5,
+                path = readDirectoryInput(session, 'output_h5'),  timeSteps = input$timeSteps_h5,
                 writeMcAll = input$writeMcAll_h5, misc = input$misc_h5,
                 thermalAvailabilities = input$thermalAvailabilities_h5,
                 hydroStorage = input$hydroStorage_h5,
@@ -41,4 +41,21 @@ observe({
     })
   }
 })
+
+
+# observe directory 
+observeEvent(
+  ignoreNULL = TRUE,
+  eventExpr = {
+    input$output_h5
+  },
+  handlerExpr = {
+    if (input$output_h5 > 0) {
+      # condition prevents handler execution on initial app launch
+      path = choose.dir(default = readDirectoryInput(session, 'output_h5'))
+      updateDirectoryInput(session, 'output_h5', value = path)
+    }
+  }
+)
+
           
