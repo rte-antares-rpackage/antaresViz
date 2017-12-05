@@ -133,6 +133,13 @@ output$have_study <- reactive({
 
 outputOptions(output, "have_study", suspendWhenHidden = FALSE)
 
+observe({
+  if(input$init_sim > 0){
+      updateNavbarPage(session, inputId = "args", selected = "Read data")
+  }
+})
+
+
 #--------------------------------------
 # update readAntares / opts parameters
 #--------------------------------------

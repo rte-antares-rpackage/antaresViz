@@ -63,3 +63,4 @@ names(choices_map) <- c("all", ref_map_table$name)
 # }
 # add.html.help("antaresRead", "readAntares", "inst/application/www/readAntares.html")
 # add.html.help("antaresRead", "removeVirtualAreas", "inst/application/www/removeVirtualAreas.html")
+# add.html.help("antaresRead", "writeAntaresH5", "inst/application/www/writeAntaresH5.html")
