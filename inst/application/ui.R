@@ -42,7 +42,7 @@ navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRU
                     tabsetPanel(
                       tabPanel("Read data", 
                                conditionalPanel(condition = "output.have_study", 
-                    
+                                                
                                                 h3("readAntares parameters"),
                                                 fluidRow(
                                                   column(3, 
@@ -143,64 +143,64 @@ navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRU
                       ),
                       tabPanel("Convert to h5",
                                conditionalPanel(condition = "output.have_study", 
-                               fluidRow(
-                                 column(12,
-                                 h3("writeAntaresH5 parameters"),
-                                 fluidRow(
-                                 column(3,
-                                 textInput('output_h5', label = 'Select where study will be write', 
-                                                value = getwd())),
-                                 column(3,
-                                 checkboxInput("overwrite_h5", label = "overwrite" , TRUE)),
-                                 column(3,
-                                        selectInput("timeSteps_h5", label = "timeStep :",
-                                                    choices = c("hourly", "daily", "weekly","monthly", "annual"),
-                                                    multiple = TRUE, selected = "hourly")),
-                                 column(3,
-                                        checkboxInput("writeMcAll_h5", label = "writeMcAll" , TRUE)
-                                 )),
-                                 fluidRow(
-                                  
-                                    column(3,
-                                           checkboxInput("misc_h5", label = "misc")
-                                    ),
-                                    column(3,
-                                           checkboxInput("thermalAvailabilities_h5", label = "thermalAvailabilities")
-                                    ),
-                                    column(3,
-                                           checkboxInput("mustRun_h5", label = "mustRun")
-                                    ),
-                                    column(3,
-                                           checkboxInput("thermalModulation_h5", label = "thermalModulation")
-                                    )
-                                 )
-                                 ,
-                                 fluidRow(
-                                   column(3,
-                                          checkboxInput("hydroStorage_h5", label = "hydroStorage")
-                                   ),
-                                   column(3,
-                                          checkboxInput("hydroStorageMaxPower_h5", label = "hydroStorageMaxPower")
-                                   ),
-                                   column(3,
-                                          checkboxInput("reserve_h5", label = "reserve")
-                                   ),
-                                   column(3,
-                                          checkboxInput("linkCapacity_h5", label = "linkCapacity")
-                                   )
-                                 ),
-                               fluidRow(
-                                 column(12,
-                                        actionButton("write_h5", "Convert studie to h5")
-                                 )
-                               )
-                                 )
-                               )
+                                                fluidRow(
+                                                  column(12,
+                                                         h3("writeAntaresH5 parameters"),
+                                                         fluidRow(
+                                                           column(3,
+                                                                  textInput('output_h5', label = 'Select where study will be write', 
+                                                                            value = getwd())),
+                                                           column(3,
+                                                                  checkboxInput("overwrite_h5", label = "overwrite" , TRUE)),
+                                                           column(3,
+                                                                  selectInput("timeSteps_h5", label = "timeStep :",
+                                                                              choices = c("hourly", "daily", "weekly","monthly", "annual"),
+                                                                              multiple = TRUE, selected = "hourly")),
+                                                           column(3,
+                                                                  checkboxInput("writeMcAll_h5", label = "writeMcAll" , TRUE)
+                                                           )),
+                                                         fluidRow(
+                                                           
+                                                           column(3,
+                                                                  checkboxInput("misc_h5", label = "misc")
+                                                           ),
+                                                           column(3,
+                                                                  checkboxInput("thermalAvailabilities_h5", label = "thermalAvailabilities")
+                                                           ),
+                                                           column(3,
+                                                                  checkboxInput("mustRun_h5", label = "mustRun")
+                                                           ),
+                                                           column(3,
+                                                                  checkboxInput("thermalModulation_h5", label = "thermalModulation")
+                                                           )
+                                                         )
+                                                         ,
+                                                         fluidRow(
+                                                           column(3,
+                                                                  checkboxInput("hydroStorage_h5", label = "hydroStorage")
+                                                           ),
+                                                           column(3,
+                                                                  checkboxInput("hydroStorageMaxPower_h5", label = "hydroStorageMaxPower")
+                                                           ),
+                                                           column(3,
+                                                                  checkboxInput("reserve_h5", label = "reserve")
+                                                           ),
+                                                           column(3,
+                                                                  checkboxInput("linkCapacity_h5", label = "linkCapacity")
+                                                           )
+                                                         ),
+                                                         fluidRow(
+                                                           column(12,
+                                                                  actionButton("write_h5", "Convert studie to h5")
+                                                           )
+                                                         )
+                                                  )
+                                                )
                                )
                       )
-                      )
+                    )
                     
-                      ),
+           ),
            tabPanel("prodStack",
                     fluidRow(column(12,
                                     conditionalPanel(condition = "output.have_data",
@@ -302,16 +302,17 @@ navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRU
                                ))
                       )
            ), 
-           tabPanel("Memory Controls", 
+           tabPanel("Parameters", 
                     fluidRow(
-                      column(3, h4("readAntares RAM limit (in Go) : ")),
+                      column(2, checkboxInput("is_shared_input", label = "Share inputs between modules ?", value = TRUE)),
+                      column(2, h4("readAntares RAM limit (in Go) : ")),
                       column(3, div(numericInput("ram_limit", label = NULL, 
                                                  min = 1, max = 10, value = {
                                                    if(!is.null(getOption("maxSizeLoad"))){
                                                      getOption("maxSizeLoad")
                                                    } else {10}
                                                  }), align = "center")),
-                      column(3, h4("antaresViz data module (in Mb) : ")),
+                      column(2, h4("antaresViz data module (in Mb) : ")),
                       column(3, div(numericInput("data_module", label = NULL, 
                                                  min = 1, max = 10, value = {
                                                    if(!is.null(getOption("antaresVizSizeGraph"))){
@@ -336,51 +337,12 @@ navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRU
                                           column(12, includeHTML("www/removeVirtualAreas.html"))
                                         )
                                )
-                               
-
-           )
-))), 
-tabPanel("Parameters", 
-         fluidRow(
-           column(2, checkboxInput("is_shared_input", label = "Share inputs between modules ?", value = TRUE)),
-           column(2, h4("readAntares RAM limit (in Go) : ")),
-           column(3, div(numericInput("ram_limit", label = NULL, 
-                                      min = 1, max = 10, value = {
-                                        if(!is.null(getOption("maxSizeLoad"))){
-                                          getOption("maxSizeLoad")
-                                        } else {10}
-                                      }), align = "center")),
-           column(2, h4("antaresViz data module (in Mb) : ")),
-           column(3, div(numericInput("data_module", label = NULL, 
-                                      min = 1, max = 10, value = {
-                                        if(!is.null(getOption("antaresVizSizeGraph"))){
-                                          getOption("antaresVizSizeGraph")
-                                        } else {200}
-                                      }), align = "center"))
-           
-         )
-),
-tabPanel("Help", 
-         fluidRow(
-           column(width = 12,
-                  HTML(text = "For any questions, please contact <a href='mailto:rte-antares-rpackage@rte-france.com;'> RTE-ANTARES-RPACKAGE Team </a>.<br> <hr>"),
-                  tabsetPanel(
-                    tabPanel("R function readAntares", 
-                             fluidRow(
-                               column(12, includeHTML("www/readAntares.html"))
                              )
-                    ),
-                    tabPanel("R function removeVirtualAreas", 
-                             fluidRow(
-                               column(12, includeHTML("www/removeVirtualAreas.html"))
-                             )
+                             
                       )
+                      
                     )
-                    
-           )
-           
-)
-), footer = div(hr(), actionButton("quit", "Quit application", icon = icon("sign-out")), align = "center")
+           ), footer = div(hr(), actionButton("quit", "Quit application", icon = icon("sign-out")), align = "center")
 )
 
 
