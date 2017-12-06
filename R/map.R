@@ -412,13 +412,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           .tryCloseH5()
           
           tmp_options <- optionsT
-          print("tmp_options")
-          print(tmp_options)
           if(is.null(tmp_options)){
             tmp_options <-  plotMapOptions()
           }
             
-          w <- params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
+          params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                   colAreaVar = colAreaVar,
                                   sizeAreaVars = sizeAreaVars,
                                   popupAreaVars = popupAreaVars,
@@ -438,7 +436,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                                   sizeMiniPlot = sizeMiniPlot,
                                   options = tmp_options)
           
-          combineWidgets(w, title = main, width = width, height = height)
           
         } else {
           combineWidgets("No data for this selection")
@@ -454,26 +451,14 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     }),
     options = mwSharedValue({options}),
     optionsT = mwSharedValue({
-      
-      print("ici")
-      print('runScale')
-      print(runScale)
-      print('colAreaVar')
-      print(colAreaVar)
-      print('colorsVars$Column')
-      print(colorsVars$Column)
       if(colAreaVar %in% colorsVars$Column & runScale){
-        print("la")
         raw <- colorsVars[Column == colAreaVar]
-        t <- plotMapOptions(areaColorScaleOpts = colorScaleOptions(
+        plotMapOptions(areaColorScaleOpts = colorScaleOptions(
           negCol = "#FFFFFF",
           zeroCol = rgb(raw$red, raw$green, raw$blue,  maxColorValue = 255),
           posCol = rgb(raw$red/2, raw$green/2, raw$blue/2, maxColorValue = 255))
         )
-        print(str(t))
-        t
       }else{
-        
         options
       }
     }),
@@ -655,7 +640,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       mapLayout = mwSharedValue(mapLayout),
       main = mwText(main, label = "title"),
       params = mwSharedValue({
-        
         .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                         processFun = processFun, mapLayout = mapLayout)
       }),
@@ -667,6 +651,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .compareOpts = {
         compareOptions
       },
+      .return = function(w, e) {combineWidgets(w, title = main, width = width, height = height)},
       ...
     )
     
