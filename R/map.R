@@ -157,7 +157,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if(!is.null(compare) && !interactive){
     stop("You can't use compare in no interactive mode")
   }
-  tpMap <- Column <- optionsT <- NULL
+  
+  Column <- optionsT <- NULL
+  tpMap <- plotMapOptions()
   
   #Check compare
   .validCompare(compare,  c("mcYear", "type", "colAreaVar", "sizeAreaVars", "areaChartType", "showLabels",
@@ -208,7 +210,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # new_env for save and control mapLayout
   env_plotFun <- new.env()
-  
+
   processFun <- function(x, mapLayout) {
     if (!is(x, "antaresData")) {
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
@@ -299,9 +301,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       # Prepare data
       if (mcYear == "average") x <- syntx
       
+      # print("dateRange")
+      # print(dateRange)
       if(!is.null(dateRange)){
         dateRange <- sort(dateRange)
-        
+        # xx <<- copy(x$areas)
+        # dd <<- dateRange
         if(!is.null(x$areas))
         {
           # in case of missing transformation...
@@ -406,6 +411,13 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         if(.id <= length(params$x)){
           .tryCloseH5()
           
+          tmp_options <- optionsT
+          print("tmp_options")
+          print(tmp_options)
+          if(is.null(tmp_options)){
+            tmp_options <-  plotMapOptions()
+          }
+            
           w <- params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                   colAreaVar = colAreaVar,
                                   sizeAreaVars = sizeAreaVars,
@@ -424,7 +436,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                                   outputId = .output,
                                   dateRange = dateRange,
                                   sizeMiniPlot = sizeMiniPlot,
-                                  options = optionsT)
+                                  options = tmp_options)
           
           combineWidgets(w, title = main, width = width, height = height)
           
@@ -443,15 +455,25 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     options = mwSharedValue({options}),
     optionsT = mwSharedValue({
       
-      if(colAreaVar%in%colorsVars$Column & runScale){
+      print("ici")
+      print('runScale')
+      print(runScale)
+      print('colAreaVar')
+      print(colAreaVar)
+      print('colorsVars$Column')
+      print(colorsVars$Column)
+      if(colAreaVar %in% colorsVars$Column & runScale){
+        print("la")
         raw <- colorsVars[Column == colAreaVar]
-        plotMapOptions(areaColorScaleOpts = colorScaleOptions(
-          
+        t <- plotMapOptions(areaColorScaleOpts = colorScaleOptions(
           negCol = "#FFFFFF",
           zeroCol = rgb(raw$red, raw$green, raw$blue,  maxColorValue = 255),
-          posCol = rgb(raw$red/2, raw$green/2, raw$blue/2, maxColorValue = 255)))
-          
+          posCol = rgb(raw$red/2, raw$green/2, raw$blue/2, maxColorValue = 255))
+        )
+        print(str(t))
+        t
       }else{
+        
         options
       }
     }),

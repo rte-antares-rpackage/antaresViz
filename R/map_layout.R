@@ -495,7 +495,9 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   }
   
   # Add custom elements
-  map <- preprocess(map)
+  if(is.function(preprocess)){
+    map <- preprocess(map)
+  }
   
   # Add links
   if (links) {
