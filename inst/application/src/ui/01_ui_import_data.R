@@ -3,7 +3,7 @@ tabPanel("Import Data",
          fluidRow(
            column(7, 
                   directoryInput('directory', label = 'Select an antares study', 
-                                 value = 'C:\\Users\\Datastorm\\Desktop\\antares\\test_case')
+                                 value = '')
            ), 
            conditionalPanel(condition = "output.ctrl_is_antares_study | output.ctrl_is_antares_h5", 
                             column(3, 
