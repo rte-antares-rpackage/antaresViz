@@ -1,4 +1,4 @@
-input_data <- reactiveValues(data = build_input_data(shared_input), cpt = 0)
+input_data <- reactiveValues(data = .global_build_input_data(.global_shared_input), cpt = 0)
 
 observe({
   input_data$cpt

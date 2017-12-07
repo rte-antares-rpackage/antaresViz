@@ -7,16 +7,16 @@ tabPanel("Analysis",
                           fluidRow(
                             
                             column(3, 
-                                   selectInput("sel_compare_prodstack", "prodStack :", choices = compare_prodstack, selected = NULL, multiple = TRUE)
+                                   selectInput("sel_compare_prodstack", "prodStack :", choices = .global_compare_prodstack, selected = NULL, multiple = TRUE)
                             ), 
                             column(3, 
-                                   selectInput("sel_compare_exchangesStack", "exchangesStack :", choices = compare_exchangesStack, selected = NULL, multiple = TRUE)
+                                   selectInput("sel_compare_exchangesStack", "exchangesStack :", choices = .global_compare_exchangesStack, selected = NULL, multiple = TRUE)
                             ), 
                             column(3, 
-                                   selectInput("sel_compare_tsPlot", "tsPlot : ", choices = compare_tsPlot, selected = NULL, multiple = TRUE)
+                                   selectInput("sel_compare_tsPlot", "tsPlot : ", choices = .global_compare_tsPlot, selected = NULL, multiple = TRUE)
                             ), 
                             column(3, 
-                                   selectInput("sel_compare_plotMap", "plotMap :", choices = compare_plotMap, selected = NULL, multiple = TRUE)
+                                   selectInput("sel_compare_plotMap", "plotMap :", choices = .global_compare_plotMap, selected = NULL, multiple = TRUE)
                             )
                           ), 
                           
