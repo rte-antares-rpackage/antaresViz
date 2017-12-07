@@ -187,8 +187,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   if (is.null(mcYear)) mcYear <- "average"
   
-  if(!is.null(compare) && class(x)[1] == "list"){
-    #stop("You cant use compare argument and use more than one study")
+  if(!is.null(compare) && "list" %in% class(x)){
+    if(length(x) == 1) x <- list(x[[1]], x[[1]])
   }
   if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
     x <- list(x, x)
