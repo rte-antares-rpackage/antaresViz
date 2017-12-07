@@ -12,23 +12,15 @@
 #' 
 #' @noRd
 #' 
-.getDataForComp <- function(x, y = NULL, compare = NULL, compareOpts = NULL, processFun = as.antaresDataList, ...) {
-  
-  if(!is.list(x)){return(NULL)}
+.getDataForComp <- function(x, y, compare, compareOpts, processFun = as.antaresDataList) {
   if (is.null(compareOpts)) compareOpts <- list()
-
-  assert_that(is.function(processFun))
-  
-  
   
   if (inherits(x, "antaresData")) {
-    x <- processFun(x, ...)
+    x <- processFun(x)
     
     if (!is.null(y)) {
-      assert_that(inherits(y, "antaresData"))
-      
       if (is.null(compare)) compare <- list()
-      y <- processFun(y, ...)
+      y <- processFun(y)
       x <- list(x, y)
       compareOpts$ncharts <- 2
     } else {
@@ -40,10 +32,7 @@
       x <- replicate(compareOpts$ncharts, x, simplify = FALSE)
     }
   } else {
-    assert_that(is.list(x))
-    assert_that(all(sapply(x, inherits, what = "antaresData")), 
-                msg = "'x' is not an antaresData or a list of antaresData objects")
-    x <- lapply(x, processFun, ...)
+    x <- lapply(x, processFun)
     compareOpts$ncharts <- length(x)
     if (is.null(compare)) compare <- list()
   }

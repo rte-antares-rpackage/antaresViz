@@ -29,8 +29,6 @@
 #' @noRd
 .getColAndSize <- function(data, coords, mergeBy, mcy, t, colVar, sizeVar, 
                            popupVars, colorScaleOpts, labelVar = NULL) {
-
-  
   
   if (mcy != "average") data <- data[J(as.numeric(mcy))]
   
@@ -62,25 +60,13 @@
   if (colVar != "none") {
     if (is.numeric(data[[colVar]])) {
       rangevar <- range(data[[colVar]])
-      if(length(colorScaleOpts$breaks) > 1 ){
-        if(min(rangevar) < min(colorScaleOpts$breaks)){
-          colorScaleOpts$breaks <- c(min(rangevar), colorScaleOpts$breaks)
-          colorScaleOpts$colors <- c("noColor", colorScaleOpts$colors)
-        }
-        
-        if(max(rangevar) > max(colorScaleOpts$breaks)){
-          colorScaleOpts$breaks <- c( colorScaleOpts$breaks, max(rangevar))
-          colorScaleOpts$colors <- c( colorScaleOpts$colors, "noColor")
-        }
-      }
-      
       # Special case of FLOW LIN
       if (colVar == "FLOW LIN.") rangevar <- c(0, max(abs(rangevar)))
       
       if (rangevar[1] >= 0) {
         domain <- rangevar
       } else {
-        domain <- c(-min(rangevar), max(rangevar))
+        domain <- c(-max(abs(rangevar)), max(abs(rangevar)))
       }
       
       if (colVar == "FLOW LIN.") colorScaleOpts$x <- abs(data[[colVar]])
@@ -133,7 +119,7 @@
     timeStep,
     hourly = "%a %d %b %Y<br/>%H:%M",
     daily = "%a %d %b %Y",
-    weekly = "W%V %Y",
+    weekly = "W%w %Y",
     monthly = "%b %Y",
     yearly = "%Y"
   )
@@ -159,12 +145,9 @@
 .redrawCircles <- function(map, x, mapLayout, mcy, t, colAreaVar, sizeAreaVars,
                            popupAreaVars, uniqueScale, showLabels, labelAreaVar,
                            areaChartType,
-                           options, sizeMiniPlot = FALSE) {
+                           options) {
   
   if (is.null(x$areas)) return(map)
-  if (nrow(x$areas) == 0) return(map)
-  
-  
   timeStep <- attr(x, "timeStep")
   
   # Just in case, we do not want to accidentally modify the original map layout.
@@ -175,7 +158,6 @@
                              colAreaVar, sizeAreaVars, popupAreaVars,
                              options$areaColorScaleOpts, labelVar = labelAreaVar)
   ml$coords <- optsArea$coords
-  
   
   # Use default values if needed.
   if (is.null(optsArea$color)) optsArea$color <- options$areaDefaultCol
@@ -231,41 +213,10 @@
     }
   }
   
-  if(sizeMiniPlot)
-  {
-    if(is.matrix(optsArea$size))
-    {
-      if(ncol(optsArea$size) > 1 )
-      {
-        optsArea$Va <- rowSums(optsArea$size)
-        optsArea$VaP <- optsArea$Va / max(optsArea$Va)
-        fM <- 3
-        optsArea$Ra <- 15 + (optsArea$VaP * fM * 30)/2
-      }
-    }
-  }
-  
-  if(is.null(optsArea$Ra)){optsArea$Ra <- width}
   # Update areas
-  
-  #Apply colors defined in color.csv
-  if(is.null(options$areaChartColors))
-  {
-  varS <- names(optsArea$maxSize)
-  colorDef <- colorsVars$colors[match(varS, colorsVars$Column)]
-  defCol <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b",
-              "e377c2",  "#7f7f7f", "#bcbd22", "#17becf")
-  nbNa <- sum(is.na(colorDef))
-  if(nbNa > 0)
-  {
-  colorDef[is.na(colorDef)] <- defCol[1:nbNa]
-  }
-  options$areaChartColors <- colorDef
-  }
-  
   map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
                           time = optsArea$coords$time,
-                          maxValues = optsArea$maxSize, width = optsArea$Ra,
+                          maxValues = optsArea$maxSize, width = width,
                           height = options$areaMaxHeight,
                           showLabels = showLabels, labelText = labels, 
                           type = areaChartType[[1]], 
@@ -314,8 +265,6 @@
 .redrawLinks <- function(map, x, mapLayout, mcy, t, colLinkVar, sizeLinkVar, 
                          popupLinkVars, options) {
   if (is.null(x$links)) return(map)
-  if (nrow(x$links) == 0) return(map)
-  
   
   timeStep <- attr(x, "timeStep")
   
@@ -348,7 +297,7 @@
                                labels = sizeLinkVar,
                                digits = 2,
                                supValues = optsLink$coords[, optsLink$popupVars, with = FALSE]
-                             ),
+                              ),
                              opacity = 1)
   
   # Update the legend
