@@ -18,19 +18,19 @@
 #' setSimulationPath("myStudy")
 #' myData <- readAntares()
 #' 
-#' plotBokeyHex(myData, "NODU", "LOAD", precision = 50,
+#' plotXY(myData, "NODU", "LOAD", precision = 50,
 #'          sizeOnCount = FALSE)
 #'          
 #' myData <- readAntares(areas = "all", links = "all")    
 #' myData <- mergeAllAntaresData(myData)  
-#' plotBokeyHex(myData, "OP. COST_max_b", "OP. COST_max_c", precision = 50,
+#' plotXY(myData, "OP. COST_max_b", "OP. COST_max_c", precision = 50,
 #'          sizeOnCount = FALSE)
 #'          
 #'          
 #' }
 #'    
 #' @export
-plotBokeyHex <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLine = TRUE,
+plotXY <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLine = TRUE,
                      transform = NULL)
 {
   if(!requireNamespace("rbokeh")){
