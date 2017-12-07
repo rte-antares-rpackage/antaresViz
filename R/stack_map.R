@@ -41,11 +41,27 @@ stackMap <- function(x, mapLayout)
     combineWidgets(nrow = 1, ncol = 2,
                    exchangesStack(x, area = area, interactive = FALSE, dateRange = dateRange),
                    plotMap(x, mapLayout = mapLayout,  colLinkVar = colorLink2,
-                           colAreaVar = ColorArea2, interactive = FALSE, dateRange = dateRange, sizeAreaVars = sizeArea2))
+                           colAreaVar = ColorArea2, interactive = FALSE,
+                           dateRange = dateRange, sizeAreaVars = sizeArea2,
+                           areaChartType = areaChartType, sizeMiniPlot = sizeMiniPlot))
     
   },
   area = mwSelect(label = "area", levels(x$areas$area)),
-  dateRange = mwDateRange(value = range(x$areas$time), 
+  dateRange = mwDateRange(value = {
+    if(attr(x, "timeStep") != "hourly")
+    {
+      ra <- range(x$areas$time)
+    }else{
+      if(max(x$areas$time)-min(x$areas$time)>3){
+        ra = c(max(x$areas$time)-3600*24*3, max(x$areas$time))
+      }else{
+        ra <- range(x$areas$time)
+        
+        }
+    }
+    
+    ra
+    }, 
                           min = min(x$areas$time), max = max(x$areas$time)),
   Area = mwGroup(
     colorArea = mwSelect(choices = {
@@ -56,6 +72,19 @@ stackMap <- function(x, mapLayout)
     sizeArea = mwSelect(choices = {
       names(x$areas)[!names(x$areas) %in% getIdCols(x$areas)]
     }, label = "Size", multiple = TRUE),
+    
+    
+    miniPlot = mwGroup(
+      areaChartType = mwSelect(list("bar chart" = "bar", 
+                                    "pie chart" = "pie",
+                                    "polar (area)" = "polar-area",
+                                    "polar (radius)" = "polar-radius"),
+                               value = {
+                                 if(.initial) areaChartType
+                                 else NULL
+                               }),
+      sizeMiniPlot = mwCheckbox(FALSE)
+    ),
     
     .display = TRUE),
   

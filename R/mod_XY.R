@@ -12,13 +12,13 @@
 #' @examples 
 #' \dontrun{
 #' opts <- setSimulationPath("h5File")
-#' plotXY(opts)
-#' plotXY(list(opts, opts))
+#' modXY(opts)
+#' modXY(list(opts, opts))
 #' 
 #' }
 #' 
 #' @export
-plotXY <- function(x, xyCompare = c("union","intersect"))
+modXY <- function(x, xyCompare = c("union","intersect"))
 {
   #remove notes
   x_in <- timeSteph5 <- allVar <- NULL
@@ -37,7 +37,7 @@ plotXY <- function(x, xyCompare = c("union","intersect"))
       bock <- list()
       if(!is.null(x_tranform[[.id]]))
       {
-     try(plotBokeyHex(.selectByRange(x_tranform[[.id]], dateRange),
+     try(plotXY(.selectByRange(x_tranform[[.id]], dateRange),
                                x = variableX,y = variableY, transform = transform), silent = TRUE)
       }
     },
