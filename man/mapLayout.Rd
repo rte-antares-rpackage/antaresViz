@@ -4,7 +4,8 @@
 \alias{mapLayout}
 \title{Place areas of a study on a map}
 \usage{
-mapLayout(layout, what = c("areas", "districts"), map = NULL)
+mapLayout(layout, what = c("areas", "districts"), map = getSpMaps(),
+  map_builder = TRUE)
 }
 \arguments{
 \item{layout}{object returned by function \code{\link[antaresRead]{readLayout}}}
@@ -13,7 +14,9 @@ mapLayout(layout, what = c("areas", "districts"), map = NULL)
 on the map.}
 
 \item{map}{An optional \code{\link[sp]{SpatialPolygons}} or 
-\code{\link[sp]{SpatialPolygonsDataFrame}} object.}
+\code{\link[sp]{SpatialPolygonsDataFrame}} object. See \code{\link[spMaps]{getSpMaps}}}
+
+\item{map_builder}{\code{logical} Add inputs for build custom map ? Defaut to TRUE.}
 }
 \value{
 An object of class \code{mapLayout}.
@@ -31,8 +34,15 @@ study. The result should then be saved in an external file and be reused.
 layout <- readLayout()
 ml <- mapLayout(layout)
 
+# visualize mapLayout
+plotMapLayout(ml)
+
 # Save the result for future use
 save(ml, file = "ml.rda")
+
 }
 
+}
+\seealso{
+\code{\link{plotMapLayout}}
 }

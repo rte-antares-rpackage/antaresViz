@@ -108,6 +108,7 @@
       res
     }
     
+    variable <- paste0(variable, collapse = " ; ")
     if (is.null(ylab)) ylab <- variable
     
     plot_ly(x) %>% config(displayModeBar = FALSE) %>% 

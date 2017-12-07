@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read the data of an Antares simulation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for readAntares"><tr><td>readAntares</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read the data of an Antares simulation</h2>
+
+<h3>Description</h3>
+
+<p><code>readAntares</code> is a swiss-army-knife function used to read almost every
+possible time series of an antares Project at any desired time resolution
+(hourly, daily, weekly, monthly or annual).
+</p>
+<p>It was first designed to read
+output time series, but it can also read input time series. The input time
+series are processed by the function to fit the query of the user (timeStep,
+synthetic results or Monte-Carlo simulation, etc.). The few data that are not
+read by <code>readAntares</code> can generally by read with other functions of the
+package starting with &quot;read&quot; (<code>readClusterDesc</code>,
+<code>readLayout</code>, <code>readBindingConstraints</code>)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+readAntares(areas = NULL, links = NULL, clusters = NULL,
+  districts = NULL, misc = FALSE, thermalAvailabilities = FALSE,
+  hydroStorage = FALSE, hydroStorageMaxPower = FALSE, reserve = FALSE,
+  linkCapacity = FALSE, mustRun = FALSE, thermalModulation = FALSE,
+  select = NULL, mcYears = NULL, timeStep = c("hourly", "daily", "weekly",
+  "monthly", "annual"), opts = simOptions(), parallel = FALSE,
+  simplify = TRUE, showProgress = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>areas</code></td>
+<td>
+<p>Vector containing the names of the areas to import. If
+<code>NULL</code> no area is imported. The special value <code>"all"</code> tells the
+function to import all areas. By default, the value is &quot;all&quot; when no other argument is enter and &quot;NULL&quot; when other arguments are enter.</p>
+</td></tr>
+<tr valign="top"><td><code>links</code></td>
+<td>
+<p>Vector containing the name of links to import. If <code>NULL</code> no
+area is imported. The special value <code>"all"</code> tells the function to
+import all areas. Use function <code>getLinks</code> to import all links
+connected to some areas.</p>
+</td></tr>
+<tr valign="top"><td><code>clusters</code></td>
+<td>
+<p>Vector containing the name of the areas for which you want to
+import results at cluster level. If <code>NULL</code> no cluster is imported. The
+special value <code>"all"</code> tells the function to import clusters from all
+areas.</p>
+</td></tr>
+<tr valign="top"><td><code>districts</code></td>
+<td>
+<p>Vector containing the names of the districts to import. If <code>NULL</code>,
+no district is imported. The special value <code>"all"</code> tells the function to import all
+districts.</p>
+</td></tr>
+<tr valign="top"><td><code>misc</code></td>
+<td>
+<p>Vector containing the name of the areas for which you want to
+import misc.</p>
+</td></tr>
+<tr valign="top"><td><code>thermalAvailabilities</code></td>
+<td>
+<p>Should thermal availabilities of clusters be imported ? If TRUE, the column
+&quot;thermalAvailability&quot; is added to the result and a new column &quot;availableUnits&quot;
+containing the number of available units in a cluster is created.If synthesis is set to TRUE then
+&quot;availableUnits&quot; contain the mean of avaible units on all MC Years.</p>
+</td></tr>
+<tr valign="top"><td><code>hydroStorage</code></td>
+<td>
+<p>Should hydro storage be imported ?</p>
+</td></tr>
+<tr valign="top"><td><code>hydroStorageMaxPower</code></td>
+<td>
+<p>Should hydro storage maximum power be imported ?</p>
+</td></tr>
+<tr valign="top"><td><code>reserve</code></td>
+<td>
+<p>Should reserve be imported ?</p>
+</td></tr>
+<tr valign="top"><td><code>linkCapacity</code></td>
+<td>
+<p>Should link capacities be imported ?</p>
+</td></tr>
+<tr valign="top"><td><code>mustRun</code></td>
+<td>
+<p>Should must run productions be added to the result? If TRUE,
+then four columns are added: <code>mustRun</code> contains the production of 
+clusters that are in complete must run mode; <code>mustRunPartial</code>
+contains the partial must run production of clusters; <code>mustRunTotal</code>
+is the sum of the two previous columns. Finally <code>thermalPmin</code> is
+similar to mustRunTotal except it also takes into account the production
+induced by the minimum stable power of the units of a cluster. More
+precisely, for a given cluster and a given time step, it is equal to 
+<code>min(NODU x min.stable.power, mustRunTotal)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>thermalModulation</code></td>
+<td>
+<p>Should thermal modulation time series be imported ? If <code>TRUE</code>, the
+columns &quot;marginalCostModulation&quot;, &quot;marketBidModulation&quot;, &quot;capacityModulation&quot;
+and &quot;minGenModulation&quot; are added to the cluster data.</p>
+</td></tr>
+<tr valign="top"><td><code>select</code></td>
+<td>
+<p>Character vector containing the name of the columns to import. If this 
+argument is <code>NULL</code>, all variables are imported. Special names 
+<code>"allAreas"</code> and <code>"allLinks"</code> indicate to the function to import 
+all variables for areas or for links. Since version 1.0, values &quot;misc&quot;, 
+&quot;thermalAvailabilities&quot;, &quot;hydroStorage&quot;, &quot;hydroStorageMaxPower&quot;, &quot;reserve&quot;,
+&quot;linkCapacity&quot;, &quot;mustRun&quot;, &quot;thermalModulation&quot; are also accepted and can
+replace the corresponding arguments. The list of available variables can be
+seen with the command <code>simOptions()$variables</code>.  Id variables like
+<code>area</code>, <code>link</code> or <code>timeId</code> are automatically imported.</p>
+</td></tr>
+<tr valign="top"><td><code>mcYears</code></td>
+<td>
+<p>Index of the Monte-Carlo years to import. If <code>NULL</code>, synthetic results
+are read, else the specified Monte-Carlo simulations are imported. The 
+special value <code>all</code> tells the function to import all Monte-Carlo
+simulations.</p>
+</td></tr>
+<tr valign="top"><td><code>timeStep</code></td>
+<td>
+<p>Resolution of the data to import: hourly (default), daily,
+weekly, monthly or annual.</p>
+</td></tr>
+<tr valign="top"><td><code>opts</code></td>
+<td>
+<p>list of simulation parameters returned by the function
+<code>setSimulationPath</code></p>
+</td></tr>
+<tr valign="top"><td><code>parallel</code></td>
+<td>
+<p>Should the importation be parallelized ? (See details)</p>
+</td></tr>
+<tr valign="top"><td><code>simplify</code></td>
+<td>
+<p>If TRUE and only one type of output is imported then a
+data.table is returned. If FALSE, the result will always be a list of class
+&quot;antaresData&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>showProgress</code></td>
+<td>
+<p>If TRUE the function displays information about the progress of the
+importation.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If parameters <code>areas</code>, <code>links</code>, <code>clusters</code> and <code>districts</code>
+are all <code>NULL</code>, <code>readAntares</code> will read output for all areas.
+By default the function reads synthetic results if they are available.
+</p>
+<p><code>readAntares</code> is able to read input time series, but when they are not
+stored in output, these time series may have changed since a simulation has
+been run. In such a case the function will remind you this danger with a
+warning.
+</p>
+<p>When individual Monte-Carlo simulations are read, the function may crash
+because of insufficient memory. In such a case, it is necessary to reduce
+size of the output. Different strategies are available depending on your
+objective:
+</p>
+
+<ul>
+<li><p> Use a larger time step (parameter <code>timeStep</code>)
+</p>
+</li>
+<li><p> Filter the elements to import (parameters <code>areas</code>,<code>links</code>,
+<code>clusters</code> and <code>districts</code>)
+</p>
+</li>
+<li><p> Select only a few columns (parameter <code>select</code>)
+</p>
+</li>
+<li><p> read only a subset of Monte-Carlo simulations (parameter
+<code>mcYears</code>). For instance one can import a random sample of
+100 simulations with <code>mcYears = sample(simOptions()$mcYears, 100)</code>
+</p>
+</li></ul>
+
+
+
+<h3>Value</h3>
+
+<p>If <code>simplify = TRUE</code> and only one type of output is imported
+then the result is a data.table.
+</p>
+<p>Else an object of class &quot;antaresDataList&quot; is returned. It is a list of
+data.tables, each element representing one type of element (areas, links,
+clusters)
+</p>
+
+
+<h3>Parallelization</h3>
+
+<p>If you import several elements of the same type (areas, links, clusters), you
+can use parallelized importation to improve performance. Setting the
+parameter <code>parallel = TRUE</code> is not enough to parallelize the
+importation, you also have to install the package
+<a href="https://CRAN.R-project.org/package=foreach">foreach</a>
+and a package that provides a parallel backend (for instance the package
+<a href="https://CRAN.R-project.org/package=doParallel">doParallel</a>).
+</p>
+<p>Before running the function with argument <code>parallel=TRUE</code>, you need to
+register your parallel backend. For instance, if you use package &quot;doParallel&quot;
+you need to use the function <code>registerDoParallel</code> once per
+session.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code>setSimulationPath</code>, <code>getAreas</code>,
+<code>getLinks</code>, <code>getDistricts</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Import areas and links separately
+
+areas &lt;- readAntares() # equivalent to readAntares(areas="all")
+links &lt;- readAntares(links="all")
+
+# Import areas and links at same time
+
+output &lt;- readAntares(areas = "all", links = "all")
+
+# Add input time series to the object returned by the function
+areas &lt;- readAntares(areas = "all", misc = TRUE, reserve = TRUE)
+
+# Get all output for one area
+
+myArea &lt;- sample(simOptions()$areaList, 1)
+myArea
+
+myAreaOutput &lt;- readAntares(area = myArea,
+                            links = getLinks(myArea, regexpSelect=FALSE),
+                            clusters = myArea)
+
+# Or equivalently:
+myAreaOutput &lt;- readAntaresAreas(myArea)
+
+# Use parameter "select" to read only some columns.
+
+areas &lt;- readAntares(select = c("LOAD", "OV. COST"))
+
+# Aliases can be used to select frequent groups of columns. use showAliases()
+# to view a list of available aliases
+
+areas &lt;- readAntares(select="economy")
+
+
+## End(Not run)
+</pre>
+
+
+</body></html>

@@ -1,6 +1,6 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/antaresViz)](https://cran.r-project.org/package=antaresViz)
 [![Travis-CI Build Status](https://travis-ci.org/rte-antares-rpackage/antaresViz.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/antaresViz)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/rte-antares-rpackage/antaresViz?branch=master&svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/antaresViz)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/rte-antares-rpackage/antaresViz?branch=master&svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/antaresViz)[![codecov](https://codecov.io/gh/rte-antares-rpackage/antaresViz/branch/develop/graph/badge.svg)](https://codecov.io/gh/rte-antares-rpackage/antaresViz)
 
 # The package antaresViz: visualize the results of an Antares simulation
 
@@ -67,9 +67,14 @@ myData <- readAntares(areas = "all", links = "all")
 plotMap(myData, myMapLayout)
 ```
 
+You can use `spMaps` to set a map background or download some files at http://www.gadm.org/country.
+
 ## Contributing:
 
 Contributions to the library are welcome and can be submitted in the form of pull requests to this repository.
+
+## ANTARES :
+ Antares is a powerful software developed by RTE to simulate and study electric power systems (more information about Antares here : <https://antares.rte-france.com>).
 
 ## License Information:
 

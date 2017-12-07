@@ -1,5 +1,4 @@
 context(".getDataForComp")
-
 # Helper function
 check_structure <- function(x, y = NULL, compare = NULL, compareOpts = NULL) {
   res <- .getDataForComp(x, y, compare, compareOpts)

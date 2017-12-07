@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert antares output to h5 file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for writeAntaresH5"><tr><td>writeAntaresH5</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Convert antares output to h5 file</h2>
+
+<h3>Description</h3>
+
+<p>Convert antares output to h5 file
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+writeAntaresH5(path = getwd(), timeSteps = c("hourly", "daily", "weekly",
+  "monthly", "annual"), opts = simOptions(), writeMcAll = TRUE,
+  compress = 1, misc = FALSE, thermalAvailabilities = FALSE,
+  hydroStorage = FALSE, hydroStorageMaxPower = FALSE, reserve = FALSE,
+  linkCapacity = FALSE, mustRun = FALSE, thermalModulation = FALSE,
+  allData = FALSE, writeAllSimulations = FALSE, nbCores = 4,
+  removeVirtualAreas = FALSE, storageFlexibility = NULL,
+  production = NULL, reassignCosts = FALSE, newCols = TRUE,
+  overwrite = FALSE, supressMessages = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p><code>character</code> folder where h5 file will be write (default getwd())</p>
+</td></tr>
+<tr valign="top"><td><code>timeSteps</code></td>
+<td>
+<p><code>character</code> timeSteps</p>
+</td></tr>
+<tr valign="top"><td><code>opts</code></td>
+<td>
+<p><code>list</code> of simulation parameters returned by the function setSimulationPath. Defaut to <code>antaresRead::simOptions()</code></p>
+</td></tr>
+<tr valign="top"><td><code>writeMcAll</code></td>
+<td>
+<p><code>boolean</code> write mc-all</p>
+</td></tr>
+<tr valign="top"><td><code>compress</code></td>
+<td>
+<p><code>numeric</code> compress level</p>
+</td></tr>
+<tr valign="top"><td><code>misc</code></td>
+<td>
+<p><code>boolean</code> see readAntares</p>
+</td></tr>
+<tr valign="top"><td><code>thermalAvailabilities</code></td>
+<td>
+<p><code>boolean</code> see readAntares</p>
+</td></tr>
+<tr valign="top"><td><code>hydroStorage</code></td>
+<td>
+<p><code>boolean</code> see readAntares</p>
+</td></tr>
+<tr valign="top"><td><code>hydroStorageMaxPower</code></td>
+<td>
+<p><code>boolean</code> see readAntares</p>
+</td></tr>
+<tr valign="top"><td><code>reserve</code></td>
+<td>
+<p><code>boolean</code> see readAntares</p>
+</td></tr>
+<tr valign="top"><td><code>linkCapacity</code></td>
+<td>
+<p><code>boolean</code> see readAntares</p>
+</td></tr>
+<tr valign="top"><td><code>mustRun</code></td>
+<td>
+<p><code>boolean</code> see readAntares</p>
+</td></tr>
+<tr valign="top"><td><code>thermalModulation</code></td>
+<td>
+<p><code>boolean</code> see readAntares</p>
+</td></tr>
+<tr valign="top"><td><code>allData</code></td>
+<td>
+<p><code>boolean</code> add all data with a single call (writeMcAll, misc, thermalAvailabilities, hydroStorage, hydroStorageMaxPower
+reserve, linkCapacity, mustRun, thermalModulation).</p>
+</td></tr>
+<tr valign="top"><td><code>writeAllSimulations</code></td>
+<td>
+<p><code>boolean</code>, write all simulations of your antares study.</p>
+</td></tr>
+<tr valign="top"><td><code>nbCores</code></td>
+<td>
+<p><code>numeric</code>, number of cores to use, only used if writeAllSimulations is TRUE</p>
+</td></tr>
+<tr valign="top"><td><code>removeVirtualAreas</code></td>
+<td>
+<p><code>boolean</code>, remove virtual areas, see removeVirtualAreas</p>
+</td></tr>
+<tr valign="top"><td><code>storageFlexibility</code></td>
+<td>
+<p><code>character</code>, see removeVirtualAreas</p>
+</td></tr>
+<tr valign="top"><td><code>production</code></td>
+<td>
+<p><code>character</code>, see removeVirtualAreas</p>
+</td></tr>
+<tr valign="top"><td><code>reassignCosts</code></td>
+<td>
+<p><code>boolean</code>, see removeVirtualAreas</p>
+</td></tr>
+<tr valign="top"><td><code>newCols</code></td>
+<td>
+<p><code>boolean</code>, see removeVirtualAreas</p>
+</td></tr>
+<tr valign="top"><td><code>overwrite</code></td>
+<td>
+<p><code>boolean</code>, overwrite old file</p>
+</td></tr>
+<tr valign="top"><td><code>supressMessages</code></td>
+<td>
+<p><code>boolean</code>, supress messages from readAntares and removeVirtualAreas</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+# Write simulation one by one
+setSimulationPath("C:/Users/MyUser/Mystudy", 1)
+writeAntaresH5()
+
+# Write all simulations
+setSimulationPath("C:/Users/MyUser/Mystudy")
+writeAntaresH5(writeAllSimulations = TRUE)
+
+# Choose timestep to write
+setSimulationPath("C:/Users/MyUser/Mystudy", 1)
+writeAntaresH5(timeSteps = "hourly")
+
+# Write with additionnal information
+writeAntaresH5(timeSteps = "hourly",
+   misc = TRUE, thermalAvailabilities = TRUE,
+   hydroStorage = TRUE, hydroStorageMaxPower = TRUE, reserve = TRUE,
+   linkCapacity = TRUE, mustRun = TRUE, thermalModulation = TRUE)
+
+# Write all data with a shorcut 
+writeAntaresH5(allData = TRUE)
+
+
+## End(Not run)
+</pre>
+
+
+</body></html>

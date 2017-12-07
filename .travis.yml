@@ -5,13 +5,31 @@ dist: trusty
 sudo: required
 cache: packages
 
+before_install:
+  sudo apt-get install -y libprotobuf-dev protobuf-compiler
+
+r: bioc-devel
+
+r_github_packages:
+ - hadley/devtools#1263
+ - Bioconductor-mirror/zlibbioc
+ - Bioconductor-mirror/rhdf5
+ - rte-antares-rpackage/manipulateWidget@develop
+ - rte-antares-rpackage/antaresMaps
+ - rte-antares-rpackage/antaresRead@develop
+ - rte-antares-rpackage/antaresProcessing@develop
+
 addons:
   apt:
+    sources:
+      - sourceline: 'ppa:opencpu/jq'
     packages:
+      - libjq-dev
+      - valgrind
       - libgdal-dev
       - libproj-dev
       - libv8-3.14-dev
-
+      
 include:
   - r: release
   - r: oldrel

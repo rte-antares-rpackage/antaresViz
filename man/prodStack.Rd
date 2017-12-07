@@ -11,12 +11,15 @@ prodStackAliases()
 setProdStackAlias(name, variables, colors, lines = NULL, lineColors = NULL,
   description = NULL)
 
-prodStack(x, y = NULL, stack = "eco2mix", areas = NULL,
-  mcYear = "average", dateRange = NULL, main = "Production stack",
-  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
+prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
+  dateRange = NULL, main = "Production stack", unit = c("MWh", "GWh",
+  "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL)
+  legendId = sample(1000000000, 1), groupId = legendId,
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -44,10 +47,9 @@ should be \code{NULL} if there is no curve to trace or if parameter
 
 \item{x}{An object of class \code{antaresData} created with function 
 \code{\link[antaresRead]{readAntares}} containing data for areas and or
-districts.}
-
-\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
-charts are generated.}
+districts. it can be a list of \code{antaresData} objects. 
+In this case, one chart is created for each object. 
+Can also contains opts who refer to a h5 file or list of opts.}
 
 \item{stack}{Name of the stack to use. One can visualize available stacks with 
 \code{prodStackAliases}}
@@ -70,7 +72,8 @@ displayed. If NULL, then all data is displayed.}
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
 be a named list with names corresponding to parameter names and values being
-list with the initial values of the given parameter for each chart.}
+list with the initial values of the given parameter for each chart. See details
+ if you are drawing a map.}
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 
@@ -98,9 +101,28 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
+of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+studies will be selectable.}
+
+\item{h5requestFiltering}{Contains arguments used by default for h5 request,
+typically h5requestFiltering = list(select = "NUCLEAR")}
+
+\item{stepPlot}{\code{boolean}, step style for curves.}
+
+\item{drawPoints}{\code{boolean}, add points on graph}
+
+\item{timeSteph5}{\code{character} timeStep to read in h5 file. Only for Non interactive mode.}
+
+\item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
+
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
+
+\item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
-\code{prodStackAliases} returns an interactive html graphic. If argument
+\code{prodStack} returns an interactive html graphic. If argument
 \code{interactive} is \code{TRUE}, then a shiny gadget is started and the
 function returns an interactive html graphic when the user clicks on button
 "Done".
@@ -114,15 +136,28 @@ function returns an interactive html graphic when the user clicks on button
 User can see available stacks with \code{prodStackAliases} and create new ones
 with \code{setProdStackAlias}.
 }
+\details{
+compare argument can take following values :
+\itemize{
+   \item "mcYear"
+   \item "main"
+   \item "unit"
+   \item "areas"
+   \item "legend"
+   \item "stack"
+   \item "stepPlot"
+   \item "drawPoints"
+   }
+}
 \examples{
 \dontrun{
 mydata <- readAntares(areas = "all", timeStep = "daily")
 
 # Start a shiny gadget that permits to choose areas to display.
-prodStack(mydata, unit = "GWh")
+prodStack(x = mydata, unit = "GWh")
 
 # Use in a non-interactive way
-prodStack(mydata, unit = "GWh", areas = "fr", interactive = FALSE)
+prodStack(x = mydata, unit = "GWh", areas = "fr", interactive = FALSE)
 
 # Define a custom stack
 setProdStackAlias(
@@ -131,7 +166,7 @@ setProdStackAlias(
   colors = c("green", "orange")
 )
 
-prodStack(mydata, unit = "GWh", stack = "Wind and solar")
+prodStack(x = mydata, unit = "GWh", stack = "Wind and solar")
                 
 # In a custom stack it is possible to use computed values
 setProdStackAlias(
@@ -145,7 +180,41 @@ setProdStackAlias(
   lineColors = "#42EB09"
 )
 
-prodStack(mydata, unit = "GWh", stack = "renewable")
+prodStack(x = mydata, unit = "GWh", stack = "renewable")
+
+# Use compare
+prodStack(x = mydata, compare = "areas")
+prodStack(x = mydata, unit = "GWh", compare = "mcYear")
+prodStack(x = mydata, unit = "GWh", compare = "main")
+prodStack(x = mydata, unit = "GWh", compare = "unit")
+prodStack(x = mydata, unit = "GWh", compare = "areas")
+prodStack(x = mydata, unit = "GWh", compare = "legend")
+prodStack(x = mydata, unit = "GWh", compare = "stack")
+prodStack(x = mydata, unit = "GWh", compare = c("mcYear", "areas"))
+
+
+# Compare studies
+prodStack(list(mydata, mydata))
+
+
+# Use h5 opts
+# Set path of simulaiton
+setSimulationPath(path = path1)
+
+# Convert your study in h5 format
+writeAntaresH5(path = mynewpath)
+
+# Redefine sim path with h5 file
+opts <- setSimulationPath(path = mynewpath)
+prodStack(x = opts)
+
+# Compare elements in a single study
+prodStack(x = opts, .compare = "mcYear")
+
+# Compare 2 studies
+prodStack(x = list(opts, opts2))
+
+
                 
 }
 

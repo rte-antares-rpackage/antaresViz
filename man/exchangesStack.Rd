@@ -4,21 +4,21 @@
 \alias{exchangesStack}
 \title{Plot the exchanges of an area}
 \usage{
-exchangesStack(x, y = NULL, area = NULL, mcYear = "average",
-  dateRange = NULL, colors = NULL, main = NULL, ylab = NULL,
-  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
+exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
+  colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
+  "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL)
+  legendId = sample(1000000000, 1), groupId = legendId,
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
 \code{\link[antaresRead]{readAntares}}. It is required to contain link data.
 If it also contains area data with column `ROW BAL.`, then exchanges with
 the rest of the world are also displayed on the chart.}
-
-\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
-charts are generated.}
 
 \item{area}{Name of a single area. The flows from/to this area will be drawn by the
 function.}
@@ -44,7 +44,8 @@ order to use default colors.}
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
 be a named list with names corresponding to parameter names and values being
-list with the initial values of the given parameter for each chart.}
+list with the initial values of the given parameter for each chart. See details
+ if you are drawing a map.}
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 
@@ -72,6 +73,25 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
+of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+studies will be selectable.}
+
+\item{h5requestFiltering}{Contains arguments used by default for h5 request,
+typically h5requestFiltering = list(select = "NUCLEAR")}
+
+\item{stepPlot}{\code{boolean}, step style for curves.}
+
+\item{drawPoints}{\code{boolean}, add points on graph}
+
+\item{timeSteph5}{\code{character} timeStep to read in h5 file. Only for Non interactive mode.}
+
+\item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
+
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
+
+\item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
 A htmlwidget of class \code{dygraph}. It can be modified with functions from
@@ -82,14 +102,33 @@ This function draws a stack representing the evolution of the exchanges of
 an area with its neighbours. Positive values denotes exports and negative 
 values imports.
 }
+\details{
+Compare argument can take following values :
+\itemize{
+   \item "mcYear"
+   \item "main"
+   \item "unit"
+   \item "area"
+   \item "legend"
+   \item "stepPlot"
+   \item "drawPoints"
+   }
+}
 \examples{
 \dontrun{
 mydata <- readAntares(links = "all", timeStep = "daily")
-exchangeStack(mydata)
+exchangesStack(mydata)
 
 # Also display exchanges with the rest of the world
 mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
 exchangesStack(mydata)
+
+# Use compare :
+exchangesStack(mydata, compare = "mcYear")
+exchangesStack(mydata, compare = "area")
+exchangesStack(mydata, compare = "unit")
+exchangesStack(mydata, compare = "legend")
+
 }
 
 }

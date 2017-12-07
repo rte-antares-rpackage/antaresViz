@@ -1,5 +1,5 @@
-.plotMonotone <- function(dt, timeStep, variable, confInt = NULL, maxValue,
-                          main = NULL, ylab = NULL, ...) {
+.plotMonotone <- function(dt, timeStep, variable, variable2Axe = NULL, confInt = NULL, maxValue,
+                          main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -29,15 +29,17 @@
     }
   }
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
-  if (is.null(main)) main <- paste("Monotone of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Monotone of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, variable2Axe = variable2Axe,
+            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
   
 }
 
-.density <- function(dt, timeStep, variable, minValue = NULL, maxValue = NULL, 
-                     main = NULL, ylab = NULL, ...) {
+.density <- function(dt, timeStep, variable, variable2Axe = NULL, minValue = NULL, maxValue = NULL, 
+                     main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   
@@ -51,15 +53,17 @@
   
   dt <- dt[, .getDensity(value), by = element]
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- "Density"
-  if (is.null(main)) main <- paste("Density of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Density of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements,variable2Axe = variable2Axe, 
+            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints,...)
   
 }
 
-.cdf <- function(dt, timeStep, variable, minValue = NULL, maxValue = NULL,
-                 main = NULL, ylab = NULL, ...) {
+.cdf <- function(dt, timeStep, variable, variable2Axe = NULL, minValue = NULL, maxValue = NULL,
+                 main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   
@@ -72,10 +76,12 @@
   
   dt <- dt[, .getCDF(value), by = element]
   
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- "Proportion of time steps"
-  if (is.null(main)) main <- paste("Cumulated distribution of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Cumulated distribution of", variable)
   
-  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, ...)
+  .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, variable2Axe = variable2Axe,
+            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
   
 }
 
@@ -107,7 +113,8 @@
 
 .plotStat <- function(dt, ylab, main, colors, uniqueElements, 
                       legend, legendItemsPerRow, width, height,
-                      plotConfInt = FALSE, ...) {
+                      plotConfInt = FALSE, highlight = FALSE,
+                      stepPlot = FALSE, drawPoints = FALSE,variable2Axe = NULL, ...) {
   dt <- dcast(dt, x ~ element, value.var = "y")
   
   if (is.null(colors)) {
@@ -124,7 +131,9 @@
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
-      labelsKMB = TRUE
+      labelsKMB = TRUE,
+      stepPlot = stepPlot,
+      drawPoints = drawPoints
     ) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60) %>% 
     dyLegend(show = "never") %>% 
@@ -133,9 +142,31 @@
       unhighlightCallback = JS_resetLegend(legendId)
     )
   
+  
+  if(length(variable2Axe)>0){
+    for( i in variable2Axe)
+    {
+      g <- g %>%   dySeries(i, axis = 'y2')
+    } 
+  }
+  
+  
+  if(highlight)
+  {
+    g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
+  }
+  
   if (plotConfInt) {
     for (v in uniqueElements) {
-      g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
+      axis = NULL
+      if(length(variable2Axe)>0)
+      {
+        if(v%in%variable2Axe)
+        {
+          axis <- "y2"
+        } 
+      }
+      g <- g %>% dySeries(paste0(v, c("_l", "", "_u")), axis = axis)
     }
   }
   

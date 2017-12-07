@@ -7,7 +7,7 @@
 #' @param x
 #'   Object of class \code{antaresData}. Alternatively, it can be a list of 
 #'   \code{antaresData} objects. In this case, one chart is created for each
-#'   object.
+#'   object. Can also be opts object from h5 file or list of opts object from h5 file.
 #' @param table
 #'   Name of the table to display when \code{x} is an \code{antaresDataList}
 #'   object.
@@ -23,6 +23,7 @@
 #'   data, this parameter has to be the concatenation of the area name and the
 #'   cluster name, separated by \code{" > "}. This is to prevent confusion 
 #'   when two clusters from different areas have the same name.
+#' @param variable2Axe \code{character}, variables on second axis.
 #' @param type
 #'   Type of plot to draw. "ts" creates a time series plot, "barplot" creates
 #'   a barplot with one bar per element representing the average value of the
@@ -51,7 +52,7 @@
 #' @param aggregate
 #'   When multiple elements are selected, should the data be aggregated. If
 #'   "none", each element is represented separetly. If "mean" values are
-#'   averaged and if "sum" they are added.
+#'   averaged and if "sum" they are added. You can also compute mean ans sum by areas.
 #' @param colors
 #'   Vector of colors
 #' @param ylab
@@ -60,9 +61,13 @@
 #'   A list of parameters that control the creation of color scales. It is used
 #'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available
 #'   parameters.
-#'   
-#' @param ...
-#'   currently unused
+#' @param xyCompare
+#'   Use when you compare studies, can be "union" or "intersect". If union, all
+#'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+#'   studies will be selectable.
+#' @param highlight highlight curve when mouse over
+#' @param secondAxis add second axis to graph
+#' 
 #' @inheritParams prodStack
 #'   
 #' @return 
@@ -79,56 +84,100 @@
 #' If the input data has a annual time step, the function creates a barplot
 #' instead of a line chart.
 #' 
+#' compare argument can take following values :
+#' \itemize{
+#'    \item "mcYear"
+#'    \item "main"
+#'    \item "variable"
+#'    \item "type"
+#'    \item "confInt"
+#'    \item "elements"
+#'    \item "aggregate"
+#'    \item "legend"
+#'    \item "highlight"
+#'    \item "stepPlot"
+#'    \item "drawPoints"
+#'    \item "secondAxis"
+#'  }
 #' 
 #' @examples 
 #' \dontrun{
-#' setSimulationPath()
-#' mydata <- readAntares("all", timeStep = "monthly")
-#' plot(mydata)
-#' plot(mydata, "LOAD")
+#' setSimulationPath(path = path1)
+#' mydata <- readAntares(areas = "all", timeStep = "hourly")
+#' plot(x = mydata)
 #' 
 #' # Plot only a few areas
-#' plot(mydata[area %in% c("area1", "area2", "area3")])
+#' plot(x = mydata[area %in% c("area1", "area2", "area3")])
 #' 
 #' # If data contains detailed results, then the function adds a confidence
 #' # interval
-#' dataDetailed <- readAntares("all", timeStep = "monthly", synthesis = FALSE)
-#' plot(dataDetailed)
+#' dataDetailed <- readAntares(areas = "all", timeStep = "hourly", mcYears = 1:2)
+#' plot(x = dataDetailed)
 #' 
 #' # If the time step is annual, the function creates a barplot instead of a
 #' # linechart
-#' dataAnnual <- readAntares("all", timeStep = "Annual")
-#' plot(dataAnnual)
+#' dataAnnual <- readAntares(areas = "all", timeStep = "annual")
+#' plot(x = dataAnnual)
 #' 
+#' # Compare two simulaitons
 #' # Compare the results of two simulations
 #' setSimulationPath(path1)
-#' mydata1 <- readAntares("all", timeStep = "daily")
+#' mydata1 <- readAntares(areas = "all", timeStep = "daily")
 #' setSimulationPath(path2)
-#' mydata2 <- readAntares("all", timeStep = "daily")
+#' mydata2 <- readAntares(areas = "all", timeStep = "daily")
 #' 
-#' plot(mydata1, mydata2)
+#' plot(x = list(mydata1, mydata2))
 #' 
+#' # When you compare studies, you have 2 ways to defind inputs, union or intersect.
+#' # for example, if you chose union and you have mcYears 1 and 2 in the first study
+#' # and mcYears 2 and 3 in the second, mcYear input will be worth c(1, 2, 3)
+#' # In same initial condition (study 1 -> 1,2 ans study 2 -> 2, 3) if you choose intersect,
+#' # mcYear input will be wort 2.
+#' # You must specify union or intersect with xyCompare argument (default union).
+#' plot(x = list(mydata1[area %in% c("a", "b")],
+#'  mydata1[area %in% c("b", "c")]), xyCompare = "union")
+#' plot(x = list(mydata1[area %in% c("a", "b")],
+#'  mydata1[area %in% c("b", "c")]), xyCompare = "intersect")
+#' 
+#' # Compare data in a single simulation
 #' # Compare two periods for the same simulation
-#' plot(mydata1, compare = "dateRange")
+#' plot(x = mydata1, compare = "dateRange")
 #' 
 #' # Compare two Monte-Carlo scenarios
-#' detailedData <- readAntares("all", mcYears = "all")
-#' plot(detailedData[mcYear == 1], detailedData[mcYear == 2])
+#' detailedData <- readAntares(areas = "all", mcYears = "all")
+#' plot(x = detailedData, .compare = "mcYear")
 #' 
-#' # To do the same thing, with antaresDataList objects, one can use 'subset'
-#' detailedData <- readAntares(areas = "all" links = "all", mcYears = "all")
-#' plot(subset(detailedData, mcYears = 1), subset(detailedData, mcYears = 2))
+#' # Use h5 for dynamic request / exploration in a study
+#' # Set path of simulaiton
+#' setSimulationPath(path = path1)
+#' 
+#' # Convert your study in h5 format
+#' writeAntaresH5(path = mynewpath)
+#' 
+#' # Redefine sim path with h5 file
+#' opts <- setSimulationPath(path = mynewpath)
+#' plot(x = opts)
+#' 
+#' # Compare elements in a single study
+#' plot(x = opts, .compare = "mcYear")
+#' # Compare 2 studies
+#' plot(x = list(opts, opts2))
+#' 
 #' }
 #' 
+#' 
+#' 
+#' 
 #' @export
-tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL, 
+tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL, 
+                   variable2Axe = NULL,
                    mcYear = "average",
                    type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                    dateRange = NULL,
                    confInt = 0,
                    minValue = NULL,
                    maxValue = NULL,
-                   aggregate = c("none", "mean", "sum"),
+                   aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
                    compare = NULL,
                    compareOpts = list(),
                    interactive = getInteractivity(),
@@ -138,11 +187,50 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
                    legend = TRUE,
                    legendItemsPerRow = 5,
                    colorScaleOpts = colorScaleOptions(20),
-                   width = NULL, height = NULL, ...) {
+                   width = NULL, height = NULL, xyCompare = c("union","intersect"),
+                   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
+                   secondAxis = FALSE,
+                   timeSteph5 = "hourly",
+                   mcYearh5 = NULL,
+                   tablesh5 = c("areas", "links"),...) {
   
+  
+  if(!is.null(compare) && !interactive){
+    stop("You can't use compare in no interactive mode")
+  }
+  
+  #Check compare
+  .validCompare(compare,  c("mcYear", "main", "variable", "type", "confInt", "elements", "aggregate", "legend", 
+                            "highlight", "stepPlot", "drawPoints", "secondAxis"))
+
+  if(is.list(compare)){
+    if("secondAxis" %in% names(compare)){
+      compare <- c(compare, list(variable2Axe = NULL))
+    }
+  } else if(is.vector(compare)){
+    if("secondAxis" %in% compare){
+      compare <- c(compare, "variable2Axe")
+    }
+  }
+  
+  xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
   aggregate <- match.arg(aggregate)
   colorScaleOpts <- do.call(colorScaleOptions, colorScaleOpts)
+  
+  init_elements <- elements
+  init_dateRange <- dateRange
+  
+  if(!is.null(compare) && "list" %in% class(x)){
+    if(length(x) == 1) x <- list(x[[1]], x[[1]])
+  }
+  if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
+    x <- list(x, x)
+  }
+  # .testXclassAndInteractive(x, interactive)
+  
+  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
+  
   
   # Generate a group number for dygraph objects
   if (!("dateRange" %in% compare)) {
@@ -151,188 +239,443 @@ tsPlot <- function(x, y = NULL, table = NULL, variable = NULL, elements = NULL,
     group <- NULL
   }
   
-  # Preprocess data for comparison
-  tmp <- .getDataForComp(x, y, compare, compareOpts)
-  x <- tmp$x
-  compare <- tmp$compare
-  compareOpts <- tmp$compareOpts
-  
-  timeStep <- attr(x[[1]], "timeStep")
-  opts <- simOptions(x[[1]])
-  
-  .prepareParams <- function(x) {
-    idCols <- .idCols(x)
-    
-    dt <- x[, .(
-      timeId = timeId,
-      time = .timeIdToDate(timeId, timeStep, simOptions(x)), 
-      value = 0)
-    ]
-    
-    if ("cluster" %in% idCols) {
-      dt$element <- paste(x$area, x$cluster, sep = " > ")
-    } else if ("district" %in% idCols) {
-      dt$element <- x$district
-    } else if ("link" %in% idCols) {
-      dt$element <- x$link
-    } else if ("area" %in% idCols) {
-      dt$element <- x$area
-    } else stop("No Id column")
-    
-    if ("mcYear" %in% names(x) && length(unique(x$mcYear)) > 1) {
-      dt$mcYear <- x$mcYear
+  compareOptions <- .compOpts(x, compare)
+  if(is.null(compare)){
+    if(compareOptions$ncharts > 1){
+      compare <- list()
     }
-    
-    dataDateRange <- as.Date(range(dt$time))
-    if (is.null(dateRange) || length(dateRange) < 2) dateRange <- dataDateRange
-    
-    uniqueElem <- sort(as.character(unique(dt$element)))
-    if (is.null(elements)) {
-      elements <- uniqueElem
-      if (length(elements) > 5) elements <- elements[1:5]
-    }
-    
-    list(
-      dt = dt,
-      idCols = idCols,
-      valueCols = setdiff(names(x), idCols),
-      showConfInt = !is.null(x$mcYear) && length(unique(x$mcYear) > 1),
-      dataDateRange = dataDateRange,
-      dateRange = dateRange,
-      uniqueElem = uniqueElem,
-      uniqueMcYears = unique(x$mcYear),
-      elements = elements
-    )
   }
-    
-  params <- lapply(x, function(o) lapply(o, .prepareParams))
   
-  # Function that generates the desired graphic.
-  plotFun <- function(table, mcYear, id, variable, elements, type, confInt, dateRange, 
-                      minValue, maxValue, aggregate, legend) {
+  processFun <- function(x, elements = NULL, dateRange = NULL) {
+    assert_that(inherits(x, "antaresData"))
+    x <- as.antaresDataList(x)
     
-    if (is.null(variable)) variable <- params[[id]][[table]]$valueCols[1]
-    if (is.null(dateRange)) dateRange <- params[[id]][[table]]$dateRange
-    if (is.null(type) || is.null(table) || !variable %in% names(x[[id]][[table]])) {
-      return(combineWidgets())
-    }
-    if (length(elements) == 0) {
-      return(combineWidgets("Choose at least one element"))
-    }
-    
-    dt <- params[[id]][[table]]$dt
-    dt$value <- x[[id]][[table]][, get(variable)]
-    
-    if (!is.null(mcYear) && mcYear != "average") {
-      mcy <- mcYear # Just to avoid name confusion in the next line
-      dt <- dt[mcYear == mcy]
-    }
-    
-    if (length(elements) == 0) {
-      elements <- params[[id]][[table]]$uniqueElem[1:5]
-    }
-    if (!"all" %in% elements) dt <- dt[element %in% elements]
-    dt <- dt[as.Date(time) %between% dateRange]
-    
-    if (nrow(dt) == 0) return(combineWidgets())
-    
-    if (aggregate != "none" && length(params[[id]][[table]]$uniqueElem) > 1) {
-      if (aggregate == "mean") {
-        dt <- dt[, .(element = as.factor(variable), value = mean(value)), 
-                 by = c(.idCols(dt))]
-      } else if (aggregate == "sum") {
-        dt <- dt[, .(element = as.factor(variable), value = sum(value)), 
-                 by = c(.idCols(dt))]
+    lapply(x, function(x) {
+      idCols <- .idCols(x)
+      valueCols <- setdiff(names(x), idCols)
+      timeStep <- attr(x, "timeStep")
+      opts <- simOptions(x)
+      
+      dt <- x[, .(
+        timeId = timeId,
+        time = .timeIdToDate(timeId, attr(x, "timeStep"), simOptions(x)), 
+        value = 0)
+        ]
+      
+      if ("cluster" %in% idCols) {
+        dt$element <- paste(x$area, x$cluster, sep = " > ")
+      } else if ("district" %in% idCols) {
+        dt$element <- x$district
+      } else if ("link" %in% idCols) {
+        dt$element <- x$link
+      } else if ("area" %in% idCols) {
+        dt$element <- x$area
+      } else stop("No Id column")
+      
+      if ("mcYear" %in% names(x)) {
+        dt$mcYear <- x$mcYear
       }
-    }
-    
-    f <- switch(type,
-                "ts" = .plotTS,
-                "barplot" = .barplot,
-                "monotone" = .plotMonotone,
-                "density" = .density,
-                "cdf" = .cdf,
-                "heatmap" = .heatmap,
-                stop("Invalid type")
-    )
-    f(
-      dt, 
-      timeStep = timeStep, 
-      variable = variable, 
-      confInt = confInt, 
-      minValue = minValue,
-      maxValue = maxValue, 
-      colors = colors, 
-      main = if(length(main) == 1) main else main[id], 
-      ylab = if(length(ylab) == 1) ylab else ylab[id], 
-      legend = legend, 
-      legendItemsPerRow = legendItemsPerRow, 
-      width = width, 
-      height = height,
-      opts = opts,
-      colorScaleOpts = colorScaleOpts,
-      group = group
-    )
-    
+      
+      dataDateRange <- as.Date(range(dt$time))
+      if (is.null(dateRange) || length(dateRange) < 2) dateRange <- dataDateRange
+      
+      uniqueElem <- sort(as.character(unique(dt$element)))
+      if (is.null(elements)) {
+        elements <- uniqueElem
+        # if (length(elements) > 5) elements <- elements[1:5]
+      }
+      
+      # Function that generates the desired graphic.
+      plotFun <- function(mcYear, id, variable, variable2Axe, elements, type, confInt, dateRange, 
+                          minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints, main) {
+        if (is.null(variable)) variable <- valueCols[1]
+        if (is.null(dateRange)) dateRange <- dateRange
+        if (is.null(type) || !variable %in% names(x)) {
+          return(combineWidgets())
+        }
+        if(variable[1] == "No Input") {return(combineWidgets("No data"))}
+        dt <- .getTSData(
+          x, dt, 
+          variable = c(variable, variable2Axe), elements = elements, 
+          uniqueElement = uniqueElem, 
+          mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
+        )
+        
+        if (nrow(dt) == 0) return(combineWidgets("No data"))
+
+        if(type == "ts"){
+          if(!is.null(dateRange))
+          {
+            if(dt$time[1] > dateRange[1]){
+              dt <- dt[c(NA, 1:nrow(dt))]
+              dt$time[1] <- dateRange[1]
+            }
+            nrowTp <- nrow(dt)
+            if(dt$time[nrowTp] < dateRange[2]){
+              dt <- dt[c(1:nrow(dt), NA)]
+              dt$time[nrowTp + 1] <- dateRange[2]
+            }
+          }
+          
+        }
+        
+        f <- switch(type,
+                    "ts" = .plotTS,
+                    "barplot" = .barplot,
+                    "monotone" = .plotMonotone,
+                    "density" = .density,
+                    "cdf" = .cdf,
+                    "heatmap" = .heatmap,
+                    stop("Invalid type")
+        )
+        
+        variable2Axe <- apply(expand.grid(elements, variable2Axe), 1, function(X){paste(X, collapse = " __ ")})
+        
+        
+        f(
+          dt, 
+          timeStep = timeStep, 
+          variable = variable, 
+          variable2Axe = variable2Axe,
+          confInt = confInt, 
+          minValue = minValue,
+          maxValue = maxValue, 
+          colors = colors, 
+          main = main, 
+          ylab = if(length(ylab) == 1) ylab else ylab[id], 
+          legend = legend, 
+          legendItemsPerRow = legendItemsPerRow, 
+          width = width, 
+          height = height,
+          opts = opts,
+          colorScaleOpts = colorScaleOpts,
+          group = group,
+          highlight = highlight,
+          stepPlot = stepPlot,
+          drawPoints = drawPoints
+        )
+        
+      }
+      list(
+        plotFun = plotFun,
+        dt = dt,
+        x = x,
+        idCols = idCols,
+        valueCols = valueCols,
+        showConfInt = !is.null(x$mcYear) && length(unique(x$mcYear) > 1),
+        dataDateRange = dataDateRange,
+        dateRange = dateRange,
+        uniqueElem = uniqueElem,
+        uniqueMcYears = unique(x$mcYear),
+        elements = elements,
+        timeStep = timeStep,
+        opts = opts
+      )
+    })
   }
   
-  if (is.null(table)) table <- names(params[[1]])[1]
-  if (is.null(mcYear)) mcYear <- "average"
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    return(plotFun(table, mcYear, 1, variable, elements, type, confInt, dateRange, 
-                   minValue, maxValue, aggregate, legend))
+
+
+    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    params <- .transformDataForComp(.giveListFormat(x), compare, compareOpts, 
+                              processFun = processFun, 
+                              elements = elements, dateRange = dateRange)
+    
+    # paramCoe <- .testParamsConsistency(params = params, mcYear = mcYear)
+    # mcYear <- paramCoe$mcYear
+    if (is.null(table)) table <- names(params$x[[1]])[1]
+    if (is.null(mcYear)) mcYear <- "average"
+    L_w <- lapply(params$x, function(X){
+      X[[table]]$plotFun(mcYear, 1, variable, variable2Axe, elements, type, confInt, dateRange, 
+               minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints, main)
+    })
+    return(combineWidgets(list = L_w))
+    
   }
   
   typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
   
-  manipulateWidget(
-    plotFun(table, mcYear, .id, variable, elements, type, confInt, dateRange, minValue, 
-            maxValue, aggregate, legend),
-    
-    table = mwSelect(names(params[[.id]]), value = table, .display = length(params[[.id]]) > 1),
-    mcYear = mwSelect(
-      choices = c("average", params[[.id]][[table]]$uniqueMcYears) ,
-      mcYear, 
-      .display = params[[.id]][[table]]$showConfInt
-    ),
-    variable = mwSelect(
-      choices = params[[.id]][[table]]$valueCols,
-      value = variable
-    ),
-    type = mwSelect(
-      choices = {
-        if (timeStep == "annual") "barplot"
-        else if (timeStep %in% c("hourly", "daily")) typeChoices
-        else typeChoices[1:5]
-      },
-      value = type, 
-      .display = timeStep != "annual"
-    ),
-    dateRange = mwDateRange(
-      value = params[[1]][[table]]$dateRange,
-      min = params[[.id]][[table]]$dataDateRange[1], 
-      max = params[[.id]][[table]]$dataDateRange[2],
-      .display = timeStep != "annual"
-    ),
-    confInt = mwSlider(0, 1, confInt, step = 0.01, label = "confidence interval",
-                       .display = params[[.id]][[table]]$showConfInt & mcYear == "average"),
-    minValue = mwNumeric(minValue, "min value", .display = type %in% c("density", "cdf")),
-    maxValue = mwNumeric(maxValue, "max value", .display = type %in% c("density", "cdf")),
-    elements = mwSelect(
-      choices = c("all", params[[.id]][[table]]$uniqueElem),
-      value = elements, 
-      multiple = TRUE
-    ),
-    aggregate = mwSelect(c("none", "mean", "sum"), aggregate),
-    legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
-    .compare = compare,
-    .compareOpts = compareOpts
-  )
+  ##remove notes
+  table <- NULL
+  x_in <- NULL
+  paramsH5 <- NULL
+  timeSteph5 <- NULL
+  mcYearH5 <- NULL
+  sharerequest <- NULL
+  timeStepdataload <- NULL
+  x_tranform <- NULL
   
+  manipulateWidget({
+    .tryCloseH5()
+    if(.id <= length(params$x)){
+      
+      if(length(variable) == 0){return(combineWidgets(paste0("Please select some variables")))}
+      
+      if(length(elements) == 0){return(combineWidgets(paste0("Please select some elements")))}
+      
+      if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
+      
+      if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this study")))}
+      
+      if(!secondAxis){
+        variable2Axe <- NULL
+      } else {
+        aggregate <- "none"
+      }
+      widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, confInt, 
+                                                   dateRange, minValue, maxValue, aggregate, legend, 
+                                                   highlight, stepPlot, drawPoints, main)
+      controlWidgetSize(widget)
+    } else {
+      combineWidgets("No data for this selection")
+    }
+  },
+  x = mwSharedValue({x}),
+  
+  # #Output
+  #  outPutGraph = mwSharedValue({
+  #    ls()
+  # }),
+  
+  
+  x_in = mwSharedValue({
+    .giveListFormat(x)
+  }),
+  
+  h5requestFiltering = mwSharedValue({h5requestFiltering}),
+  
+  paramsH5 = mwSharedValue({
+    .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
+  }),
+  
+  
+  H5request = mwGroup(
+    timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
+                          value =  paramsH5$timeStepS[1], 
+                          label = "timeStep", 
+                          multiple = FALSE
+    ),
+    tables = mwSelect(choices = paramsH5[["tabl"]], 
+                      value = {
+                        if(.initial) {paramsH5[["tabl"]][1]}else{NULL}
+                      }, 
+                      label = "table", multiple = TRUE
+    ),
+    mcYearH5 = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+                       value = {
+                         if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+                       }, 
+                       label = "mcYear", multiple = TRUE
+    ),
+    .display = {
+      any(unlist(lapply(x_in, .isSimOpts)))
+    }),
+  
+  sharerequest = mwSharedValue({
+    list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
+  }),
+  
+  x_tranform = mwSharedValue({
+    dataInApp <- sapply(1:length(x_in),function(zz){
+      .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = paramsH5$h5requestFilter[[zz]])
+    }, simplify = FALSE)
+    dataInApp
+  }),
+  
+  table = mwSelect(
+    {
+      if(!is.null(params)){
+        out <- as.character(.compareOperation(
+          lapply(params$x, function(vv){
+            unique(names(vv))
+          }), xyCompare))
+        if(length(out) > 0){out}else{"No Input"}
+      }
+    }, 
+    value = {
+      if(.initial) table
+      else NULL
+    }, .display = length(as.character(.compareOperation(
+      lapply(params$x, function(vv){
+        unique(names(vv))
+      }), xyCompare))) > 1
+  ),
+  
+  mcYear = mwSelect(
+    choices = {
+      c("average",     if(!is.null(params)){
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv[[table]]$uniqueMcYears)
+        }), xyCompare))
+      })
+    },
+    value = {
+      if(.initial) "average"
+      else NULL
+    }, multiple = FALSE
+  ),
+  
+  variable = mwSelect(
+    choices = {
+      if(!is.null(params)){
+        out <- as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv[[table]]$valueCols)
+        }), xyCompare))
+        if(length(out) > 0){out} else {"No Input"}
+      }
+    },
+    value = {
+      if(.initial) as.character(.compareOperation(lapply(params$x, function(vv){
+        unique(vv[[table]]$valueCols)
+      }), xyCompare))[1]
+      else NULL
+    }, multiple = TRUE
+  ),
+  
+  secondAxis = mwCheckbox(secondAxis),
+  variable2Axe = mwSelect(label = "Variables 2nd axis",
+    choices = {
+      if(!is.null(params)){
+        out <- as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv[[table]]$valueCols)
+        }), xyCompare))
+        out <- out[!out%in%variable]
+        if(length(out) > 0){out} else {"No Input"}
+      }
+    },
+    value = {
+      if(.initial) NULL
+      else NULL
+    }, multiple = TRUE, .display = secondAxis
+  ),
+  type = mwSelect(
+    choices = {
+      if (timeStepdataload == "annual") "barplot"
+      else if (timeStepdataload %in% c("hourly", "daily")) typeChoices
+      else typeChoices[1:5]
+    },
+    value = {
+      if(.initial) type
+      else NULL
+    }, 
+    .display = timeStepdataload != "annual"
+  ),
+  
+  dateRange = mwDateRange(value = {
+    if(.initial){
+      res <- NULL
+      if(!is.null(params) & ! is.null(table)){
+        res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table),
+                 .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table))
+        if(any(is.infinite(c(res))))
+        {res <- NULL}
+      }
+      ##Lock 7 days for hourly data
+      if(!is.null(params$x[[1]][[table]]$timeStep))
+      {
+      if(params$x[[1]][[table]]$timeStep == "hourly"){
+        if(params$x[[1]][[table]]$dateRange[2] - params$x[[1]][[table]]$dateRange[1]>7){
+          res[1] <- params$x[[1]][[table]]$dateRange[2] - 7
+        }
+      }
+        
+      }
+      
+      res
+    }else{NULL}
+  }, 
+  min = {      
+    if(!is.null(params) & ! is.null(table)){
+      R <- .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
+      if(is.infinite(R)){NULL}else{R}
+    }
+  }, 
+  max = {      
+    if(!is.null(params) & ! is.null(table)){
+      R <- .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
+      if(is.infinite(R)){NULL}else{R}
+    }
+  },
+  .display = timeStepdataload != "annual"
+  ),
+  
+  confInt = mwSlider(0, 1, confInt, step = 0.01, 
+                     label = "confidence interval",
+                     .display = params$x[[max(1,.id)]][[table]]$showConfInt & mcYear == "average"
+  ),
+  
+  minValue = mwNumeric(minValue, "min value", 
+                       .display = type %in% c("density", "cdf")
+  ),
+  
+  maxValue = mwNumeric(maxValue, "max value", 
+                       .display = type %in% c("density", "cdf")
+  ),
+  
+  elements = mwSelect(
+    choices = {
+      c( if(!is.null(params)){
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv[[table]]$uniqueElem)
+        }), xyCompare))
+      })
+    },
+    value = {
+      if(.initial) {as.character(.compareOperation(lapply(params$x, function(vv){
+        unique(vv[[table]]$uniqueElem)
+      }), xyCompare))[1]}
+    }, 
+    multiple = TRUE
+  ),
+  
+  aggregate = mwSelect(c("none", "mean", "sum", "mean by areas", "sum by areas"), 
+                       value ={
+                         if(.initial) aggregate
+                         else NULL
+                       }, .display = !secondAxis
+  ),
+  
+  legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
+  highlight = mwCheckbox(highlight),
+  stepPlot = mwCheckbox(stepPlot),
+  drawPoints = mwCheckbox(drawPoints),
+  timeStepdataload = mwSharedValue({
+    attributes(x_tranform[[1]])$timeStep
+  }),
+  
+  main = mwText(main, label = "title"),
+  
+  params = mwSharedValue({
+    .transformDataForComp(x_tranform, compare, compareOpts, processFun = processFun, 
+                          elements = init_elements, dateRange = init_dateRange)
+  }),
+  
+  .compare = {
+    compare
+  },
+  .compareOpts = {
+    compareOptions
+  },
+  ...
+  )
 }
+
 
 #' @export
 #' @rdname tsPlot
+#' @method plot antaresData
 plot.antaresData <- tsPlot
+
+#' @export
+#' @rdname tsPlot
+#' @method plot simOptions
+plot.simOptions <- tsPlot
+
+#' @export
+#' @rdname tsPlot
+#' @method plot list
+plot.list <- tsPlot
+
