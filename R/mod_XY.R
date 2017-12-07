@@ -83,7 +83,10 @@ modXY <- function(x, xyCompare = c("union","intersect"))
       {var = lapply(x_tranform, function(X){names(X)[unlist(lapply(X, class)%in%c("numeric", "integer"))]})
       var}
       , xyCompare)}),
-    variableX = mwSelect(choices = allVar),
+    variableX = mwSelect(choices = {
+      variableY
+      allVar
+      }),
     variableY = mwSelect(choices = allVar[!allVar%in%variableX]),
     dateRange = mwDateRange(
       value = {
