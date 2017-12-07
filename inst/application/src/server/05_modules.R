@@ -22,10 +22,20 @@ observe({
             mwModuleUI(id = id_prodStack, height = "800px", fluidRow = TRUE)
           })
           
-          if(length(ind_areas) == 1){
-            .compare = NULL
+          .compare <- input$sel_compare_prodstack
+          if(input$sel_compare_mcyear){
+            .compare <- unique(c(.compare, "mcYear"))
+          }
+          if(!is.null(.compare)){
+            list_compare <- vector("list", length(.compare))
+            names(list_compare) <- .compare
+            # set main with study names
+            if(length(ind_areas) != 1){
+              list_compare$main <- names(list_data_all$antaresDataList[ind_areas])
+            }
+            .compare <- list_compare
           } else {
-            .compare = list(main = names(list_data_all$antaresDataList[ind_areas]))
+            .compare = NULL
           }
           mod_prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                          h5requestFiltering = list_data_all$params[ind_areas],
@@ -48,6 +58,21 @@ observe({
             mwModuleUI(id = id_ts, height = "800px", fluidRow = TRUE)
           })
           
+          .compare <- input$sel_compare_tsPlot
+          if(input$sel_compare_mcyear){
+            .compare <- unique(c(.compare, "mcYear"))
+          }
+          if(!is.null(.compare)){
+            list_compare <- vector("list", length(.compare))
+            names(list_compare) <- .compare
+            # set main with study names
+            if(length(ind_areas) != 1){
+              list_compare$main <- names(list_data_all$antaresDataList[ind_areas])
+            }
+            .compare <- list_compare
+          } else {
+            .compare = NULL
+          }
           mod_plotts <- plot(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                  h5requestFiltering = list_data_all$params[ind_areas],
                                  interactive = TRUE, .updateBtn = TRUE, 
@@ -78,12 +103,21 @@ observe({
             mwModuleUI(id = id_exchangesStack, height = "800px", fluidRow = TRUE)
           })
           
-          if(length(ind_links) == 1){
-            .compare = NULL
-          } else {
-            .compare = list(main = names(list_data_all$antaresDataList[ind_links]))
+          .compare <- input$sel_compare_exchangesStack
+          if(input$sel_compare_mcyear){
+            .compare <- unique(c(.compare, "mcYear"))
           }
-          
+          if(!is.null(.compare)){
+            list_compare <- vector("list", length(.compare))
+            names(list_compare) <- .compare
+            # set main with study names
+            if(length(ind_links) != 1){
+              list_compare$main <- names(list_data_all$antaresDataList[ind_links])
+            }
+            .compare <- list_compare
+          } else {
+            .compare = NULL
+          }
           mod_exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
                                                    h5requestFiltering = list_data_all$params[ind_links],
                                                    interactive = TRUE, .updateBtn = TRUE, 

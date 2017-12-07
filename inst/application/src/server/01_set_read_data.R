@@ -135,7 +135,7 @@ outputOptions(output, "have_study", suspendWhenHidden = FALSE)
 
 observe({
   if(input$init_sim > 0){
-      updateNavbarPage(session, inputId = "args", selected = "Read data")
+      updateTabsetPanel(session, inputId = "args", selected = "Read data")
   }
 })
 

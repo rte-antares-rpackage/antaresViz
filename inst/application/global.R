@@ -53,6 +53,24 @@ ref_map_table <- spMaps::getEuropeReferenceTable()
 choices_map <- c("all", ref_map_table$code)
 names(choices_map) <- c("all", ref_map_table$name)
 
+#------------
+# compare
+#-----------
+
+
+compare_prodstack <- c("mcYear", "main", "unit", "areas", "legend", 
+                       "stack", "stepPlot", "drawPoints")
+
+compare_exchangesStack <- c("mcYear", "main", "unit", "area",
+                            "legend", "stepPlot", "drawPoints")
+
+compare_tsPlot <- c("mcYear", "main", "variable", "type", "confInt", "elements", 
+                    "aggregate", "legend", "highlight", "stepPlot", "drawPoints", "secondAxis")
+
+compare_plotMap <- c("mcYear", "type", "colAreaVar", "sizeAreaVars", "areaChartType", "showLabels",
+  "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars")
+
+
 #----- generate help for antaresRead function
 # library(tools)
 # add.html.help <- function(package, func, tempsave = paste0(getwd(), "/temp.html")) {

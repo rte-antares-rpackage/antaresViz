@@ -146,6 +146,12 @@ observe({
   }
 })
 
+observe({
+  if(input$import_data > 0){
+    updateTabsetPanel(session, inputId = "tab_data", selected = "Analysis")
+  }
+})
+
 # control : have data
 output$have_data <- reactive({
   length(list_data_all$antaresDataList) > 0

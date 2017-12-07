@@ -88,10 +88,20 @@ observe({
               mwModuleUI(id = id_plotMap, height = "800px", fluidRow = TRUE)
             })
             
-            if(length(ind_map) == 1){
-              .compare = NULL
+            .compare <- input$sel_compare_plotMap
+            if(input$sel_compare_mcyear){
+              .compare <- unique(c(.compare, "mcYear"))
+            }
+            if(!is.null(.compare)){
+              list_compare <- vector("list", length(.compare))
+              names(list_compare) <- .compare
+              # set main with study names
+              if(length(ind_map) != 1){
+                list_compare$main <- names(list_data_all$antaresDataList[ind_map])
+              }
+              .compare <- list_compare
             } else {
-              .compare = list(main = names(list_data_all$antaresDataList[ind_map]))
+              .compare = NULL
             }
             
             mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
