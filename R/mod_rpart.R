@@ -9,10 +9,10 @@
 #' setSimulationPath("Mystud", 1)
 #' mydata <- readAntares(areas = "all", select = "OIL")
 #' mydata <- mergeAllAntaresData(mydata)
-#' rpartPlot(mydata)
+#' modRpart(mydata)
 #' }
 #' 
 #' @export
-rpartPlot <- function(data){
+modRpart <- function(data){
   visNetwork::visTreeEditor(data.frame(data))
 }
