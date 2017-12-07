@@ -247,6 +247,22 @@
   
   if(is.null(optsArea$Ra)){optsArea$Ra <- width}
   # Update areas
+  
+  #Apply colors defined in color.csv
+  if(is.null(options$areaChartColors))
+  {
+  varS <- names(optsArea$maxSize)
+  colorDef <- colorsVars$colors[match(varS, colorsVars$Column)]
+  defCol <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b",
+              "e377c2",  "#7f7f7f", "#bcbd22", "#17becf")
+  nbNa <- sum(is.na(colorDef))
+  if(nbNa > 0)
+  {
+  colorDef[is.na(colorDef)] <- defCol[1:nbNa]
+  }
+  options$areaChartColors <- colorDef
+  }
+  
   map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
                           time = optsArea$coords$time,
                           maxValues = optsArea$maxSize, width = optsArea$Ra,
