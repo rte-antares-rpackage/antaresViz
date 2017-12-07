@@ -8,11 +8,11 @@ exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
   colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
   "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
-  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
-  ...)
+  legendId = sample(1000000000, 1), groupId = legendId,
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
@@ -85,11 +85,11 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{drawPoints}{\code{boolean}, add points on graph}
 
-\item{timeSteph5}{\code{character} timeStep to read in h5 file}
+\item{timeSteph5}{\code{character} timeStep to read in h5 file. Only for Non interactive mode.}
 
-\item{mcYearh5}{\code{numeric} mcYearh to read for h5}
+\item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
 
-\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
@@ -106,9 +106,12 @@ values imports.
 Compare argument can take following values :
 \itemize{
    \item "mcYear"
+   \item "main"
    \item "unit"
    \item "area"
    \item "legend"
+   \item "stepPlot"
+   \item "drawPoints"
    }
 }
 \examples{
@@ -120,7 +123,7 @@ exchangesStack(mydata)
 mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
 exchangesStack(mydata)
 
-#Use compare :
+# Use compare :
 exchangesStack(mydata, compare = "mcYear")
 exchangesStack(mydata, compare = "area")
 exchangesStack(mydata, compare = "unit")

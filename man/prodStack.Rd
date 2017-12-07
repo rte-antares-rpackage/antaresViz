@@ -15,11 +15,11 @@ prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
   dateRange = NULL, main = "Production stack", unit = c("MWh", "GWh",
   "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
-  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
-  ...)
+  legendId = sample(1000000000, 1), groupId = legendId,
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -113,11 +113,11 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{drawPoints}{\code{boolean}, add points on graph}
 
-\item{timeSteph5}{\code{character} timeStep to read in h5 file}
+\item{timeSteph5}{\code{character} timeStep to read in h5 file. Only for Non interactive mode.}
 
-\item{mcYearh5}{\code{numeric} mcYearh to read for h5}
+\item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
 
-\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
@@ -145,6 +145,8 @@ compare argument can take following values :
    \item "areas"
    \item "legend"
    \item "stack"
+   \item "stepPlot"
+   \item "drawPoints"
    }
 }
 \examples{
@@ -180,7 +182,7 @@ setProdStackAlias(
 
 prodStack(x = mydata, unit = "GWh", stack = "renewable")
 
-#Use compare
+# Use compare
 prodStack(x = mydata, compare = "areas")
 prodStack(x = mydata, unit = "GWh", compare = "mcYear")
 prodStack(x = mydata, unit = "GWh", compare = "main")
@@ -191,20 +193,24 @@ prodStack(x = mydata, unit = "GWh", compare = "stack")
 prodStack(x = mydata, unit = "GWh", compare = c("mcYear", "areas"))
 
 
-#Compare studies
+# Compare studies
 prodStack(list(mydata, mydata))
 
 
-#Use h5 opts
-#Set path of simulaiton
+# Use h5 opts
+# Set path of simulaiton
 setSimulationPath(path = path1)
-#Convert your study in h5 format
+
+# Convert your study in h5 format
 writeAntaresH5(path = mynewpath)
-#Redifind sim path with h5 file
+
+# Redefine sim path with h5 file
 opts <- setSimulationPath(path = mynewpath)
 prodStack(x = opts)
+
 # Compare elements in a single study
 prodStack(x = opts, .compare = "mcYear")
+
 # Compare 2 studies
 prodStack(x = list(opts, opts2))
 

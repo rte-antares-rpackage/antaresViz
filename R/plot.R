@@ -87,13 +87,18 @@
 #' compare argument can take following values :
 #' \itemize{
 #'    \item "mcYear"
+#'    \item "main"
 #'    \item "variable"
 #'    \item "type"
 #'    \item "confInt"
 #'    \item "elements"
 #'    \item "aggregate"
 #'    \item "legend"
-#'    }
+#'    \item "highlight"
+#'    \item "stepPlot"
+#'    \item "drawPoints"
+#'    \item "secondAxis"
+#'  }
 #' 
 #' @examples 
 #' \dontrun{
@@ -123,12 +128,12 @@
 #' 
 #' plot(x = list(mydata1, mydata2))
 #' 
-#' #When you compare studies, you have 2 ways to defind inputs, union or intersect.
-#' #for example, if you chose union and you have mcYears 1 and 2 in the first study
-#' #and mcYears 2 and 3 in the second, mcYear input will be worth c(1, 2, 3)
-#' #In same initial condition (study 1 -> 1,2 ans study 2 -> 2, 3) if you choose intersect,
-#' #mcYear input will be wort 2.
-#' #You must specify union or intersect with xyCompare argument (default union).
+#' # When you compare studies, you have 2 ways to defind inputs, union or intersect.
+#' # for example, if you chose union and you have mcYears 1 and 2 in the first study
+#' # and mcYears 2 and 3 in the second, mcYear input will be worth c(1, 2, 3)
+#' # In same initial condition (study 1 -> 1,2 ans study 2 -> 2, 3) if you choose intersect,
+#' # mcYear input will be wort 2.
+#' # You must specify union or intersect with xyCompare argument (default union).
 #' plot(x = list(mydata1[area %in% c("a", "b")],
 #'  mydata1[area %in% c("b", "c")]), xyCompare = "union")
 #' plot(x = list(mydata1[area %in% c("a", "b")],
@@ -142,14 +147,17 @@
 #' detailedData <- readAntares(areas = "all", mcYears = "all")
 #' plot(x = detailedData, .compare = "mcYear")
 #' 
-#' #Use h5 for dynamic request / exploration in a study
-#' #Set path of simulaiton
+#' # Use h5 for dynamic request / exploration in a study
+#' # Set path of simulaiton
 #' setSimulationPath(path = path1)
-#' #Convert your study in h5 format
+#' 
+#' # Convert your study in h5 format
 #' writeAntaresH5(path = mynewpath)
-#' #Redifind sim path with h5 file
+#' 
+#' # Redefine sim path with h5 file
 #' opts <- setSimulationPath(path = mynewpath)
 #' plot(x = opts)
+#' 
 #' # Compare elements in a single study
 #' plot(x = opts, .compare = "mcYear")
 #' # Compare 2 studies
@@ -195,6 +203,16 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   .validCompare(compare,  c("mcYear", "main", "variable", "type", "confInt", "elements", "aggregate", "legend", 
                             "highlight", "stepPlot", "drawPoints", "secondAxis"))
 
+  if(is.list(compare)){
+    if("secondAxis" %in% names(compare)){
+      compare <- c(compare, list(variable2Axe = NULL))
+    }
+  } else if(is.vector(compare)){
+    if("secondAxis" %in% compare){
+      compare <- c(compare, "variable2Axe")
+    }
+  }
+  
   xyCompare <- match.arg(xyCompare)
   type <- match.arg(type)
   aggregate <- match.arg(aggregate)
@@ -206,7 +224,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   if(!is.null(compare) && class(x)[1] == "list"){
     #stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare) && "antaresData"%in%class(x)){
+  if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
     x <- list(x, x)
   }
   # .testXclassAndInteractive(x, interactive)
@@ -385,7 +403,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   x_in <- NULL
   paramsH5 <- NULL
   timeSteph5 <- NULL
-  mcYearh <- NULL
+  mcYearH5 <- NULL
   sharerequest <- NULL
   timeStepdataload <- NULL
   x_tranform <- NULL
@@ -402,6 +420,11 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       
       if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this study")))}
       
+      if(!secondAxis){
+        variable2Axe <- NULL
+      } else {
+        aggregate <- "none"
+      }
       widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, confInt, 
                                                    dateRange, minValue, maxValue, aggregate, legend, 
                                                    highlight, stepPlot, drawPoints, main)
@@ -441,7 +464,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                       }, 
                       label = "table", multiple = TRUE
     ),
-    mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+    mcYearH5 = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
                        value = {
                          if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
                        }, 
@@ -452,7 +475,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     }),
   
   sharerequest = mwSharedValue({
-    list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
+    list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
   }),
   
   x_tranform = mwSharedValue({
@@ -612,7 +635,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                        value ={
                          if(.initial) aggregate
                          else NULL
-                       }
+                       }, .display = !secondAxis
   ),
   
   legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),

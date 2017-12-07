@@ -92,9 +92,9 @@
 #'   typically h5requestFiltering = list(select = "NUCLEAR")
 #' @param stepPlot \code{boolean}, step style for curves.
 #' @param drawPoints \code{boolean}, add points on graph
-#' @param timeSteph5 \code{character} timeStep to read in h5 file
-#' @param mcYearh5 \code{numeric} mcYearh to read for h5
-#' @param tablesh5 \code{character} tables for h5 ("areas" "links", "clusters" or "disticts")
+#' @param timeSteph5 \code{character} timeStep to read in h5 file. Only for Non interactive mode.
+#' @param mcYearh5 \code{numeric} mcYear to read for h5. Only for Non interactive mode.
+#' @param tablesh5 \code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.
 #' @param ... Other arguments for \code{\link{manipulateWidget}}
 #'  
 #' @return 
@@ -118,6 +118,8 @@
 #'    \item "areas"
 #'    \item "legend"
 #'    \item "stack"
+#'    \item "stepPlot"
+#'    \item "drawPoints"
 #'    }
 #' @examples
 #' \dontrun{
@@ -152,7 +154,7 @@
 #' 
 #' prodStack(x = mydata, unit = "GWh", stack = "renewable")
 #' 
-#' #Use compare
+#' # Use compare
 #' prodStack(x = mydata, compare = "areas")
 #' prodStack(x = mydata, unit = "GWh", compare = "mcYear")
 #' prodStack(x = mydata, unit = "GWh", compare = "main")
@@ -163,20 +165,24 @@
 #' prodStack(x = mydata, unit = "GWh", compare = c("mcYear", "areas"))
 #' 
 #' 
-#' #Compare studies
+#' # Compare studies
 #' prodStack(list(mydata, mydata))
 #' 
 #' 
-#' #Use h5 opts
-#' #Set path of simulaiton
+#' # Use h5 opts
+#' # Set path of simulaiton
 #' setSimulationPath(path = path1)
-#' #Convert your study in h5 format
+#' 
+#' # Convert your study in h5 format
 #' writeAntaresH5(path = mynewpath)
-#' #Redifind sim path with h5 file
+#' 
+#' # Redefine sim path with h5 file
 #' opts <- setSimulationPath(path = mynewpath)
 #' prodStack(x = opts)
+#' 
 #' # Compare elements in a single study
 #' prodStack(x = opts, .compare = "mcYear")
+#' 
 #' # Compare 2 studies
 #' prodStack(x = list(opts, opts2))
 #' 
@@ -217,7 +223,7 @@ prodStack <- function(x,
   if(!is.null(compare) && class(x)[1] == "list"){
     # stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare) && "antaresData" %in% class(x)){
+  if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
     x <- list(x, x)
   }
   
@@ -344,7 +350,7 @@ prodStack <- function(x,
   table <- NULL
   
   ##remove notes
-  mcYearh <- NULL
+  mcYearhH5 <- NULL
   paramsH5 <- NULL
   sharerequest <- NULL
   timeStepdataload <- NULL
@@ -391,7 +397,7 @@ prodStack <- function(x,
                         label = "table", 
                         multiple = FALSE
       ),
-      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+      mcYearhH5 = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
                          value = {
                            if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
                          }, 
@@ -404,7 +410,7 @@ prodStack <- function(x,
     ),
     
     sharerequest = mwSharedValue({
-      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
+      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearhH5, tables_l = tables)
     }),
     
 

@@ -165,11 +165,11 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{secondAxis}{add second axis to graph}
 
-\item{timeSteph5}{\code{character} timeStep to read in h5 file}
+\item{timeSteph5}{\code{character} timeStep to read in h5 file. Only for Non interactive mode.}
 
-\item{mcYearh5}{\code{numeric} mcYearh to read for h5}
+\item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
 
-\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
@@ -193,13 +193,18 @@ instead of a line chart.
 compare argument can take following values :
 \itemize{
    \item "mcYear"
+   \item "main"
    \item "variable"
    \item "type"
    \item "confInt"
    \item "elements"
    \item "aggregate"
    \item "legend"
-   }
+   \item "highlight"
+   \item "stepPlot"
+   \item "drawPoints"
+   \item "secondAxis"
+ }
 }
 \examples{
 \dontrun{
@@ -229,12 +234,12 @@ mydata2 <- readAntares(areas = "all", timeStep = "daily")
 
 plot(x = list(mydata1, mydata2))
 
-#When you compare studies, you have 2 ways to defind inputs, union or intersect.
-#for example, if you chose union and you have mcYears 1 and 2 in the first study
-#and mcYears 2 and 3 in the second, mcYear input will be worth c(1, 2, 3)
-#In same initial condition (study 1 -> 1,2 ans study 2 -> 2, 3) if you choose intersect,
-#mcYear input will be wort 2.
-#You must specify union or intersect with xyCompare argument (default union).
+# When you compare studies, you have 2 ways to defind inputs, union or intersect.
+# for example, if you chose union and you have mcYears 1 and 2 in the first study
+# and mcYears 2 and 3 in the second, mcYear input will be worth c(1, 2, 3)
+# In same initial condition (study 1 -> 1,2 ans study 2 -> 2, 3) if you choose intersect,
+# mcYear input will be wort 2.
+# You must specify union or intersect with xyCompare argument (default union).
 plot(x = list(mydata1[area \%in\% c("a", "b")],
  mydata1[area \%in\% c("b", "c")]), xyCompare = "union")
 plot(x = list(mydata1[area \%in\% c("a", "b")],
@@ -248,14 +253,17 @@ plot(x = mydata1, compare = "dateRange")
 detailedData <- readAntares(areas = "all", mcYears = "all")
 plot(x = detailedData, .compare = "mcYear")
 
-#Use h5 for dynamic request / exploration in a study
-#Set path of simulaiton
+# Use h5 for dynamic request / exploration in a study
+# Set path of simulaiton
 setSimulationPath(path = path1)
-#Convert your study in h5 format
+
+# Convert your study in h5 format
 writeAntaresH5(path = mynewpath)
-#Redifind sim path with h5 file
+
+# Redefine sim path with h5 file
 opts <- setSimulationPath(path = mynewpath)
 plot(x = opts)
+
 # Compare elements in a single study
 plot(x = opts, .compare = "mcYear")
 # Compare 2 studies

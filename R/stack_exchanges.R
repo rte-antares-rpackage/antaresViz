@@ -26,9 +26,12 @@
 #' Compare argument can take following values :
 #' \itemize{
 #'    \item "mcYear"
+#'    \item "main"
 #'    \item "unit"
 #'    \item "area"
 #'    \item "legend"
+#'    \item "stepPlot"
+#'    \item "drawPoints"
 #'    }
 #'  
 #' @examples 
@@ -40,7 +43,7 @@
 #' mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
 #' exchangesStack(mydata)
 #' 
-#' #Use compare :
+#' # Use compare :
 #' exchangesStack(mydata, compare = "mcYear")
 #' exchangesStack(mydata, compare = "area")
 #' exchangesStack(mydata, compare = "unit")
@@ -86,7 +89,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   if(!is.null(compare) && class(x)[1] == "list"){
     # stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare) && "antaresData"%in%class(x)){
+  if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
     x <- list(x, x)
   }
   # .testXclassAndInteractive(x, interactive)
@@ -227,7 +230,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   table <- NULL
   
   ##remove notes
-  mcYearh <- NULL
+  mcYearH5 <- NULL
   paramsH5 <- NULL
   sharerequest <- NULL
   timeStepdataload <- NULL
@@ -263,7 +266,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                             label = "timeStep", 
                             multiple = FALSE
       ),
-      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+      mcYearH5 = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
                          value = {
                            if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
                          }, 
@@ -276,7 +279,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     ),
     
     sharerequest = mwSharedValue({
-      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = NULL)
+      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = NULL)
     }),
     
 

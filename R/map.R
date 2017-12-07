@@ -114,16 +114,20 @@
 #' plotMap(x = mydata, mapLayout = ml, options = list(colArea="red", colLink = "orange"))
 #' plotMap(x = list(mydata, mydata), mapLayout =  ml)
 #' 
-#' #' #Use h5 for dynamic request / exploration in a study
-#' #Set path of simulaiton
+#' # Use h5 for dynamic request / exploration in a study
+#' # Set path of simulaiton
 #' setSimulationPath(path = path1)
-#' #Convert your study in h5 format
+#' 
+#' # Convert your study in h5 format
 #' writeAntaresH5(path = mynewpath)
-#' #Redifind sim path with h5 file
+#' 
+#' # Redefine sim path with h5 file
 #' opts <- setSimulationPath(path = mynewpath)
 #' plotMap(x = opts, mapLayout = ml)
+#' 
 #' # Compare elements in a single study
 #' plotMap(x = opts, mapLayout = ml,  .compare = "mcYear")
+#' 
 #' # Compare 2 studies
 #' plotMap(x = list(opts, opts2), mapLayout = ml)
 #' 
@@ -163,7 +167,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   #Check compare
   .validCompare(compare,  c("mcYear", "type", "colAreaVar", "sizeAreaVars", "areaChartType", "showLabels",
-                            "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars", "main"))
+                            "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars"))
   
   runScale <- ifelse(!identical(options[names(options)!="preprocess"] ,
                                 tpMap[names(tpMap)!="preprocess"]), FALSE, TRUE)
@@ -186,7 +190,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if(!is.null(compare) && class(x)[1] == "list"){
     #stop("You cant use compare argument and use more than one study")
   }
-  if(!is.null(compare) && "antaresData"%in%class(x)){
+  if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
     x <- list(x, x)
   }
   # .testXclassAndInteractive(x, interactive)
@@ -396,7 +400,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   ##remove notes
-  mcYearh <- NULL
+  mcYearH5 <- NULL
   paramsH5 <- NULL
   sharerequest <- NULL
   timeStepdataload <- NULL
@@ -479,7 +483,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                           if(.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "links")]} else {NULL}
                         }, 
                         label = "table", multiple = TRUE),
-      mcYearh = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+      mcYearH5 = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
                          value = {
                            if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
                          }, 
@@ -487,7 +491,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       .display = {any(unlist(lapply(x_in, .isSimOpts)))}
     ),
     sharerequest = mwSharedValue({
-      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearh, tables_l = tables)
+      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
     }),
     x_tranform = mwSharedValue({
       sapply(1:length(x_in),function(zz){

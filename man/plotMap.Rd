@@ -109,11 +109,11 @@ studies will be selectable.}
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
 typically h5requestFiltering = list(select = "NUCLEAR")}
 
-\item{timeSteph5}{\code{character} timeStep to read in h5 file}
+\item{timeSteph5}{\code{character} timeStep to read in h5 file. Only for Non interactive mode.}
 
-\item{mcYearh5}{\code{numeric} mcYearh to read for h5}
+\item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
 
-\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts")}
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
 
 \item{sizeMiniPlot}{\code{boolean} variable size for miniplot}
 
@@ -170,16 +170,20 @@ plotMap(mydata, mapLayout =  ml,
 plotMap(x = mydata, mapLayout = ml, options = list(colArea="red", colLink = "orange"))
 plotMap(x = list(mydata, mydata), mapLayout =  ml)
 
-#' #Use h5 for dynamic request / exploration in a study
-#Set path of simulaiton
+# Use h5 for dynamic request / exploration in a study
+# Set path of simulaiton
 setSimulationPath(path = path1)
-#Convert your study in h5 format
+
+# Convert your study in h5 format
 writeAntaresH5(path = mynewpath)
-#Redifind sim path with h5 file
+
+# Redefine sim path with h5 file
 opts <- setSimulationPath(path = mynewpath)
 plotMap(x = opts, mapLayout = ml)
+
 # Compare elements in a single study
 plotMap(x = opts, mapLayout = ml,  .compare = "mcYear")
+
 # Compare 2 studies
 plotMap(x = list(opts, opts2), mapLayout = ml)
 
