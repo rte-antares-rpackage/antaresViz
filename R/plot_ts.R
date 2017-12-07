@@ -16,15 +16,14 @@
 #' 
 #' @noRd
 #' 
-.plotTS <- function(dt, timeStep, variable, variable2Axe = NULL, confInt = 0, maxValue, 
+.plotTS <- function(dt, timeStep, variable, confInt = 0, maxValue, 
                     colors = NULL,
                     main = NULL,
                     ylab = NULL,
                     legend = TRUE,
                     legendItemsPerRow = 5,
                     group = NULL,
-                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
-  
+                    width = NULL, height = NULL, ...) {
   
   uniqueElements <- sort(unique(dt$element))
   plotConfInt <- FALSE
@@ -50,16 +49,8 @@
   dt <- dcast(dt, time ~ element, value.var = "value")
   
   # Graphical parameters
-  if(length(uniqueElements)> 1)
-  {
-  variable <- paste0(uniqueElements, collapse = " ; ")
-  }else{
-    variable <- paste0(uniqueElements, " - ", variable)
-    
-  }
-  
   if (is.null(ylab)) ylab <- variable
-  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Evolution of", variable)
+  if (is.null(main)) main <- paste("Evolution of", variable)
   if (is.null(colors)) {
     colors <- substring(rainbow(length(uniqueElements), s = 0.7, v = 0.7), 1, 7)
   } else {
@@ -76,9 +67,7 @@
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE,
       colors = colors, 
-      useDataTimezone = TRUE,
-      stepPlot = stepPlot,
-      drawPoints = drawPoints
+      useDataTimezone = TRUE 
     ) %>% 
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60, rangePad = 10) %>% 
@@ -88,30 +77,10 @@
       highlightCallback = JS_updateLegend(legendId, timeStep),
       unhighlightCallback = JS_resetLegend(legendId)
     )
-  if(length(variable2Axe)>0){
-    for( i in variable2Axe)
-    {
-    g <- g %>% dySeries(i, axis = 'y2')
-    }
-  }
-  
-  
-  if(highlight)
-  {
-    g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
-  }
   
   if (plotConfInt) {
     for (v in uniqueElements) {
-      axis = NULL
-      if(length(variable2Axe)>0)
-      {
-      if(v%in%variable2Axe)
-      {
-        axis <- "y2"
-      } 
-      }
-      g <- g %>% dySeries(paste0(v, c("_l", "", "_u")), axis = axis)
+      g <- g %>% dySeries(paste0(v, c("_l", "", "_u")))
     }
   }
   

@@ -4,19 +4,17 @@
 #' @import antaresRead
 #' @import antaresProcessing
 #' @import dygraphs
+#' @import miniUI
 #' @import shiny
 #' @import htmltools
 #' @import manipulateWidget
 #' @import leaflet
 #' @import leaflet.minicharts
-#' @import assertthat
-#' @importFrom plotly plot_ly layout config add_bars add_heatmap add_text add_trace
-#' @importFrom grDevices col2rgb colorRampPalette colors gray rainbow rgb
+#' @importFrom plotly plot_ly layout config add_bars add_heatmap
+#' @importFrom grDevices col2rgb colorRampPalette colors gray rainbow
 #' @importFrom graphics plot par
 #' @importFrom methods is
 #' @importFrom stats density quantile lm predict
-#' @importFrom utils object.size
-#' @importFrom stats as.formula
 #' 
 globalVariables(
   c("value", "element", "mcYear", "suffix", "time", "timeId", "dt", ".", 
@@ -40,7 +38,6 @@ pkgEnv <- antaresRead:::pkgEnv
 
 .onLoad <- function(libname, pkgname) {
   setInteractivity("auto")
-  options(antaresVizSizeGraph = 200)
 }
 
 # Generate the list of aliases for function prodStack()
@@ -55,17 +52,12 @@ names(formulas) <- graphicalCharter$name
 colors <- graphicalCharter[, rgb(red, green, blue, maxColorValue = 255)]
 names(colors) <- graphicalCharter$name
 
-
-needed <- graphicalCharter$Needed_Col
-names(needed) <- graphicalCharter$name
-needed <- strsplit(needed, ",")
 # Private function that generates a production stack alias, given a list of 
 # variable names. The variable names need to be present in file 
 # GraphicalCharter.csv
 .getProdStackAlias <- function(description = "", var = NULL, lines = NULL) {
   list(
     description = description,
-    nedded_col = unique(unlist(needed[var])),
     variables = formulas[var],
     colors = unname(colors[var]),
     lines = formulas[lines],
@@ -115,12 +107,3 @@ pkgEnv$prodStackAliases <- list(
 )
 
 rm(graphicalCharter, formulas, colors)
-
-
-colorsVars <- fread(input=system.file("color.csv", package = "antaresViz"))
-colorsVars$colors <- rgb(colorsVars$red, colorsVars$green, colorsVars$blue, maxColorValue = 255)
-
-
-# message limit size
-antaresVizSizeGraphError = "Too much data, please reduce selection. If you work with hourly data, you can reduce dateRange selection. 
-You can also use 'limitSizeGraph' function in R or 'Memory Controls' panel in shiny to update this."
