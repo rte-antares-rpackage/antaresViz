@@ -1,8 +1,8 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.11.2
-Date: 2017-07-17
+Version: 0.11.3
+Date: 2017-12-07
 Authors@R: c(
     person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = c("aut", "cre")),
     person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = "aut"),
@@ -23,7 +23,7 @@ License: GPL (>= 2) | file LICENSE
 LazyData: TRUE
 Encoding: UTF-8
 Depends:
-    antaresRead (>= 1.1.5),
+    antaresRead (>= 2.0.0),
     antaresProcessing (>= 0.12.0), 
     spMaps (>= 0.1)
 Imports:
@@ -33,7 +33,7 @@ Imports:
     plotly (>= 4.5.6),
     htmltools,
     htmlwidgets (>= 0.7.0),
-    manipulateWidget (>= 0.8.0),
+    manipulateWidget (>= 0.8.1),
     leaflet (>= 1.1.0),
     sp,
     webshot,
@@ -43,7 +43,7 @@ Imports:
     geojsonio,
     graphics,
     stats,
-    leaflet.minicharts (>= 0.5.0),
+    leaflet.minicharts (>= 0.5.2),
     assertthat
 RoxygenNote: 6.0.1
 Suggests: testthat,
