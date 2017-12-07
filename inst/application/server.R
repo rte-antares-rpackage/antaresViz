@@ -1,12 +1,7 @@
 function(input, output, session) {
 
-  # observe({
-  #   print(names(input))
-  # })
-  
-  
   #----------------
-  #Write h5
+  # Write h5
   #----------------
   source("src/server/07_write_h5.R", local = T)
   
