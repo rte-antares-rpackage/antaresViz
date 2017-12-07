@@ -114,9 +114,26 @@ function(input, output, session) {
   #----------------
   # quit
   #----------------
+  
+  # in case of classic use : 
   observe({
     if(input$quit > 0){
       stopApp(returnValue = TRUE)
     }
   })
+  
+  # in case of Rinno / packaging app for windows
+  # (and so comment previous observe....!)
+  #
+  # observe({
+  #   if(input$quit > 0){
+  #     stopApp()
+  #     q("no")
+  #   }
+  # })
+  # 
+  # session$onSessionEnded(function() {
+  #   stopApp()
+  #   q("no")
+  # })
 }
