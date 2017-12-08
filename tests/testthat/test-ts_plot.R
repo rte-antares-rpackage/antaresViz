@@ -93,3 +93,12 @@ describe("tsPlot, no interactive return error", {
   expect_error(tsPlot(dta, interactive = FALSE, compare = "areas"))
   
 })
+
+if(requireNamespace("rhdf5")){
+  rhdf5::H5close()
+}
+if(dir.exists(pathtemp))
+{
+  unlink(pathtemp, recursive = TRUE)
+}
+

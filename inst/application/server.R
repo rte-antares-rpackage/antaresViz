@@ -117,9 +117,11 @@ function(input, output, session) {
     }
   })
   
+
   # in case of Rinno / packaging app for windows
   # (and so comment previous observe....!)
   #
+  # in app mod
   # observe({
   #   if(input$quit > 0){
   #     stopApp()
