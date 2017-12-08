@@ -32,8 +32,8 @@ stackMap <- function(x, mapLayout)
     if(is.null(colorLink2)){
       colorLink2 <- "none"
     }
-    
-    
+    #Remove note
+    areaChartType <- sizeMiniPlot <- NULL
     sizeArea2 <- sizeArea
     if(is.null(sizeArea2)){
       sizeArea2 <- "none"
