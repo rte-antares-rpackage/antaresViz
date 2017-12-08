@@ -8,7 +8,11 @@ cache: packages
 before_install:
   sudo apt-get install -y libprotobuf-dev protobuf-compiler
 
-r: bioc-devel
+r:
+ - bioc-devel
+ - oldrel
+ - release
+ - devel
 
 r_github_packages:
  - hadley/devtools#1263
