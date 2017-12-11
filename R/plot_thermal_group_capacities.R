@@ -16,7 +16,7 @@ plotThermalGroupCapacities <- function(data, area = 'all', main = "Thermal group
     areaTp <- area
     data <- data[area %in% areaTp]
   }
-  data <- data.table::dcast(data, area~group, value.var = "thermalGroupCapacity")
+  data <- data.table::dcast(data, area~group, value.var = "thermalGroupCapacities")
   data <- data[,lapply(.SD, function(X){X[is.na(X)] <- 0;X}), .SDcols = 1:ncol(data)]
   toPLot <- names(data)[names(data)!="area"]
   p <- plot_ly(data,  type = 'bar') %>%

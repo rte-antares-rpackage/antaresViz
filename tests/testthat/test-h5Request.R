@@ -1,7 +1,7 @@
 describe("h5", {
   if(requireNamespace("rhdf5")){
-    writeAntaresH5()
-    optsH5 <- setSimulationPath(getwd(), 1)
+    writeAntaresH5(pathtemp)
+    optsH5 <- setSimulationPath(pathtemp)
     
     expect_true(class(.getDateRange(optsH5, "hourly")) == "Date")
     
@@ -10,8 +10,8 @@ describe("h5", {
     fid <- rhdf5::H5Fopen(optsH5$h5path)
     expect_true(all(.getTimeStep(fid) %in% c("hourly","daily","weekly","monthly","annual")))
     
-    expect_true(length(.getElements(optsH5, "areas", fid, "hourly")$areas) == 18)
-    expect_true(length(.getElements(optsH5, "clusters", fid, "hourly")$clusters) == 15)
+    expect_true(length(.getElements(optsH5, "areas", fid, "hourly")$areas) == 9)
+    expect_true(length(.getElements(optsH5, "clusters", fid, "hourly")$clusters) == 7)
     expect_true(identical(.getClustersNames(fid, "hourly"),
                           .getElements(optsH5, "clusters", fid, "hourly")$clusters))
     
@@ -19,7 +19,7 @@ describe("h5", {
     
     expect_true(length(.getVariablesH5(fid, "hourly", "areas")$areas) == 29)
   
-    expect_true(length(.getTableInH5(fid, "hourly")) == 3)
+    expect_true(length(.getTableInH5(fid, "hourly")) == 4)
     
     .tryCloseH5()
   }
