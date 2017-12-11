@@ -15,7 +15,7 @@ r:
  - devel
 
 r_github_packages:
- - hadley/devtools#1263
+ - hadley/devtools
  - Bioconductor-mirror/zlibbioc
  - Bioconductor-mirror/rhdf5
  - rte-antares-rpackage/manipulateWidget@develop
