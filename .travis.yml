@@ -14,6 +14,10 @@ r:
  - release
  - devel
 
+r_packages:
+  - covr
+  - devtools
+
 r_github_packages:
  - hadley/devtools
  - Bioconductor-mirror/zlibbioc
@@ -39,8 +43,7 @@ include:
   - r: oldrel
   - r: devel
 
-r_packages:
-  - covr
 
+  
 after_success:
   - Rscript -e 'library(covr); codecov()'
