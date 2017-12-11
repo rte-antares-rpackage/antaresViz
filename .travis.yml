@@ -3,7 +3,7 @@
 language: R
 dist: trusty
 sudo: required
-cache: packages
+cache: false
 
 before_install:
   sudo apt-get install -y libprotobuf-dev protobuf-compiler
