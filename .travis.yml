@@ -5,8 +5,11 @@ dist: trusty
 sudo: required
 cache: packages
 
+
 before_install:
   sudo apt-get install -y libprotobuf-dev protobuf-compiler
+
+use_bioc: true
 
 r:
  - bioc-devel
