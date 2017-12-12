@@ -24,6 +24,7 @@ r:
 r_packages:
   - covr
   - devtools
+  - antaresProcessing
 
 r_github_packages:
  - Bioconductor-mirror/zlibbioc
@@ -43,12 +44,6 @@ addons:
       - libgdal-dev
       - libproj-dev
       - libv8-3.14-dev
-      
-include:
-  - r: release
-  - r: oldrel
-  - r: devel
-
 
   
 after_success:
