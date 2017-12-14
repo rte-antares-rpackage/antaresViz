@@ -54,14 +54,47 @@ tabPanel("Convert to h5",
                                             checkboxInput("linkCapacity_h5", label = "linkCapacity")
                                      )
                                    ),
+                                   
+                                   
                                    fluidRow(
-                                     column(12,
-                                            div(actionButton("write_h5", "Convert study to h5", icon = icon("floppy-o")), align = "center")                                                           )
-                                   )
+                                     column(3, 
+                                            h4("removeVirtualAreas :")
+                                     ),
+                                     column(9, 
+                                           
+                                                   checkboxInput("rmva_ctrl_h5", "enabled", FALSE)
+                                            
+                                            ),
+                                     conditionalPanel("input.rmva_ctrl_h5", 
+                                     fluidRow(
+                                       column(3, 
+                                              selectInput("rmva_storageFlexibility_h5", "storageFlexibility :", choices = NULL, selected = NULL, multiple = TRUE)
+                                       ),
+                                       column(3, 
+                                              selectInput("rmva_production_h5", "production :", choices = NULL, selected = NULL, multiple = TRUE)
+                                       ), 
+                                       
+                                       column(3, 
+                                              br(),
+                                              checkboxInput("rmva_reassignCosts_h5", "reassignCosts", FALSE)
+                                       ),
+                                       
+                                       column(3, 
+                                              br(),
+                                              checkboxInput("rmva_newCols_h5", "newCols", FALSE))
+                                       
+                                     )),
+                                       
+                                       fluidRow(
+                                         column(12,
+                                                div(actionButton("write_h5", "Convert study to h5", icon = icon("floppy-o")), align = "center")                                                           )
+                                       )
+                                     )
+                            )
+                            ),
+                            conditionalPanel(condition = "output.have_study && output.current_opts_h5 === true", 
+                                             h3("Already a .h5 study...!")
                             )
                           )
-         ),
-         conditionalPanel(condition = "output.have_study && output.current_opts_h5 === true", 
-                          h3("Already a .h5 study...!")
-         )
+         
 )

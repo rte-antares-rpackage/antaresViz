@@ -16,7 +16,6 @@ os:
 
 
 r:
- - bioc-devel
  - oldrel
  - release
  - devel
