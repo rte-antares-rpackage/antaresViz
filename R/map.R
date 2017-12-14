@@ -642,7 +642,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         .display = any(sapply(params$x, function(p) {"links" %in% names(p$x)}))
       ),
       mapLayout = mwSharedValue(mapLayout),
-      main = mwText(main, label = "title"),
       params = mwSharedValue({
         .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                         processFun = processFun, mapLayout = mapLayout)
