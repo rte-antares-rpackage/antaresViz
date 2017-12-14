@@ -109,18 +109,28 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
   
   tagList(
     fluidRow(
-      column(5, 
+      column(4, 
              if(map_builder){
                selectInput(ns("ml_countries"), "Countries : ", width = "100%",
                            choices = choices_map, selected = "all", multiple = TRUE)
              }
       ),
-      column(5, 
+      column(4, 
              if(map_builder){
                selectInput(ns("ml_states"), "States : ", width = "100%",
                            choices = choices_map, selected = NULL, multiple = TRUE)
              }
-      ),      
+      ),   
+      column(1, 
+             if(map_builder){
+               div(br(), checkboxInput(ns("merge_cty"), "Merge country ?", TRUE), align = "center")
+             }
+      ), 
+      column(1, 
+             if(map_builder){
+               div(br(), checkboxInput(ns("merge_ste"), "Merge states ?", TRUE), align = "center")
+             }
+      ), 
       column(2, 
              if(map_builder){
                div(br(), actionButton(ns("set_map_ml"), "Set map"), align = "center")
@@ -162,6 +172,8 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
 }
 
 # changeCoords Module SERVER function
+#' @importFrom rgeos gDistance
+#' @importFrom raster aggregate
 changeCoordsServer <- function(input, output, session, 
                                layout, what = reactive("areas"), 
                                map = reactive(NULL), map_builder = TRUE, stopApp = FALSE){
@@ -184,7 +196,8 @@ changeCoordsServer <- function(input, output, session,
       if(!is.null(map()) & input$set_map_ml == 0){
         map()
       } else {
-        getSpMaps(countries = isolate(input$ml_countries), states = isolate(input$ml_states))
+        getSpMaps(countries = isolate(input$ml_countries), states = isolate(input$ml_states), 
+                  mergeCountry = isolate(input$merge_cty))
       }
     }
   })
@@ -329,7 +342,12 @@ changeCoordsServer <- function(input, output, session,
   observeEvent(input$done, {
     coords <- sp::SpatialPoints(coords()[, c("lon", "lat")],
                                 proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
+    
+  
     map <- current_map()
+    
+    # info1 <<- list(coords = coords, map = map)
+    
     if (!is.null(map)) {
       map <- sp::spTransform(map, sp::CRS("+proj=longlat +datum=WGS84"))
       map$geoAreaId <- 1:length(map)
@@ -354,12 +372,46 @@ changeCoordsServer <- function(input, output, session,
       final_links[final_coords, `:=`(x1 = x, y1 = y),on=c(toDistrict = "district")]
     }
     
+    # info2 <<- list(mapCoords = mapCoords, final_coords = final_coords, final_links = final_links)
+    
     if (!is.null(map)) {
       final_coords$geoAreaId <- mapCoords$geoAreaId
       final_coords_map <- final_coords[!is.na(final_coords$geoAreaId),]
-      map <- map[final_coords_map$geoAreaId,]
+      if(!isolate(input$merge_ste)){
+        map <- map[final_coords_map$geoAreaId,]
+      } else {
+        if(all(c("name", "code") %in% names(map))){
+          keep_code <- unique(map$code[final_coords_map$geoAreaId])
+          # subset on countries
+          map <- map[map$code %in% keep_code,]
+          # set unlink states
+          map$geoAreaId[!map$geoAreaId %in% final_coords_map$geoAreaId] <- NA
+          
+          ind_na <- which(is.na(map$geoAreaId))
+          if(length(ind_na) > 0){
+            # have to find nearestArea...
+            treat_cty <- unique(map$code[ind_na])
+            
+            for(cty in treat_cty){
+              ind_cty <- which(map$code %in% cty)
+              ind_miss <- which(map$code %in% cty & is.na(map$geoAreaId))
+              areas <- coords[coords$geoAreaId %in% map$geoAreaId[ind_cty], ]
+              if(nrow(areas) > 0){
+                areas_min <- suppressWarnings(apply(rgeos::gDistance(map[ind_miss, ], areas, byid = TRUE),2, which.min))
+                map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
+              }
+            }
+            
+            map <- raster::aggregate(map, by = c("geoAreaId"))
+            map <- map[match(final_coords_map$geoAreaId, map$geoAreaId), ]
+          }
+        } else {
+          map <- map[final_coords_map$geoAreaId,]
+        }
+      }
       
       res <- list(coords = final_coords_map, links = final_links, map = map, all_coords = final_coords)
+      
     } else {
       res <- list(coords = final_coords, links = final_links, map = map, all_coords = final_coords)
     }
