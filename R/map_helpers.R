@@ -58,6 +58,7 @@
   res <- list(coords = data, dir = 0)
   
   # color
+  
   if (!colVar %in% names(data)) colVar <- "none"
   if (colVar != "none") {
     if (is.numeric(data[[colVar]])) {
@@ -327,7 +328,7 @@
                              options$linkColorScaleOpts)
   
   # Use default values if needed
-  if (is.null(optsLink$color)) optsLink$color <- options$linkDefaultCol
+  if (is.null(optsLink$color) | options$linkDefaultCol != "#BEBECE") optsLink$color <- options$linkDefaultCol
   if (is.null(optsLink$size)) {
     optsLink$size <- options$linkDefaultSize
     optsLink$maxSize <- options$linkMaxSize
