@@ -109,28 +109,32 @@ function(input, output, session) {
   #----------------
   # quit
   #----------------
+  buildExe <- FALSE
   
+  if(!buildExe)
+  {
   # in case of classic use : 
   observe({
     if(input$quit > 0){
       stopApp(returnValue = TRUE)
     }
   })
-  
+  }else{
+    # in case of Rinno / packaging app for windows
+    # (and so comment previous observe....!)
+    #
+    # in app mod
+    observe({
+      if(input$quit > 0){
+        stopApp()
+        q("no")
+      }
+    })
 
-  # in case of Rinno / packaging app for windows
-  # (and so comment previous observe....!)
-  #
-  # in app mod
-  # observe({
-  #   if(input$quit > 0){
-  #     stopApp()
-  #     q("no")
-  #   }
-  # })
-  # 
-  # session$onSessionEnded(function() {
-  #   stopApp()
-  #   q("no")
-  # })
+    session$onSessionEnded(function() {
+      stopApp()
+      q("no")
+    })
+  }
+
 }
