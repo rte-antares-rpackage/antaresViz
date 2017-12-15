@@ -58,7 +58,7 @@
 #'   step at a time. In interactive mode, an input control permits to choose the
 #'   time step shown.
 #' @param timeId
-#'   A single time id present in the data. Only used if \code{type="detail"}
+#'   time id present in the data.
 #' @param main
 #'   Title of the map.
 #' @param options
@@ -245,7 +245,20 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     timeIdMax <- max(x[[1]]$timeId)
     
     # Select first timeId if necessary
-    if (is.null(timeId)) timeId <- timeIdMin
+    if (is.null(timeId)){
+      timeId <- timeIdMin
+    }else{
+      timeIdTp <- timeId
+      if(!is.null(x$areas)){
+        x$areas <- x$areas[timeId %in% timeIdTp]
+      }
+      
+      if(!is.null(x$links)){
+        x$links <- x$links[timeId %in% timeIdTp]
+      }
+      
+      
+      }
     
     # Keep only links and areas present in the data
     if (areas) {
