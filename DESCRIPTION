@@ -24,7 +24,7 @@ LazyData: TRUE
 Encoding: UTF-8
 Depends:
     antaresRead (>= 2.0.0),
-    antaresProcessing (>= 0.12.0), 
+    antaresProcessing (>= 0.13.0), 
     spMaps (>= 0.2)
 Imports:
     dygraphs (>= 1.1.1),
