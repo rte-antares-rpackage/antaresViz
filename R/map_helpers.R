@@ -165,7 +165,6 @@
   if (is.null(x$areas)) return(map)
   if (nrow(x$areas) == 0) return(map)
   
-  
   timeStep <- attr(x, "timeStep")
   
   # Just in case, we do not want to accidentally modify the original map layout.
@@ -316,7 +315,6 @@
                          popupLinkVars, options) {
   if (is.null(x$links)) return(map)
   if (nrow(x$links) == 0) return(map)
-  
   
   timeStep <- attr(x, "timeStep")
   
