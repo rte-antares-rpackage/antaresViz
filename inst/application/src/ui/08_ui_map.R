@@ -3,7 +3,13 @@ navbarMenu("plotMap",
                     fluidRow(
                       column(12,
                              conditionalPanel(condition = "output.have_data",
-                                              antaresViz:::changeCoordsUI("ml")
+                                              conditionalPanel(condition = "output.have_data_links || output.have_data_areas",
+                                                               antaresViz:::changeCoordsUI("ml")
+                                              ),
+                                              conditionalPanel(condition = "output.have_data_links === false && output.have_data_areas === false",
+                                                               h3("No data imported")
+                                              )
+                                              
                              ),
                              conditionalPanel(condition = "output.have_data === false",
                                               h3("No data imported")
