@@ -25,3 +25,10 @@ describe("prodStack, no interactive return error", {
   expect_error(prodStack(dta, interactive = FALSE, compare = "areas"))
   
 })
+
+
+describe("plotMap, interactive", {
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  VV <- prodStack(dta, ml, .runApp = FALSE)
+  expect_true("htmlwidget" %in% class(VV))
+})
