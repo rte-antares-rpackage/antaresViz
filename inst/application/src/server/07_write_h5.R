@@ -18,6 +18,11 @@ observe({
                 mustRun = input$mustRun_h5,
                 thermalModulation = input$thermalModulation_h5,
                 overwrite = input$overwrite_h5,
+                removeVirtualAreas = input$rmva_ctrl_h5,
+                storageFlexibility = input$rmva_storageFlexibility_h5,
+                production = input$rmva_production_h5,
+                reassignCosts = input$rmva_reassignCosts_h5,
+                newCols = input$rmva_newCols_h5,
                           opts = opts()
                         )},
               error = function(e){

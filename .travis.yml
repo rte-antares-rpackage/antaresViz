@@ -16,7 +16,6 @@ os:
 
 
 r:
- - bioc-devel
  - oldrel
  - release
  - devel
@@ -30,7 +29,7 @@ r_github_packages:
  - Bioconductor-mirror/zlibbioc
  - Bioconductor-mirror/rhdf5
  - rte-antares-rpackage/manipulateWidget@develop
- - rte-antares-rpackage/antaresMaps
+ - rte-antares-rpackage/antaresMaps@develop
  - rte-antares-rpackage/antaresRead@develop
  - rte-antares-rpackage/antaresProcessing@develop
 

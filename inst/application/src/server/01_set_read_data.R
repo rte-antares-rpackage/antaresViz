@@ -175,6 +175,12 @@ observe({
       updateSelectInput(session, "rmva_storageFlexibility", "storageFlexibility :", choices = opts$areaList, selected = NULL)
       updateSelectInput(session, "rmva_production", "production :", choices = opts$areaList, selected = NULL)
       
+      
+      # removeVirtualAreas
+      updateSelectInput(session, "rmva_storageFlexibility_h5", "storageFlexibility :", choices = opts$areaList, selected = NULL)
+      updateSelectInput(session, "rmva_production_h5", "production :", choices = opts$areaList, selected = NULL)
+      
+      
     })
   }
 })
