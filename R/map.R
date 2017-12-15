@@ -178,12 +178,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   if(colAreaVar != "none" & colAreaVar%in%colorsVars$Column & runScale)
   {
-  raw <- colorsVars[Column == colAreaVar]
-  options <- plotMapOptions(areaColorScaleOpts = colorScaleOptions(
-    negCol = "#FFFFFF",
-    zeroCol = rgb(raw$red, raw$green, raw$blue,  maxColorValue = 255),
-    posCol = rgb(raw$red/2, raw$green/2, raw$blue/2, maxColorValue = 255)))
-  
+    raw <- colorsVars[Column == colAreaVar]
+    options <- plotMapOptions(areaColorScaleOpts = colorScaleOptions(
+      negCol = "#FFFFFF",
+      zeroCol = rgb(raw$red, raw$green, raw$blue,  maxColorValue = 255),
+      posCol = rgb(raw$red/2, raw$green/2, raw$blue/2, maxColorValue = 255)))
+    
   }
   if (is.null(mcYear)) mcYear <- "average"
   
@@ -214,7 +214,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
   # new_env for save and control mapLayout
   env_plotFun <- new.env()
-
+  
   processFun <- function(x, mapLayout) {
     if (!is(x, "antaresData")) {
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
@@ -264,6 +264,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (areas) {
       areaList <- unique(x$areas$area)
       mapLayout$coords <- mapLayout$coords[area %in% areaList]
+      if(!is.null(mapLayout$map)){
+        mapLayout$map <- mapLayout$map[match(mapLayout$coords$geoAreaId, mapLayout$map$geoAreaId), ]
+      }
     }
     if (links) {
       linkList <- unique(x$links$link)
@@ -432,7 +435,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           if(is.null(tmp_options)){
             tmp_options <-  plotMapOptions()
           }
-            
+          
           params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                   colAreaVar = colAreaVar,
                                   sizeAreaVars = sizeAreaVars,
@@ -497,10 +500,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                         }, 
                         label = "table", multiple = TRUE),
       mcYearH5 = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
-                         value = {
-                           if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
-                         }, 
-                         label = "mcYear", multiple = TRUE),
+                          value = {
+                            if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+                          }, 
+                          label = "mcYear", multiple = TRUE),
       .display = {any(unlist(lapply(x_in, .isSimOpts)))}
     ),
     sharerequest = mwSharedValue({
@@ -571,106 +574,105 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                                    if(.initial) areaChartType
                                    else NULL
                                  }),
-                                 sizeMiniPlot = mwCheckbox(FALSE),
-                                 .display = length(sizeAreaVars) >= 2),
-        uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale", 
-                                 .display = length(sizeAreaVars) >= 2 && areaChartType != "pie"),
-        showLabels = mwCheckbox(showLabels, label = "Show labels", 
-                                .display = length(sizeAreaVars) >= 2),
-        popupAreaVars = mwSelect(
-          choices = 
-          {
-            if (mcYear == "average") {
-              c("none",
-                as.character(.compareOperation(lapply(params$x, function(vv){
-                  unique(vv$areaValColumnsSynt)
-                }), xyCompare))
-              )
-            }else{
-              c("none", as.character(.compareOperation(lapply(params$x, function(vv){
-                unique(vv$areaValColumns)
-              }), xyCompare)))
-            }
-          }, 
-          value = {
-            if(.initial) popupAreaVars
-            else NULL
-          }, 
-          label = "Popup", 
-          multiple = TRUE
-        ),
-        labelAreaVar = mwSelect(
-          choices =     {
-            if (mcYear == "average") {
-              c("none",
-                as.character(.compareOperation(lapply(params$x, function(vv){
-                  unique(vv$areaValColumnsSynt)
-                }), xyCompare))
-              )
-            }else{
-              c("none", as.character(.compareOperation(lapply(params$x, function(vv){
-                unique(vv$areaValColumns)
-              }), xyCompare)))
-            }
-          }, 
-          value = {
-            if(.initial) labelAreaVar
-            else NULL
-          }, label = "Label", 
-          .display = length(sizeAreaVars) < 2
-        ),
-        .display = any(sapply(params$x, function(p) {"areas" %in% names(p$x)}))
-      ),
-      
-      Links = mwGroup(
-        colLinkVar = mwSelect(
-          {
-            c("none", 
+        sizeMiniPlot = mwCheckbox(FALSE),
+        .display = length(sizeAreaVars) >= 2),
+      uniqueScale = mwCheckbox(uniqueScale, label = "Unique scale", 
+                               .display = length(sizeAreaVars) >= 2 && areaChartType != "pie"),
+      showLabels = mwCheckbox(showLabels, label = "Show labels", 
+                              .display = length(sizeAreaVars) >= 2),
+      popupAreaVars = mwSelect(
+        choices = 
+        {
+          if (mcYear == "average") {
+            c("none",
               as.character(.compareOperation(lapply(params$x, function(vv){
-                unique(vv$linkValColums)
-              }), xyCompare)))
-          }, 
-          value = {
-            if(.initial) colLinkVar
-            else NULL
-          }, label = "Color"),
-        sizeLinkVar = mwSelect({c("none",
-                                  as.character(.compareOperation(lapply(params$x, function(vv){
-                                    unique(vv$linkNumValColumns)
-                                  }), xyCompare))
-        )}, 
+                unique(vv$areaValColumnsSynt)
+              }), xyCompare))
+            )
+          }else{
+            c("none", as.character(.compareOperation(lapply(params$x, function(vv){
+              unique(vv$areaValColumns)
+            }), xyCompare)))
+          }
+        }, 
         value = {
-          if(.initial) sizeLinkVar
+          if(.initial) popupAreaVars
           else NULL
-        }, label = "Width"),
-        popupLinkVars = mwSelect(  { c("none", 
-                                       as.character(.compareOperation(lapply(params$x, function(vv){
-                                         unique(vv$linkValColums)
-                                       }), xyCompare)))
-        },
-        value = {
-          if(.initial) popupLinkVars
-          else NULL
-        }, label = "Popup", multiple = TRUE),
-        .display = any(sapply(params$x, function(p) {"links" %in% names(p$x)}))
+        }, 
+        label = "Popup", 
+        multiple = TRUE
       ),
-      mapLayout = mwSharedValue(mapLayout),
-      params = mwSharedValue({
-        .getDataForComp(x_tranform, NULL, compare, compareOpts, 
-                        processFun = processFun, mapLayout = mapLayout)
-      }),
-      .width = width,
-      .height = height,
-      .compare = {
-        compare
-      },
-      .compareOpts = {
-        compareOptions
-      },
-      .return = function(w, e) {combineWidgets(w, title = main, width = width, height = height)},
-      ...
-    )
+      labelAreaVar = mwSelect(
+        choices =     {
+          if (mcYear == "average") {
+            c("none",
+              as.character(.compareOperation(lapply(params$x, function(vv){
+                unique(vv$areaValColumnsSynt)
+              }), xyCompare))
+            )
+          }else{
+            c("none", as.character(.compareOperation(lapply(params$x, function(vv){
+              unique(vv$areaValColumns)
+            }), xyCompare)))
+          }
+        }, 
+        value = {
+          if(.initial) labelAreaVar
+          else NULL
+        }, label = "Label", 
+        .display = length(sizeAreaVars) < 2
+      ),
+      .display = any(sapply(params$x, function(p) {"areas" %in% names(p$x)}))
+    ),
     
+    Links = mwGroup(
+      colLinkVar = mwSelect(
+        {
+          c("none", 
+            as.character(.compareOperation(lapply(params$x, function(vv){
+              unique(vv$linkValColums)
+            }), xyCompare)))
+        }, 
+        value = {
+          if(.initial) colLinkVar
+          else NULL
+        }, label = "Color"),
+      sizeLinkVar = mwSelect({c("none",
+                                as.character(.compareOperation(lapply(params$x, function(vv){
+                                  unique(vv$linkNumValColumns)
+                                }), xyCompare))
+      )}, 
+      value = {
+        if(.initial) sizeLinkVar
+        else NULL
+      }, label = "Width"),
+      popupLinkVars = mwSelect(  { c("none", 
+                                     as.character(.compareOperation(lapply(params$x, function(vv){
+                                       unique(vv$linkValColums)
+                                     }), xyCompare)))
+      },
+      value = {
+        if(.initial) popupLinkVars
+        else NULL
+      }, label = "Popup", multiple = TRUE),
+      .display = any(sapply(params$x, function(p) {"links" %in% names(p$x)}))
+    ),
+    mapLayout = mwSharedValue(mapLayout),
+    params = mwSharedValue({
+      .getDataForComp(x_tranform, NULL, compare, compareOpts, 
+                      processFun = processFun, mapLayout = mapLayout)
+    }),
+    .width = width,
+    .height = height,
+    .compare = {
+      compare
+    },
+    .compareOpts = {
+      compareOptions
+    },
+    .return = function(w, e) {combineWidgets(w, title = main, width = width, height = height)},
+    ...
+  )
+  
 }
-
 

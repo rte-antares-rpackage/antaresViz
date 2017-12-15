@@ -345,9 +345,7 @@ changeCoordsServer <- function(input, output, session,
     
   
     map <- current_map()
-    
-    # info1 <<- list(coords = coords, map = map)
-    
+
     if (!is.null(map)) {
       map <- sp::spTransform(map, sp::CRS("+proj=longlat +datum=WGS84"))
       map$geoAreaId <- 1:length(map)
@@ -372,8 +370,6 @@ changeCoordsServer <- function(input, output, session,
       final_links[final_coords, `:=`(x1 = x, y1 = y),on=c(toDistrict = "district")]
     }
     
-    # info2 <<- list(mapCoords = mapCoords, final_coords = final_coords, final_links = final_links)
-    
     if (!is.null(map)) {
       final_coords$geoAreaId <- mapCoords$geoAreaId
       final_coords_map <- final_coords[!is.na(final_coords$geoAreaId),]
@@ -383,31 +379,35 @@ changeCoordsServer <- function(input, output, session,
         if(all(c("name", "code") %in% names(map))){
           keep_code <- unique(map$code[final_coords_map$geoAreaId])
           # subset on countries
-          map <- map[map$code %in% keep_code,]
+          tmp_map <- map[map$code %in% keep_code,]
           # set unlink states
-          map$geoAreaId[!map$geoAreaId %in% final_coords_map$geoAreaId] <- NA
+          tmp_map$geoAreaId[!tmp_map$geoAreaId %in% final_coords_map$geoAreaId] <- NA
           
-          ind_na <- which(is.na(map$geoAreaId))
+          ind_na <- which(is.na(tmp_map$geoAreaId))
           if(length(ind_na) > 0){
             # have to find nearestArea...
-            treat_cty <- unique(map$code[ind_na])
+            treat_cty <- unique(tmp_map$code[ind_na])
             
             for(cty in treat_cty){
-              ind_cty <- which(map$code %in% cty)
-              ind_miss <- which(map$code %in% cty & is.na(map$geoAreaId))
-              areas <- coords[coords$geoAreaId %in% map$geoAreaId[ind_cty], ]
+              ind_cty <- which(tmp_map$code %in% cty)
+              ind_miss <- which(tmp_map$code %in% cty & is.na(tmp_map$geoAreaId))
+              areas <- coords[coords$geoAreaId %in% tmp_map$geoAreaId[ind_cty], ]
               if(nrow(areas) > 0){
-                areas_min <- suppressWarnings(apply(rgeos::gDistance(map[ind_miss, ], areas, byid = TRUE),2, which.min))
-                map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
+                areas_min <- suppressWarnings(apply(rgeos::gDistance(tmp_map[ind_miss, ], areas, byid = TRUE),2, which.min))
+                tmp_map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
               }
             }
             
-            map <- raster::aggregate(map, by = c("geoAreaId"))
-            map <- map[match(final_coords_map$geoAreaId, map$geoAreaId), ]
+            tmp_map <- raster::aggregate(tmp_map, by = c("geoAreaId"))
+            map <- tmp_map[match(final_coords_map$geoAreaId, tmp_map$geoAreaId), ]
+          } else {
+            map <- map[final_coords_map$geoAreaId,]
           }
         } else {
           map <- map[final_coords_map$geoAreaId,]
         }
+        # remove if multiple same polygon. Needed other change...
+        # map <- map[!duplicated(map$geoAreaId), ]
       }
       
       res <- list(coords = final_coords_map, links = final_links, map = map, all_coords = final_coords)
