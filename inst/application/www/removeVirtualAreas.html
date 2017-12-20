@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Remove virtual areas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for removeVirtualAreas"><tr><td>removeVirtualAreas</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Remove virtual areas</h2>
+
+<h3>Description</h3>
+
+<p>This function removes virtual areas from an <code>antaresDataList</code> object and
+corrects the data for the real areas. The <code>antaresDataList</code> object 
+should contain area and link data to function correctly.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+removeVirtualAreas(x, storageFlexibility = NULL, production = NULL,
+  reassignCosts = FALSE, newCols = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An object of class <code>antaresDataList</code> with at least components 
+<code>areas</code> and <code>links</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>storageFlexibility</code></td>
+<td>
+<p>A vector containing the names of the virtual 
+storage/flexibility areas.</p>
+</td></tr>
+<tr valign="top"><td><code>production</code></td>
+<td>
+<p>A vector containing the names of the virtual production 
+areas.</p>
+</td></tr>
+<tr valign="top"><td><code>reassignCosts</code></td>
+<td>
+<p>If TRUE, the production costs of the virtual areas are 
+reallocated to the real areas they are connected to. If the virtual areas 
+are connected to a virtual hub, their costs are first reallocated to the 
+hub and then the costs of the hub are reallocated to the real areas.</p>
+</td></tr>
+<tr valign="top"><td><code>newCols</code></td>
+<td>
+<p>If <code>TRUE</code>, new columns containing the production of the virtual
+areas are added. If FALSE their production is added to the production of
+the real areas they are connected to.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Two types of virtual areas have been defined corresponding to different types
+of modeling in Antares and different types of post-treatment to do:
+</p>
+ 
+<ul>
+<li><p> Flexibility/storage areas are areas created to model 
+pumping unit or any other flexibility that behave as a storage. For those 
+virtual areas, the important results are flows on the links. 
+</p>
+</li>
+<li><p> Production areas are areas created to isolate some generation from 
+the &quot;real&quot; areas. They can be isolate for several reasons: to distinguish 
+time-series (for example wind onshore/offshore), to select some specific 
+unit to participate to day-ahead reserve, etc.
+</p>
+</li></ul>
+
+<p><code>removeVirtualAreas</code> performs different corrections:
+</p>
+ 
+<ul>
+<li><p> Correct the balance of the real areas by removing the flows
+to or from virtual areas.
+</p>
+</li>
+<li><p> If parameter <code>reassignCosts</code> is TRUE, then the costs of the 
+virtual areas are reassigned to the real areas they are connected to. The
+affected columns are <code>OV. COST</code>, <code>OP. COST</code>, <code>CO2 EMIS.</code>
+and <code>NP COST</code>. If a virtual area is connected to a single real area,
+all its costs are attributed to the real area. If it is connected to
+several real areas, then costs at a given time step are divided between
+them proportionally to the flows between them and the virtual area.
+</p>
+</li>
+<li><p> For each storage/flexibility area, a column named like the area is 
+created. It contains the values of the flow between the virtual area and 
+the real areas. This column is interpreted as a production of
+electricity: it is positive if the flow from the virtual area to the real
+area is positive and negative otherwise. If parameter <code>newCols</code> is
+<code>FALSE</code>, the values are added to the variable <code>PSP</code> and the 
+columns is removed.
+</p>
+</li>
+<li><p> If the parameter <code>production</code> is specified, then the non null
+productions of the virtual areas are either added to the ones of the real 
+areas they are connected to if <code>newCols = FALSE</code> or put in new 
+columns if <code>newCols = TRUE</code>. In the second case the columns are 
+named <code>*_virtual</code> where &quot;<code>*</code>&quot; is a type of 
+production (wind, solar, nuclear, ...). Productions that are zero for
+all virtual areas are omited.
+If virtual production areas contains clusters then they will be move to the
+real area. 
+</p>
+</li>
+<li><p> Finally, virtual areas and the links connected to them are removed
+from the data. 
+</p>
+</li></ul>
+
+<p>The functions makes a few assumptions about the network. if they are
+violated it will not act correctly: 
+</p>
+ 
+<ul>
+<li><p> storage/flexibility
+areas can be connected to other storage/flexibility areas (hubs), but at 
+least one of them is connected to a real area. That means that there is
+no group of virtual areas disconnected from the real network. If such a
+group exists, you can either remove them manually or simply not import
+them.
+</p>
+</li>
+<li><p> production areas are connected to one and only one real area. They
+cannot be connected to virtual areas. But a real area may by connected to
+several production areas.
+</p>
+</li></ul>
+
+
+
+<h3>Value</h3>
+
+<p>An <code>antaresDataList</code> object in which virtual areas have been removed and
+data of the real has been corrected. See details for an explanation of the
+corrections.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# Assume we have a network with two virtual areas acting as pump storage and
+# an area representing offshore production
+#
+#  offshore
+#     |
+# real area - psp in
+#           \
+#             psp out
+#
+
+data &lt;- readAntares(areas="all", links="all")
+
+# Remove pump storage virtual areas
+
+correctedData &lt;- removeVirtualAreas(data, 
+                                    storageFlexibility = c("psp in", "psp out"),
+                                    production = "offshore")
+
+## End(Not run)
+
+</pre>
+
+
+</body></html>
