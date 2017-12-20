@@ -4,7 +4,7 @@
 #' value over time steps.
 #' 
 #' @noRd 
-#'  
+#'
 .barplot <- function(dt, timeStep, variable, confInt = 0, maxValue,
                      colors = NULL,
                      main = NULL,
@@ -32,11 +32,13 @@
       dt <- dt[, .getConfInt(value), by = .(element)]
     }
   }
-  
+  # print(dt)
+  dt[,"element" := as.character(element)]
+  variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
-  if (is.null(main)) main <- paste("Comparison of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Comparison of", variable)
   
-  g <- plot_ly(dt) %>% 
+  g <- plot_ly(dt,  textfont = list(color = '#000000')) %>% 
     config(displayModeBar = FALSE) %>% 
     layout(title = main, yaxis = list(title = ylab))
   
@@ -54,6 +56,8 @@
         )
       )
   }
+  g <- g %>% add_text(x = ~element, y = ~value, text = ~round(value, 2))%>%
+    layout(showlegend = FALSE)
   
   combineWidgets(g, width = width, height = height)
 }

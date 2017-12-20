@@ -21,30 +21,97 @@
 #' A htmlwidget of class \code{dygraph}. It can be modified with functions from
 #' package \code{dygraphs}.
 #' 
+#' 
+#' @details 
+#' Compare argument can take following values :
+#' \itemize{
+#'    \item "mcYear"
+#'    \item "main"
+#'    \item "unit"
+#'    \item "area"
+#'    \item "legend"
+#'    \item "stepPlot"
+#'    \item "drawPoints"
+#'    }
+#'  
 #' @examples 
 #' \dontrun{
 #' mydata <- readAntares(links = "all", timeStep = "daily")
-#' exchangeStack(mydata)
+#' exchangesStack(mydata)
 #' 
 #' # Also display exchanges with the rest of the world
 #' mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
 #' exchangesStack(mydata)
+#' 
+#' # Use compare :
+#' exchangesStack(mydata, compare = "mcYear")
+#' exchangesStack(mydata, compare = "area")
+#' exchangesStack(mydata, compare = "unit")
+#' exchangesStack(mydata, compare = "legend")
+#' 
 #' }
 #' 
 #' @export
-exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average", 
+exchangesStack <- function(x, area = NULL, mcYear = "average", 
                            dateRange = NULL, colors = NULL, 
                            main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
                            compare = NULL, compareOpts = list(),
                            interactive = getInteractivity(), 
                            legend = TRUE, legendId = sample(1e9, 1), groupId = legendId,
                            legendItemsPerRow = 5,
-                           width = NULL, height = NULL) {
+                           width = NULL, height = NULL,
+                           xyCompare = c("union","intersect"),
+                           h5requestFiltering = list(),
+                           stepPlot = FALSE, drawPoints = FALSE,  
+                           timeSteph5 = "hourly",
+                           mcYearh5 = NULL,
+                           tablesh5 = c("areas", "links"), ...) {
   
+  
+  if(!is.null(compare) && !interactive){
+    stop("You can't use compare in no interactive mode")
+  }
+  
+  
+  
+  #Check compare
+  .validCompare(compare,  c("mcYear", "main", "unit", "area", "legend", "stepPlot", "drawPoints"))
+
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
-  params <- .getDataForComp(x, y, compare, compareOpts, function(x) {
+  init_area <- area
+
+  xyCompare <- match.arg(xyCompare)
+  
+  init_dateRange <- dateRange
+  
+  if(!is.null(compare) && "list" %in% class(x)){
+    if(length(x) == 1) x <- list(x[[1]], x[[1]])
+  }
+  if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
+    x <- list(x, x)
+  }
+  # .testXclassAndInteractive(x, interactive)
+
+  
+  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
+  
+  # Generate a group number for dygraph objects
+  if (!("dateRange" %in% compare)) {
+    group <- sample(1e9, 1)
+  } else {
+    group <- NULL
+  }
+  
+  compareOptions <- .compOpts(x, compare)
+  if(is.null(compare)){
+    if(compareOptions$ncharts > 1){
+      compare <- list()
+    }
+  }
+  
+  processFun <- function(x) {
     if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
     row <- NULL # exchanges with rest of the world
     
@@ -62,7 +129,6 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
           row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, 
                              flow = - `ROW BAL.`, to = "ROW", direction = 1)]
         }
-        
       }
       x <- x$links
     }
@@ -74,15 +140,15 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
     opts <- simOptions(x)
     
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
-    if (length(dateRange) < 2) dateRange <- dataDateRange
+    if (length(init_dateRange) < 2) init_dateRange <- dataDateRange
     
     linksDef <- getLinks(namesOnly = FALSE, withDirection = TRUE, opts = opts)
     linksDef <- linksDef[link %in% x$link]
     areaList <- linksDef[, unique(area)]
     
-    if (is.null(area)) area = areaList[1]
+    if (is.null(init_area)) init_area = areaList[1]
     
-    plotFun <- function(id, area, dateRange, unit, mcYear, legend) {
+    plotFun <- function(id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main) {
       # Prepare data for stack creation
       a <- area
       linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
@@ -97,21 +163,25 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
         mcy <- mcYear
         dt <- dt[mcYear == mcy]
         if (!is.null(row)) row <- row[mcYear == mcy, .(area, link, timeId, flow, to, direction)]
-      } 
+      }else{
+        .printWarningMcYear()
+        }
+      
       dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                      .(link, timeId, flow = `FLOW LIN.`)],
-                  linksDef,
-                  by = "link")
+                  linksDef, by = "link")
       if (!is.null(row)) {
         row <- row[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange]
         dt <- rbind(dt, row[area == a])
       }
       dt[, flow := flow * direction / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]
       
+      if(nrow(dt) == 0){return(combineWidgets("No data"))}
+      
       dt <- dcast(dt, timeId ~ to, value.var = "flow")
       
       # Graphical parameters
-      if (is.null(main)) main <- paste("Flows from/to", area)
+      if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Flows from/to", area)
       if (is.null(ylab)) ylab <- sprintf("Flows (%s)", unit)
       if (is.null(colors)) {
         colors <- substring(rainbow(ncol(dt) - 1, s = 0.7, v = 0.7), 1, 7)
@@ -122,7 +192,7 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
       # Stack
       g <- .plotStack(dt, timeStep, opts, colors,
                       legendId = legendId + id - 1, groupId = groupId, 
-                      main = main, ylab = ylab)
+                      main = main, ylab = ylab, stepPlot = stepPlot, drawPoints = drawPoints)
       
       if (legend) {
         # Add a nice legend
@@ -131,37 +201,186 @@ exchangesStack <- function(x, y = NULL, area = NULL, mcYear = "average",
                            legendId = legendId + id - 1)
       } else legend <- NULL
       
-      
       combineWidgets(g, footer = legend, width = width, height = height)
-      
     }
     
     list(
       plotFun = plotFun,
       areaList = areaList,
-      area = area,
+      area = init_area,
       dataDateRange = dataDateRange,
-      dateRange = dateRange,
+      dateRange = init_dateRange,
       displayMcYear = displayMcYear,
       x = x
     )
-  })
+  }
   
-  if (!interactive) return(params$x[[1]]$plotFun(1, params$x[[1]]$area, params$x[[1]]$dateRange, unit, mcYear, legend))
+  if (!interactive) {
+    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    
+    params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun)
+    L_w <- lapply(params$x, function(X){
+      X$plotFun(1, X$area, X$dateRange, unit, mcYear, legend, stepPlot, drawPoints, main)
+    })
+    return(combineWidgets(list = L_w))  
+    
+    
+  }
+  
+  table <- NULL
+  
+  ##remove notes
+  mcYearH5 <- NULL
+  paramsH5 <- NULL
+  sharerequest <- NULL
+  timeStepdataload <- NULL
+  timeSteph5 <- NULL
+  x_in <- NULL
+  x_tranform <- NULL
+  
   
   manipulateWidget(
-    params$x[[.id]]$plotFun(.id, area, dateRange, unit, mcYear, legend),
-    mcYear = mwSelect(c("average", unique(params$x[[.id]]$x$mcYear)), 
-                      mcYear, 
-                      .display = params$x[[.id]]$displayMcYear),
-    area = mwSelect(params$x[[.id]]$areaList, area),
-    dateRange = mwDateRange(params$x[[1]]$dateRange, 
-                            min = params$x[[.id]]$dataDateRange[1], 
-                            max = params$x[[.id]]$dataDateRange[2]),
+    {
+      .tryCloseH5()
+      if(.id <= length(params$x)){
+        widget <- params$x[[max(1,.id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main)
+        controlWidgetSize(widget)
+      } else {
+        combineWidgets("No data for this selection")
+      }
+    },
+    x = mwSharedValue(x),
+    h5requestFiltering = mwSharedValue({h5requestFiltering}),
+    
+    x_in = mwSharedValue({
+      .giveListFormat(x)
+    }),
+    
+    paramsH5 = mwSharedValue({
+      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
+    }),
+    
+    H5request = mwGroup(
+      timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
+                            value =  paramsH5$timeStepS[1], 
+                            label = "timeStep", 
+                            multiple = FALSE
+      ),
+      mcYearH5 = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
+                         value = {
+                           if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+                         }, 
+                         label = "mcYear", 
+                         multiple = TRUE
+      ),
+      .display = {
+        any(unlist(lapply(x_in, .isSimOpts)))
+      }
+    ),
+    
+    sharerequest = mwSharedValue({
+      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = NULL)
+    }),
+    
+
+    x_tranform = mwSharedValue({
+      areas = "all"
+      links = "all"
+      if(length(paramsH5$h5requestFilt[[1]]) > 0){
+        areas <- NULL
+        links <- NULL
+      }
+      sapply(1:length(x_in),function(zz){
+        .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFilter = paramsH5$h5requestFilter[[zz]])
+      }, simplify = FALSE)
+    }),
+    
+    mcYear = mwSelect({
+     allMcY <-  c("average", if(!is.null(params)){
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv$x$mcYear)
+        }), xyCompare))})
+     allMcY
+    }, 
+    value = {
+      if(.initial) mcYear
+      else NULL
+    }, 
+    .display = {
+      length(c("average", if(!is.null(params)){
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv$x$mcYear)
+        }), xyCompare))})) != 1}
+    ),
+    
+    area = mwSelect({
+      if(!is.null(params)){
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv$areaList)
+        }), xyCompare))}
+    }, 
+    value = {
+      if(.initial) area
+      else NULL
+    }),
+    
+    dateRange = mwDateRange(value = {
+      if(.initial){
+        res <- NULL
+        if(!is.null(params)){
+          res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = NULL),
+                   .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = NULL))
+        }
+
+        ##Lock 7 days for hourly data
+        if(!is.null(attributes(params$x[[1]]$x)$timeStep))
+        {
+        if(attributes(params$x[[1]]$x)$timeStep == "hourly"){
+          if(params$x[[1]]$dateRange[2] - params$x[[1]]$dateRange[1]>7){
+            res[1] <- params$x[[1]]$dateRange[2] - 7
+          }
+        }
+        }
+        
+        res
+      }else{NULL}
+    }, 
+    min = {      
+      if(!is.null(params)){
+        .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = NULL)
+      }
+    }, 
+    max = {      
+      if(!is.null(params)){
+        .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = NULL)
+      }
+    },
+    .display = timeStepdataload != "annual"
+    ),
+    
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit),
+    
     legend = mwCheckbox(legend),
-    .compare = params$compare,
-    .compareOpts = params$compareOpts
+    stepPlot = mwCheckbox(stepPlot),
+    drawPoints = mwCheckbox(drawPoints), 
+    timeStepdataload = mwSharedValue({
+      attributes(x_tranform[[1]])$timeStep
+    }),
+    
+    main = mwText(main, label = "title"),
+    
+    params = mwSharedValue({
+      .getDataForComp(x_tranform, NULL, compare, compareOpts, 
+                      processFun = processFun)
+    }),
+    
+    .compare = {
+      compare
+    },
+    .compareOpts = {
+      compareOptions
+    },
+    ...
   )
   
 }
