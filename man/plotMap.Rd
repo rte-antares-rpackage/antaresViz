@@ -80,7 +80,8 @@ averaged.}
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
 be a named list with names corresponding to parameter names and values being
-list with the initial values of the given parameter for each chart.}
+list with the initial values of the given parameter for each chart. See details
+ if you are drawing a map.}
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 
@@ -101,7 +102,22 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 \item{dateRange}{A vector of two dates. Only data points between these two dates are 
 displayed. If NULL, then all data is displayed.}
 
+\item{xyCompare}{Use when you compare studies, can be "union" or "intersect". If union, all
+of mcYears in one of studies will be selectable. If intersect, only mcYears in all
+studies will be selectable.}
+
+\item{h5requestFiltering}{Contains arguments used by default for h5 request,
+typically h5requestFiltering = list(select = "NUCLEAR")}
+
+\item{timeSteph5}{\code{character} timeStep to read in h5 file. Only for Non interactive mode.}
+
+\item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
+
+\item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
+
 \item{sizeMiniPlot}{\code{boolean} variable size for miniplot}
+
+\item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
 An htmlwidget of class "leaflet". It can be modified with package 

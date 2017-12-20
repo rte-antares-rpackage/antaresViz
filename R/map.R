@@ -258,7 +258,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       }
       
       
-    }
+      }
     
     # Keep only links and areas present in the data
     if (areas) {

@@ -286,7 +286,7 @@ changeCoordsServer <- function(input, output, session,
   
   observe({
     if (current_state$state == 1) {
-      lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt2, ])
+        lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt2, ])
     }
   })
   
@@ -343,9 +343,9 @@ changeCoordsServer <- function(input, output, session,
     coords <- sp::SpatialPoints(coords()[, c("lon", "lat")],
                                 proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
     
-    
+  
     map <- current_map()
-    
+
     if (!is.null(map)) {
       map <- sp::spTransform(map, sp::CRS("+proj=longlat +datum=WGS84"))
       map$geoAreaId <- 1:length(map)
@@ -562,7 +562,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   if (areas) {
     
     areaChartType <- match.arg(areaChartType)
-    
+
     # fix bug if set map wihout any intersection with areas...!
     map <- tryCatch(addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
                                   chartdata = dataAreas, fillColor = colAreas,
