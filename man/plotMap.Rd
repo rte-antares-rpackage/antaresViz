@@ -4,21 +4,23 @@
 \alias{plotMap}
 \title{Display results of a simulation on a map}
 \usage{
-plotMap(x, y = NULL, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
   uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
   labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
   mcYear = "average", main = "", compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), options = plotMapOptions(),
-  width = NULL, height = NULL)
+  width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
+  "intersect"), h5requestFiltering = list(), timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), sizeMiniPlot = FALSE,
+  ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
-\code{\link[antaresRead]{readAntares}} and containing areas and links data}
-
-\item{y}{Optional object of class \code{antaresData}. If it is specified, then two
-charts are generated.}
+\code{\link[antaresRead]{readAntares}} and containing areas and links data.
+ It can be a list of \code{antaresData} objects. 
+ In this case, one chart is created for each object.}
 
 \item{mapLayout}{Object created with function \code{\link{mapLayout}}}
 
@@ -66,7 +68,7 @@ represented on the map. If it is equal to \code{"detail"}, only one time
 step at a time. In interactive mode, an input control permits to choose the
 time step shown.}
 
-\item{timeId}{A single time id present in the data. Only used if \code{type="detail"}}
+\item{timeId}{time id present in the data.}
 
 \item{mcYear}{If \code{x}, contains multiple Monte-Carlo scenarios, this parameter 
 determine which scenario is displayed. Must be an integer representing the
@@ -95,6 +97,11 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 
 \item{height}{Height of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
+
+\item{dateRange}{A vector of two dates. Only data points between these two dates are 
+displayed. If NULL, then all data is displayed.}
+
+\item{sizeMiniPlot}{\code{boolean} variable size for miniplot}
 }
 \value{
 An htmlwidget of class "leaflet". It can be modified with package 
@@ -107,6 +114,22 @@ This function generates an interactive map that let the user visually explore
 the results of an Antares simulation. By default the function starts a Shiny 
 gadget that let the user which variables to represent.
 }
+\details{
+compare argument can take following values :
+\itemize{
+   \item "mcYear"
+   \item "type"
+   \item "colAreaVar"
+   \item "sizeAreaVars"
+   \item "areaChartType"
+   \item "showLabels"
+   \item "popupAreaVars"
+   \item "labelAreaVar"
+   \item "colLinkVar"
+   \item "sizeLinkVar"
+   \item "popupLinkVars"
+   }
+}
 \examples{
 \dontrun{
 mydata <- readAntares(areas = "all", links = "all", timeStep = "daily",
@@ -117,18 +140,36 @@ mydata <- readAntares(areas = "all", links = "all", timeStep = "daily",
 # functions save and load
 
 layout <- readLayout()
-ml <- mapLayout(layout)
+ml <- mapLayout(layout = layout)
 save("ml", file = "ml.rda")
 
-plotMap(mydata, ml)
+plotMap(x = mydata, mapLayout = ml)
 
 # Specify the variables to use to control the color or size of elements.
-plotMap(mydata, ml, 
+plotMap(mydata, mapLayout =  ml, 
         sizeAreaVars = c("WIND", "SOLAR", "H. ROR"),
         sizeLinkVar = "FLOW LIN.")
 
 # Change default graphical properties
-plotMap(mydata, ml, options = list(colArea="red", colLink = "orange"))
+plotMap(x = mydata, mapLayout = ml, options = list(colArea="red", colLink = "orange"))
+plotMap(x = list(mydata, mydata), mapLayout =  ml)
+
+# Use h5 for dynamic request / exploration in a study
+# Set path of simulaiton
+setSimulationPath(path = path1)
+
+# Convert your study in h5 format
+writeAntaresH5(path = mynewpath)
+
+# Redefine sim path with h5 file
+opts <- setSimulationPath(path = mynewpath)
+plotMap(x = opts, mapLayout = ml)
+
+# Compare elements in a single study
+plotMap(x = opts, mapLayout = ml,  .compare = "mcYear")
+
+# Compare 2 studies
+plotMap(x = list(opts, opts2), mapLayout = ml)
 
 }
 

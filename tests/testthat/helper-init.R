@@ -18,6 +18,7 @@ if (sourcedir != "") {
   
   assign("studyPath", file.path(path, "test_case"), envir = globalenv())
   assign("nweeks", 2, envir = globalenv())
+  assign("pathtemp", path, envir = globalenv())
 }
 
 setSimulationPath(get("studyPath", envir = globalenv()))

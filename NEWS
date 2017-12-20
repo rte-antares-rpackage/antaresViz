@@ -1,5 +1,19 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+
+Changes in version 0.12.0 (2017-12-14)
+
+NEW FEATURES:
+* plot(), prodStack(), exchangesStack(), plotMap() work with studies in h5. 
+* new function runAppAntaresViz(). 
+* new function plotThermalGroupCapacities(). 
+* new function limitSizeGraph(). 
+* new function plotXY(). 
+* new function modXY(). 
+* new function stackMap(). 
+* new option stepPlot in plot(), prodStack() and exchangesStack(). 
+
+
 Changes in version 0.11 (2017-07-17)
 
 NEW FEATURES:
