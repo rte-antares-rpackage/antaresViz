@@ -1,7 +1,7 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
 
-Changes in version 0.12.0 (2017-14-12)
+Changes in version 0.12.0 (2017-12-14)
 
 NEW FEATURES:
 * plot(), prodStack(), exchangesStack(), plotMap() work with studies in h5. 
