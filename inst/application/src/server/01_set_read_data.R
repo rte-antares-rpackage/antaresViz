@@ -153,15 +153,15 @@ observe({
       
       # links
       links <- c("all", opts$linkList)
-      updateSelectInput(session, "read_links", "Links :", choices = links, selected = NULL)
+      updateSelectInput(session, "read_links", "Links :", choices = links, selected = links[1])
       
       # clusters
       clusters <- c("all", opts$areasWithClusters)
-      updateSelectInput(session, "read_clusters", "Clusters :", choices = clusters, selected = NULL)
+      updateSelectInput(session, "read_clusters", "Clusters :", choices = clusters, selected = clusters[1])
       
       # districts
       districts <- c("all", opts$districtList)
-      updateSelectInput(session, "read_districts", "Districts :", choices = districts, selected = NULL)
+      updateSelectInput(session, "read_districts", "Districts :", choices = districts, selected = districts[1])
       
       # mcYears
       mcy <- c(opts$mcYears)

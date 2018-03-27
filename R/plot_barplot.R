@@ -11,7 +11,7 @@
                      ylab = NULL,
                      legend = TRUE,
                      legendItemsPerRow = 5,
-                     width = NULL, height = NULL, ...) {
+                     width = NULL, height = NULL, language = "en", ...) {
   
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(value = mean(value)), by = element] 
@@ -21,7 +21,7 @@
     if (confInt == 0) {
       dt <- dt[, .(value = mean(value)), by = .(element)]
     } else {
-      uniqueElements <- sort(unique(dt$element))
+      uniqueElements <- as.character(sort(unique(dt$element)))
       
       alpha <- (1 - confInt) / 2
       .getConfInt <- function(x) {
@@ -36,7 +36,9 @@
   dt[,"element" := as.character(element)]
   variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)) ylab <- variable
-  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Comparison of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))){
+    main <- paste(.getLabelLanguage("Comparison of", language), variable)
+  }
   
   g <- plot_ly(dt,  textfont = list(color = '#000000')) %>% 
     config(displayModeBar = FALSE) %>% 

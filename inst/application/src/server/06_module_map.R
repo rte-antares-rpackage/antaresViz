@@ -85,20 +85,21 @@ observe({
             input_data$data[grepl("^plotMap", input_id), input_id := paste0(id_plotMap, "-shared_", input)]
         
             output[["plotMap_ui"]] <- renderUI({
-              mwModuleUI(id = id_plotMap, height = "800px", fluidRow = TRUE)
+              mwModuleUI(id = id_plotMap, height = "800px")
             })
             
             .compare <- input$sel_compare_plotMap
             if(input$sel_compare_mcyear){
               .compare <- unique(c(.compare, "mcYear"))
             }
-            if(!is.null(.compare)){
+            
+            if(length(.compare) > 0){
               list_compare <- vector("list", length(.compare))
               names(list_compare) <- .compare
               # set main with study names
-              if(length(ind_map) != 1){
-                list_compare$main <- names(list_data_all$antaresDataList[ind_map])
-              }
+              # if(length(ind_map) != 1){
+              #   list_compare$main <- names(list_data_all$antaresDataList[ind_map])
+              # }
               .compare <- list_compare
             } else {
               .compare = NULL
@@ -107,6 +108,7 @@ observe({
             mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
                                        interactive = TRUE, .updateBtn = TRUE, 
                                         .updateBtnInit = TRUE, compare = .compare,
+                                        language = "fr",
                                        h5requestFiltering = list_data_all$params[ind_map],
                                        xyCompare = "union", .runApp = FALSE)
             
@@ -114,7 +116,9 @@ observe({
               modules$plotMap$clear()
             }
             
-            modules$plotMap <- mwModule(id = id_plotMap,  mod_plotMap)
+            modules$plotMap <- mod_plotMap
+            modules$id_plotMap <- id_plotMap
+            modules$init_plotMap <- TRUE
             # save data and params
             list_data_controls$n_maps <- length(ind_map)
           }
@@ -122,6 +126,18 @@ observe({
       }
     }
   })
+})
+
+
+observe({
+  if(input[['nav-id']] == "Map"){
+    isolate({
+      if("MWController" %in% class(modules$plotMap) & modules$init_plotMap){
+        modules$plotMap <- mwModule(id = modules$id_plotMap,  modules$plotMap)
+        modules$init_plotMap <- FALSE
+      }
+    })
+  }
 })
 
 # download layout

@@ -1,12 +1,12 @@
 # Define UI for antaresViz app
 navbarPage(title = "antaresViz", id = "nav-id", inverse= TRUE, collapsible = TRUE, position = "fixed-top",
-           header = fluidRow(
-             column(12, 
+           header = div(
                     br(), br(), br(), 
                     singleton(tags$script(src = 'events.js')), 
+                    singleton(tags$script(src = 'is.min.js')),
+                    tags$script(type="text/javascript", 'if(is.ie()){ alert("Ce site n\'est pas optimisé pour Internet Explorer");};'),
                     div(id = "import_busy", tags$img(src= "spinner.gif", height = 100, 
                                                      style = "position: fixed;top: 50%;z-index:10;left: 48%;"))
-             )
            ), windowTitle = "antaresViz",
            tabPanel("Data",
                     fluidRow(

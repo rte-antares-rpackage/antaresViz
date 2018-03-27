@@ -12,10 +12,6 @@ This package has been published on CRAN, so you can install it easily:
 ```r
 install.packages("antaresViz")
 ```
-You can also install the last version from Github :
-```r
-devtools::install_github("rte-antares-rpackage/antaresViz")
-```
 
 To install the last development version:
 ```r

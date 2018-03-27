@@ -1,0 +1,86 @@
+en;fr
+timeStep;Pas de temps
+mcYears to be imported;Tirage à importer
+mcYear to be displayed;Tirage à visualiser
+H5request;Données
+area;Nœud
+Areas;Nœuds
+areas;Nœuds
+dateRange;Période
+unit;Unité
+legend;Légende
+stepPlot;stepPlot
+drawPoints;Afficher les points
+title;Titre
+main;Titre
+table;Table
+stack;Empilement
+variable;Variable
+secondAxis;2nd axe
+Variables 2nd axis;2nd axe : variable
+type;Type
+confidence interval;Interval de confiance
+min value;Valeur min.
+max value;Valeur max.
+elements;Elements
+aggregate;Agrégation
+none;sans
+mean;moyenne
+sum;somme
+mean by areas;moyenne par nœud
+sum by areas;somme par nœud
+highlight;Surbrillance
+Color;Couleur
+Size;Taille
+miniPlot;Mini-graphs
+sizeMiniPlot;Taille prop.
+Unique scale;Echelle unique
+Show labels;Voir les labels
+Popup;Popup
+Label;Label
+Links;Liens
+links;Liens
+districts;Districts
+Width;Epaisseur
+By time id;Par pas de temps
+Average;Moyen
+areaChartType;Graphique
+bar chart;Diagramme en barres
+pie chart;Camembert
+polar (area);Polaire (aire)
+polar (radius);Polaire (rayon)
+average;moyen
+hourly;Horaire
+daily;Journalier
+weekly;Hebdomadaire
+monthly;Mensuel
+annual;Annuel
+time series;Séries temporelles
+barplot;Diagramme en barres
+monotone;Monotone
+density;Densité
+cdf;Cdf
+heatmap;Heatmap
+Average mcYear;Tirage moyen
+By event;Par évènement
+By mcYear;Par tirage
+Selection;Sélection
+No data for this selection;Pas de données pour cette sélection
+No data;Pas de données
+Please select some variables;Veuillez sélectionner des variables
+Please select some elements;Veuillez sélectionner des éléments
+not exists in this study;absente de l'étude
+Comparison of;Comparaison de
+Monotone of;Monotone de
+Density;Densité
+Density of;Densité de
+Proportion of time steps;Proportion du temps
+Cumulated distribution of;Distribution cumulée de
+Evolution of;Évolution de
+Flows from/to;Flux arrivant/partant
+Flows (%s);Flux (%s)
+Please choose an area;Veuillez sélectionner une zone
+Can't visualize stack;Visualisation impossible
+Production stack;Empilement
+Show legend;Voir la légende
+Hide legend;Cacher la légende

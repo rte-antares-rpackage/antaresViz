@@ -192,17 +192,33 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    secondAxis = FALSE,
                    timeSteph5 = "hourly",
                    mcYearh5 = NULL,
-                   tablesh5 = c("areas", "links"),...) {
+                   tablesh5 = c("areas", "links"), language = "en", 
+                   hidden = NULL, ...) {
   
   
   if(!is.null(compare) && !interactive){
     stop("You can't use compare in no interactive mode")
   }
   
+  # Check language
+  if(!language %in% availableLanguages_labels){
+    stop("Invalid 'language' argument. Must be in : ", paste(availableLanguages_labels, collapse = ", "))  
+  }
+  
+  if(language != "en"){
+    variable <- .getColumnsLanguage(variable, language)
+    variable2Axe <- .getColumnsLanguage(variable2Axe, language)
+  }
+  
+  # Check hidden
+  .validHidden(hidden, c("H5request", "timeSteph5", "tables", "mcYearH5", "table", "mcYear", "variable", 
+                         "secondAxis", "variable2Axe", "type", "dateRange", "confInt", "minValue", "maxValue",
+                         "elements", "aggregate", "legend", "highlight", "stepPlot", "drawPoints", "main"))
+  
   #Check compare
   .validCompare(compare,  c("mcYear", "main", "variable", "type", "confInt", "elements", "aggregate", "legend", 
                             "highlight", "stepPlot", "drawPoints", "secondAxis"))
-
+  
   if(is.list(compare)){
     if("secondAxis" %in% names(compare)){
       compare <- c(compare, list(variable2Axe = NULL))
@@ -252,6 +268,16 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     
     lapply(x, function(x) {
       idCols <- .idCols(x)
+      
+      if(language != "en"){
+        ind_to_change <- which(colnames(x) %in% language_columns$en)
+        if(length(ind_to_change) > 0){
+          new_name <- language_columns[en %in% colnames(x), ]
+          v_new_name <- new_name[[language]]
+          names(v_new_name) <- new_name[["en"]]
+          setnames(x, colnames(x)[ind_to_change], unname(v_new_name[colnames(x)[ind_to_change]]))
+        }
+      }
       valueCols <- setdiff(names(x), idCols)
       timeStep <- attr(x, "timeStep")
       opts <- simOptions(x)
@@ -293,7 +319,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         if (is.null(type) || !variable %in% names(x)) {
           return(combineWidgets())
         }
-        if(variable[1] == "No Input") {return(combineWidgets("No data"))}
+        if(variable[1] == "No Input") {return(combineWidgets(.getLabelLanguage("No data", language)))}
         dt <- .getTSData(
           x, dt, 
           variable = c(variable, variable2Axe), elements = elements, 
@@ -301,8 +327,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
         )
         
-        if (nrow(dt) == 0) return(combineWidgets("No data"))
-
+        if (nrow(dt) == 0) return(combineWidgets(.getLabelLanguage("No data", language)))
+        
         if(type == "ts"){
           if(!is.null(dateRange))
           {
@@ -331,6 +357,17 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         
         variable2Axe <- apply(expand.grid(elements, variable2Axe), 1, function(X){paste(X, collapse = " __ ")})
         
+        # BP 2017
+        # if(length(main) > 0){
+        #   mcYear <- ifelse(mcYear == "average", "moyen", mcYear)
+        #   if(grepl("h5$", main)){
+        #     # main <- paste0(gsub(".h5$", "", main), " : ", areas, " (tirage ", mcYear, ")")
+        #     main <- paste0(gsub(".h5$", "", main), " : Tirage ", mcYear)
+        #   } else {
+        #     # main <- paste0("Production ", areas, " (tirage ", mcYear, ")")
+        #     main <- paste0("Tirage ", mcYear)
+        #   }
+        # }
         
         f(
           dt, 
@@ -352,7 +389,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           group = group,
           highlight = highlight,
           stepPlot = stepPlot,
-          drawPoints = drawPoints
+          drawPoints = drawPoints,
+          language = language
         )
         
       }
@@ -377,12 +415,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-
-
+    
+    
     x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
     params <- .transformDataForComp(.giveListFormat(x), compare, compareOpts, 
-                              processFun = processFun, 
-                              elements = elements, dateRange = dateRange)
+                                    processFun = processFun, 
+                                    elements = elements, dateRange = dateRange)
     
     # paramCoe <- .testParamsConsistency(params = params, mcYear = mcYear)
     # mcYear <- paramCoe$mcYear
@@ -390,13 +428,16 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     if (is.null(mcYear)) mcYear <- "average"
     L_w <- lapply(params$x, function(X){
       X[[table]]$plotFun(mcYear, 1, variable, variable2Axe, elements, type, confInt, dateRange, 
-               minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints, main)
+                         minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints, main)
     })
     return(combineWidgets(list = L_w))
     
   }
   
-  typeChoices <- c("time series" = "ts", "barplot", "monotone", "density", "cdf", "heatmap")
+  typeChoices <- c("ts", "barplot",  "monotone", "density", "cdf", "heatmap")
+  names(typeChoices) <- c(.getLabelLanguage("time series", language), .getLabelLanguage("barplot", language),
+                          .getLabelLanguage("monotone", language), .getLabelLanguage("density", language),
+                          .getLabelLanguage("cdf", language), .getLabelLanguage("heatmap", language))
   
   ##remove notes
   table <- NULL
@@ -412,13 +453,17 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     .tryCloseH5()
     if(.id <= length(params$x)){
       
-      if(length(variable) == 0){return(combineWidgets(paste0("Please select some variables")))}
+      if(length(variable) == 0){return(combineWidgets(.getLabelLanguage("Please select some variables", language)))}
       
-      if(length(elements) == 0){return(combineWidgets(paste0("Please select some elements")))}
+      if(length(elements) == 0){return(combineWidgets(.getLabelLanguage("Please select some elements", language)))}
       
-      if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(paste0("No data")))}
+      if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(.getLabelLanguage("No data", language)))}
       
-      if(is.null(params[["x"]][[max(1,.id)]][[table]])){return(combineWidgets(paste0("Table ", table, " not exists in this study")))}
+      if(is.null(params[["x"]][[max(1,.id)]][[table]])){
+        return(combineWidgets(
+          paste0("Table ", table, " ", .getLabelLanguage("not exists in this study", language))
+        ))
+      }
       
       if(!secondAxis){
         variable2Axe <- NULL
@@ -426,11 +471,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         aggregate <- "none"
       }
       widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, confInt, 
-                                                   dateRange, minValue, maxValue, aggregate, legend, 
-                                                   highlight, stepPlot, drawPoints, main)
-      controlWidgetSize(widget)
+                                                             dateRange, minValue, maxValue, aggregate, legend, 
+                                                             highlight, stepPlot, drawPoints, main)
+      
+      controlWidgetSize(widget, language)
     } else {
-      combineWidgets("No data for this selection")
+      combineWidgets(.getLabelLanguage("No data for this selection", language))
     }
   },
   x = mwSharedValue({x}),
@@ -451,31 +497,64 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
   }),
   
-  
   H5request = mwGroup(
-    timeSteph5 = mwSelect(choices = paramsH5$timeStepS, 
-                          value =  paramsH5$timeStepS[1], 
-                          label = "timeStep", 
-                          multiple = FALSE
+    label = .getLabelLanguage("H5request", language),
+    timeSteph5 = mwSelect(
+      {
+        if(length(paramsH5) > 0){
+          choices = paramsH5$timeStepS
+          names(choices) <- sapply(choices, function(x) .getLabelLanguage(x, language))
+          choices
+        } else {
+          NULL
+        }
+      }, 
+      value =  if(.initial) {paramsH5$timeStepS[1]}else{NULL},
+      label = .getLabelLanguage("timeStep", language), 
+      multiple = FALSE, .display = !"timeSteph5" %in% hidden
     ),
-    tables = mwSelect(choices = paramsH5[["tabl"]], 
-                      value = {
-                        if(.initial) {paramsH5[["tabl"]][1]}else{NULL}
-                      }, 
-                      label = "table", multiple = TRUE
+    tables = mwSelect(
+      {
+        choices = paramsH5[["tabl"]]
+        names(choices) <- sapply(choices, function(x) .getLabelLanguage(x, language))
+        choices
+      },
+      value = {
+        if(.initial) {paramsH5[["tabl"]][1]}else{NULL}
+      }, 
+      label = .getLabelLanguage("table", language), multiple = TRUE, 
+      .display = !"tables" %in% hidden
     ),
-    mcYearH5 = mwSelect(choices = c(paramsH5[["mcYearS"]]), 
-                       value = {
-                         if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
-                       }, 
-                       label = "mcYear", multiple = TRUE
+    mcYearH5 = mwSelectize(
+      choices = {
+        ch <- c("Average" = "", paramsH5[["mcYearS"]])
+        names(ch)[1] <- .getLabelLanguage("Average", language)
+        ch
+      },
+      value = {
+        if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+      },
+      label = .getLabelLanguage("mcYears to be imported", language), 
+      multiple = TRUE, options = list(maxItems = 4),
+      .display = (!"mcYearH5" %in% hidden  & !meanYearH5)
     ),
+    meanYearH5 = mwCheckbox(value = FALSE, 
+                            label = .getLabelLanguage("Average mcYear", language),
+                            .display = !"meanYearH5" %in% hidden),
     .display = {
-      any(unlist(lapply(x_in, .isSimOpts)))
+      any(unlist(lapply(x_in, .isSimOpts))) & !"H5request" %in% hidden
     }),
   
   sharerequest = mwSharedValue({
-    list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
+    if(length(meanYearH5) > 0){
+      if(meanYearH5){
+        list(timeSteph5_l = timeSteph5, mcYearh_l = NULL, tables_l = tables)
+      } else {
+        list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
+      }
+    } else {
+      list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
+    }
   }),
   
   x_tranform = mwSharedValue({
@@ -492,7 +571,10 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           lapply(params$x, function(vv){
             unique(names(vv))
           }), xyCompare))
-        if(length(out) > 0){out}else{"No Input"}
+        if(length(out) > 0){
+          names(out) <- sapply(out, function(x) .getLabelLanguage(x, language))
+          out
+        }else{"No Input"}
       }
     }, 
     value = {
@@ -501,21 +583,38 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     }, .display = length(as.character(.compareOperation(
       lapply(params$x, function(vv){
         unique(names(vv))
-      }), xyCompare))) > 1
+      }), xyCompare))) > 1 & !"table" %in% hidden, 
+    label = .getLabelLanguage("table", language)
   ),
   
   mcYear = mwSelect(
     choices = {
-      c("average",     if(!is.null(params)){
-        as.character(.compareOperation(lapply(params$x, function(vv){
-          unique(vv[[table]]$uniqueMcYears)
-        }), xyCompare))
-      })
+      # tmp <- c("average", if(!is.null(params)){
+      #   as.character(.compareOperation(lapply(params$x, function(vv){
+      #     unique(vv[[table]]$uniqueMcYears)
+      #   }), xyCompare))})
+      # names(tmp) <- sapply(tmp, function(x) .getLabelLanguage(x, language))
+      # tmp
+      
+      # BP 2017
+      allMcY <- .compareOperation(lapply(params$x, function(vv){
+        unique(vv[[table]]$uniqueMcYears)
+      }), xyCompare)
+      names(allMcY) <- allMcY
+      if(is.null(allMcY)){
+        allMcY <- "average"
+        names(allMcY) <- .getLabelLanguage("average", language)
+      }
+      allMcY
+      
     },
     value = {
-      if(.initial) "average"
+      # if(.initial) "average"
+      if(.initial) mcYear
       else NULL
-    }, multiple = FALSE
+    }, multiple = FALSE, 
+    label = .getLabelLanguage("mcYear to be displayed", language), 
+    .display = !"mcYear" %in% hidden
   ),
   
   variable = mwSelect(
@@ -528,40 +627,54 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       }
     },
     value = {
-      if(.initial) as.character(.compareOperation(lapply(params$x, function(vv){
-        unique(vv[[table]]$valueCols)
-      }), xyCompare))[1]
-      else NULL
-    }, multiple = TRUE
+      if(.initial){
+        if(is.null(variable)){
+          as.character(.compareOperation(lapply(params$x, function(vv){
+            unique(vv[[table]]$valueCols)
+          }), xyCompare))[1]
+        } else {
+          variable
+        }
+      } else {
+        # NULL
+        as.character(.compareOperation(lapply(params$x, function(vv){
+          unique(vv[[table]]$valueCols)
+        }), xyCompare))[1]
+      }
+    }, multiple = TRUE, 
+    label = .getLabelLanguage("variable", language),
+    .display = !"variable" %in% hidden
   ),
   
-  secondAxis = mwCheckbox(secondAxis),
-  variable2Axe = mwSelect(label = "Variables 2nd axis",
-    choices = {
-      if(!is.null(params)){
-        out <- as.character(.compareOperation(lapply(params$x, function(vv){
-          unique(vv[[table]]$valueCols)
-        }), xyCompare))
-        out <- out[!out%in%variable]
-        if(length(out) > 0){out} else {"No Input"}
-      }
-    },
-    value = {
-      if(.initial) NULL
-      else NULL
-    }, multiple = TRUE, .display = secondAxis
+  secondAxis = mwCheckbox(secondAxis, label = .getLabelLanguage("secondAxis", language), 
+                          .display = !"secondAxis" %in% hidden),
+  variable2Axe = mwSelect(label = .getLabelLanguage("Variables 2nd axis", language),
+                          choices = {
+                            if(!is.null(params)){
+                              out <- as.character(.compareOperation(lapply(params$x, function(vv){
+                                unique(vv[[table]]$valueCols)
+                              }), xyCompare))
+                              out <- out[!out%in%variable]
+                              if(length(out) > 0){out} else {"No Input"}
+                            }
+                          },
+                          value = {
+                            if(.initial) variable2Axe
+                            else NULL
+                          }, multiple = TRUE, .display = secondAxis & !"variable2Axe" %in% hidden
   ),
   type = mwSelect(
     choices = {
       if (timeStepdataload == "annual") "barplot"
       else if (timeStepdataload %in% c("hourly", "daily")) typeChoices
-      else typeChoices[1:5]
+      else setdiff(typeChoices, "heatmap")
     },
     value = {
       if(.initial) type
       else NULL
     }, 
-    .display = timeStepdataload != "annual"
+    .display = timeStepdataload != "annual" & !"type" %in% hidden, 
+    label = .getLabelLanguage("type", language)
   ),
   
   dateRange = mwDateRange(value = {
@@ -574,16 +687,13 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         {res <- NULL}
       }
       ##Lock 7 days for hourly data
-      if(!is.null(params$x[[1]][[table]]$timeStep))
-      {
-      if(params$x[[1]][[table]]$timeStep == "hourly"){
-        if(params$x[[1]][[table]]$dateRange[2] - params$x[[1]][[table]]$dateRange[1]>7){
-          res[1] <- params$x[[1]][[table]]$dateRange[2] - 7
+      if(!is.null(params$x[[1]][[table]]$timeStep)){
+        if(params$x[[1]][[table]]$timeStep == "hourly"){
+          if(params$x[[1]][[table]]$dateRange[2] - params$x[[1]][[table]]$dateRange[1]>7){
+            res[1] <- params$x[[1]][[table]]$dateRange[2] - 7
+          }
         }
       }
-        
-      }
-      
       res
     }else{NULL}
   }, 
@@ -599,54 +709,87 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       if(is.infinite(R)){NULL}else{R}
     }
   },
-  .display = timeStepdataload != "annual"
+  language = eval(parse(text = "language")),
+  # format = "dd MM",
+  separator = " : ",
+  .display = timeStepdataload != "annual" & !"dateRange" %in% hidden, 
+  label = .getLabelLanguage("dateRange", language)
   ),
   
   confInt = mwSlider(0, 1, confInt, step = 0.01, 
-                     label = "confidence interval",
-                     .display = params$x[[max(1,.id)]][[table]]$showConfInt & mcYear == "average"
+                     label = .getLabelLanguage("confidence interval", language),
+                     .display = params$x[[max(1,.id)]][[table]]$showConfInt & mcYear == "average" & !"confInt" %in% hidden
   ),
   
-  minValue = mwNumeric(minValue, "min value", 
-                       .display = type %in% c("density", "cdf")
+  minValue = mwNumeric(minValue, label = .getLabelLanguage("min value", language), 
+                       .display = type %in% c("density", "cdf") & !"minValue" %in% hidden
   ),
   
-  maxValue = mwNumeric(maxValue, "max value", 
-                       .display = type %in% c("density", "cdf")
+  maxValue = mwNumeric(maxValue, label = .getLabelLanguage("max value", language), 
+                       .display = type %in% c("density", "cdf") & !"maxValue" %in% hidden
   ),
   
   elements = mwSelect(
     choices = {
-      c( if(!is.null(params)){
+      choix <- c(if(!is.null(params)){
         as.character(.compareOperation(lapply(params$x, function(vv){
           unique(vv[[table]]$uniqueElem)
         }), xyCompare))
       })
+      choix
     },
     value = {
-      if(.initial) {as.character(.compareOperation(lapply(params$x, function(vv){
-        unique(vv[[table]]$uniqueElem)
-      }), xyCompare))[1]}
+      if(.initial) {
+        if(is.null(elements)){
+          
+          if(!is.null(params)){
+            as.character(.compareOperation(lapply(params$x, function(vv){
+              unique(vv[[table]]$uniqueElem)
+            }), xyCompare))[1]
+          } else {
+            NULL
+          }
+        }else {
+          elements
+        }
+      } else {
+        NULL
+      }
     }, 
-    multiple = TRUE
+    multiple = TRUE, 
+    label = .getLabelLanguage("elements", language), 
+    .display = !"elements" %in% hidden
   ),
   
-  aggregate = mwSelect(c("none", "mean", "sum", "mean by areas", "sum by areas"), 
-                       value ={
-                         if(.initial) aggregate
-                         else NULL
-                       }, .display = !secondAxis
+  aggregate = mwSelect({
+    tmp <- c("none", "mean", "sum", "mean by areas", "sum by areas")
+    names(tmp) <- c(.getLabelLanguage("none", language), 
+                    .getLabelLanguage("mean", language),
+                    .getLabelLanguage("sum", language),
+                    .getLabelLanguage("mean by areas", language),
+                    .getLabelLanguage("sum by areas", language))
+    tmp
+  }, value ={
+    if(.initial) aggregate
+    else NULL
+  }, .display = !secondAxis & !"aggregate" %in% hidden, 
+  label = .getLabelLanguage("aggregate", language)
   ),
   
-  legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf")),
-  highlight = mwCheckbox(highlight),
-  stepPlot = mwCheckbox(stepPlot),
-  drawPoints = mwCheckbox(drawPoints),
+  legend = mwCheckbox(legend, .display = type %in% c("ts", "density", "cdf") & !"legend" %in% hidden, 
+                      label = .getLabelLanguage("legend", language)),
+  highlight = mwCheckbox(highlight, label = .getLabelLanguage("highlight", language), 
+                         .display = !"highlight" %in% hidden),
+  stepPlot = mwCheckbox(stepPlot, label = .getLabelLanguage("stepPlot", language), 
+                        .display = !"stepPlot" %in% hidden),
+  drawPoints = mwCheckbox(drawPoints, label =.getLabelLanguage("drawPoints", language), 
+                          .display = !"drawPoints" %in% hidden),
   timeStepdataload = mwSharedValue({
     attributes(x_tranform[[1]])$timeStep
   }),
   
-  main = mwText(main, label = "title"),
+  main = mwText(main, label = .getLabelLanguage("title", language), 
+                .display = !"main" %in% hidden),
   
   params = mwSharedValue({
     .transformDataForComp(x_tranform, compare, compareOpts, processFun = processFun, 

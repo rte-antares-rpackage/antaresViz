@@ -30,8 +30,6 @@
 .getColAndSize <- function(data, coords, mergeBy, mcy, t, colVar, sizeVar, 
                            popupVars, colorScaleOpts, labelVar = NULL) {
 
-  
-  
   if (mcy != "average") data <- data[J(as.numeric(mcy))]
   
   neededVars <- setdiff(unique(c(colVar, sizeVar, popupVars, labelVar)), "none")
@@ -78,13 +76,15 @@
       # Special case of FLOW LIN
       if (colVar == "FLOW LIN.") rangevar <- c(0, max(abs(rangevar)))
       
-      if (rangevar[1] >= 0) {
-        domain <- rangevar
-      } else {
-        domain <- c(-min(rangevar), max(rangevar))
-      }
+      # if (rangevar[1] >= 0) {
+      #   domain <- rangevar
+      # } else {
+      #   domain <- c(-min(rangevar), max(rangevar))
+      # }
       
-      if (colVar == "FLOW LIN.") colorScaleOpts$x <- abs(data[[colVar]])
+      domain <- rangevar 
+      
+      if (colVar %in% c("FLOW LIN.", .getColumnsLanguage("FLOW LIN.", language = "fr"))) colorScaleOpts$x <- abs(data[[colVar]])
       else colorScaleOpts$x <- data[[colVar]]
       
       colorScaleOpts$domain <- domain
@@ -119,7 +119,11 @@
     res$dir <- sign(data$`FLOW LIN.`)
     #coords[, `FLOW LIN.` := abs(`FLOW LIN.`)]
   } else {
-    res$dir <- 0
+    if(.getColumnsLanguage("FLOW LIN.", language = "fr")  %in% names(data)){
+      res$dir <- sign(data[[.getColumnsLanguage("FLOW LIN.", language = "fr")]])
+    } else {
+      res$dir <- 0
+    }
   }
   
   # Pop-up
@@ -142,7 +146,7 @@
 
 # Initialize a map with all elements invisible: links, circles and bar or polar 
 # charts 
-.initMap <- function(x, ml, options) {
+.initMap <- function(x, ml, options, language = "en") {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
               colAreas = options$areaDefaultCol,
@@ -151,7 +155,7 @@
               labelMaxSize = options$labelMaxSize,
               tilesURL = options$tilesURL, 
               preprocess = options$preprocess) %>% 
-    addAntaresLegend(display = options$legend)
+    addAntaresLegend(display = options$legend, language = language)
   
   addShadows(map)
 }

@@ -40,7 +40,12 @@
     tpl <- rbindlist(listVar)
     elements <- as.vector(sapply(elements, function(X){paste(X, "__", variable)}))
   }else{
-    tpl <- listVar[[1]]
+    if(aggregate %in% c("mean by areas", "sum by areas")){
+      tpl <- listVar[[1]][,element := paste(element, '__' , names(listVar)[1])]
+      elements <- paste(elements, "__", variable)
+    } else {
+      tpl <- listVar[[1]]
+    }
   }
   
   # Filtering data if required
@@ -128,6 +133,21 @@
       invalid <- compare_values[!compare_values %in% values]
       stop(paste0("Invalid arguments for 'compare' : '", paste0(invalid, collapse = "', '"),
                   "'. Possible values : '", paste0(values, collapse = "', '"), "'."))
+    }
+  }
+  invisible(TRUE)
+}
+
+.validHidden <- function(hidden, values){
+  if(!is.null(hidden)){
+    if(!is.vector(hidden)){
+      stop("'hidden' must be a vector")
+    } else {
+      if(!all(hidden %in% values)){
+        invalid <- hidden[!hidden %in% values]
+          stop(paste0("Invalid arguments for 'hidden' : '", paste0(invalid, collapse = "', '"),
+                  "'. Possible values : '", paste0(values, collapse = "', '"), "'."))
+      }
     }
   }
   invisible(TRUE)

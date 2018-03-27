@@ -23,10 +23,9 @@
                     legend = TRUE,
                     legendItemsPerRow = 5,
                     group = NULL,
-                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
+                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, language = language, ...) {
   
-  
-  uniqueElements <- sort(unique(dt$element))
+  uniqueElements <- as.character(sort(unique(dt$element)))
   plotConfInt <- FALSE
   if (is.null(group)) group <- sample(1e9, 1)
   
@@ -59,7 +58,9 @@
   }
   
   if (is.null(ylab)) ylab <- variable
-  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Evolution of", variable)
+  if (is.null(main) | isTRUE(all.equal("", main))){
+    main <- paste(.getLabelLanguage("Evolution of", language), variable)
+  } 
   if (is.null(colors)) {
     colors <- substring(rainbow(length(uniqueElements), s = 0.7, v = 0.7), 1, 7)
   } else {
@@ -75,7 +76,7 @@
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE,
-      colors = colors, 
+      # colors = colors, 
       useDataTimezone = TRUE,
       stepPlot = stepPlot,
       drawPoints = drawPoints
@@ -83,18 +84,18 @@
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60, rangePad = 10) %>% 
     #dyRangeSelector() %>% 
-    dyLegend(show = "never") %>% 
+    dyLegend(show = "never") %>%
     dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId, timeStep),
+      highlightCallback = JS_updateLegend(legendId, timeStep, language = language),
       unhighlightCallback = JS_resetLegend(legendId)
     )
-  if(length(variable2Axe)>0){
-    for( i in variable2Axe)
-    {
-    g <- g %>% dySeries(i, axis = 'y2')
+  for(i in 1:length(uniqueElements)){
+    if(!uniqueElements[i] %in% variable2Axe){
+      g <- g %>% dySeries(uniqueElements[i], color = colors[i])
+    } else {
+      g <- g %>% dySeries(uniqueElements[i], axis = 'y2', color = colors[i])
     }
   }
-  
   
   if(highlight)
   {

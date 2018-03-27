@@ -19,14 +19,15 @@ observe({
           input_data$data[grepl("^prodStack", input_id), input_id := paste0(id_prodStack, "-shared_", input)]
           
           output[["prodStack_ui"]] <- renderUI({
-            mwModuleUI(id = id_prodStack, height = "800px", fluidRow = TRUE)
+            mwModuleUI(id = id_prodStack, height = "800px")
           })
           
           .compare <- input$sel_compare_prodstack
           if(input$sel_compare_mcyear){
             .compare <- unique(c(.compare, "mcYear"))
           }
-          if(!is.null(.compare)){
+          
+          if(length(.compare) > 0){
             list_compare <- vector("list", length(.compare))
             names(list_compare) <- .compare
             # set main with study names
@@ -35,18 +36,26 @@ observe({
             }
             .compare <- list_compare
           } else {
-            .compare = NULL
+            if(length(ind_areas) > 1){
+              .compare <- list(main = names(list_data_all$antaresDataList[ind_areas]))
+            } else {
+              .compare = NULL
+            }
           }
+          
           mod_prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                          h5requestFiltering = list_data_all$params[ind_areas],
                                          unit = "GWh", interactive = TRUE, .updateBtn = TRUE, 
+                                          language = "fr",
                                          .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$prodStack)){
             modules$prodStack$clear()
           }
           
-          modules$prodStack <- mwModule(id = id_prodStack,  mod_prodStack)
+          modules$prodStack <- mod_prodStack
+          modules$id_prodStack <- id_prodStack
+          modules$init_prodStack <- TRUE
           
           # init / re-init module plotts
           id_ts <- paste0("plotts_", round(runif(1, 1, 100000000)))
@@ -55,14 +64,15 @@ observe({
           input_data$data[grepl("^plotts", input_id), input_id := paste0(id_ts, "-shared_", input)]
 
           output[["plotts_ui"]] <- renderUI({
-            mwModuleUI(id = id_ts, height = "800px", fluidRow = TRUE)
+            mwModuleUI(id = id_ts, height = "800px")
           })
           
           .compare <- input$sel_compare_tsPlot
           if(input$sel_compare_mcyear){
             .compare <- unique(c(.compare, "mcYear"))
           }
-          if(!is.null(.compare)){
+          
+          if(length(.compare) > 0){
             list_compare <- vector("list", length(.compare))
             names(list_compare) <- .compare
             # set main with study names
@@ -71,18 +81,25 @@ observe({
             }
             .compare <- list_compare
           } else {
-            .compare = NULL
+            if(length(ind_areas) > 1){
+              .compare <- list(main = names(list_data_all$antaresDataList[ind_areas]))
+            } else {
+              .compare = NULL
+            }
           }
+          
           mod_plotts <- plot(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                  h5requestFiltering = list_data_all$params[ind_areas],
-                                 interactive = TRUE, .updateBtn = TRUE, 
+                                 interactive = TRUE, .updateBtn = TRUE, language = "fr",
                                  .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$plotts)){
             modules$plotts$clear()
           }
           
-          modules$plotts <- mwModule(id = id_ts,  mod_plotts)
+          modules$plotts <- mod_plotts
+          modules$id_plotts <- id_ts
+          modules$init_plotts <- TRUE
           
           list_data_controls$n_areas <- length(ind_areas)
           list_data_controls$have_areas <- TRUE
@@ -100,14 +117,15 @@ observe({
           input_data$data[grepl("^exchangesStack", input_id), input_id := paste0(id_exchangesStack, "-shared_", input)]
           
           output[["exchangesStack_ui"]] <- renderUI({
-            mwModuleUI(id = id_exchangesStack, height = "800px", fluidRow = TRUE)
+            mwModuleUI(id = id_exchangesStack, height = "800px")
           })
           
           .compare <- input$sel_compare_exchangesStack
           if(input$sel_compare_mcyear){
             .compare <- unique(c(.compare, "mcYear"))
           }
-          if(!is.null(.compare)){
+          
+          if(length(.compare) > 0){
             list_compare <- vector("list", length(.compare))
             names(list_compare) <- .compare
             # set main with study names
@@ -116,18 +134,24 @@ observe({
             }
             .compare <- list_compare
           } else {
-            .compare = NULL
+            if(length(ind_links) > 1){
+              .compare <- list(main = names(list_data_all$antaresDataList[ind_links]))
+            } else {
+              .compare = NULL
+            }
           }
           mod_exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
                                                    h5requestFiltering = list_data_all$params[ind_links],
-                                                   interactive = TRUE, .updateBtn = TRUE, 
+                                                   interactive = TRUE, .updateBtn = TRUE, language = "fr", 
                                                    .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$exchangesStack)){
             modules$exchangesStack$clear()
           }
           
-          modules$exchangesStack <- mwModule(id = id_exchangesStack,  mod_exchangesStack)
+          modules$exchangesStack <- mod_exchangesStack
+          modules$id_exchangesStack <- id_exchangesStack
+          modules$init_exchangesStack <- TRUE
           
           # save data and params
           list_data_controls$n_links <- length(ind_links)
@@ -149,6 +173,41 @@ observe({
     input_data$cpt <- isolate(input_data$cpt) +1
   })
 })
+
+# call module when click on tab if needed
+observe({
+  if(input[['nav-id']] == "prodStack" & modules$init_prodStack){
+    isolate({
+      if("MWController" %in% class(modules$prodStack) & modules$init_prodStack){
+        modules$prodStack <- mwModule(id = modules$id_prodStack,  modules$prodStack)
+        modules$init_prodStack <- FALSE
+      }
+    })
+  }
+})
+
+observe({
+  if(input[['nav-id']] == "tsPlot"){
+    isolate({
+      if("MWController" %in% class(modules$plotts) & modules$init_plotts){
+        modules$plotts <- mwModule(id = modules$id_plotts,  modules$plotts)
+        modules$init_plotts <- FALSE
+      }
+    })
+  }
+})
+
+observe({
+  if(input[['nav-id']] == "exchangesStack"){
+    isolate({
+      if("MWController" %in% class(modules$exchangesStack) & modules$init_exchangesStack){
+        modules$exchangesStack <- mwModule(id = modules$id_exchangesStack,  modules$exchangesStack)
+        modules$init_exchangesStack <- FALSE
+      }
+    })
+  }
+})
+
 
 # control : have link in data
 output$have_data_links <- reactive({
