@@ -135,6 +135,9 @@ availableLanguages_labels <- colnames(language_labels)
     up_label <- language_labels[en %in% label, get(language)]
     if(length(up_label) == 0){
       up_label <- label
+    } else {
+      # in case of double
+      up_label <- up_label[1]
     }
   } else {
     up_label <- label

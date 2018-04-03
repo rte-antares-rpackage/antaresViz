@@ -1,4 +1,4 @@
-tabPanel("exchangesStack",
+tabPanel(textOutput("label_tab_exchanges"),
          fluidRow(
            column(12,
                   conditionalPanel(condition = "output.have_data",
@@ -10,7 +10,7 @@ tabPanel("exchangesStack",
                                    )
                   ),
                   conditionalPanel(condition = "output.have_data === false",
-                                   h3("No data imported")
+                                   h3(textOutput("no_data_2"))
                   )
            )
          )

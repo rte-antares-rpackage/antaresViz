@@ -11,3 +11,7 @@ $(function() {
   });
   
 });
+
+function updateShinyLanguage(lg) {
+  Shiny.onInputChange("language", lg);
+}

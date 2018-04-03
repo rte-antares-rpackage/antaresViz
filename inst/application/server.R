@@ -94,6 +94,12 @@ function(input, output, session) {
   source("src/server/04_shared_input.R", local = T)
   
   #----------------
+  # language
+  #----------------
+  
+  source("src/server/08_language.R", local = T)
+  
+  #----------------
   # memory options
   #----------------
   observe({

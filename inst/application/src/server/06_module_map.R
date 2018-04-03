@@ -22,7 +22,7 @@ layout <- reactive({
 ml <- reactiveVal()
 # module for set and save layout
 ml_builder <- callModule(antaresViz:::changeCoordsServer, "ml", layout, 
-                         what = reactive("areas"), stopApp = FALSE)
+                         what = reactive("areas"), language = current_language, stopApp = FALSE)
 
 observe({
   ml(ml_builder())
@@ -78,12 +78,14 @@ observe({
         ind_map <- unique(sort(c(ind_keep_list_data$ind_areas, ind_keep_list_data$ind_links)))
         if(length(ind_map) > 0){
           if(!is.null(ml)){
+            
+            print("init map")
             # init / re-init module plotMap
             id_plotMap   <- paste0("plotMap_", round(runif(1, 1, 100000000)))
             
             # update shared input table
             input_data$data[grepl("^plotMap", input_id), input_id := paste0(id_plotMap, "-shared_", input)]
-        
+            
             output[["plotMap_ui"]] <- renderUI({
               mwModuleUI(id = id_plotMap, height = "800px")
             })
@@ -106,11 +108,11 @@ observe({
             }
             
             mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
-                                       interactive = TRUE, .updateBtn = TRUE, 
-                                        .updateBtnInit = TRUE, compare = .compare,
-                                        language = "fr",
-                                       h5requestFiltering = list_data_all$params[ind_map],
-                                       xyCompare = "union", .runApp = FALSE)
+                                   interactive = TRUE, .updateBtn = TRUE, 
+                                   .updateBtnInit = TRUE, compare = .compare,
+                                   language = isolate({ current_language()}),
+                                   h5requestFiltering = list_data_all$params[ind_map],
+                                   xyCompare = "union", .runApp = FALSE)
             
             if("MWController" %in% class(modules$plotMap)){
               modules$plotMap$clear()
@@ -128,11 +130,11 @@ observe({
   })
 })
 
-
 observe({
-  if(input[['nav-id']] == "Map"){
+  if(input[['map_panel']] == "<div id=\"label_tab_map_viz\" class=\"shiny-text-output\"></div>"){
     isolate({
       if("MWController" %in% class(modules$plotMap) & modules$init_plotMap){
+        print("get map 2")
         modules$plotMap <- mwModule(id = modules$id_plotMap,  modules$plotMap)
         modules$init_plotMap <- FALSE
       }
@@ -154,7 +156,7 @@ output$download_layout <- downloadHandler(
 observe({
   if(!is.null(input[['ml-done']])){
     if(input[['ml-done']] > 0){
-      updateNavbarPage(session, inputId = "nav-id", selected = "Map")
+      updateNavbarPage(session, inputId = "map_panel", selected = "<div id=\"label_tab_map_viz\" class=\"shiny-text-output\"></div>")
     }
   }
 })

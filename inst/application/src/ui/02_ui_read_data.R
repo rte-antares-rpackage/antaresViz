@@ -1,5 +1,5 @@
 tabPanel("Read data", 
-         h3("readAntares parameters"),
+         h3(textOutput("title_readAntares")),
          fluidRow(
            column(3, 
                   selectInput("read_areas", "Areas :", choices = NULL, selected = NULL, multiple = TRUE)

@@ -46,7 +46,7 @@ observe({
           mod_prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                          h5requestFiltering = list_data_all$params[ind_areas],
                                          unit = "GWh", interactive = TRUE, .updateBtn = TRUE, 
-                                          language = "fr",
+                                          language = isolate({ current_language()}),
                                          .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$prodStack)){
@@ -90,7 +90,7 @@ observe({
           
           mod_plotts <- plot(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                  h5requestFiltering = list_data_all$params[ind_areas],
-                                 interactive = TRUE, .updateBtn = TRUE, language = "fr",
+                                 interactive = TRUE, .updateBtn = TRUE, language = isolate({ current_language()}),
                                  .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$plotts)){
@@ -142,7 +142,7 @@ observe({
           }
           mod_exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
                                                    h5requestFiltering = list_data_all$params[ind_links],
-                                                   interactive = TRUE, .updateBtn = TRUE, language = "fr", 
+                                                   interactive = TRUE, .updateBtn = TRUE, language = isolate({ current_language()}), 
                                                    .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$exchangesStack)){
@@ -176,7 +176,7 @@ observe({
 
 # call module when click on tab if needed
 observe({
-  if(input[['nav-id']] == "prodStack" & modules$init_prodStack){
+  if(input[['nav-id']] == "Production"){
     isolate({
       if("MWController" %in% class(modules$prodStack) & modules$init_prodStack){
         modules$prodStack <- mwModule(id = modules$id_prodStack,  modules$prodStack)
@@ -186,8 +186,9 @@ observe({
   }
 })
 
+
 observe({
-  if(input[['nav-id']] == "tsPlot"){
+  if(input[['nav-id']] == "<div id=\"label_tab_tsPlot\" class=\"shiny-text-output\"></div>"){
     isolate({
       if("MWController" %in% class(modules$plotts) & modules$init_plotts){
         modules$plotts <- mwModule(id = modules$id_plotts,  modules$plotts)
@@ -198,7 +199,7 @@ observe({
 })
 
 observe({
-  if(input[['nav-id']] == "exchangesStack"){
+  if(input[['nav-id']] == "<div id=\"label_tab_exchanges\" class=\"shiny-text-output\"></div>"){
     isolate({
       if("MWController" %in% class(modules$exchangesStack) & modules$init_exchangesStack){
         modules$exchangesStack <- mwModule(id = modules$id_exchangesStack,  modules$exchangesStack)
@@ -225,9 +226,9 @@ outputOptions(output, "have_data_areas", suspendWhenHidden = FALSE)
 observe({
   if(input$update_module > 0){
     if(list_data_controls$have_areas & list_data_controls$n_areas >= 1){
-      updateNavbarPage(session, inputId = "nav-id", selected = "prodStack")
+      updateNavbarPage(session, inputId = "nav-id", selected = "Production")
     } else if(list_data_controls$have_links & list_data_controls$n_links >= 1){
-      updateNavbarPage(session, inputId = "nav-id", selected = "exchangesStack")
+      updateNavbarPage(session, inputId = "nav-id", selected = "<div id=\"label_tab_exchanges\" class=\"shiny-text-output\"></div>")
     }
   }
 })

@@ -1,4 +1,4 @@
-tabPanel("tsPlot",
+tabPanel(textOutput("label_tab_tsPlot"),
          fluidRow(
            column(12,
                   conditionalPanel(condition = "output.have_data",
@@ -10,7 +10,7 @@ tabPanel("tsPlot",
                                    )
                   ),
                   conditionalPanel(condition = "output.have_data === false",
-                                   h3("No data imported")
+                                   h3(textOutput("no_data_3"))
                   )
            )
          )

@@ -1,9 +1,9 @@
-tabPanel("Analysis",
+tabPanel(textOutput("label_tab_analysis"),
          conditionalPanel(condition = "output.have_data === true",
-                          div(h3("Analysis parameters"), align = "center"),
-                          h3("Studies :"),
+                          div(h3(textOutput("title_analysis")), align = "center"),
+                          h3(textOutput("title_studies")),
                           uiOutput("info_list"),
-                          h3("Compare :"),
+                          h3(textOutput("title_compare")),
                           fluidRow(
                             
                             column(3, 
@@ -20,12 +20,12 @@ tabPanel("Analysis",
                             )
                           ), 
                           
-                          checkboxInput("sel_compare_mcyear", "mcYear on all modules ?", FALSE),
+                          checkboxInput("sel_compare_mcyear", "mcYear on all modules ?", FALSE, width = "100%"),
                           
                           br(),
                           div(actionButton("update_module", "Launch Analysis", icon = icon("upload")), align = "center")
          ),
          conditionalPanel(condition = "output.have_data === false",
-                          h3("No data imported from 'Import Data' panel", style = "color : red")
+                          h3(textOutput("no_data_7"), style = "color : red")
          )
 )
