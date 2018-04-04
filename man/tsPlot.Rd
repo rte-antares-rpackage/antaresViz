@@ -18,7 +18,7 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   xyCompare = c("union", "intersect"), h5requestFiltering = list(),
   highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
   secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"), ...)
+  tablesh5 = c("areas", "links"), language = "en", hidden = NULL, ...)
 
 \method{plot}{antaresData}(x, table = NULL, variable = NULL,
   elements = NULL, variable2Axe = NULL, mcYear = "average",
@@ -31,7 +31,8 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
   drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
+  hidden = NULL, ...)
 
 \method{plot}{simOptions}(x, table = NULL, variable = NULL,
   elements = NULL, variable2Axe = NULL, mcYear = "average",
@@ -44,7 +45,8 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
   drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
+  hidden = NULL, ...)
 
 \method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
   variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
@@ -57,7 +59,7 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   xyCompare = c("union", "intersect"), h5requestFiltering = list(),
   highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
   secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"), ...)
+  tablesh5 = c("areas", "links"), language = "en", hidden = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
@@ -170,6 +172,10 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 \item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
 
 \item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
+
+\item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
+
+\item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
