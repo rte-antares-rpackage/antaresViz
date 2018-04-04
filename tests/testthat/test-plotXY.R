@@ -1,5 +1,5 @@
 describe("prodStack, no interactive", {
-    dta <- readAntares(areas = "all")
+    dta <- readAntares(areas = "all", showProgress = FALSE)
 
 
 
