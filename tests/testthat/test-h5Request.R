@@ -1,6 +1,6 @@
 describe("h5", {
-  if(requireNamespace("rhdf5")){
-    writeAntaresH5(pathtemp)
+  if(requireNamespace("rhdf5", quietly = TRUE)){
+    suppressMessages(writeAntaresH5(pathtemp))
     optsH5 <- setSimulationPath(pathtemp)
     
     expect_true(class(.getDateRange(optsH5, "hourly")) == "Date")

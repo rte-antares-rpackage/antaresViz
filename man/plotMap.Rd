@@ -14,7 +14,7 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
   "intersect"), h5requestFiltering = list(), timeSteph5 = "hourly",
   mcYearh5 = NULL, tablesh5 = c("areas", "links"), sizeMiniPlot = FALSE,
-  ...)
+  language = "en", hidden = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -116,6 +116,10 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 \item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
 
 \item{sizeMiniPlot}{\code{boolean} variable size for miniplot}
+
+\item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
+
+\item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

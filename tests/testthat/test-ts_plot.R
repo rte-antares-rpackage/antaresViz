@@ -94,7 +94,7 @@ describe("tsPlot, no interactive return error", {
   
 })
 
-if(requireNamespace("rhdf5")){
+if(requireNamespace("rhdf5", quietly = TRUE)){
   rhdf5::H5close()
 }
 if(dir.exists(pathtemp))
