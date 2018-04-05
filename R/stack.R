@@ -49,7 +49,13 @@
   
   # 1- Create a data.table containing the series defined by parameter "variables"
   dt <- data.table(timeId = x$timeId) #, area = x$area)
+
   dt$time <- .timeIdToDate(dt$timeId, timeStep, opts)
+  
+  if("Date" %in% class(dt$time )){
+    dt[,time := as.POSIXct(as.character(time), tz = "UTC")]
+  }
+  
   dt[, timeId := NULL]
   dt[, c(rev(variables), paste0("neg", variables), "totalNeg", lines, paste0("opp", lines)) := 0]
   
@@ -132,6 +138,6 @@
                           fillGraph = FALSE, strokeWidth = lineWidth[i])
     }
   }
-  
+
   g
 }

@@ -194,7 +194,7 @@ JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
                       res = date.toUTCString().slice(0, 11);
                 }
                 return res"),
-    monthly = paste0("var date = new Date(x); 
+    monthly = paste0("var date = new Date(x);
                 var res;
                 try {
                   res = date.toLocaleDateString('", language, "', {month: 'long', year: 'numeric', timeZone : 'UTC' });
@@ -203,7 +203,7 @@ JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
                 };
                 // bug in Rstudio viewer / old browser
                 if(res == date.toLocaleDateString()){
-                       res = return date.toUTCString().slice(7, 16);
+                       res = date.toUTCString().slice(7, 16);
                 }
                 return res"),
     annual = paste0("var date = new Date(x); 
