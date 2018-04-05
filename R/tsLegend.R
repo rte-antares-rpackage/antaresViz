@@ -154,9 +154,9 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
 JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
   
   # Function that transform a timestamp ta a date label
-    timeToLab <- switch(
-      timeStep,
-      hourly = paste0("var date = new Date(x); 
+  timeToLab <- switch(
+    timeStep,
+    hourly = paste0("var date = new Date(x); 
                 var res;
                 try {
                   res = date.toLocaleDateString('", language, "', { weekday: 'short', month: 'short', day: 'numeric', hour : '2-digit', minute:'2-digit', timeZone : 'UTC'  });
@@ -170,7 +170,7 @@ JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
                   res = day + '<br/>' + h;
                 }
                 return res"),
-      daily = paste0("var date = new Date(x); 
+    daily = paste0("var date = new Date(x); 
                 var res;
                 try {
                   res = date.toLocaleDateString('", language, "', { weekday: 'short', month: 'short', day: 'numeric', timeZone : 'UTC'  });
@@ -182,7 +182,7 @@ JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
                      res = date.toUTCString().slice(0, 11);
                 }
                 return res"),
-      weekly = paste0("var date = new Date(x); 
+    weekly = paste0("var date = new Date(x); 
                 var res;
                 try {
                   res = date.toLocaleDateString('", language, "', { weekday: 'short', month: 'short', day: 'numeric', timeZone : 'UTC'  });
@@ -194,7 +194,7 @@ JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
                       res = date.toUTCString().slice(0, 11);
                 }
                 return res"),
-      monthly = paste0("var date = new Date(x); 
+    monthly = paste0("var date = new Date(x); 
                 var res;
                 try {
                   res = date.toLocaleDateString('", language, "', {month: 'long', year: 'numeric', timeZone : 'UTC' });
@@ -206,7 +206,7 @@ JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
                        res = return date.toUTCString().slice(7, 16);
                 }
                 return res"),
-      annual = paste0("var date = new Date(x); 
+    annual = paste0("var date = new Date(x); 
                 var res;
                 try {
                   res = date.toLocaleDateString('", language, "', {year: 'numeric', timeZone : 'UTC' });
@@ -218,33 +218,39 @@ JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
                       res = date.toUTCString().slice(12, 16);
                 }
                 return res"),
-      "return x"
-    )
+    "return x"
+  )
   script <-"
 function(e, timestamp, data) {
-  function timeToLab(x) {%s}
-  document.getElementById('date%s').innerHTML = timeToLab(timestamp);
-  
-  var values = {};
-
-  data.forEach(function(d) {
+    function timeToLab(x) {%s}
+    
+    var tmp = document.getElementById('date%s');
+    
+    if(tmp){
+    tmp.innerHTML = timeToLab(timestamp);
+    }
+    
+    
+    var values = {};
+    
+    data.forEach(function(d) {
     var sign = d.name.match(/^neg/) ? -1 : 1;
     var varname = d.name.replace(/^neg/, '');
     if (values[varname]) values[varname] += d.yval * sign;
     else values[varname] = d.yval * sign;
-  })
-
-  for (k in values) {
+    })
+    
+    for (k in values) {
     if (!values.hasOwnProperty(k)) continue; 
     var el = document.getElementById(k + '%s');
     if (el) {
-      if (Math.abs(values[k]) > 100 || values[k] === 0) {
-        el.innerHTML = Math.round(values[k]);
-      } else {
-        el.innerHTML = values[k].toPrecision(3);
-      }
+    if (Math.abs(values[k]) > 100 || values[k] === 0) {
+    el.innerHTML = Math.round(values[k]);
+    } else {
+    el.innerHTML = values[k].toPrecision(3);
     }
-  }
+    }
+    }
 }"
   
   JS(sprintf(script, timeToLab, legendId, legendId))
@@ -253,11 +259,19 @@ function(e, timestamp, data) {
 
 JS_resetLegend <- function(legendId) {
   script <- "
-function(e) {
-  document.getElementById('date%s').innerHTML = '';
+  function(e) {
+  var tmp = document.getElementById('date%s');
+  
+  if(tmp){
+  tmp.innerHTML = '';
+  }
+  
   var els = document.getElementsByClassName('legvalue');
+  if(els){
   for (var i = 0; i < els.length; ++i) {els[i].innerHTML = '';}
-}"
+  }
+  
+  }"
   
   JS(sprintf(script, legendId))
 }
