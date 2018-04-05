@@ -20,9 +20,9 @@ observeEvent(
 output$directory_message <- renderText({
   if(length(input$directory) > 0){
     if(input$directory == 0){
-      antaresViz:::.getLabelLanguage("Please first choose a folder with antares output", current_language())
+      antaresViz:::.getLabelLanguage("Please first choose a folder with antares output", current_language$language)
     } else {
-      antaresViz:::.getLabelLanguage("No antares output found in directory", current_language())
+      antaresViz:::.getLabelLanguage("No antares output found in directory", current_language$language)
     }
   }
 })
@@ -142,7 +142,7 @@ outputOptions(output, "have_study", suspendWhenHidden = FALSE)
 #--------------------------------------
 observe({
   opts <- opts()
-  current_language <- current_language()
+  current_language <- current_language$language
   if(!is.null(opts)){
     isolate({
       # areas
@@ -195,7 +195,7 @@ observe({
 
 observe({
   RL <- input$read_links
-  current_language <- current_language()
+  current_language <- current_language$language
   isolate({
     if(!is.null(RL)) {
       if(length(RL) == 0) {
@@ -211,7 +211,7 @@ observe({
 observe({
   RC <- input$read_clusters
   opts <- opts()
-  current_language <- current_language()
+  current_language <- current_language$language
   isolate({
     if(!is.null(RC)) {
       if(length(RC) == 0) {
@@ -231,7 +231,7 @@ observe({
 })
 
 observe({
-  current_language <- current_language()
+  current_language <- current_language$language
   opts <- opts()
   if(!is.null(current_language) & !is.null(opts)) {
     isolate({
@@ -239,7 +239,7 @@ observe({
           sel <- isolate({input$read_type_mcYears})
           choices <- c("synthetic")
           names(choices) <- sapply(choices, function(x){
-            antaresViz:::.getLabelLanguage(x, current_language())
+            antaresViz:::.getLabelLanguage(x, current_language)
           })
           updateRadioButtons(session, "read_type_mcYears", paste0(antaresViz:::.getLabelLanguage("mcYears selection", current_language), " : "),
                              choices, selected = sel, inline = TRUE)
@@ -248,7 +248,7 @@ observe({
           sel <- isolate({input$read_type_mcYears})
           choices <- c("synthetic", "all", "custom")
           names(choices) <- sapply(choices, function(x){
-            antaresViz:::.getLabelLanguage(x, current_language())
+            antaresViz:::.getLabelLanguage(x, current_language)
           })
           updateRadioButtons(session, "read_type_mcYears", paste0(antaresViz:::.getLabelLanguage("mcYears selection", current_language), " : "),
                              choices, selected = sel, inline = TRUE)

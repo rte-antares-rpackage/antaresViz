@@ -15,19 +15,19 @@ output$info_list <- renderUI({
       check_list <- lapply(1:length(list_data), function(i) {
         check_name <- paste0("list_study_check", i)
         div(
-          checkboxInput(check_name, antaresViz:::.getLabelLanguage("Include study in analysis", current_language()), value = TRUE), align = "center")
+          checkboxInput(check_name, antaresViz:::.getLabelLanguage("Include study in analysis", current_language$language), value = TRUE), align = "center")
       })
       # bouton pour afficher les parametres
       params_list <- lapply(1:length(list_data), function(i) {
         btn_name <- paste0("list_study_params", i)
         div(
-          actionButton(btn_name, antaresViz:::.getLabelLanguage("View parameters", current_language())), align = "center")
+          actionButton(btn_name, antaresViz:::.getLabelLanguage("View parameters", current_language$language)), align = "center")
       })
       # bouton pour supprimer les donnees
       rm_list <- lapply(1:length(list_data), function(i) {
         btn_name <- paste0("list_study_rm", i)
         div(
-          actionButton(btn_name, antaresViz:::.getLabelLanguage("Remove study", current_language())), align = "center")
+          actionButton(btn_name, antaresViz:::.getLabelLanguage("Remove study", current_language$language)), align = "center")
       })
       # format et retour
       fluidRow(

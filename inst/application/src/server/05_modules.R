@@ -1,5 +1,6 @@
 observe({
   ind_keep_list_data <- ind_keep_list_data()
+  language <- current_language$language
   isolate({
     if(input$update_module > 0){
       if(is.null(ind_keep_list_data)){
@@ -46,7 +47,7 @@ observe({
           mod_prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                          h5requestFiltering = list_data_all$params[ind_areas],
                                          unit = "GWh", interactive = TRUE, .updateBtn = TRUE, 
-                                          language = isolate({ current_language()}),
+                                          language = language,
                                          .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$prodStack)){
@@ -90,7 +91,7 @@ observe({
           
           mod_plotts <- plot(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                  h5requestFiltering = list_data_all$params[ind_areas],
-                                 interactive = TRUE, .updateBtn = TRUE, language = isolate({ current_language()}),
+                                 interactive = TRUE, .updateBtn = TRUE, language = language,
                                  .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$plotts)){
@@ -142,7 +143,7 @@ observe({
           }
           mod_exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
                                                    h5requestFiltering = list_data_all$params[ind_links],
-                                                   interactive = TRUE, .updateBtn = TRUE, language = isolate({ current_language()}), 
+                                                   interactive = TRUE, .updateBtn = TRUE, language = language, 
                                                    .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$exchangesStack)){
@@ -176,6 +177,7 @@ observe({
 
 # call module when click on tab if needed
 observe({
+  modules$init_prodStack
   if(input[['nav-id']] == "Production"){
     isolate({
       if("MWController" %in% class(modules$prodStack) & modules$init_prodStack){
@@ -188,6 +190,7 @@ observe({
 
 
 observe({
+  modules$init_plotts
   if(input[['nav-id']] == "<div id=\"label_tab_tsPlot\" class=\"shiny-text-output\"></div>"){
     isolate({
       if("MWController" %in% class(modules$plotts) & modules$init_plotts){
@@ -199,6 +202,7 @@ observe({
 })
 
 observe({
+  modules$init_exchangesStack
   if(input[['nav-id']] == "<div id=\"label_tab_exchanges\" class=\"shiny-text-output\"></div>"){
     isolate({
       if("MWController" %in% class(modules$exchangesStack) & modules$init_exchangesStack){

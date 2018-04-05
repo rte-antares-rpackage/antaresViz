@@ -21,8 +21,12 @@ layout <- reactive({
 
 ml <- reactiveVal()
 # module for set and save layout
+map_language <- reactive({
+  current_language$language
+})
+
 ml_builder <- callModule(antaresViz:::changeCoordsServer, "ml", layout, 
-                         what = reactive("areas"), language = current_language, stopApp = FALSE)
+                         what = reactive("areas"), language = map_language, stopApp = FALSE)
 
 observe({
   ml(ml_builder())
@@ -72,6 +76,7 @@ outputOptions(output, "must_print_map", suspendWhenHidden = FALSE)
 observe({
   ml <- ml()
   ind_keep_list_data <- ind_keep_list_data()
+  language <- current_language$language
   isolate({
     if(input$update_module > 0){
       if(!is.null(ind_keep_list_data)){
@@ -110,7 +115,7 @@ observe({
             mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
                                    interactive = TRUE, .updateBtn = TRUE, 
                                    .updateBtnInit = TRUE, compare = .compare,
-                                   language = isolate({ current_language()}),
+                                   language = language,
                                    h5requestFiltering = list_data_all$params[ind_map],
                                    xyCompare = "union", .runApp = FALSE)
             
@@ -131,6 +136,7 @@ observe({
 })
 
 observe({
+  modules$init_plotMap
   if(input[['map_panel']] == "<div id=\"label_tab_map_viz\" class=\"shiny-text-output\"></div>"){
     isolate({
       if("MWController" %in% class(modules$plotMap) & modules$init_plotMap){

@@ -1,22 +1,23 @@
 tabPanel(textOutput("label_tab_help"), 
          fluidRow(
            column(width = 12,
-                  HTML(text = "Support / Questions : <a href='mailto:rte-antares-rpackage@rte-france.com;'> RTE-ANTARES-RPACKAGE Team </a>.<br> <hr>"),
+                  h3("Support / Questions"),
+                  HTML(text = "<ul>
+    <li> email : <a href='mailto:rte-antares-rpackage@rte-france.com;'> RTE-ANTARES-RPACKAGE Team </a></li>
+      <li>github : <a href='https://github.com/rte-antares-rpackage/antaresViz' target = '_blank'> antaresViz </a></li>
+                       </ul><hr>"),
                   tabsetPanel(
                     tabPanel("readAntares", 
-                             fluidRow(
-                               column(12, includeHTML("www/readAntares.html"))
-                             )
+                             includeHTML("www/readAntares.html")
+                             
                     ),
                     tabPanel("removeVirtualAreas", 
-                             fluidRow(
-                               column(12, includeHTML("www/removeVirtualAreas.html"))
-                             )
+                            includeHTML("www/removeVirtualAreas.html")
+                             
                     ),
                     tabPanel("writeAntaresH5", 
-                             fluidRow(
-                               column(12, includeHTML("www/writeAntaresH5.html"))
-                             )
+                              includeHTML("www/writeAntaresH5.html")
+                             
                     )
                   )
                   
