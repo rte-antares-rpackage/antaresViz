@@ -11,7 +11,7 @@ navbarPage(title = HTML('<p style="margin-top: 0.05cm;">&nbsp;&nbsp;&nbsp;&nbsp;
              div(class = "rte_footer", div(actionLink("quit", "Quit application", icon = icon("sign-out"), style = "color:white"), align = "center")),
              # flag : https://www.countries-ofthe-world.com/flags-of-the-world.html
              img(src = "img/flag-of-France.png", 
-                 title = "Attention : en cas de changement de langues, les modules de visualisation seront ré-initialisés", 
+                 title = "Attention : en cas de changement de langue, les modules de visualisation seront ré-initialisés", 
                  style = "position: fixed;
                         cursor:pointer;
                         right: 0;
@@ -24,7 +24,7 @@ navbarPage(title = HTML('<p style="margin-top: 0.05cm;">&nbsp;&nbsp;&nbsp;&nbsp;
                         text-decoration: none;
                         overflow-x: hidden;", onclick="updateShinyLanguage('fr')"),
              img(src = "img/flag-of-United-Kingdom.png", 
-                 title = "Warning : To change languages can reset the modules of visualization", 
+                 title = "Warning : To change language can reset the modules of visualization", 
                  style = "position: fixed;
                         cursor:pointer;
                         right: 0;
