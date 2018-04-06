@@ -437,7 +437,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     language = eval(parse(text = "language")),
     # format = "dd MM",
     separator = " : ",
-    .display = timeStepdataload != "annual" & !"timeSteph5" %in% hidden,
+    .display = timeStepdataload != "annual" & !"dateRange" %in% hidden,
     label = .getLabelLanguage("dateRange", language)
     ),
     
