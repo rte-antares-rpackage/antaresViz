@@ -36,7 +36,7 @@ img[alt="img"] {
     border-radius: 0;
   background-image: url('../img/bp_background.png');*/
     background-color: #00A6D9;
-    z-index: 999;
+    z-index: 99999;
   display: inline-block;
 }
 
@@ -107,7 +107,7 @@ img[alt="img"] {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 1000;
+  z-index: 100000;
   margin-left: 0cm;
   margin-top: 0.1cm;
   display: block;
