@@ -1,10 +1,12 @@
 # Define UI for antaresViz app
-navbarPage(title = HTML('<p style="margin-top: 0.05cm;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AntaresViz</p>'), id = "nav-id", collapsible = TRUE, 
+navbarPage(title = HTML('<p style="margin-top: 0.05cm;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbspAntaresViz</p>'), id = "nav-id", collapsible = TRUE, 
            position = "fixed-top", theme = "css/custom.css",
            header = div(
              br(), br(), br(), br(),
              a(href = "https://antares.rte-france.com",
-               target = "_blank", img(src = "img/antares.png", class = "ribbon")),
+               target = "_blank", img(src = "img/antares.png", class = "ribbon", style = "margin-left: 0cm;margin-top: 0.25cm;height: 55px")),
+             a(href = "https://github.com/rte-antares-rpackage/antaresViz",
+               target = "_blank", img(src = "img/github.png", class = "ribbon", style = "margin-left: 1.5cm;margin-top: 0.3cm;height: 46px")),
              singleton(tags$script(src = 'events.js')), 
              singleton(tags$script(src = 'is.min.js')),
              # footer
