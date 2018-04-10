@@ -298,6 +298,10 @@ prodStack <- function(x,
         .printWarningMcYear()
       }
       
+      if("annual" %in% attr(dt, "timeStep")){
+        dateRange <- NULL
+      }
+      
       if (!is.null(dateRange)) {
         dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = opts)) %between% dateRange]
       }
@@ -344,7 +348,7 @@ prodStack <- function(x,
         )
       }
       
-      if (legend) {
+      if (legend & !"ramcharts_base" %in% class(p)) {
         l <- prodStackLegend(stack, legendItemsPerRow, legendId = legendId + id - 1, 
                              language = language)
       } else {
@@ -559,19 +563,27 @@ prodStack <- function(x,
     }, 
     min = {      
       if(!is.null(params)){
-        .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
+        if(params$x[[1]]$timeStep != "annual"){
+          .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
+        } else {
+          NULL
+        }
       }
     }, 
     max = {      
       if(!is.null(params)){
-        .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
+        if(params$x[[1]]$timeStep != "annual"){
+          .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
+        } else {
+          NULL
+        }
       }
     }, 
     language = eval(parse(text = "language")),
     # format = "dd MM",
     separator = " : ",
     label = .getLabelLanguage("dateRange", language), 
-    .display = !"dateRange" %in% hidden
+    .display = timeStepdataload != "annual" & !"dateRange" %in% hidden
     ),
     stack = mwSelect(names(pkgEnv$prodStackAliases), stack,
                      label = .getLabelLanguage("stack", language), .display = !"stack" %in% hidden),
@@ -599,7 +611,9 @@ prodStack <- function(x,
     label = .getLabelLanguage("areas", language),
     .display = !"areas" %in% hidden
     ),
-    
+    timeStepdataload = mwSharedValue({
+      attributes(x_tranform[[1]])$timeStep
+    }),
     legend = mwCheckbox(legend, label = .getLabelLanguage("legend", language),
                         .display = !"legend" %in% hidden),
     stepPlot = mwCheckbox(stepPlot, label = .getLabelLanguage("stepPlot", language),
@@ -676,8 +690,8 @@ prodStack <- function(x,
 #' @noRd
 .plotProdStack <- function(x, variables, colors, lines, lineColors, lineWidth,
                            main = NULL, unit = "MWh", legendId = "",
-                           groupId = legendId,
-                           width = NULL, height = NULL, dateRange = NULL, stepPlot = FALSE, drawPoints = FALSE, language = "en") {
+                           groupId = legendId, width = NULL, height = NULL, dateRange = NULL, 
+                           stepPlot = FALSE, drawPoints = FALSE, language = "en", type = "Production") {
   
   timeStep <- attr(x, "timeStep")
   
@@ -689,10 +703,13 @@ prodStack <- function(x,
   for (n in names(formulas)) {
     dt[,c(n) := x[, eval(formulas[[n]]) / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]]
   }
-  .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, lineWidth, legendId,
+  
+  p <- .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, lineWidth, legendId,
              groupId,
              main = main, ylab = sprintf("Production (%s)", unit), 
-             width = width, height = height, dateRange = dateRange, stepPlot = stepPlot, drawPoints = drawPoints, language = language)
+             width = width, height = height, dateRange = dateRange, stepPlot = stepPlot, 
+             drawPoints = drawPoints, language = language, type = type)
+  p
 }
 
 #' @rdname tsLegend

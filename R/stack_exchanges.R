@@ -175,11 +175,22 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         .printWarningMcYear()
       }
       
-      dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
-                     .(link, timeId, flow = `FLOW LIN.`)],
-                  linksDef, by = "link")
+      if("annual" %in% attr(dt, "timeStep")){
+        dateRange <- NULL
+      }
+      
+      if(!is.null(dateRange)){
+        dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
+                       .(link, timeId, flow = `FLOW LIN.`)],
+                    linksDef, by = "link")
+      } else {
+        dt <- merge(dt[,.(link, timeId, flow = `FLOW LIN.`)], linksDef, by = "link")
+      }
+      
       if (!is.null(row)) {
-        row <- row[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange]
+        if(!is.null(dateRange)){
+          row <- row[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange]
+        }
         dt <- rbind(dt, row[area == a])
       }
       dt[, flow := flow * direction / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]
@@ -221,9 +232,10 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       # Stack
       g <- .plotStack(dt, timeStep, opts, colors,
                       legendId = legendId + id - 1, groupId = groupId, 
-                      main = main, ylab = ylab, stepPlot = stepPlot, drawPoints = drawPoints, language = language)
+                      main = main, ylab = ylab, stepPlot = stepPlot, 
+                      drawPoints = drawPoints, language = language, type = "Exchanges")
       
-      if (legend) {
+      if (legend & !"ramcharts_base" %in% class(g)) {
         # Add a nice legend
         legend <- tsLegend(names(dt)[-1], colors, types = "area", 
                            legendItemsPerRow = legendItemsPerRow, 
@@ -376,7 +388,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       #   as.character(.compareOperation(lapply(params$x, function(vv){
       #     unique(vv$x$mcYear)
       #   }), xyCompare))})) != 1 & 
-        !"mcYear" %in% hidden
+      !"mcYear" %in% hidden
     },
     label = .getLabelLanguage("mcYear to be displayed", language)
     ),
@@ -412,7 +424,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
           res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = NULL),
                    .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = NULL))
         }
-
+        
         ##Lock 7 days for hourly data
         if(!is.null(attributes(params$x[[1]]$x)$timeStep)){
           if(attributes(params$x[[1]]$x)$timeStep == "hourly"){
@@ -426,12 +438,20 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     }, 
     min = {      
       if(!is.null(params)){
-        .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = NULL)
+        if(attributes(params$x[[1]]$x)$timeStep != "annual"){
+          .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
+        } else {
+          NULL
+        }
       }
     }, 
     max = {      
       if(!is.null(params)){
-        .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = NULL)
+        if(attributes(params$x[[1]]$x)$timeStep != "annual"){
+          .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
+        } else {
+          NULL
+        }
       }
     },
     language = eval(parse(text = "language")),
