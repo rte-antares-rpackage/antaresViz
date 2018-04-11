@@ -43,7 +43,8 @@ addons:
       - libgdal-dev
       - libproj-dev
       - libv8-3.14-dev
-
-  
+      - libudunits2-dev
+      - libprotobuf-dev
+      
 after_success:
   - Rscript -e 'library(covr); codecov()'
