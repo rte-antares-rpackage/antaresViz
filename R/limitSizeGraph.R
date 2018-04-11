@@ -11,7 +11,7 @@ limitSizeGraph <- function(size){
   options(antaresVizSizeGraph = size)
 }
 
-# @importFrom pryr object_size
+
 controlWidgetSize <- function(widget, language = "en"){
   if(is.null(getOption("antaresVizSizeGraph"))){
     options(antaresVizSizeGraph = 200)

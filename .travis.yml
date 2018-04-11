@@ -28,7 +28,7 @@ r_packages:
 r_github_packages:
  - Bioconductor-mirror/zlibbioc
  - Bioconductor-mirror/rhdf5
- - rte-antares-rpackage/manipulateWidget@develop
+ - rte-antares-rpackage/manipulateWidget@master
  - rte-antares-rpackage/antaresMaps@develop
  - rte-antares-rpackage/antaresRead@develop
  - rte-antares-rpackage/antaresProcessing@develop

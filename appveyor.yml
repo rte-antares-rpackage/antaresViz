@@ -18,7 +18,7 @@ build_script:
   - travis-tool.sh install_bioc rhdf5
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresRead@develop
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresProcessing@develop
-  - ./travis-tool.sh install_github rte-antares-rpackage/manipulateWidget@develop
+  - ./travis-tool.sh install_github rte-antares-rpackage/manipulateWidget@master
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresMaps@develop
 
 

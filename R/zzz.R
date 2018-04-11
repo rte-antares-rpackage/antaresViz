@@ -12,7 +12,7 @@
 #' @import assertthat
 #' @importFrom plotly plot_ly layout config add_bars add_heatmap add_text add_trace
 #' @importFrom grDevices col2rgb colorRampPalette colors gray rainbow rgb
-#' @importFrom graphics plot par
+#' @importFrom graphics plot.default par
 #' @importFrom methods is
 #' @importFrom stats density quantile lm predict
 #' @importFrom utils object.size
