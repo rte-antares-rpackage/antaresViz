@@ -404,7 +404,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if(language != "en"){
       ind_to_change <- which(colnames(x$areas) %in% language_columns$en)
       if(length(ind_to_change) > 0){
-        new_name <- language_columns[en %in% colnames(x$areas), ]
+        new_name <- language_columns[get("en") %in% colnames(x$areas), ]
         v_new_name <- new_name[[language]]
         names(v_new_name) <- new_name[["en"]]
         setnames(x$areas, colnames(x$areas)[ind_to_change], unname(v_new_name[colnames(x$areas)[ind_to_change]]))
@@ -412,7 +412,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       
       ind_to_change <- which(colnames(syntx$areas) %in% language_columns$en)
       if(length(ind_to_change) > 0){
-        new_name <- language_columns[en %in% colnames(syntx$areas), ]
+        new_name <- language_columns[get("en") %in% colnames(syntx$areas), ]
         v_new_name <- new_name[[language]]
         names(v_new_name) <- new_name[["en"]]
         setnames(syntx$areas, colnames(syntx$areas)[ind_to_change], unname(v_new_name[colnames(syntx$areas)[ind_to_change]]))
@@ -420,7 +420,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       
       ind_to_change <- which(colnames(x$links) %in% language_columns$en)
       if(length(ind_to_change) > 0){
-        new_name <- language_columns[en %in% colnames(x$links), ]
+        new_name <- language_columns[get("en") %in% colnames(x$links), ]
         v_new_name <- new_name[[language]]
         names(v_new_name) <- new_name[["en"]]
         setnames(x$links, colnames(x$links)[ind_to_change], unname(v_new_name[colnames(x$links)[ind_to_change]]))
@@ -428,7 +428,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       
       ind_to_change <- which(colnames(syntx$links) %in% language_columns$en)
       if(length(ind_to_change) > 0){
-        new_name <- language_columns[en %in% colnames(syntx$links), ]
+        new_name <- language_columns[get("en") %in% colnames(syntx$links), ]
         v_new_name <- new_name[[language]]
         names(v_new_name) <- new_name[["en"]]
         setnames(syntx$links, colnames(syntx$links)[ind_to_change], unname(v_new_name[colnames(syntx$links)[ind_to_change]]))
@@ -492,6 +492,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   timeSteph5 <- NULL
   x_in <- NULL
   x_tranform <- NULL
+  meanYearH5 <- NULL
   
   manipulateWidget(
     {
@@ -847,10 +848,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     mapLayout = mwSharedValue(mapLayout),
     params = mwSharedValue({
       if(length(x_tranform) > 0 & length(mapLayout) > 0){
-        tmp <- .getDataForComp(x_tranform, NULL, compare, compareOpts, 
+        .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                                processFun = processFun, mapLayout = mapLayout)
-        tmp2 <<- tmp
-        tmp
       } 
     }),
     options = mwSharedValue({options}),

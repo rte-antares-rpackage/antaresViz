@@ -281,7 +281,7 @@ changeCoordsServer <- function(input, output, session,
         cex <- rep(1, nrow(points))
         cex[pt] <- 2
         par (mar = rep(0.1, 4))
-        plot(points$oldLon, points$oldLat, bty = "n", xaxt = "n", yaxt = "n",
+        graphics::plot(points$oldLon, points$oldLat, bty = "n", xaxt = "n", yaxt = "n",
              xlab = "", ylab = "", main = "", col = col, asp = 1, pch = 19, cex = cex)
       }
     })

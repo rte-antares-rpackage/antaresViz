@@ -403,6 +403,7 @@ prodStack <- function(x,
   timeSteph5 <- NULL
   x_in <- NULL
   x_tranform <- NULL
+  meanYearH5 <- NULL
   
   manipulateWidget(
     {

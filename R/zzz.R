@@ -17,7 +17,7 @@
 #' @importFrom stats density quantile lm predict
 #' @importFrom utils object.size
 #' @importFrom stats as.formula
-#' 
+#' @importFrom geojsonio geojson_json
 globalVariables(
   c("value", "element", "mcYear", "suffix", "time", "timeId", "dt", ".", 
     "x", "y", ".id", ".initial", ".session", "FLOW LIN.", "area", "direction", 
@@ -122,8 +122,8 @@ rm(graphicalCharter, formulas, colors)
 antaresVizSizeGraphError = "Too much data, please reduce selection. If you work with hourly data, you can reduce dateRange selection. 
 You can also use 'limitSizeGraph' function in R or 'Memory Controls' panel in shiny (if present) to update this."
 
-antaresVizSizeGraphError_fr = "Trop de données,veuillez réduire votre sélection. Si vous travaillez en données horaire, vous pouvez réduire la période de visualisation. 
-Il est également possible d'utiliser la fonction 'limitSizeGraph' en R ou l'onglet 'Memory Controls' dans shiny (si présent) pour changer la limite."
+antaresVizSizeGraphError_fr = "Trop de donn\u00e9es,veuillez r\u00e9duire votre s\u00e9lection. Si vous travaillez en donn\u00e9es horaire, vous pouvez r\u00e9duire la p\u00e9riode de visualisation. 
+Il est \u00e9galement possible d'utiliser la fonction 'limitSizeGraph' en R ou l'onglet 'Memory Controls' dans shiny (si pr\u00e9sent) pour changer la limite."
 
 # language for labels
 language_labels <- fread(input=system.file("language_labels.csv", package = "antaresViz"), encoding = "UTF-8")
@@ -132,7 +132,7 @@ availableLanguages_labels <- colnames(language_labels)
 
 .getLabelLanguage <- function(label, language = "en"){
   if(language %in% colnames(language_labels)){
-    up_label <- language_labels[en %in% label, get(language)]
+    up_label <- language_labels[get("en") %in% label, get(language)]
     if(length(up_label) == 0){
       up_label <- label
     } else {
@@ -154,7 +154,8 @@ language_columns$fr <- as.character(language_columns$fr)
 # Encoding(language_columns$fr) <- "latin1"
 
 expand_language_columns <- copy(language_columns)
-#add _std _min _max
+
+# add _std _min _max
 language_columns[, tmp_row := 1:nrow(language_columns)]
 
 language_columns <- language_columns[, list(en = c(en, paste0(en, c("_std", "_min", "_max"))),
@@ -182,7 +183,7 @@ colorsVars <- unique(colorsVars, by = "Column")
 colorsVars$colors <- rgb(colorsVars$red, colorsVars$green, colorsVars$blue, maxColorValue = 255)
 
 # expand to fr name
-expand_language_columns <- expand_language_columns[en %in% colorsVars$Column]
+expand_language_columns <- expand_language_columns[get("en") %in% colorsVars$Column]
 
 ind_match <- match(expand_language_columns$en, colorsVars$Column)
 rev_ind_match <- match(colorsVars$Column, expand_language_columns$en)

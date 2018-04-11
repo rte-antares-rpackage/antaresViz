@@ -272,7 +272,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       if(language != "en"){
         ind_to_change <- which(colnames(x) %in% language_columns$en)
         if(length(ind_to_change) > 0){
-          new_name <- language_columns[en %in% colnames(x), ]
+          new_name <- language_columns[get("en") %in% colnames(x), ]
           v_new_name <- new_name[[language]]
           names(v_new_name) <- new_name[["en"]]
           setnames(x, colnames(x)[ind_to_change], unname(v_new_name[colnames(x)[ind_to_change]]))
@@ -448,6 +448,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   sharerequest <- NULL
   timeStepdataload <- NULL
   x_tranform <- NULL
+  meanYearH5 <- NULL
   
   manipulateWidget({
     .tryCloseH5()
