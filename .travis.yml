@@ -13,9 +13,8 @@ os:
  - osx
 
 r:
- - oldrel
- - release
- - devel
+ - bioc-devel
+ - bioc-release
 
 r_packages:
   - covr
