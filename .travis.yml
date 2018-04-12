@@ -61,7 +61,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./configure; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo make install; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; sudo ldconfig; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ldconfig; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd $CURWD; fi
   
 after_success:
