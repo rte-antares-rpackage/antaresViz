@@ -1,3 +1,17 @@
+.selectize-control.multi .selectize-input:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 17px;
+  margin-top: -3px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  border-color: #333333 transparent transparent transparent;
+}
+
 .rte_footer {
   position: fixed;
   left: 0;
@@ -28,6 +42,10 @@ img[alt="img"] {
   display: block;
   margin-left: auto;
   margin-right: auto
+}
+
+.modal.fade.in {
+  z-index: 100000 !important;
 }
 
 .navbar-default {
