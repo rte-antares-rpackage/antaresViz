@@ -32,6 +32,7 @@ sum by areas;somme par nœud
 highlight;Surbrillance
 Color;Couleur
 Size;Taille
+Size by alias;Taille par alias
 miniPlot;Mini-graphs
 sizeMiniPlot;Taille prop.
 Unique scale;Echelle unique

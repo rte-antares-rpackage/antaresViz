@@ -58,8 +58,10 @@ renewableNoDispatchable;Renouvelable non-acheminables
 thermal;Thermique
 thermalDispatchable;Thermique acheminables
 hydraulicDispatchable;Hydraulique acheminable
-lignite;Lignite
 oil;Fioul
+generation;Génération
+economy;Economie
+adequacy;Adéquation
 mixFuel;Thermique mixte
 misc. DTG;Thermique autre
 hydraulicRor;Hydraulique_fil

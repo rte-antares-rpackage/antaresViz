@@ -9,7 +9,8 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
   labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
-  mcYear = "average", main = "", compare = NULL, compareOpts = list(),
+  mcYear = "average", main = "", typeSizeAreaVars = FALSE,
+  aliasSizeAreaVars = c(), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), options = plotMapOptions(),
   width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
   "intersect"), h5requestFiltering = list(), timeSteph5 = "hourly",
@@ -76,6 +77,10 @@ index of the scenario or the word "average". In this case data are
 averaged.}
 
 \item{main}{Title of the map.}
+
+\item{typeSizeAreaVars}{\code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}}
+
+\item{aliasSizeAreaVars}{If \code{aliasSizeAreaVars}, name of alias.}
 
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
@@ -148,6 +153,8 @@ compare argument can take following values :
    \item "colLinkVar"
    \item "sizeLinkVar"
    \item "popupLinkVars"
+   \item "typeSizeAreaVars"
+   \item "aliasSizeAreaVars"
    }
 }
 \examples{
@@ -173,6 +180,11 @@ plotMap(mydata, mapLayout =  ml,
 # Change default graphical properties
 plotMap(x = mydata, mapLayout = ml, options = list(colArea="red", colLink = "orange"))
 plotMap(x = list(mydata, mydata), mapLayout =  ml)
+
+# Use custom alias
+setAlias("custom_alias", "short description", c("OIL", "GAS", "COAL")) 
+plotMap(x = mydata, mapLayout = ml, typeSizeAreaVars = TRUE, 
+    aliasSizeAreaVars = "custom_alias")
 
 # Use h5 for dynamic request / exploration in a study
 # Set path of simulaiton

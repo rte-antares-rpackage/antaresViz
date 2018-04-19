@@ -24,6 +24,10 @@
 #'   depending on the values of the variable choosen. If it has length greater than
 #'   1 then areas are represented by a polar area chart where the size of each section
 #'   depends on the values of each variable.
+#' @param typeSizeAreaVars
+#'   \code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}
+#' @param aliasSizeAreaVars
+#'   If \code{aliasSizeAreaVars}, name of alias.
 #' @param areaChartType
 #'   If parameter \code{sizeAreaVars} contains multiple variables, this parameter
 #'   determines the type of representation. Possible values are \code{"bar"} for
@@ -83,6 +87,8 @@
 #'    \item "colLinkVar"
 #'    \item "sizeLinkVar"
 #'    \item "popupLinkVars"
+#'    \item "typeSizeAreaVars"
+#'    \item "aliasSizeAreaVars"
 #'    }
 #' @return 
 #' An htmlwidget of class "leaflet". It can be modified with package 
@@ -113,6 +119,11 @@
 #' # Change default graphical properties
 #' plotMap(x = mydata, mapLayout = ml, options = list(colArea="red", colLink = "orange"))
 #' plotMap(x = list(mydata, mydata), mapLayout =  ml)
+#' 
+#' # Use custom alias
+#' setAlias("custom_alias", "short description", c("OIL", "GAS", "COAL")) 
+#' plotMap(x = mydata, mapLayout = ml, typeSizeAreaVars = TRUE, 
+#'     aliasSizeAreaVars = "custom_alias")
 #' 
 #' # Use h5 for dynamic request / exploration in a study
 #' # Set path of simulaiton
@@ -146,6 +157,8 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     timeId = NULL,
                     mcYear = "average",
                     main = "",
+                    typeSizeAreaVars = FALSE,
+                    aliasSizeAreaVars = c(),
                     compare = NULL,
                     compareOpts = list(),
                     interactive = getInteractivity(),
@@ -179,16 +192,22 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     colLinkVar <- .getColumnsLanguage(colLinkVar, language)
     sizeLinkVar <- .getColumnsLanguage(sizeLinkVar, language)
     popupLinkVars <- .getColumnsLanguage(popupLinkVars, language)
+    aliasSizeAreaVars <- .getColumnsLanguage(aliasSizeAreaVars, language)
   }
+  
+  # alias
+  map_alias <- .getMapAlias(language = language)
   
   # Check hidden
   .validHidden(hidden, c("H5request", "timeSteph5", "tables", "mcYearH5", "mcYear", "dateRange", "Areas", "colAreaVar", 
                          "sizeAreaVars", "miniPlot", "areaChartType", "sizeMiniPlot", "uniqueScale", "showLabels",
-                         "popupAreaVars", "labelAreaVar", "Links", "colLinkVar", "sizeLinkVar", "popupLinkVars","type"))
+                         "popupAreaVars", "labelAreaVar", "Links", "colLinkVar", "sizeLinkVar", "popupLinkVars","type", 
+                         "typeSizeAreaVars", "aliasSizeAreaVars"))
   
-  #Check compare
+  # Check compare
   .validCompare(compare,  c("mcYear", "type", "colAreaVar", "sizeAreaVars", "areaChartType", "showLabels",
-                            "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars"))
+                            "popupAreaVars", "labelAreaVar","colLinkVar", "sizeLinkVar", "popupLinkVars", 
+                            "typeSizeAreaVars", "aliasSizeAreaVars"))
   
   runScale <- ifelse(!identical(options[names(options)!="preprocess"] ,
                                 tpMap[names(tpMap)!="preprocess"]), FALSE, TRUE)
@@ -450,6 +469,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     # We don't want to show the time id slider if there is only one time id
     hideTimeIdSlider <- timeIdMin == timeIdMax
     
+    areaNumValColumns2 <<- areaNumValColumns
     list(
       plotFun = plotFun,
       x = x,
@@ -504,6 +524,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           tmp_options <- optionsT
           if(is.null(tmp_options)){
             tmp_options <-  plotMapOptions()
+          }
+          
+          if(!typeSizeAreaVars){
+            sizeAreaVars <- sizeAreaVars
+          } else {
+            sizeAreaVars <- map_alias[[aliasSizeAreaVars]]
           }
           
           widget <- params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
@@ -690,6 +716,27 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         label = .getLabelLanguage("Color", language), 
         .display = !"colAreaVar" %in% hidden
       ),
+      typeSizeAreaVars = mwCheckbox(value = typeSizeAreaVars, 
+                                    label = .getLabelLanguage("Size by alias", language), 
+                                    .display = !"typeSizeAreaVars" %in% hidden),
+      aliasSizeAreaVars = mwSelect(
+        {
+          if(length(params) > 0){
+            areaNumVal <- as.character(.compareOperation(lapply(params$x, function(vv){
+              unique(vv$areaNumValColumns)
+            }), "intersect"))
+            .availableMapAlias(map_alias, areaNumVal)
+          } else {
+            NULL
+          }
+        }, 
+        value = {
+          if(.initial) aliasSizeAreaVars
+          else NULL
+        }, 
+        label = .getLabelLanguage("Size", language), 
+        multiple = FALSE, .display = !"aliasSizeAreaVars" %in% hidden & typeSizeAreaVars
+      ),
       sizeAreaVars = mwSelect(
         {
           if(length(params) > 0){
@@ -705,7 +752,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           else NULL
         }, 
         label = .getLabelLanguage("Size", language), 
-        multiple = TRUE, .display = !"sizeAreaVars" %in% hidden
+        multiple = TRUE, .display = !"sizeAreaVars" %in% hidden & !typeSizeAreaVars
       ),
       miniPlot = mwGroup(
         label = .getLabelLanguage("miniPlot", language),
@@ -725,7 +772,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           .display = !"areaChartType" %in% hidden
         ),
         sizeMiniPlot = mwCheckbox(sizeMiniPlot, label = .getLabelLanguage("sizeMiniPlot", language)),
-        .display = length(sizeAreaVars) >= 2 & !"miniPlot" %in% hidden
+        .display = (length(sizeAreaVars) >= 2 | typeSizeAreaVars) & !"miniPlot" %in% hidden
       ),
       uniqueScale = mwCheckbox(uniqueScale, label = .getLabelLanguage("Unique scale", language), 
                                .display = length(sizeAreaVars) >= 2 && areaChartType != "pie" & !"uniqueScale" %in% hidden
@@ -849,7 +896,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     params = mwSharedValue({
       if(length(x_tranform) > 0 & length(mapLayout) > 0){
         .getDataForComp(x_tranform, NULL, compare, compareOpts, 
-                               processFun = processFun, mapLayout = mapLayout)
+                        processFun = processFun, mapLayout = mapLayout)
       } 
     }),
     options = mwSharedValue({options}),
@@ -886,3 +933,40 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   
 }
 
+
+.getMapAlias <- function(language = "en"){
+  # get alias
+  tmp <- capture.output({cur_alias <- antaresRead::showAliases()})
+  
+  others_alias <- logical(nrow(cur_alias))
+  list_alias <- lapply(1:nrow(cur_alias), function(x){
+    var <- as.character(cur_alias[x, "select"])
+    var <- gsub("^([[:space:]]*)|([[:space:]]*)$", "", strsplit(var, ",")[[1]])
+    
+    # dont keep alias linked with links, clusters, ....
+    others_alias[x] <<- any(c("links", "clusters", "districts") %in% var)
+    var <- setdiff(var, c("areas", "links", "clusters", "districts", "mcYears"))
+    var <- unname(sapply(var, function(x) .getColumnsLanguage(x, language)))
+    var
+  })
+  
+  names(list_alias) <- unname(sapply(1:nrow(cur_alias), function(x){
+    .getColumnsLanguage(as.character(cur_alias[x, "name"]), language)
+  }))
+  
+  list_alias[!others_alias]
+}
+
+.availableMapAlias <- function(alias, areaNumValColumns){
+
+  keep_alias <- sapply(alias, function(x){
+    all(x %in% areaNumValColumns)
+  })
+  
+  ind_keep_alias <- which(keep_alias)
+  if(length(ind_keep_alias) > 0){
+    return(names(alias[ind_keep_alias]))
+  } else {
+    return(NULL)
+  }
+}
