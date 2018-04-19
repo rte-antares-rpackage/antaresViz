@@ -84,7 +84,6 @@ observe({
         if(length(ind_map) > 0){
           if(!is.null(ml)){
             
-            print("init map")
             # init / re-init module plotMap
             id_plotMap   <- paste0("plotMap_", round(runif(1, 1, 100000000)))
             
@@ -140,7 +139,6 @@ observe({
   if(input[['map_panel']] == "<div id=\"label_tab_map_viz\" class=\"shiny-text-output\"></div>"){
     isolate({
       if("MWController" %in% class(modules$plotMap) & modules$init_plotMap){
-        print("get map 2")
         modules$plotMap <- mwModule(id = modules$id_plotMap,  modules$plotMap)
         modules$init_plotMap <- FALSE
       }
