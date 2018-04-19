@@ -15,7 +15,7 @@
 #' @importFrom graphics plot.default par
 #' @importFrom methods is
 #' @importFrom stats density quantile lm predict
-#' @importFrom utils object.size
+#' @importFrom utils object.size capture.output
 #' @importFrom stats as.formula
 #' @importFrom geojsonio geojson_json
 globalVariables(

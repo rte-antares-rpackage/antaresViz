@@ -468,8 +468,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     linkNumValColumns <- intersect(linkValColums, linkNumValColumns)
     # We don't want to show the time id slider if there is only one time id
     hideTimeIdSlider <- timeIdMin == timeIdMax
-    
-    areaNumValColumns2 <<- areaNumValColumns
     list(
       plotFun = plotFun,
       x = x,
