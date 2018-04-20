@@ -15,12 +15,11 @@ prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
   dateRange = NULL, main = .getLabelLanguage("Production stack", language),
   unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1000000000, 1), groupId = legendId,
-  legendItemsPerRow = 5, width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
-  hidden = NULL, ...)
+  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
+  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
+  language = "en", hidden = NULL, ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}

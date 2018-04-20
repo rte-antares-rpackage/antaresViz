@@ -8,12 +8,11 @@ exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
   colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
   "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1000000000, 1), groupId = legendId,
-  legendItemsPerRow = 5, width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
-  hidden = NULL, ...)
+  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
+  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
+  language = "en", hidden = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
