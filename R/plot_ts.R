@@ -16,7 +16,8 @@
 #' 
 #' @noRd
 #' 
-.plotTS <- function(dt, timeStep, variable, variable2Axe = NULL, confInt = 0, maxValue, 
+.plotTS <- function(dt, timeStep, variable, variable2Axe = NULL, typeConfInt = FALSE, 
+                    confInt = 0, maxValue, 
                     colors = NULL,
                     main = NULL,
                     ylab = NULL,
@@ -29,23 +30,25 @@
   plotConfInt <- FALSE
   if (is.null(group)) group <- sample(1e9, 1)
   
-  # If dt contains several Monte-Carlo scenario, compute aggregate statistics
-  if (!is.null(dt$mcYear)) {
-    if (confInt == 0) {
-      
-      dt <- dt[, .(value = mean(value)), by = .(element, time)]
-      
-    } else {
-      
-      plotConfInt <- TRUE
-      alpha <- (1 - confInt) / 2
-      dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
-                   suffix = c("", "_l", "_u")), 
-               by = .(time, element)]
-      dt[, element := paste0(element, suffix)]
+  if(typeConfInt){
+    # If dt contains several Monte-Carlo scenario, compute aggregate statistics
+    if (!is.null(dt$mcYear)) {
+      if (confInt == 0) {
+
+        dt <- dt[, .(value = mean(value)), by = .(element, time)]
+        
+      } else {
+
+        plotConfInt <- TRUE
+        alpha <- (1 - confInt) / 2
+        dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
+                     suffix = c("", "_l", "_u")), 
+                 by = .(time, element)]
+        dt[, element := paste0(element, suffix)]
+      }
     }
   }
-  
+
   dt <- dcast(dt, time ~ element, value.var = "value")
   
   # Graphical parameters
@@ -69,6 +72,12 @@
   
   legendId <- sample(1e9, 1)
   
+  if(length(uniqueElements) == 1){
+    dycol <- colors[1]
+  } else {
+    dycol <- NULL
+  }
+  
   g <- dygraph(as.xts.data.table(dt), main = main, group = group) %>% 
     dyOptions(
       includeZero = TRUE, 
@@ -76,7 +85,7 @@
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE,
-      # colors = colors, 
+      colors = dycol, 
       useDataTimezone = TRUE,
       stepPlot = stepPlot,
       drawPoints = drawPoints

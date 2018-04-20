@@ -1,4 +1,4 @@
-.plotMonotone <- function(dt, timeStep, variable, variable2Axe = NULL, confInt = NULL, maxValue,
+.plotMonotone <- function(dt, timeStep, variable, variable2Axe = NULL, typeConfInt = FALSE, confInt = NULL, maxValue,
                           main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, language = "en", ...) {
   
   uniqueElements <- as.character(sort(unique(dt$element)))
@@ -15,17 +15,19 @@
       y = sort(value, decreasing = TRUE)
     ), by = .(element, mcYear)]
     
-    if (confInt == 0) {
-      dt <- dt[, .(y = mean(y)), by = .(element, x)]
-    } else {
-      plotConfInt <- TRUE
-      uniqueElements <- as.character(sort(unique(dt$element)))
-      
-      alpha <- (1 - confInt) / 2
-      dt <- dt[, .(y = c(mean(y), quantile(y, c(alpha, 1 - alpha))),
-                   suffix = c("", "_l", "_u")), 
-               by = .(x, element)]
-      dt[, element := paste0(element, suffix)]
+    if(typeConfInt){
+      if (confInt == 0) {
+        dt <- dt[, .(y = mean(y)), by = .(element, x)]
+      } else {
+        plotConfInt <- TRUE
+        uniqueElements <- as.character(sort(unique(dt$element)))
+        
+        alpha <- (1 - confInt) / 2
+        dt <- dt[, .(y = c(mean(y), quantile(y, c(alpha, 1 - alpha))),
+                     suffix = c("", "_l", "_u")), 
+                 by = .(x, element)]
+        dt[, element := paste0(element, suffix)]
+      }
     }
   }
   
@@ -36,7 +38,7 @@
   }
   
   .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, variable2Axe = variable2Axe,
-            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
+            plotConfInt = plotConfInt, highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
   
 }
 
@@ -136,10 +138,16 @@
   }
   legendId <- sample(1e9, 1)
   
+  if(length(uniqueElements) == 1){
+    dycol <- colors[1]
+  } else {
+    dycol <- NULL
+  }
+  
   g <- dygraph(as.data.frame(dt), main = main, group = legendId) %>% 
     dyOptions(
       includeZero = TRUE, 
-      # colors = colors,
+      colors = dycol,
       gridLineColor = gray(0.8), 
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 

@@ -5,7 +5,7 @@
 #' 
 #' @noRd 
 #'
-.barplot <- function(dt, timeStep, variable, confInt = 0, maxValue,
+.barplot <- function(dt, timeStep, variable, typeConfInt = FALSE, confInt = 0, maxValue,
                      colors = NULL,
                      main = NULL,
                      ylab = NULL,
@@ -18,18 +18,20 @@
   } else {
     dt <- dt[, .(value = mean(value)), by = .(element, mcYear)] 
     
-    if (confInt == 0) {
-      dt <- dt[, .(value = mean(value)), by = .(element)]
-    } else {
-      uniqueElements <- as.character(sort(unique(dt$element)))
-      
-      alpha <- (1 - confInt) / 2
-      .getConfInt <- function(x) {
-        q <- quantile(x, c(alpha, 1 - alpha))
-        m <- mean(x)
-        list(value = m, l = m - q[1], u = q[2] - m)
+    if(typeConfInt){
+      if (confInt == 0) {
+        dt <- dt[, .(value = mean(value)), by = .(element)]
+      } else {
+        uniqueElements <- as.character(sort(unique(dt$element)))
+        
+        alpha <- (1 - confInt) / 2
+        .getConfInt <- function(x) {
+          q <- quantile(x, c(alpha, 1 - alpha))
+          m <- mean(x)
+          list(value = m, l = m - q[1], u = q[2] - m)
+        }
+        dt <- dt[, .getConfInt(value), by = .(element)]
       }
-      dt <- dt[, .getConfInt(value), by = .(element)]
     }
   }
   # print(dt)

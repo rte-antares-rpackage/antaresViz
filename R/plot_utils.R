@@ -16,7 +16,8 @@
 .getTSData <- function(x, tpl, variable, elements, 
                        uniqueElement = unique(tpl$element), 
                        mcYear = NULL, 
-                       dateRange = NULL, aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas")) {
+                       dateRange = NULL, aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"), 
+                       typeConfInt = FALSE) {
   
   if(length(variable) == 0){return(tpl[0])}
   if("all" %in% elements) elements <- uniqueElement
@@ -48,18 +49,18 @@
     }
   }
   
+
   # Filtering data if required
-  if (!is.null(mcYear) && mcYear != "average") {
+  if (!is.null(mcYear) && length(mcYear) > 0 && mcYear != "average") {
     mcy <- mcYear # Just to avoid name confusion in the next line
     tpl <- tpl[mcYear %in% mcy]
   }else{
     if(!"mcYear" %in% names(tpl))
-      if(mcYear != "average")
-      {
+      if(!is.null(mcYear) && length(mcYear) > 0 && mcYear != "average"){
       .printWarningMcYear()
       }
   }
-  
+
   # if (length(elements) == 0) elements <- uniqueElement[1:5]
   if (!"all" %in% elements) tpl <- tpl[element %in% elements]
   if (!is.null(dateRange)) tpl <- tpl[as.Date(time) %between% dateRange]
@@ -98,6 +99,14 @@
       
       tpl <- tpl[, .(value = sum(value)), 
                         by = c(.idCols(tpl), "element")]
+    }
+  }
+
+  if(!typeConfInt){
+    if("mcYear" %in% names(tpl)){
+      if(length(unique(tpl$mcYear)) > 1){
+        tpl[, element := paste0(element, " __ mcY", mcYear)]
+      }
     }
   }
 

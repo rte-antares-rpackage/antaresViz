@@ -32,6 +32,8 @@
 #' @param dateRange
 #'   A vector of two dates. Only data points between these two dates are 
 #'   displayed. If NULL, then all data is displayed.
+#' @param typeConfInt \code{logical}. If multiple Monte Carlo scenarios are present in 
+#'   the input data, see all curves (FALSE, Default), or mean and confidence interval (TRUE)
 #' @param confInt
 #'   Number between 0 and 1 indicating the size of the confidence interval to 
 #'   display. If it equals to 0, then confidence interval is not computed nor
@@ -90,6 +92,7 @@
 #'    \item "main"
 #'    \item "variable"
 #'    \item "type"
+#'    \item "typeConfInt"
 #'    \item "confInt"
 #'    \item "elements"
 #'    \item "aggregate"
@@ -174,6 +177,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    mcYear = "average",
                    type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
                    dateRange = NULL,
+                   typeConfInt = FALSE,
                    confInt = 0,
                    minValue = NULL,
                    maxValue = NULL,
@@ -212,11 +216,11 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   
   # Check hidden
   .validHidden(hidden, c("H5request", "timeSteph5", "tables", "mcYearH5", "table", "mcYear", "variable", 
-                         "secondAxis", "variable2Axe", "type", "dateRange", "confInt", "minValue", "maxValue",
+                         "secondAxis", "variable2Axe", "type", "dateRange", "typeConfInt", "confInt", "minValue", "maxValue",
                          "elements", "aggregate", "legend", "highlight", "stepPlot", "drawPoints", "main"))
   
   #Check compare
-  .validCompare(compare,  c("mcYear", "main", "variable", "type", "confInt", "elements", "aggregate", "legend", 
+  .validCompare(compare,  c("mcYear", "main", "variable", "type", "typeConfInt", "confInt", "elements", "aggregate", "legend", 
                             "highlight", "stepPlot", "drawPoints", "secondAxis"))
   
   if(is.list(compare)){
@@ -312,7 +316,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       }
       
       # Function that generates the desired graphic.
-      plotFun <- function(mcYear, id, variable, variable2Axe, elements, type, confInt, dateRange, 
+      plotFun <- function(mcYear, id, variable, variable2Axe, elements, type, typeConfInt, confInt, dateRange, 
                           minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints, main) {
         if (is.null(variable)) variable <- valueCols[1]
         if (is.null(dateRange)) dateRange <- dateRange
@@ -323,8 +327,8 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         dt <- .getTSData(
           x, dt, 
           variable = c(variable, variable2Axe), elements = elements, 
-          uniqueElement = uniqueElem, 
-          mcYear = mcYear, dateRange = dateRange, aggregate = aggregate
+          uniqueElement = uniqueElem, mcYear = mcYear, dateRange = dateRange, 
+          aggregate = aggregate, typeConfInt = typeConfInt
         )
         
         if (nrow(dt) == 0) return(combineWidgets(.getLabelLanguage("No data", language)))
@@ -355,8 +359,9 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                     stop("Invalid type")
         )
         
-        variable2Axe <- apply(expand.grid(elements, variable2Axe), 1, function(X){paste(X, collapse = " __ ")})
-        
+        uni_ele <- unique(dt$element)
+        variable2Axe <- uni_ele[grepl(paste(paste0("(", variable2Axe, ")"), collapse = "|"), uni_ele)]
+
         # BP 2017
         # if(length(main) > 0){
         #   mcYear <- ifelse(mcYear == "average", "moyen", mcYear)
@@ -374,6 +379,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           timeStep = timeStep, 
           variable = variable, 
           variable2Axe = variable2Axe,
+          typeConfInt = typeConfInt,
           confInt = confInt, 
           minValue = minValue,
           maxValue = maxValue, 
@@ -400,7 +406,6 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         x = x,
         idCols = idCols,
         valueCols = valueCols,
-        showConfInt = !is.null(x$mcYear) && length(unique(x$mcYear) > 1),
         dataDateRange = dataDateRange,
         dateRange = dateRange,
         uniqueElem = uniqueElem,
@@ -452,7 +457,10 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   
   manipulateWidget({
     .tryCloseH5()
+
     if(.id <= length(params$x)){
+      
+      if(length(mcYear) == 0){return(combineWidgets(.getLabelLanguage("Please select some mcYears", language)))}
       
       if(length(variable) == 0){return(combineWidgets(.getLabelLanguage("Please select some variables", language)))}
       
@@ -471,10 +479,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
       } else {
         aggregate <- "none"
       }
-      widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, confInt, 
+      
+
+      widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, typeConfInt, confInt, 
                                                              dateRange, minValue, maxValue, aggregate, legend, 
                                                              highlight, stepPlot, drawPoints, main)
-      
+
       controlWidgetSize(widget, language)
     } else {
       combineWidgets(.getLabelLanguage("No data for this selection", language))
@@ -611,9 +621,25 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     },
     value = {
       # if(.initial) "average"
-      if(.initial) mcYear
-      else NULL
-    }, multiple = FALSE, 
+      allMcY <- .compareOperation(lapply(params$x, function(vv){
+        unique(vv[[table]]$uniqueMcYears)
+      }), xyCompare)
+      names(allMcY) <- allMcY
+      if(is.null(allMcY)){
+        allMcY <- "average"
+        names(allMcY) <- .getLabelLanguage("average", language)
+      }
+      allMcY
+      if(.initial){
+        if(mcYear %in% allMcY){
+          mcYear
+        } else {
+          allMcY[1]
+        }
+      } else {
+        allMcY[1]
+      }
+    }, multiple = TRUE, 
     label = .getLabelLanguage("mcYear to be displayed", language), 
     .display = !"mcYear" %in% hidden
   ),
@@ -677,7 +703,13 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     .display = timeStepdataload != "annual" & !"type" %in% hidden, 
     label = .getLabelLanguage("type", language)
   ),
-  
+  typeConfInt = mwCheckbox(value = FALSE, 
+                           label = .getLabelLanguage("confidence interval", language), 
+                           .display = length(mcYear) > 1 & !"typeConfInt" %in% hidden & type %in% c("barplot", "ts", "monotone")),
+  confInt = mwSlider(0, 1, confInt, step = 0.01, 
+                     label = "",
+                     .display = length(mcYear) > 1 & !"typeConfInt" %in% hidden & type %in% c("barplot", "ts", "monotone") & typeConfInt & !"confInt" %in% hidden
+  ),
   dateRange = mwDateRange(value = {
     if(.initial){
       res <- NULL
@@ -716,12 +748,6 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   .display = timeStepdataload != "annual" & !"dateRange" %in% hidden, 
   label = .getLabelLanguage("dateRange", language)
   ),
-  
-  confInt = mwSlider(0, 1, confInt, step = 0.01, 
-                     label = .getLabelLanguage("confidence interval", language),
-                     .display = params$x[[max(1,.id)]][[table]]$showConfInt & mcYear == "average" & !"confInt" %in% hidden
-  ),
-  
   minValue = mwNumeric(minValue, label = .getLabelLanguage("min value", language), 
                        .display = type %in% c("density", "cdf") & !"minValue" %in% hidden
   ),
