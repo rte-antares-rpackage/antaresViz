@@ -49,6 +49,9 @@
   
   variables <- setdiff(names(x), c("timeId", lines))
   
+  lineWidth <- rep(lineWidth, length = length(lines))
+  lineColors <- rep(lineColors, length = length(lines))
+  
   if(nrow(x) == 1){
     dt <- copy(x)
     if(length(lines)  > 0){
