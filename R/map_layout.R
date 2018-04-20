@@ -18,6 +18,18 @@
 #'   
 #' @param map_builder \code{logical} Add inputs for build custom map ? Defaut to TRUE.
 #' 
+#' @details 
+#' With \code{map_builder} option, you can build a quiet custom map using \code{spMaps} package. 
+#' This package help you to build \code{\link[sp]{SpatialPolygonsDataFrame}} on Europe. 
+#' Moreover, you can use two options in the module : 
+#' 
+#' \itemize{
+#'    \item {"Merge countries" : Some countries like UK or Belgium are firstly rendered in multiple and diffrent area. 
+#'    You can so choose to finally use this countries as one single area on the map}
+#'    \item {"Merge states" : If you need states details but not having one area per state, the map will be incomplete 
+#'    for some countries, plotting only states with area. So you can choose to aggregate the states of the countries.
+#'    This is done using a nearest states algorithm. The result is available only after layout validation.}
+#'  }
 #' @return 
 #' An object of class \code{mapLayout}.
 #' 
@@ -123,7 +135,7 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
       ),   
       column(2, 
              if(map_builder){
-               div(br(), checkboxInput(ns("merge_cty"), "Merge country ?", TRUE), align = "center")
+               div(br(), checkboxInput(ns("merge_cty"), "Merge countries ?", TRUE), align = "center")
              }
       ), 
       column(2, 
@@ -194,7 +206,7 @@ changeCoordsServer <- function(input, output, session,
     updateSelectInput(session, "ml_states", 
                       label = paste0(.getLabelLanguage("States", language()), " : "))
     
-    updateCheckboxInput(session, "merge_cty", .getLabelLanguage("Merge country ?", language()))
+    updateCheckboxInput(session, "merge_cty", .getLabelLanguage("Merge countries ?", language()))
     updateCheckboxInput(session, "merge_ste", .getLabelLanguage("Merge states ?", language()))
     
     updateActionButton(session, "state", label = .getLabelLanguage("Next", language()))

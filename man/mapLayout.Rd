@@ -27,6 +27,19 @@ areas of a study on a map. the GPS coordinates of the areas are then returned
 and can be used in functions. This function should be used only once per 
 study. The result should then be saved in an external file and be reused.
 }
+\details{
+With \code{map_builder} option, you can build a quiet custom map using \code{spMaps} package. 
+This package help you to build \code{\link[sp]{SpatialPolygonsDataFrame}} on Europe. 
+Moreover, you can use two options in the module : 
+
+\itemize{
+   \item {"Merge countries" : Some countries like UK or Belgium are firstly rendered in multiple and diffrent area. 
+   You can so choose to finally use this countries as one single area on the map}
+   \item {"Merge states" : If you need states details but not having one area per state, the map will be incomplete 
+   for some countries, plotting only states with area. So you can choose to aggregate the states of the countries.
+   This is done using a nearest states algorithm. The result is available only after layout validation.}
+ }
+}
 \examples{
 \dontrun{
 # Read the coordinates of the areas in the Antares interface, then convert it
