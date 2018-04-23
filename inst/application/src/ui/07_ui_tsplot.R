@@ -6,7 +6,7 @@ tabPanel(textOutput("label_tab_tsPlot"),
                                                     uiOutput("plotts_ui")
                                    ),
                                    conditionalPanel(condition = "output.have_data_areas === false",
-                                                    h3("No areas imported")
+                                                    h3(textOutput("no_areas_2"))
                                    )
                   ),
                   conditionalPanel(condition = "output.have_data === false",

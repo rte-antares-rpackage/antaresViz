@@ -6,7 +6,7 @@ tabPanel("Production",
                                                     uiOutput("prodStack_ui")
                                    ),
                                    conditionalPanel(condition = "output.have_data_areas === false",
-                                                    h3("No areas imported")
+                                                    h3(textOutput("no_areas_1"))
                                    )
                   ),
                   conditionalPanel(condition = "output.have_data === false",

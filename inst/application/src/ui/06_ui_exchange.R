@@ -6,7 +6,7 @@ tabPanel(textOutput("label_tab_exchanges"),
                                                     uiOutput("exchangesStack_ui")
                                    ),
                                    conditionalPanel(condition = "output.have_data_links === false",
-                                                    h3("No links imported")
+                                                    h3(textOutput("no_links"))
                                    )
                   ),
                   conditionalPanel(condition = "output.have_data === false",

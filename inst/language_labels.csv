@@ -129,6 +129,8 @@ readAntares RAM limit (in Go);Limite RAM (Go) de readAntares
 antaresViz data module (in Mb);Limite (Mb) des modules de visualisation
 Share inputs between modules ?;Partage des inputs entre les modules ?
 No data imported;Pas de données importées
+No areas imported;Pas noeuds importés 
+No links imported;Pas de liens importés
 No antares output found in directory;Pas d'étude(s) antares trouvée(s) dans le répertoire
 Please first choose a folder with antares output;Sélectionner un répertoire contenant des études antares
 Please set or import a map layout before;Editer ou importer le positionnement des points

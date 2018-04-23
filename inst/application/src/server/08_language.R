@@ -221,3 +221,16 @@ output$title_import_layout <- renderText({
 output$title_current_layout <- renderText({
   antaresViz:::.getLabelLanguage("Current map layout", current_language$language)
 })
+
+
+output$no_areas_1 <- renderText({
+  antaresViz:::.getLabelLanguage("No areas imported", current_language$language)
+})
+
+output$no_areas_2 <- renderText({
+  antaresViz:::.getLabelLanguage("No areas imported", current_language$language)
+})
+
+output$no_links <- renderText({
+  antaresViz:::.getLabelLanguage("No links imported", current_language$language)
+})
