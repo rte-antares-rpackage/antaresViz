@@ -360,7 +360,10 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         )
         
         uni_ele <- unique(dt$element)
-        variable2Axe <- uni_ele[grepl(paste(paste0("(", variable2Axe, ")"), collapse = "|"), uni_ele)]
+        if(!is.null(variable2Axe) && length(variable2Axe) > 0){
+          label_variable2Axe <- variable2Axe
+          variable2Axe <- uni_ele[grepl(paste(paste0("(", variable2Axe, ")"), collapse = "|"), uni_ele)]
+        }
 
         # BP 2017
         # if(length(main) > 0){
@@ -379,6 +382,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
           timeStep = timeStep, 
           variable = variable, 
           variable2Axe = variable2Axe,
+          label_variable2Axe = label_variable2Axe,
           typeConfInt = typeConfInt,
           confInt = confInt, 
           minValue = minValue,

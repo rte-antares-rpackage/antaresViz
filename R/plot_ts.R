@@ -16,7 +16,8 @@
 #' 
 #' @noRd
 #' 
-.plotTS <- function(dt, timeStep, variable, variable2Axe = NULL, typeConfInt = FALSE, 
+.plotTS <- function(dt, timeStep, variable, variable2Axe = NULL,
+                    typeConfInt = FALSE, 
                     confInt = 0, maxValue, 
                     colors = NULL,
                     main = NULL,
@@ -24,7 +25,8 @@
                     legend = TRUE,
                     legendItemsPerRow = 5,
                     group = NULL,
-                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, language = language, ...) {
+                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, 
+                    language = language, label_variable2Axe = NULL, ...) {
   
   uniqueElements <- as.character(sort(unique(dt$element)))
   plotConfInt <- FALSE
@@ -34,11 +36,11 @@
     # If dt contains several Monte-Carlo scenario, compute aggregate statistics
     if (!is.null(dt$mcYear)) {
       if (confInt == 0) {
-
+        
         dt <- dt[, .(value = mean(value)), by = .(element, time)]
         
       } else {
-
+        
         plotConfInt <- TRUE
         alpha <- (1 - confInt) / 2
         dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
@@ -48,19 +50,26 @@
       }
     }
   }
-
+  
   dt <- dcast(dt, time ~ element, value.var = "value")
   
   # Graphical parameters
-  if(length(uniqueElements)> 1)
-  {
-  variable <- paste0(uniqueElements, collapse = " ; ")
-  }else{
-    variable <- paste0(uniqueElements, " - ", variable)
-    
+  if(is.null(ylab)){
+    ylab <- paste0(variable, collapse = " ; ")
   }
   
-  if (is.null(ylab)) ylab <- variable
+  ind_2_axes <- FALSE
+  if(!is.null(variable2Axe) && length(variable2Axe) > 0){
+    ind_2_axes <- TRUE
+    ylab_2 <- paste0(label_variable2Axe, collapse = " ; ")
+  }
+  
+  if(length(uniqueElements)> 1){
+    variable <- paste0(uniqueElements, collapse = " ; ")
+  } else {
+    variable <- paste0(uniqueElements, " - ", variable)
+  }
+  
   if (is.null(main) | isTRUE(all.equal("", main))){
     main <- paste(.getLabelLanguage("Evolution of", language), variable)
   } 
@@ -106,20 +115,20 @@
     }
   }
   
-  if(highlight)
-  {
+  if(highlight){
     g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
   }
   
+  if(ind_2_axes){
+    g  <- g  %>% dyAxis("y2", label = ylab_2)
+  }
   if (plotConfInt) {
     for (v in uniqueElements) {
       axis = NULL
-      if(length(variable2Axe)>0)
-      {
-      if(v%in%variable2Axe)
-      {
-        axis <- "y2"
-      } 
+      if(length(variable2Axe) > 0){
+        if(v %in% variable2Axe){
+          axis <- "y2"
+        } 
       }
       g <- g %>% dySeries(paste0(v, c("_l", "", "_u")), axis = axis)
     }

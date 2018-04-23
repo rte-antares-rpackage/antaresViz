@@ -1,5 +1,6 @@
 .plotMonotone <- function(dt, timeStep, variable, variable2Axe = NULL, typeConfInt = FALSE, confInt = NULL, maxValue,
-                          main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, language = "en", ...) {
+                          main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, language = "en", 
+                          label_variable2Axe = NULL, ...) {
   
   uniqueElements <- as.character(sort(unique(dt$element)))
   plotConfInt <- FALSE
@@ -37,13 +38,21 @@
     main <- paste(.getLabelLanguage("Monotone of", language), variable)
   }
   
+  if(!is.null(variable2Axe) && length(variable2Axe) > 0){
+    ylab2 <- paste0(label_variable2Axe, collapse = " ; ")
+  } else {
+    ylab2 <- NULL
+  }
+  
   .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements, variable2Axe = variable2Axe,
-            plotConfInt = plotConfInt, highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ...)
+            plotConfInt = plotConfInt, highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, 
+            ylab2 = ylab2, ...)
   
 }
 
 .density <- function(dt, timeStep, variable, variable2Axe = NULL, minValue = NULL, maxValue = NULL, 
-                     main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, language = "en", ...) {
+                     main = NULL, ylab = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, 
+                     language = "en", label_variable2Axe = NULL, ...) {
   
   uniqueElements <- as.character(sort(unique(dt$element)))
   
@@ -59,7 +68,14 @@
   
   variable <- paste0(variable, collapse = " ; ")
   if (is.null(ylab)){
-    ylab <- .getLabelLanguage("Density", language)
+    # ylab <- .getLabelLanguage("Density", language)
+    ylab <- variable
+  }
+
+  if(!is.null(variable2Axe) && length(variable2Axe) > 0){
+    ylab2 <- paste0(label_variable2Axe, collapse = " ; ")
+  } else {
+    ylab2 <- NULL
   }
   
   if (is.null(main) | isTRUE(all.equal("", main))){
@@ -67,7 +83,7 @@
   }
   
   .plotStat(dt, ylab = ylab, main = main, uniqueElements = uniqueElements,variable2Axe = variable2Axe, 
-            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints,...)
+            highlight = highlight, stepPlot = stepPlot, drawPoints = drawPoints, ylab2 = ylab2, ...)
   
 }
 
@@ -128,7 +144,7 @@
 .plotStat <- function(dt, ylab, main, colors, uniqueElements, 
                       legend, legendItemsPerRow, width, height,
                       plotConfInt = FALSE, highlight = FALSE,
-                      stepPlot = FALSE, drawPoints = FALSE,variable2Axe = NULL, language = "en", ...) {
+                      stepPlot = FALSE, drawPoints = FALSE,variable2Axe = NULL, language = "en", ylab2 = NULL, ...) {
   dt <- dcast(dt, x ~ element, value.var = "y")
   
   if (is.null(colors)) {
@@ -170,18 +186,19 @@
     }
   }
   
-  if(highlight)
-  {
+  if(highlight){
     g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
+  }
+  
+  if(!is.null(ylab2)){
+    g  <- g  %>% dyAxis("y2", label = ylab2)
   }
   
   if (plotConfInt) {
     for (v in uniqueElements) {
       axis = NULL
-      if(length(variable2Axe)>0)
-      {
-        if(v%in%variable2Axe)
-        {
+      if(length(variable2Axe)>0){
+        if(v%in%variable2Axe){
           axis <- "y2"
         } 
       }
