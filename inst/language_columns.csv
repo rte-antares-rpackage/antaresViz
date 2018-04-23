@@ -4,7 +4,7 @@ OP. COST;cout_operationnel
 MRG. PRICE;prix_marginal
 CO2 EMIS.;CO2
 BALANCE;echanges
-ROW BAL.;flux_fixe
+ROW BAL.;balance_autre_pays
 PSP;pompage_turbinage
 MISC. NDG;renouvelable_autre
 LOAD;consommation
