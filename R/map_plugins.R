@@ -66,7 +66,8 @@ addAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL,
     show_legend = .getLabelLanguage("Show legend", language),
     hide_legend = .getLabelLanguage("Hide legend", language)
   )
-  
+
+    
   map %>% requireDep("antaresLegend") %>% 
     invokeMethod(data=NULL, "addAntaresLegend", options)
 }
@@ -89,6 +90,7 @@ updateAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL,
   # Remove null elements
   nullOpts <- sapply(options, is.null)
   options <- options[!nullOpts]
+  
   
   map %>% requireDep("antaresLegend") %>% 
     invokeMethod(data=NULL, "updateAntaresLegend", options)
