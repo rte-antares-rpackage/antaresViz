@@ -124,6 +124,9 @@
 #' setAlias("custom_alias", "short description", c("OIL", "GAS", "COAL")) 
 #' plotMap(x = mydata, mapLayout = ml, typeSizeAreaVars = TRUE, 
 #'     aliasSizeAreaVars = "custom_alias")
+#'     
+#' plotMap(x = mydata, mapLayout = ml, interactive = FALSE, 
+#'     language = "fr", aliasSizeAreaVars = "Renouvelable", typeSizeAreaVars = TRUE)
 #' 
 #' # Use h5 for dynamic request / exploration in a study
 #' # Set path of simulaiton
@@ -486,6 +489,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   if (!interactive) {
     x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
     
+    if(!typeSizeAreaVars){
+      sizeAreaVars <- sizeAreaVars
+    } else {
+      sizeAreaVars <- unique(do.call("c", map_alias[aliasSizeAreaVars]))
+    }
     
     params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
     L_w <- lapply(params$x, function(X){
@@ -527,7 +535,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           if(!typeSizeAreaVars){
             sizeAreaVars <- sizeAreaVars
           } else {
-            sizeAreaVars <- map_alias[[aliasSizeAreaVars]]
+            sizeAreaVars <- unique(do.call("c", map_alias[aliasSizeAreaVars]))
           }
           
           widget <- params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
@@ -714,7 +722,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
         label = .getLabelLanguage("Color", language), 
         .display = !"colAreaVar" %in% hidden
       ),
-      typeSizeAreaVars = mwCheckbox(value = typeSizeAreaVars, 
+      typeSizeAreaVars = mwCheckbox(value = FALSE, 
                                     label = .getLabelLanguage("Size by alias", language), 
                                     .display = !"typeSizeAreaVars" %in% hidden),
       aliasSizeAreaVars = mwSelect(
@@ -733,7 +741,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           else NULL
         }, 
         label = .getLabelLanguage("Size", language), 
-        multiple = FALSE, .display = !"aliasSizeAreaVars" %in% hidden & typeSizeAreaVars
+        multiple = TRUE, .display = !"aliasSizeAreaVars" %in% hidden & typeSizeAreaVars
       ),
       sizeAreaVars = mwSelect(
         {

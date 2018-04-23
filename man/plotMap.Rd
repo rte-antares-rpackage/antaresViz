@@ -185,6 +185,9 @@ plotMap(x = list(mydata, mydata), mapLayout =  ml)
 setAlias("custom_alias", "short description", c("OIL", "GAS", "COAL")) 
 plotMap(x = mydata, mapLayout = ml, typeSizeAreaVars = TRUE, 
     aliasSizeAreaVars = "custom_alias")
+    
+plotMap(x = mydata, mapLayout = ml, interactive = FALSE, 
+    language = "fr", aliasSizeAreaVars = "Renouvelable", typeSizeAreaVars = TRUE)
 
 # Use h5 for dynamic request / exploration in a study
 # Set path of simulaiton
