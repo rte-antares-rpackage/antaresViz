@@ -376,7 +376,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
         #     main <- paste0("Tirage ", mcYear)
         #   }
         # }
-        
+      
         f(
           dt, 
           timeStep = timeStep, 
@@ -425,7 +425,6 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # to interactively explore the data
   if (!interactive) {
     
-    
     x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
     params <- .transformDataForComp(.giveListFormat(x), compare, compareOpts, 
                                     processFun = processFun, 
@@ -436,7 +435,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
     if (is.null(table)) table <- names(params$x[[1]])[1]
     if (is.null(mcYear)) mcYear <- "average"
     L_w <- lapply(params$x, function(X){
-      X[[table]]$plotFun(mcYear, 1, variable, variable2Axe, elements, type, confInt, dateRange, 
+      X[[table]]$plotFun(mcYear, 1, variable, variable2Axe, elements, type, typeConfInt, confInt, dateRange, 
                          minValue, maxValue, aggregate, legend, highlight, stepPlot, drawPoints, main)
     })
     return(combineWidgets(list = L_w))
