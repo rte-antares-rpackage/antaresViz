@@ -10,7 +10,6 @@ bioc_use_devel: true
 
 os:
  - linux
- - osx
 
 r:
  - bioc-devel
