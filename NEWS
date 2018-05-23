@@ -1,5 +1,16 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+Changes in version 0.13.0 (2018-05-03)
+
+NEW FEATURES:
+* In runAppAntaresViz(), prodStack(), exchangesStack() and tsPlot(), it is now possible to change the language from 'en' to 'fr'.
+* prodStack() and exchangesStack() can now represent annual data. 
+* In plotMap(), it is now possible to give an alias to the parameter "size". A user can specify a new alias with the function setAlias() of 'antaresRead'.
+* tsPlot() can now plot several mcYear for several variables. 
+
+BUGFIXES:
+* plotMap() was not working with 'leaflet' version 2.0.0. 
+
 
 Changes in version 0.12.0 (2017-12-14)
 
