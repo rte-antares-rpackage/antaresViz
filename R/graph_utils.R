@@ -228,7 +228,7 @@
     
     
     argS <- list(areas = areas, links = links, clusters = clusters,districts = districts , mcYears = mcYearh2,
-                 timeStep = sharerequest$timeSteph5_l, opts = dta)
+                 timeStep = sharerequest$timeSteph5_l, opts = dta, showProgress=FALSE)
     argS[names(h5requestFilter)] <- h5requestFilter
     dt <- do.call(readAntares,
                   argS)

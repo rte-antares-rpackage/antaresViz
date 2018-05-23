@@ -16,50 +16,63 @@
 #' 
 #' @noRd
 #' 
-.plotTS <- function(dt, timeStep, variable, variable2Axe = NULL, confInt = 0, maxValue, 
+.plotTS <- function(dt, timeStep, variable, variable2Axe = NULL,
+                    typeConfInt = FALSE, 
+                    confInt = 0, maxValue, 
                     colors = NULL,
                     main = NULL,
                     ylab = NULL,
                     legend = TRUE,
                     legendItemsPerRow = 5,
                     group = NULL,
-                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, ...) {
+                    width = NULL, height = NULL, highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE, 
+                    language = language, label_variable2Axe = NULL, ...) {
   
-  
-  uniqueElements <- sort(unique(dt$element))
+  uniqueElements <- as.character(sort(unique(dt$element)))
   plotConfInt <- FALSE
   if (is.null(group)) group <- sample(1e9, 1)
   
-  # If dt contains several Monte-Carlo scenario, compute aggregate statistics
-  if (!is.null(dt$mcYear)) {
-    if (confInt == 0) {
-      
-      dt <- dt[, .(value = mean(value)), by = .(element, time)]
-      
-    } else {
-      
-      plotConfInt <- TRUE
-      alpha <- (1 - confInt) / 2
-      dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
-                   suffix = c("", "_l", "_u")), 
-               by = .(time, element)]
-      dt[, element := paste0(element, suffix)]
+  if(typeConfInt){
+    # If dt contains several Monte-Carlo scenario, compute aggregate statistics
+    if (!is.null(dt$mcYear)) {
+      if (confInt == 0) {
+        
+        dt <- dt[, .(value = mean(value)), by = .(element, time)]
+        
+      } else {
+        
+        plotConfInt <- TRUE
+        alpha <- (1 - confInt) / 2
+        dt <- dt[, .(value = c(mean(value), quantile(value, c(alpha, 1 - alpha))),
+                     suffix = c("", "_l", "_u")), 
+                 by = .(time, element)]
+        dt[, element := paste0(element, suffix)]
+      }
     }
   }
   
   dt <- dcast(dt, time ~ element, value.var = "value")
   
   # Graphical parameters
-  if(length(uniqueElements)> 1)
-  {
-  variable <- paste0(uniqueElements, collapse = " ; ")
-  }else{
-    variable <- paste0(uniqueElements, " - ", variable)
-    
+  if(is.null(ylab)){
+    ylab <- paste0(variable, collapse = " ; ")
   }
   
-  if (is.null(ylab)) ylab <- variable
-  if (is.null(main) | isTRUE(all.equal("", main))) main <- paste("Evolution of", variable)
+  ind_2_axes <- FALSE
+  if(!is.null(variable2Axe) && length(variable2Axe) > 0){
+    ind_2_axes <- TRUE
+    ylab_2 <- paste0(label_variable2Axe, collapse = " ; ")
+  }
+  
+  if(length(uniqueElements)> 1){
+    variable <- paste0(uniqueElements, collapse = " ; ")
+  } else {
+    variable <- paste0(uniqueElements, " - ", variable)
+  }
+  
+  if (is.null(main) | isTRUE(all.equal("", main))){
+    main <- paste(.getLabelLanguage("Evolution of", language), variable)
+  } 
   if (is.null(colors)) {
     colors <- substring(rainbow(length(uniqueElements), s = 0.7, v = 0.7), 1, 7)
   } else {
@@ -68,6 +81,12 @@
   
   legendId <- sample(1e9, 1)
   
+  if(length(uniqueElements) == 1){
+    dycol <- colors[1]
+  } else {
+    dycol <- NULL
+  }
+  
   g <- dygraph(as.xts.data.table(dt), main = main, group = group) %>% 
     dyOptions(
       includeZero = TRUE, 
@@ -75,7 +94,7 @@
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE,
-      colors = colors, 
+      colors = dycol, 
       useDataTimezone = TRUE,
       stepPlot = stepPlot,
       drawPoints = drawPoints
@@ -83,33 +102,33 @@
     dyAxis("x", rangePad = 10) %>% 
     dyAxis("y", label = ylab, pixelsPerLabel = 60, rangePad = 10) %>% 
     #dyRangeSelector() %>% 
-    dyLegend(show = "never") %>% 
+    dyLegend(show = "never") %>%
     dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId, timeStep),
+      highlightCallback = JS_updateLegend(legendId, timeStep, language = language),
       unhighlightCallback = JS_resetLegend(legendId)
     )
-  if(length(variable2Axe)>0){
-    for( i in variable2Axe)
-    {
-    g <- g %>% dySeries(i, axis = 'y2')
+  for(i in 1:length(uniqueElements)){
+    if(!uniqueElements[i] %in% variable2Axe){
+      g <- g %>% dySeries(uniqueElements[i], color = colors[i])
+    } else {
+      g <- g %>% dySeries(uniqueElements[i], axis = 'y2', color = colors[i])
     }
   }
   
-  
-  if(highlight)
-  {
+  if(highlight){
     g  <- g  %>% dyHighlight(highlightSeriesOpts = list(strokeWidth = 2))
   }
   
+  if(ind_2_axes){
+    g  <- g  %>% dyAxis("y2", label = ylab_2)
+  }
   if (plotConfInt) {
     for (v in uniqueElements) {
       axis = NULL
-      if(length(variable2Axe)>0)
-      {
-      if(v%in%variable2Axe)
-      {
-        axis <- "y2"
-      } 
+      if(length(variable2Axe) > 0){
+        if(v %in% variable2Axe){
+          axis <- "y2"
+        } 
       }
       g <- g %>% dySeries(paste0(v, c("_l", "", "_u")), axis = axis)
     }

@@ -11,6 +11,9 @@ describe(".getTSData", {
   mydata <- readAntares(timeStep = "daily", mcYears = "all", showProgress = FALSE)
   tpl <- mydata[, .(mcYear, element = area, timeId, time, value = 0)]
   
+  mydata_av <- readAntares(timeStep = "daily", mcYears = NULL, showProgress = FALSE)
+  tpl_av <- mydata_av[, .(element = area, timeId, time, value = 0)]
+  
   it ("returns a table with element, timeId, time and value columns", {
     dt <- .getTSData(mydata, tpl, "LOAD", "all")
     check_obj(dt)
@@ -19,10 +22,10 @@ describe(".getTSData", {
   it ("can filter data by element, date, mcYear", {
     # element
     myarea <- getAreas()[1]
-    dt <- .getTSData(mydata, tpl, "LOAD", elements = myarea)
+    dt <- .getTSData(mydata_av, tpl_av, "LOAD", elements = myarea)
     check_obj(dt)
     expect_true(all(dt$element == myarea))
-    expect_equal(dt$value, mydata[area == myarea, LOAD])
+    expect_equal(dt$value, mydata_av[area == myarea, LOAD])
     
     # date
     dateRange <- c(min(dt$time), min(dt$time))
@@ -40,17 +43,17 @@ describe(".getTSData", {
   
   it ("can aggregate data", {
     # sum
-    dt <- .getTSData(mydata, tpl, "LOAD", "all", aggregate = "sum")
+    dt <- .getTSData(mydata_av, tpl_av, "LOAD", "all", aggregate = "sum")
     check_obj(dt)
     expect_true(all(dt$element == "LOAD"))
-    expectValue <- mydata[, .(LOAD = sum(LOAD)), by = .(mcYear, timeId)]
+    expectValue <- mydata_av[, .(LOAD = sum(LOAD)), by = .(timeId)]
     expect_equal(dt$value, expectValue$LOAD)
     
     # mean
-    dt <- .getTSData(mydata, tpl, "LOAD", "all", aggregate = "mean")
+    dt <- .getTSData(mydata_av, tpl_av, "LOAD", "all", aggregate = "mean")
     check_obj(dt)
     expect_true(all(dt$element == "LOAD"))
-    expectValue <- mydata[, .(LOAD = mean(LOAD)), by = .(mcYear, timeId)]
+    expectValue <- mydata_av[, .(LOAD = mean(LOAD)), by = .(timeId)]
     expect_equal(dt$value, expectValue$LOAD)
   })
 })

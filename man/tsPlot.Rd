@@ -9,55 +9,59 @@
 \usage{
 tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
-  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
-  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum",
-  "mean by areas", "sum by areas"), compare = NULL, compareOpts = list(),
-  interactive = getInteractivity(), colors = NULL, main = NULL,
-  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
-  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
-  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"), ...)
+  "monotone", "density", "cdf", "heatmap"), dateRange = NULL,
+  typeConfInt = FALSE, confInt = 0, minValue = NULL, maxValue = NULL,
+  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
+  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
+  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
+  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
+  hidden = NULL, ...)
 
 \method{plot}{antaresData}(x, table = NULL, variable = NULL,
   elements = NULL, variable2Axe = NULL, mcYear = "average",
   type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-  dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
-  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
-  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
-  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
-  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
-  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
-
-\method{plot}{simOptions}(x, table = NULL, variable = NULL,
-  elements = NULL, variable2Axe = NULL, mcYear = "average",
-  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-  dateRange = NULL, confInt = 0, minValue = NULL, maxValue = NULL,
-  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
-  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
-  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
-  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
-  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), ...)
-
-\method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
-  variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
-  "monotone", "density", "cdf", "heatmap"), dateRange = NULL, confInt = 0,
-  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean", "sum",
-  "mean by areas", "sum by areas"), compare = NULL, compareOpts = list(),
+  dateRange = NULL, typeConfInt = FALSE, confInt = 0, minValue = NULL,
+  maxValue = NULL, aggregate = c("none", "mean", "sum", "mean by areas",
+  "sum by areas"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), colors = NULL, main = NULL,
   ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
   colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
   xyCompare = c("union", "intersect"), h5requestFiltering = list(),
   highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
   secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"), ...)
+  tablesh5 = c("areas", "links"), language = "en", hidden = NULL, ...)
+
+\method{plot}{simOptions}(x, table = NULL, variable = NULL,
+  elements = NULL, variable2Axe = NULL, mcYear = "average",
+  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
+  dateRange = NULL, typeConfInt = FALSE, confInt = 0, minValue = NULL,
+  maxValue = NULL, aggregate = c("none", "mean", "sum", "mean by areas",
+  "sum by areas"), compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
+  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
+  tablesh5 = c("areas", "links"), language = "en", hidden = NULL, ...)
+
+\method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
+  variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
+  "monotone", "density", "cdf", "heatmap"), dateRange = NULL,
+  typeConfInt = FALSE, confInt = 0, minValue = NULL, maxValue = NULL,
+  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
+  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
+  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
+  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
+  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
+  hidden = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
@@ -93,6 +97,9 @@ variable for each element.}
 
 \item{dateRange}{A vector of two dates. Only data points between these two dates are 
 displayed. If NULL, then all data is displayed.}
+
+\item{typeConfInt}{\code{logical}. If multiple Monte Carlo scenarios are present in 
+the input data, see all curves (FALSE, Default), or mean and confidence interval (TRUE)}
 
 \item{confInt}{Number between 0 and 1 indicating the size of the confidence interval to 
 display. If it equals to 0, then confidence interval is not computed nor
@@ -171,6 +178,10 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
 
+\item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
+
+\item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
+
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
@@ -196,6 +207,7 @@ compare argument can take following values :
    \item "main"
    \item "variable"
    \item "type"
+   \item "typeConfInt"
    \item "confInt"
    \item "elements"
    \item "aggregate"

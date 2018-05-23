@@ -24,4 +24,4 @@ if (sourcedir != "") {
   assign("pathtemp", path, envir = globalenv())
 }
 
-setSimulationPath(get("studyPath", envir = globalenv()))
+opts<-setSimulationPath(get("studyPath", envir = globalenv()))

@@ -16,7 +16,8 @@
 .getTSData <- function(x, tpl, variable, elements, 
                        uniqueElement = unique(tpl$element), 
                        mcYear = NULL, 
-                       dateRange = NULL, aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas")) {
+                       dateRange = NULL, aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"), 
+                       typeConfInt = FALSE) {
   
   if(length(variable) == 0){return(tpl[0])}
   if("all" %in% elements) elements <- uniqueElement
@@ -40,21 +41,26 @@
     tpl <- rbindlist(listVar)
     elements <- as.vector(sapply(elements, function(X){paste(X, "__", variable)}))
   }else{
-    tpl <- listVar[[1]]
+    if(aggregate %in% c("mean by areas", "sum by areas")){
+      tpl <- listVar[[1]][,element := paste(element, '__' , names(listVar)[1])]
+      elements <- paste(elements, "__", variable)
+    } else {
+      tpl <- listVar[[1]]
+    }
   }
   
+
   # Filtering data if required
-  if (!is.null(mcYear) && mcYear != "average") {
+  if (!is.null(mcYear) && length(mcYear) > 0 && mcYear != "average") {
     mcy <- mcYear # Just to avoid name confusion in the next line
     tpl <- tpl[mcYear %in% mcy]
   }else{
     if(!"mcYear" %in% names(tpl))
-      if(mcYear != "average")
-      {
+      if(!is.null(mcYear) && length(mcYear) > 0 && mcYear != "average"){
       .printWarningMcYear()
       }
   }
-  
+
   # if (length(elements) == 0) elements <- uniqueElement[1:5]
   if (!"all" %in% elements) tpl <- tpl[element %in% elements]
   if (!is.null(dateRange)) tpl <- tpl[as.Date(time) %between% dateRange]
@@ -96,6 +102,14 @@
     }
   }
 
+  if(!typeConfInt){
+    if("mcYear" %in% names(tpl)){
+      if(length(unique(tpl$mcYear)) > 1){
+        tpl[, element := paste0(element, " __ mcY", mcYear)]
+      }
+    }
+  }
+
   tpl
 }
 
@@ -128,6 +142,21 @@
       invalid <- compare_values[!compare_values %in% values]
       stop(paste0("Invalid arguments for 'compare' : '", paste0(invalid, collapse = "', '"),
                   "'. Possible values : '", paste0(values, collapse = "', '"), "'."))
+    }
+  }
+  invisible(TRUE)
+}
+
+.validHidden <- function(hidden, values){
+  if(!is.null(hidden)){
+    if(!is.vector(hidden)){
+      stop("'hidden' must be a vector")
+    } else {
+      if(!all(hidden %in% values)){
+        invalid <- hidden[!hidden %in% values]
+          stop(paste0("Invalid arguments for 'hidden' : '", paste0(invalid, collapse = "', '"),
+                  "'. Possible values : '", paste0(values, collapse = "', '"), "'."))
+      }
     }
   }
   invisible(TRUE)

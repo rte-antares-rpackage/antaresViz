@@ -15,19 +15,19 @@ output$info_list <- renderUI({
       check_list <- lapply(1:length(list_data), function(i) {
         check_name <- paste0("list_study_check", i)
         div(
-          checkboxInput(check_name, "Include study in analysis", value = TRUE), align = "center")
+          checkboxInput(check_name, antaresViz:::.getLabelLanguage("Include study in analysis", current_language$language), value = TRUE), align = "center")
       })
       # bouton pour afficher les parametres
       params_list <- lapply(1:length(list_data), function(i) {
         btn_name <- paste0("list_study_params", i)
         div(
-          actionButton(btn_name, "View parameters"), align = "center")
+          actionButton(btn_name, antaresViz:::.getLabelLanguage("View parameters", current_language$language)), align = "center")
       })
       # bouton pour supprimer les donnees
       rm_list <- lapply(1:length(list_data), function(i) {
         btn_name <- paste0("list_study_rm", i)
         div(
-          actionButton(btn_name, "Remove study"), align = "center")
+          actionButton(btn_name, antaresViz:::.getLabelLanguage("Remove study", current_language$language)), align = "center")
       })
       # format et retour
       fluidRow(
@@ -55,7 +55,7 @@ observe({
         study_name <- paste0("list_study_", i)
         study_params <- paste0("list_study_params", i)
         output[[study_name]] <- renderText({
-          paste0("Study : ", names(list_data_tmp)[i])
+          names(list_data_tmp)[i]
         })
         
         output[[study_params]] <- renderPrint({
@@ -87,17 +87,9 @@ for(j in 1:16){
       if(!is.null(input[[paste0("list_study_rm", l_j)]])){
         if(input[[paste0("list_study_rm", l_j)]] > 0){
           isolate({
-            # print("remove")
-            # print(l_j)
-            # print(object_size(list_data_all$antaresDataList))
-            # print(object_size(list_data_all$antaresDataList[l_j]))
-            # print(mem_change(list_data_all$antaresDataList[l_j] <- NULL))
-            # print(object_size(list_data_all$antaresDataList))
-            # print(object_size(list_data_all$antaresDataList[l_j]))
             list_data_all$antaresDataList[l_j] <- NULL
             list_data_all$params[l_j] <- NULL
             gc(reset = TRUE)
-            
           })
         }
       }

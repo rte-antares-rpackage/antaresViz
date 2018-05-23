@@ -8,7 +8,11 @@ L.AntaresLegend = L.Control.extend({
     htmlLinkSize: null,
     onComplete:null,
     display: "choose",
-    collapsed: true
+    collapsed: true,
+    areas_name: "Areas",
+    links_names: "Links",
+    show_legend: "Show legend",
+    hide_legend: "Hide legend"
   },
   
   initialize: function(options) {
@@ -16,23 +20,27 @@ L.AntaresLegend = L.Control.extend({
     var container = createEl('div');
     container.style.padding = "5px";
     
+    var areas_name, links_names;
+    areas_name = options.areas_name;
+    links_names = options.links_names;
+
+    var btn = createEl("button", "btn btn-link btn-xs pull-left", container);
+        
     var content = createEl("div", "", container);
     content.innerHTML = '\
-      <div id = "legend-area" class="legend">\
-        <h2>Areas</h2>\
+      <br><div id = "legend-area" class="legend">\
+        <h2>' + areas_name + '</h2>\
         <div id="area-color" class="legend-section"></div>\
         <div id="area-size" class="legend-section"></div>\
         <div style="clear:both;"></div>\
       </div>\
       <div id = "legend-link" class="legend">\
-        <h2>Links</h2>\
+        <h2>' + links_names + '</h2>\
         <div id="link-color" class="legend-section"></div>\
         <div id="link-size" class="legend-section"></div>\
         <div style="clear:both;"></div>\
       </div>\
     ';
-    
-    var btn = createEl("button", "btn btn-link btn-xs pull-right", container);
     
     this._content = content;
     this._btn = btn;
@@ -103,12 +111,16 @@ L.AntaresLegend = L.Control.extend({
   },
   
   showHide: function() {
+    var show_legend, hide_legend;
+    show_legend = this.options.show_legend;
+    hide_legend = this.options.hide_legend;
+    
     if (this.options.collapsed) {
       this._content.style.display = "none";
-      this._btn.textContent = "Show legend";
+      this._btn.textContent = show_legend;
     } else {
       this._content.style.display = "block";
-      this._btn.textContent = "Hide legend";
+      this._btn.textContent = hide_legend;
     }
   },
   

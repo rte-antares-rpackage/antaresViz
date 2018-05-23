@@ -71,10 +71,11 @@ HTMLWidgets.widget({
         // For each new point create a marker that will be placed in the map
         if(x.geopoints){
           x.geopoints.forEach(function(p) {
-            var markerIcon = L.VectorMarkers.icon({
+            var markerIcon = L.AwesomeMarkers.icon({
               icon: 'circle',
-              markerColor: p.color,
-              iconColor: p.color == '#FFFFFF' ? '#CCCCCC' : '#FFFFFF'
+              prefix : 'fa',
+              markerColor: 'darkpurple',
+              iconColor: p.color
             });
 
             p.marker =  L.marker(

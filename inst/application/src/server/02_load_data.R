@@ -148,7 +148,7 @@ observe({
 
 observe({
   if(input$import_data > 0){
-    updateTabsetPanel(session, inputId = "tab_data", selected = "Analysis")
+    updateTabsetPanel(session, inputId = "tab_data", selected = "<div id=\"label_tab_analysis\" class=\"shiny-text-output\"></div>")
   }
 })
 

@@ -29,8 +29,6 @@
 #' @noRd
 .getColAndSize <- function(data, coords, mergeBy, mcy, t, colVar, sizeVar, 
                            popupVars, colorScaleOpts, labelVar = NULL) {
-
-  
   
   if (mcy != "average") data <- data[J(as.numeric(mcy))]
   
@@ -43,6 +41,9 @@
     
     neededVars <- intersect(neededVars, names(data))
   }
+  
+  # subset on element find in coords
+  data <- data[get(mergeBy) %in% coords[[mergeBy]]]
   
   if (is.null(t)) {
     if (length(neededVars) > 0) {
@@ -78,13 +79,15 @@
       # Special case of FLOW LIN
       if (colVar == "FLOW LIN.") rangevar <- c(0, max(abs(rangevar)))
       
-      if (rangevar[1] >= 0) {
-        domain <- rangevar
-      } else {
-        domain <- c(-min(rangevar), max(rangevar))
-      }
+      # if (rangevar[1] >= 0) {
+      #   domain <- rangevar
+      # } else {
+      #   domain <- c(-min(rangevar), max(rangevar))
+      # }
       
-      if (colVar == "FLOW LIN.") colorScaleOpts$x <- abs(data[[colVar]])
+      domain <- rangevar 
+      
+      if (colVar %in% c("FLOW LIN.", .getColumnsLanguage("FLOW LIN.", language = "fr"))) colorScaleOpts$x <- abs(data[[colVar]])
       else colorScaleOpts$x <- data[[colVar]]
       
       colorScaleOpts$domain <- domain
@@ -119,7 +122,11 @@
     res$dir <- sign(data$`FLOW LIN.`)
     #coords[, `FLOW LIN.` := abs(`FLOW LIN.`)]
   } else {
-    res$dir <- 0
+    if(.getColumnsLanguage("FLOW LIN.", language = "fr")  %in% names(data)){
+      res$dir <- sign(data[[.getColumnsLanguage("FLOW LIN.", language = "fr")]])
+    } else {
+      res$dir <- 0
+    }
   }
   
   # Pop-up
@@ -142,7 +149,7 @@
 
 # Initialize a map with all elements invisible: links, circles and bar or polar 
 # charts 
-.initMap <- function(x, ml, options) {
+.initMap <- function(x, ml, options, language = "en") {
   
   map <- plot(ml, areas = !is.null(x$areas), links = !is.null(x$links), 
               colAreas = options$areaDefaultCol,
@@ -151,7 +158,7 @@
               labelMaxSize = options$labelMaxSize,
               tilesURL = options$tilesURL, 
               preprocess = options$preprocess) %>% 
-    addAntaresLegend(display = options$legend)
+    addAntaresLegend(display = options$legend, language = language)
   
   addShadows(map)
 }
@@ -174,137 +181,140 @@
   optsArea <- .getColAndSize(x$areas, ml$coords, "area", mcy, t,
                              colAreaVar, sizeAreaVars, popupAreaVars,
                              options$areaColorScaleOpts, labelVar = labelAreaVar)
-  ml$coords <- optsArea$coords
   
-  
-  # Use default values if needed.
-  if (is.null(optsArea$color)) optsArea$color <- options$areaDefaultCol
-  
-  if (is.null(optsArea$size)) {
-    optsArea$size <- 1
-    optsArea$maxSize <- 1
-    areaWidth <- options$areaDefaultSize
-  } else {
-    areaWidth <- options$areaMaxSize
-  }
-  
-  # Chart options
-  if (length(sizeAreaVars) < 2) areaChartType <- "polar-area"
-  if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
-  
-  # Labels
-  labels <- NULL
-  if (length(sizeAreaVars) < 2) {
-    if (labelAreaVar == "none") {
-      showLabels <- FALSE
+  if(nrow(optsArea$coords) > 0){
+    ml$coords <- optsArea$coords
+    
+    
+    # Use default values if needed.
+    if (is.null(optsArea$color)) optsArea$color <- options$areaDefaultCol
+    
+    if (is.null(optsArea$size)) {
+      optsArea$size <- 1
+      optsArea$maxSize <- 1
+      areaWidth <- options$areaDefaultSize
     } else {
-      showLabels <- TRUE
-      labels <- optsArea$coords[[labelAreaVar]]
-      # Create nice labels
-      labels <- prettyNumbers(labels)
+      areaWidth <- options$areaMaxSize
     }
     
-  }
-  
-  showValuesInPopup <- length(sizeAreaVars) > 0
-  
-  # Update corresponding polygons if necessary
-  if (!is.null(ml$map)) {
-    onChange <- JS('
-      var s = this._map.layerManager.getLayer("shape", this.layerId);
-      s.bindPopup(popup);
-      if (opts.fillColor) {
-        d3.select(s._path)
-          .transition()
-          .duration(750)
-          .attr("fill", opts.fillColor);
+    # Chart options
+    if (length(sizeAreaVars) < 2) areaChartType <- "polar-area"
+    if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
+    
+    # Labels
+    labels <- NULL
+    if (length(sizeAreaVars) < 2) {
+      if (labelAreaVar == "none") {
+        showLabels <- FALSE
+      } else {
+        showLabels <- TRUE
+        labels <- optsArea$coords[[labelAreaVar]]
+        # Create nice labels
+        labels <- prettyNumbers(labels)
       }
-    ')
-    if (length(sizeAreaVars) < 2) width <- 0
-    else width <- areaWidth
-  } else {
-    onChange <- JS(NULL)
-    width <- areaWidth
-    if (length(sizeAreaVars) >= 2) {
-      optsArea$color <- options$areaDefaultCol
-      optsArea$pal <- NULL
+      
     }
-  }
-  
-  if(sizeMiniPlot)
-  {
-    if(is.matrix(optsArea$size))
+    
+    showValuesInPopup <- length(sizeAreaVars) > 0
+    
+    # Update corresponding polygons if necessary
+    if (!is.null(ml$map)) {
+      onChange <- JS('
+                     var s = this._map.layerManager.getLayer("shape", this.layerId);
+                     s.bindPopup(popup);
+                     if (opts.fillColor) {
+                     d3.select(s._path)
+                     .transition()
+                     .duration(750)
+                     .attr("fill", opts.fillColor);
+                     }
+                     ')
+      if (length(sizeAreaVars) < 2) width <- 0
+      else width <- areaWidth
+    } else {
+      onChange <- JS(NULL)
+      width <- areaWidth
+      if (length(sizeAreaVars) >= 2) {
+        optsArea$color <- options$areaDefaultCol
+        optsArea$pal <- NULL
+      }
+    }
+    
+    if(sizeMiniPlot)
     {
-      if(ncol(optsArea$size) > 1 )
+      if(is.matrix(optsArea$size))
       {
-        optsArea$Va <- rowSums(optsArea$size)
-        optsArea$VaP <- optsArea$Va / max(optsArea$Va)
-        fM <- 3
-        optsArea$Ra <- 15 + (optsArea$VaP * fM * 30)/2
+        if(ncol(optsArea$size) > 1 )
+        {
+          optsArea$Va <- rowSums(optsArea$size)
+          optsArea$VaP <- optsArea$Va / max(optsArea$Va)
+          fM <- 3
+          optsArea$Ra <- 15 + (optsArea$VaP * fM * 30)/2
+        }
       }
     }
-  }
-  
-  if(is.null(optsArea$Ra)){optsArea$Ra <- width}
-  # Update areas
-  
-  #Apply colors defined in color.csv
-  if(is.null(options$areaChartColors))
-  {
-  varS <- names(optsArea$maxSize)
-  colorDef <- colorsVars$colors[match(varS, colorsVars$Column)]
-  defCol <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b",
-              "e377c2",  "#7f7f7f", "#bcbd22", "#17becf")
-  nbNa <- sum(is.na(colorDef))
-  if(nbNa > 0)
-  {
-  colorDef[is.na(colorDef)] <- defCol[1:nbNa]
-  }
-  options$areaChartColors <- colorDef
-  }
-  
-  map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
-                          time = optsArea$coords$time,
-                          maxValues = optsArea$maxSize, width = optsArea$Ra,
-                          height = options$areaMaxHeight,
-                          showLabels = showLabels, labelText = labels, 
-                          type = areaChartType[[1]], 
-                          colorPalette = options$areaChartColors,
-                          fillColor = optsArea$color,
-                          timeFormat = .getTimeFormat(timeStep),
-                          legend = FALSE,
-                          onChange = onChange,
-                          popup = popupArgs(
-                            showValues = showValuesInPopup,
-                            digits = 2,
-                            supValues = optsArea$coords[, optsArea$popupVars, with = FALSE]
-                          ))
-  
-  # Update the legend
-  #
-  # Color scale legend
-  if (!is.null(optsArea$pal)) {
-    if (is.null(optsArea$levels)) {
-      map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
-    } else {
-      map <- updateAntaresLegend(map, htmlAreaColor = barChartLegend(optsArea$levels, colAreaVar, optsArea$pal))
+    
+    if(is.null(optsArea$Ra)){optsArea$Ra <- width}
+    # Update areas
+    
+    #Apply colors defined in color.csv
+    if(is.null(options$areaChartColors))
+    {
+      varS <- names(optsArea$maxSize)
+      colorDef <- colorsVars$colors[match(varS, colorsVars$Column)]
+      defCol <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b",
+                  "e377c2",  "#7f7f7f", "#bcbd22", "#17becf")
+      nbNa <- sum(is.na(colorDef))
+      if(nbNa > 0)
+      {
+        colorDef[is.na(colorDef)] <- defCol[1:nbNa]
+      }
+      options$areaChartColors <- colorDef
     }
-  } else {
-    map <- updateAntaresLegend(map, htmlAreaColor = "")
-  }
-  
-  # Size legend (radius, polar or bar chart legend)
-  if (length(sizeAreaVars) > 0) {
-    if (length(sizeAreaVars) == 1) {
-      map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$areaMaxSize / 2, optsArea$maxSize))
+    
+    map <- updateMinicharts(map, optsArea$coords$area, chartdata = optsArea$size,
+                            time = optsArea$coords$time,
+                            maxValues = optsArea$maxSize, width = optsArea$Ra,
+                            height = options$areaMaxHeight,
+                            showLabels = showLabels, labelText = labels, 
+                            type = areaChartType[[1]], 
+                            colorPalette = options$areaChartColors,
+                            fillColor = optsArea$color,
+                            timeFormat = .getTimeFormat(timeStep),
+                            legend = FALSE,
+                            onChange = onChange,
+                            popup = popupArgs(
+                              showValues = showValuesInPopup,
+                              digits = 2,
+                              supValues = optsArea$coords[, optsArea$popupVars, with = FALSE]
+                            ))
+    
+    # Update the legend
+    #
+    # Color scale legend
+    if (!is.null(optsArea$pal)) {
+      if (is.null(optsArea$levels)) {
+        map <- updateAntaresLegend(map, htmlAreaColor = colorLegend(colAreaVar, optsArea$pal, optsArea$colorBreaks))
+      } else {
+        map <- updateAntaresLegend(map, htmlAreaColor = barChartLegend(optsArea$levels, colAreaVar, optsArea$pal))
+      }
     } else {
-      map <- updateAntaresLegend(
-        map, 
-        htmlAreaSize = barChartLegend(sizeAreaVars, colors = options$areaChartColors)
-      )
+      map <- updateAntaresLegend(map, htmlAreaColor = "")
     }
-  } else {
-    map <- updateAntaresLegend(map, htmlAreaSize = "")
+    
+    # Size legend (radius, polar or bar chart legend)
+    if (length(sizeAreaVars) > 0) {
+      if (length(sizeAreaVars) == 1) {
+        map <- updateAntaresLegend(map, htmlAreaSize = radiusLegend(sizeAreaVars, options$areaMaxSize / 2, optsArea$maxSize))
+      } else {
+        map <- updateAntaresLegend(
+          map, 
+          htmlAreaSize = barChartLegend(sizeAreaVars, colors = options$areaChartColors)
+        )
+      }
+    } else {
+      map <- updateAntaresLegend(map, htmlAreaSize = "")
+    }
   }
   
   map
@@ -325,50 +335,51 @@
                              colLinkVar, sizeLinkVar, popupLinkVars,  
                              options$linkColorScaleOpts)
   
-  # Use default values if needed
-  if (is.null(optsLink$color) | options$linkDefaultCol != "#BEBECE") optsLink$color <- options$linkDefaultCol
-  if (is.null(optsLink$size)) {
-    optsLink$size <- options$linkDefaultSize
-    optsLink$maxSize <- options$linkMaxSize
-  }
-  
-  showValuesInPopup <- sizeLinkVar != "none"
-  
-  map <- map %>% updateFlows(layerId = optsLink$coords$link, 
-                             color = optsLink$color,
-                             flow = abs(optsLink$size),
-                             maxFlow = unname(optsLink$maxSize),
-                             maxThickness = options$linkMaxSize,
-                             time = optsLink$coords$time,
-                             timeFormat = .getTimeFormat(timeStep),
-                             dir = optsLink$dir,
-                             popup = popupArgs(
-                               showValues = showValuesInPopup,
-                               labels = sizeLinkVar,
-                               digits = 2,
-                               supValues = optsLink$coords[, optsLink$popupVars, with = FALSE]
-                             ),
-                             opacity = 1)
-  
-  # Update the legend
-  
-  # Color scale legend
-  if (!is.null(optsLink$pal)) {
-    if (is.null(optsLink$levels)) {
-      map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
-    } else {
-      map <- updateAntaresLegend(map, htmlLinkColor = barChartLegend(optsLink$levels, colLinkVar, optsLink$pal))
+  if(nrow(optsLink$coords) > 0){
+    # Use default values if needed
+    if (is.null(optsLink$color) | options$linkDefaultCol != "#BEBECE") optsLink$color <- options$linkDefaultCol
+    if (is.null(optsLink$size)) {
+      optsLink$size <- options$linkDefaultSize
+      optsLink$maxSize <- options$linkMaxSize
     }
-  } else {
-    map <- updateAntaresLegend(map, htmlLinkColor = "")
+    
+    showValuesInPopup <- sizeLinkVar != "none"
+    
+    map <- map %>% updateFlows(layerId = optsLink$coords$link, 
+                               color = optsLink$color,
+                               flow = abs(optsLink$size),
+                               maxFlow = unname(optsLink$maxSize),
+                               maxThickness = options$linkMaxSize,
+                               time = optsLink$coords$time,
+                               timeFormat = .getTimeFormat(timeStep),
+                               dir = optsLink$dir,
+                               popup = popupArgs(
+                                 showValues = showValuesInPopup,
+                                 labels = sizeLinkVar,
+                                 digits = 2,
+                                 supValues = optsLink$coords[, optsLink$popupVars, with = FALSE]
+                               ),
+                               opacity = 1)
+    
+    # Update the legend
+    
+    # Color scale legend
+    if (!is.null(optsLink$pal)) {
+      if (is.null(optsLink$levels)) {
+        map <- updateAntaresLegend(map, htmlLinkColor = colorLegend(colLinkVar, optsLink$pal, optsLink$colorBreaks))
+      } else {
+        map <- updateAntaresLegend(map, htmlLinkColor = barChartLegend(optsLink$levels, colLinkVar, optsLink$pal))
+      }
+    } else {
+      map <- updateAntaresLegend(map, htmlLinkColor = "")
+    }
+    
+    # Line width legend
+    if (showValuesInPopup) {
+      map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$linkMaxSize, optsLink$maxSize))
+    } else {
+      map <- updateAntaresLegend(map, htmlLinkSize = "")
+    }
   }
-  
-  # Line width legend
-  if (showValuesInPopup) {
-    map <- updateAntaresLegend(map, htmlLinkSize = lineWidthLegend(sizeLinkVar, options$linkMaxSize, optsLink$maxSize))
-  } else {
-    map <- updateAntaresLegend(map, htmlLinkSize = "")
-  }
-  
   map
 }

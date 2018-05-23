@@ -18,6 +18,18 @@
 #'   
 #' @param map_builder \code{logical} Add inputs for build custom map ? Defaut to TRUE.
 #' 
+#' @details 
+#' With \code{map_builder} option, you can build a quiet custom map using \code{spMaps} package. 
+#' This package help you to build \code{\link[sp]{SpatialPolygonsDataFrame}} on Europe. 
+#' Moreover, you can use two options in the module : 
+#' 
+#' \itemize{
+#'    \item {"Merge countries" : Some countries like UK or Belgium are firstly rendered in multiple and diffrent area. 
+#'    You can so choose to finally use this countries as one single area on the map}
+#'    \item {"Merge states" : If you need states details but not having one area per state, the map will be incomplete 
+#'    for some countries, plotting only states with area. So you can choose to aggregate the states of the countries.
+#'    This is done using a nearest states algorithm. The result is available only after layout validation.}
+#'  }
 #' @return 
 #' An object of class \code{mapLayout}.
 #' 
@@ -109,24 +121,24 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
   
   tagList(
     fluidRow(
-      column(4, 
+      column(3, 
              if(map_builder){
                selectInput(ns("ml_countries"), "Countries : ", width = "100%",
                            choices = choices_map, selected = "all", multiple = TRUE)
              }
       ),
-      column(4, 
+      column(3, 
              if(map_builder){
                selectInput(ns("ml_states"), "States : ", width = "100%",
                            choices = choices_map, selected = NULL, multiple = TRUE)
              }
       ),   
-      column(1, 
+      column(2, 
              if(map_builder){
-               div(br(), checkboxInput(ns("merge_cty"), "Merge country ?", TRUE), align = "center")
+               div(br(), checkboxInput(ns("merge_cty"), "Merge countries ?", TRUE), align = "center")
              }
       ), 
-      column(1, 
+      column(2, 
              if(map_builder){
                div(br(), checkboxInput(ns("merge_ste"), "Merge states ?", TRUE), align = "center")
              }
@@ -142,7 +154,7 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
              div(br(), actionButton(ns("reset_ml"), "Re-Init layout"), align = "center")
              
       ),
-      column(width = 8, div(h3("Map Layout"), align = "center")),
+      column(width = 8, div(h3(textOutput(ns("title_layout"))), align = "center")),
       column(2, 
              conditionalPanel(
                condition = paste0("output['", ns("control_state"), "'] >= 2"),
@@ -176,7 +188,8 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
 #' @importFrom raster aggregate
 changeCoordsServer <- function(input, output, session, 
                                layout, what = reactive("areas"), 
-                               map = reactive(NULL), map_builder = TRUE, stopApp = FALSE){
+                               map = reactive(NULL), map_builder = TRUE, 
+                               language = reactive("en"), stopApp = FALSE){
   
   ns <- session$ns
   
@@ -185,6 +198,26 @@ changeCoordsServer <- function(input, output, session,
   current_state <- reactiveValues(state = -1)
   output$control_state <- reactive({
     current_state$state
+  })
+  
+  observe({
+    updateSelectInput(session, "ml_countries", 
+                      label = paste0(.getLabelLanguage("Countries", language()), " : "))
+    updateSelectInput(session, "ml_states", 
+                      label = paste0(.getLabelLanguage("States", language()), " : "))
+    
+    updateCheckboxInput(session, "merge_cty", .getLabelLanguage("Merge countries ?", language()))
+    updateCheckboxInput(session, "merge_ste", .getLabelLanguage("Merge states ?", language()))
+    
+    updateActionButton(session, "state", label = .getLabelLanguage("Next", language()))
+    updateActionButton(session, "done", label = .getLabelLanguage("Done", language()))
+    updateActionButton(session, "reset_ml", label = .getLabelLanguage("Re-Init layout", language()))
+    updateActionButton(session, "set_map_ml", label = .getLabelLanguage("Set map", language()))
+    
+  })
+  
+  output$title_layout <- renderText({
+    .getLabelLanguage("Map Layout", language())
   })
   
   outputOptions(output, "control_state", suspendWhenHidden = FALSE)
@@ -260,7 +293,7 @@ changeCoordsServer <- function(input, output, session,
         cex <- rep(1, nrow(points))
         cex[pt] <- 2
         par (mar = rep(0.1, 4))
-        plot(points$oldLon, points$oldLat, bty = "n", xaxt = "n", yaxt = "n",
+        graphics::plot.default(points$oldLon, points$oldLat, bty = "n", xaxt = "n", yaxt = "n",
              xlab = "", ylab = "", main = "", col = col, asp = 1, pch = 19, cex = cex)
       }
     })
@@ -286,7 +319,7 @@ changeCoordsServer <- function(input, output, session,
   
   observe({
     if (current_state$state == 1) {
-        lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt2, ])
+      lfDragPoints$map <- leafletDragPoints(data_points$points[data_points$pt2, ])
     }
   })
   
@@ -315,7 +348,10 @@ changeCoordsServer <- function(input, output, session,
   
   observe({
     if (current_state$state == 0) {
-      output$order <- renderText("Please place the following point on the map.")
+      output$order <- renderText({
+        .getLabelLanguage("Please place the following point on the map", language())
+      })
+      
       output$info <- renderUI(HTML(data_points$points$info[data_points$pt1]))
       output$preview <- renderPreview(data_points$pt1)
     } else if (current_state$state == 1) {
@@ -328,8 +364,15 @@ changeCoordsServer <- function(input, output, session,
     } else if (current_state$state == 2) {
       isolate({
         data_points$points <- .changeCoordinates(data_points$points, coords(), c(data_points$pt1, data_points$pt2))
-        output$order <- renderText("Drag the markers on the map to adjust coordinates then click the 'Done' button")
-        output$info <- renderUI(HTML("<p>You can click on a marker to display information about the corresponding point.</p>"))
+        output$order <- renderText({
+          .getLabelLanguage("Drag the markers on the map to adjust coordinates then click the 'Done' button", language())
+        })
+        
+        output$info <- renderUI(HTML( 
+          paste0("<p>", 
+                 .getLabelLanguage("You can click on a marker to display information", language()), 
+                 "</p>"))
+        )
         
       })
     }
@@ -343,9 +386,9 @@ changeCoordsServer <- function(input, output, session,
     coords <- sp::SpatialPoints(coords()[, c("lon", "lat")],
                                 proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
     
-  
+    
     map <- current_map()
-
+    
     if (!is.null(map)) {
       map <- sp::spTransform(map, sp::CRS("+proj=longlat +datum=WGS84"))
       map$geoAreaId <- 1:length(map)
@@ -562,7 +605,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   if (areas) {
     
     areaChartType <- match.arg(areaChartType)
-
+    
     # fix bug if set map wihout any intersection with areas...!
     map <- tryCatch(addMinicharts(map, lng = x$coords$x, lat = x$coords$y, 
                                   chartdata = dataAreas, fillColor = colAreas,

@@ -1,0 +1,151 @@
+en;fr
+timeStep;Pas de temps
+mcYears to be imported;Tirage à importer
+mcYear to be displayed;Tirage à visualiser
+H5request;Données
+area;Nœud
+Areas;Nœuds
+areas;Nœuds
+dateRange;Période
+unit;Unité
+legend;Légende
+stepPlot;stepPlot
+drawPoints;Afficher les points
+title;Titre
+main;Titre
+table;Table
+stack;Empilement
+variable;Variable
+secondAxis;2nd axe
+Variables 2nd axis;2nd axe : variable
+type;Type
+confidence interval;Interval de confiance
+min value;Valeur min.
+max value;Valeur max.
+elements;Elements
+aggregate;Agrégation
+none;sans
+mean;moyenne
+sum;somme
+mean by areas;moyenne par nœud
+sum by areas;somme par nœud
+highlight;Surbrillance
+Color;Couleur
+Size;Taille
+Size by alias;Taille par alias
+miniPlot;Mini-graphs
+sizeMiniPlot;Taille prop.
+Unique scale;Echelle unique
+Show labels;Voir les labels
+Popup;Popup
+Label;Label
+Links;Liens
+links;Liens
+districts;Districts
+Width;Epaisseur
+By time id;Par pas de temps
+Average;Moyen
+areaChartType;Graphique
+bar chart;Diagramme en barres
+pie chart;Camembert
+polar (area);Polaire (aire)
+polar (radius);Polaire (rayon)
+average;moyen
+hourly;Horaire
+daily;Journalier
+weekly;Hebdomadaire
+monthly;Mensuel
+annual;Annuel
+time series;Séries temporelles
+barplot;Diagramme en barres
+monotone;Monotone
+density;Densité
+cdf;Cdf
+heatmap;Heatmap
+Average mcYear;Tirage moyen
+By event;Par évènement
+By mcYear;Par tirage
+Selection;Sélection
+No data for this selection;Pas de données pour cette sélection
+No data;Pas de données
+Please select some mcYears;Veuillez sélectionner des années
+Please select some variables;Veuillez sélectionner des variables
+Please select some elements;Veuillez sélectionner des éléments
+not exists in this study;absente de l'étude
+Comparison of;Comparaison de
+Monotone of;Monotone de
+Density;Densité
+Density of;Densité de
+Proportion of time steps;Proportion du temps
+Cumulated distribution of;Distribution cumulée de
+Evolution of;Évolution de
+Flows from/to;Flux arrivant/partant
+Flows (%s);Flux (%s)
+Please choose an area;Veuillez sélectionner une zone
+Can't visualize stack;Visualisation impossible
+Production stack;Empilement
+Show legend;Voir la légende
+Hide legend;Cacher la légende
+Data;Données
+Exchanges;Echanges
+Time Series;Chroniques
+Map;Carte
+Current Layout;Positions actuelles
+Layout Builder;Editeur de positions
+plotMap;Cartographie
+Parameters;Paramètres
+Help;Aide
+Import Data;Importation des données
+Analysis;Analyse
+Antares study selection;Sélection d'une étude antares
+Select an antares study;Sélectionner une étude antares
+Select a simulation;Sélectionner une simulation
+Set simulation;Valider la simulation
+ANTARES Simulation;Simulation Antares
+Quit application;Quitter l'application
+Select;Sélection
+Validate & import data;Valider et importer les données
+Analysis parameters;Paramètres de l'analyse
+Studies;Etudes
+Compare;Comparaison
+mcYear on all modules ?;Tirage sur l'ensemble des modules ?
+Launch Analysis;Lancer l'analyse
+readAntares parameters;Paramètres de la fonction readAntares
+View parameters;Voir les paramètres
+Include study in analysis;Inclure l'étude dans l'analyse
+Remove study;Supprimer l'étude
+Remove virtual Areas;Suppression des noeuds virtuels
+enabled;active
+writeAntaresH5 parameters;Paramètres de la fonction writeAntaresH5
+Target directory;Répertoire de destination
+Write study in h5 ?;Ecrire l'étude au format .h5 ?
+Convert study to h5;Convertir l'étude en .h5
+mcYears selection;Sélection des tirages
+mcYears;Tirage(s)
+synthetic;Synthèse
+all;Tous
+custom;Personnalisée
+readAntares RAM limit (in Go);Limite RAM (Go) de readAntares
+antaresViz data module (in Mb);Limite (Mb) des modules de visualisation
+Share inputs between modules ?;Partage des inputs entre les modules ?
+No data imported;Pas de données importées
+No areas imported;Pas noeuds importés 
+No links imported;Pas de liens importés
+No antares output found in directory;Pas d'étude(s) antares trouvée(s) dans le répertoire
+Please first choose a folder with antares output;Sélectionner un répertoire contenant des études antares
+Please set or import a map layout before;Editer ou importer le positionnement des points
+Download Layout;Télécharger le positionnement
+Import a layout;Importer un positionnement
+Current map layout;Positionnement actuel
+Countries;Pays
+States;Etats
+Merge countries ?;Fusionner les pays ?
+Merge states ?;Fusionner les états ?
+Set map;Valider le fond de carte
+Re-Init layout;Remise à zéro
+Map Layout;Positions
+Done;Valider
+Next;Suivant
+Please place the following point on the map;Placer le point suivant sur la carte
+Drag the markers on the map to adjust coordinates then click the 'Done' button;Ajuster le positionnement les marqueurs sur la carte et avant de cliquer sur le bouton 'Valider'
+You can click on a marker to display information;Vous pouvez cliquer sur un marqueur pour afficher des informations

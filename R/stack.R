@@ -41,97 +41,140 @@
 #' next series is drawn from 0.
 #' 
 #' @noRd
-.plotStack <- function(x, timeStep, opts, colors, lines = NULL, lineColors = NULL, 
+#' @import rAmCharts
+.plotStack <- function(x, timeStep, opts, colors, lines = NULL, lineColors = NULL, lineWidth = NULL,
                        legendId = "", groupId = legendId, main = "", ylab = "",
-                       width = NULL, height = NULL, dateRange = NULL, stepPlot = FALSE, drawPoints = FALSE) {
+                       width = NULL, height = NULL, dateRange = NULL, stepPlot = FALSE, drawPoints = FALSE, 
+                       language = "en", type = "Production") {
   
   variables <- setdiff(names(x), c("timeId", lines))
   
-  # 1- Create a data.table containing the series defined by parameter "variables"
-  dt <- data.table(timeId = x$timeId) #, area = x$area)
-  dt$time <- .timeIdToDate(dt$timeId, timeStep, opts)
-  dt[, timeId := NULL]
-  dt[, c(rev(variables), paste0("neg", variables), "totalNeg", lines, paste0("opp", lines)) := 0]
+  lineWidth <- rep(lineWidth, length = length(lines))
+  lineColors <- rep(lineColors, length = length(lines))
   
-  nvar <- length(variables)
-  nlines <- length(lines)
-  
-  for (i in length(variables):1) {
-    values <- x[, get(variables[i]) ]
-    set(dt, j = nvar + 2L - i, value = values)
-  }
-  
-  if (nlines > 0) {
-    for (i in 1:nlines) {
-      value <- x[, get(lines[i]) ]
-      set(dt, j = 2L * nvar + 2L + i, value = value)
-      set(dt, j = 2L * nvar + 2L + nlines + i, value = -value)
+  if(nrow(x) == 1){
+    dt <- copy(x)
+    if(length(lines)  > 0){
+      dt <- dt[rep(1, length(lines) + 1)]
+      dt[1, (lines) := NA]
+      dt[-1, (variables) := NA]
+      dt[,(setdiff(colnames(dt), "timeId")) := round(.SD), .SDcols=setdiff(colnames(dt), "timeId")]
+      
+      dt[, timeId := c(.getLabelLanguage(type, language), lines)]
+      
+      for(i in 1:length(lines)){
+        dt[i+1, (lines[-i]) := NA]
+      }
+    } else {
+      
+      dt[,(setdiff(colnames(dt), "timeId")) := round(.SD), .SDcols=setdiff(colnames(dt), "timeId")]
+      dt[, timeId := c(.getLabelLanguage(type, language))]
     }
-  }
-  
-  # 2- Group by timeId
-  #dt[, area := NULL]
-  dt <- dt[, lapply(.SD, sum), by = time]
-  
-  # 3- Separate positive and negative values and compute total negative values
-  for (i in length(variables):1) {
-    values <- dt[[variables[i]]]
-    posValues <- pmax(0, values)
-    negValues <- pmin(0, values)
     
-    set(dt, j = nvar + 2L - i, value = posValues)
-    set(dt, j = nvar + 1L + i, value = - negValues)
-    dt$totalNeg <- dt$totalNeg + negValues
-  }
-  
-  ##Add first and last row of not in range
-  if(!is.null(dateRange))
-  {
-  if(dt$time[1] > dateRange[1]){
-    dt <- dt[c(NA, 1:nrow(dt))]
-    dt$time[1] <- dateRange[1]
-  }
-  nrowTp <- nrow(dt)
-
-  if(dt$time[nrowTp] < dateRange[2]){
-    dt <- dt[c(1:nrow(dt), NA)]
-    dt$time[nrowTp + 1] <- dateRange[2]
-  }
-  }
-  
-  # 5- Finally plot !!
-  colors <- unname(c("#FFFFFF", rev(colors), colors))
-  
-  g <- dygraph(as.xts.data.table(dt), main = main, group = groupId, width = width, height = height)  %>%
-    dyOptions(
-      stackedGraph = TRUE, 
-      colors = rev(colors), 
-      fillAlpha = 0.6,
-      includeZero = TRUE, 
-      gridLineColor = gray(0.8), 
-      axisLineColor = gray(0.6), 
-      axisLabelColor = gray(0.6), 
-      strokeWidth = 0,
-      useDataTimezone = TRUE ,
-      stepPlot = stepPlot,
-      drawPoints = drawPoints
-    ) %>% 
-    dyAxis("x", rangePad = 10) %>% 
-    dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg, na.rm = TRUE) * 1.1, NA)) %>% 
-    dyLegend(show = "never") %>% 
-    dyCallbacks(
-      highlightCallback = JS_updateLegend(legendId, timeStep),
-      unhighlightCallback = JS_resetLegend(legendId)
-    )
-  
-  if (length(lines) > 0) {
-    for (i in 1:length(lines)) {
-      g <- g %>% dySeries(name = paste0("opp", lines[i]), color = lineColors[i], 
-                          fillGraph = FALSE, strokeWidth = 0)
-      g <- g %>% dySeries(name = lines[i], color = lineColors[i], 
-                          fillGraph = FALSE, strokeWidth = 3)
+    g <- amBarplot(x = "timeId", y = setdiff(colnames(dt), "timeId"), 
+              data = data.frame(dt, check.names = FALSE), 
+              show_values = TRUE,
+              stack_type = "regular", 
+              groups_color = c(colors, lineColors), legend = TRUE, 
+              legendPosition = "bottom", export = TRUE, zoom = TRUE, main = main, ylab = ylab) 
+    
+    g@otherProperties$thousandsSeparator <- " "
+    
+    rAmCharts::plot(g, width = width, height = height)
+    
+  } else {
+    # 1- Create a data.table containing the series defined by parameter "variables"
+    dt <- data.table(timeId = x$timeId) #, area = x$area)
+    
+    dt$time <- .timeIdToDate(dt$timeId, timeStep, opts)
+    
+    if("Date" %in% class(dt$time )){
+      dt[,time := as.POSIXct(as.character(time), tz = "UTC")]
     }
+    
+    dt[, timeId := NULL]
+    dt[, c(rev(variables), paste0("neg", variables), "totalNeg", lines, paste0("opp", lines)) := 0]
+    
+    nvar <- length(variables)
+    nlines <- length(lines)
+    
+    for (i in length(variables):1) {
+      values <- x[, get(variables[i]) ]
+      set(dt, j = nvar + 2L - i, value = values)
+    }
+    
+    if (nlines > 0) {
+      for (i in 1:nlines) {
+        value <- x[, get(lines[i]) ]
+        set(dt, j = 2L * nvar + 2L + i, value = value)
+        set(dt, j = 2L * nvar + 2L + nlines + i, value = -value)
+      }
+    }
+    
+    # 2- Group by timeId
+    #dt[, area := NULL]
+    dt <- dt[, lapply(.SD, sum), by = time]
+    
+    # 3- Separate positive and negative values and compute total negative values
+    for (i in length(variables):1) {
+      values <- dt[[variables[i]]]
+      posValues <- pmax(0, values)
+      negValues <- pmin(0, values)
+      
+      set(dt, j = nvar + 2L - i, value = posValues)
+      set(dt, j = nvar + 1L + i, value = - negValues)
+      dt$totalNeg <- dt$totalNeg + negValues
+    }
+    
+    ##Add first and last row of not in range
+    if(!is.null(dateRange))
+    {
+      if(dt$time[1] > dateRange[1]){
+        dt <- dt[c(NA, 1:nrow(dt))]
+        dt$time[1] <- dateRange[1]
+      }
+      nrowTp <- nrow(dt)
+      
+      if(dt$time[nrowTp] < dateRange[2]){
+        dt <- dt[c(1:nrow(dt), NA)]
+        dt$time[nrowTp + 1] <- dateRange[2]
+      }
+    }
+    
+    # 5- Finally plot !!
+    colors <- unname(c("#FFFFFF", rev(colors), colors))
+    
+    g <- dygraph(as.xts.data.table(dt), main = main, group = groupId, width = width, height = height)  %>%
+      dyOptions(
+        stackedGraph = TRUE, 
+        colors = rev(colors), 
+        fillAlpha = 0.85,
+        includeZero = TRUE, 
+        gridLineColor = gray(0.8), 
+        axisLineColor = gray(0.6), 
+        axisLabelColor = gray(0.6), 
+        strokeWidth = 0,
+        useDataTimezone = TRUE ,
+        stepPlot = stepPlot,
+        drawPoints = drawPoints
+      ) %>% 
+      dyAxis("x", rangePad = 10) %>% 
+      dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg, na.rm = TRUE) * 1.1, NA)) %>% 
+      dyLegend(show = "never") %>% 
+      dyCallbacks(
+        highlightCallback = JS_updateLegend(legendId, timeStep, language = language),
+        unhighlightCallback = JS_resetLegend(legendId)
+      )
+    
+    if (length(lines) > 0) {
+      for (i in 1:length(lines)) {
+        g <- g %>% dySeries(name = paste0("opp", lines[i]), color = lineColors[i], 
+                            fillGraph = FALSE, strokeWidth = 0)
+        g <- g %>% dySeries(name = lines[i], color = lineColors[i], 
+                            fillGraph = FALSE, strokeWidth = lineWidth[i])
+      }
+    }
+    
+    g
   }
-  
-  g
 }

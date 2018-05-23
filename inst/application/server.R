@@ -14,7 +14,9 @@ function(input, output, session) {
   # shared parameters
   #----------------
   
-  modules <- reactiveValues(prodStack = NULL, exchangesStack = NULL, plotts = NULL, plotMap = NULL)
+  modules <- reactiveValues(prodStack = NULL, exchangesStack = NULL, plotts = NULL, plotMap = NULL, 
+                            id_prodStack = NULL, id_exchangesStack = NULL, id_plotts = NULL, id_plotMap = NULL,
+                            init_prodStack = FALSE, init_exchangesStack = FALSE, init_plotts = FALSE, init_plotMap = FALSE)
   
   # all data loaded by user, with informations
   list_data_all <- reactiveValues(antaresDataList = list(), params = list(), 
@@ -90,6 +92,12 @@ function(input, output, session) {
   #----------------
   
   source("src/server/04_shared_input.R", local = T)
+  
+  #----------------
+  # language
+  #----------------
+  
+  source("src/server/08_language.R", local = T)
   
   #----------------
   # memory options

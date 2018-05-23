@@ -41,6 +41,10 @@ prodStackAliases <- function() {
       # Line colors
       colors <- sprintf('"%s"', alias$lineColors)
       cat(sprintf(",\n\n  lineColors = c(%s)", paste(colors, collapse = ", ")))
+      
+      # Line width
+      width <- sprintf('"%s"', alias$lineWidth)
+      cat(sprintf(",\n\n  lineWidth = c(%s)", paste(width, collapse = ", ")))
     }
     cat("\n")
   }
@@ -49,7 +53,7 @@ prodStackAliases <- function() {
 #' @rdname prodStack
 #' @export
 setProdStackAlias <- function(name, variables, colors, lines = NULL, 
-                              lineColors = NULL, description = NULL) {
+                              lineColors = NULL, lineWidth = 3, description = NULL) {
   if (is.null(description)) description <- name
   
   if (length(variables) != length(colors)) {
@@ -58,6 +62,16 @@ setProdStackAlias <- function(name, variables, colors, lines = NULL,
   
   if (length(lines) != length(lineColors)) {
     stop("Number of line colors and number of lines should be equal.")
+  }
+  
+  if(length(lineWidth) == 0){
+    lineWidth <- rep(3, length(lines))
+  } else if(length(lineWidth) == 1){
+    lineWidth <- rep(lineWidth, length(lines))
+  } else {
+    if (length(lines) != length(lineWidth)) {
+      stop("Number of line Width and number of lines should be equal.")
+    }
   }
   
   pkgEnv$prodStackAliases[[name]] <- list(
@@ -69,6 +83,7 @@ setProdStackAlias <- function(name, variables, colors, lines = NULL,
   if (!is.null(lines)) {
     pkgEnv$prodStackAliases[[name]]$lines <- lines
     pkgEnv$prodStackAliases[[name]]$lineColors <- lineColors
+    pkgEnv$prodStackAliases[[name]]$lineWidth <- lineWidth
   }
   
   invisible(NULL)

@@ -9,12 +9,13 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
   labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
   popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
-  mcYear = "average", main = "", compare = NULL, compareOpts = list(),
+  mcYear = "average", main = "", typeSizeAreaVars = FALSE,
+  aliasSizeAreaVars = c(), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), options = plotMapOptions(),
   width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
   "intersect"), h5requestFiltering = list(), timeSteph5 = "hourly",
   mcYearh5 = NULL, tablesh5 = c("areas", "links"), sizeMiniPlot = FALSE,
-  ...)
+  language = "en", hidden = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
@@ -77,6 +78,10 @@ averaged.}
 
 \item{main}{Title of the map.}
 
+\item{typeSizeAreaVars}{\code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}}
+
+\item{aliasSizeAreaVars}{If \code{aliasSizeAreaVars}, name of alias.}
+
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
 be a named list with names corresponding to parameter names and values being
@@ -117,6 +122,10 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 
 \item{sizeMiniPlot}{\code{boolean} variable size for miniplot}
 
+\item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
+
+\item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
+
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
 \value{
@@ -144,6 +153,8 @@ compare argument can take following values :
    \item "colLinkVar"
    \item "sizeLinkVar"
    \item "popupLinkVars"
+   \item "typeSizeAreaVars"
+   \item "aliasSizeAreaVars"
    }
 }
 \examples{
@@ -169,6 +180,14 @@ plotMap(mydata, mapLayout =  ml,
 # Change default graphical properties
 plotMap(x = mydata, mapLayout = ml, options = list(colArea="red", colLink = "orange"))
 plotMap(x = list(mydata, mydata), mapLayout =  ml)
+
+# Use custom alias
+setAlias("custom_alias", "short description", c("OIL", "GAS", "COAL")) 
+plotMap(x = mydata, mapLayout = ml, typeSizeAreaVars = TRUE, 
+    aliasSizeAreaVars = "custom_alias")
+    
+plotMap(x = mydata, mapLayout = ml, interactive = FALSE, 
+    language = "fr", aliasSizeAreaVars = "Renouvelable", typeSizeAreaVars = TRUE)
 
 # Use h5 for dynamic request / exploration in a study
 # Set path of simulaiton

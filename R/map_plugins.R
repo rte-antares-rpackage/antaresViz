@@ -53,16 +53,21 @@ addShadows <- function(map) {
 #' @noRd
 addAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL, 
                              htmlLinkColor = NULL, htmlLinkSize = NULL,
-                             onComplete = "", display = "choose") {
+                             onComplete = "", display = "choose", language = "en") {
   options <- list(
     htmlAreaColor = htmlAreaColor,
     htmlAreaSize = htmlAreaSize,
     htmlLinkColor = htmlLinkColor,
     htmlLinkSize = htmlLinkSize,
     onComplete = onComplete,
-    display = display
+    display = display,
+    areas_name = .getLabelLanguage("Areas", language),
+    links_names = .getLabelLanguage("Links", language),
+    show_legend = .getLabelLanguage("Show legend", language),
+    hide_legend = .getLabelLanguage("Hide legend", language)
   )
-  
+
+    
   map %>% requireDep("antaresLegend") %>% 
     invokeMethod(data=NULL, "addAntaresLegend", options)
 }
@@ -85,6 +90,7 @@ updateAntaresLegend <- function(map, htmlAreaColor = NULL, htmlAreaSize = NULL,
   # Remove null elements
   nullOpts <- sapply(options, is.null)
   options <- options[!nullOpts]
+  
   
   map %>% requireDep("antaresLegend") %>% 
     invokeMethod(data=NULL, "updateAntaresLegend", options)

@@ -9,17 +9,17 @@
 prodStackAliases()
 
 setProdStackAlias(name, variables, colors, lines = NULL, lineColors = NULL,
-  description = NULL)
+  lineWidth = 3, description = NULL)
 
 prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
-  dateRange = NULL, main = "Production stack", unit = c("MWh", "GWh",
-  "TWh"), compare = NULL, compareOpts = list(),
+  dateRange = NULL, main = .getLabelLanguage("Production stack", language),
+  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
   h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
   timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
-  ...)
+  language = "en", hidden = NULL, ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -41,6 +41,8 @@ It should be \code{NULL} if there is no curve to trace or if parameter
 \item{lineColors}{Vector of colors with same length as parameter \code{lines}. This argument
 should be \code{NULL} if there is no curve to trace or if parameter
 \code{variables} is an alias.}
+
+\item{lineWidth}{Optionnal. Defaut to 3. Vector of width with same length as parameter \code{lines} (or only one value).}
 
 \item{description}{Description of the stack. It is displayed by function 
 \code{prodStackAliases}.}
@@ -118,6 +120,10 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 \item{mcYearh5}{\code{numeric} mcYear to read for h5. Only for Non interactive mode.}
 
 \item{tablesh5}{\code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.}
+
+\item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
+
+\item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

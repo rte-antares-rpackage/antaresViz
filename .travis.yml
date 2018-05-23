@@ -5,34 +5,32 @@ dist: trusty
 sudo: required
 cache: packages
 
-
-
 bioc_required: true
 bioc_use_devel: true
 
 os:
  - linux
- - osx
-
 
 r:
- - oldrel
- - release
- - devel
+ - bioc-devel
+ - bioc-release
 
 r_packages:
   - covr
   - devtools
   - antaresProcessing
 
+bioc_packages:
+  - rhdf5
+  - zlibbioc
+  
 r_github_packages:
- - Bioconductor-mirror/zlibbioc
- - Bioconductor-mirror/rhdf5
- - rte-antares-rpackage/manipulateWidget@develop
+ - rte-antares-rpackage/manipulateWidget@master
  - rte-antares-rpackage/antaresMaps@develop
  - rte-antares-rpackage/antaresRead@develop
  - rte-antares-rpackage/antaresProcessing@develop
-
+ - rte-antares-rpackage/leaflet.minicharts@leaflet_2.0.0
+ 
 addons:
   apt:
     sources:
@@ -40,10 +38,30 @@ addons:
     packages:
       - libjq-dev
       - valgrind
-      - libgdal-dev
-      - libproj-dev
       - libv8-3.14-dev
+      - libudunits2-dev
+      - libprotobuf-dev
+      - protobuf-compiler
 
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CURWD=`pwd`; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libproj-dev libgeos++-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://download.osgeo.org/gdal/2.1.0/gdal-2.1.0.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar zxf gdal-2.1.0.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd gdal-2.1.0; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./configure; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo make install; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://download.osgeo.org/proj/proj-4.9.3.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then tar zxvf proj-4.9.3.tar.gz; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd proj-4.9.3; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./configure; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then make; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo make install; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo ldconfig; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd $CURWD; fi
   
 after_success:
   - Rscript -e 'library(covr); codecov()'
