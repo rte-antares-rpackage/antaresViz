@@ -29,7 +29,7 @@ r_github_packages:
  - rte-antares-rpackage/antaresMaps@develop
  - rte-antares-rpackage/antaresRead@develop
  - rte-antares-rpackage/antaresProcessing@develop
- - rte-antares-rpackage/leaflet.minicharts@leaflet_2.0.0
+ - rte-antares-rpackage/leaflet.minicharts
  
 addons:
   apt:
