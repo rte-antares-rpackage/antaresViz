@@ -20,7 +20,7 @@ build_script:
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresProcessing@develop
   - ./travis-tool.sh install_github rte-antares-rpackage/manipulateWidget@master
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresMaps@develop
-  - ./travis-tool.sh install_github rte-antares-rpackage/leaflet.minicharts@leaflet_2.0.0
+  - ./travis-tool.sh install_github rte-antares-rpackage/leaflet.minicharts
 
 test_script:
   - travis-tool.sh run_tests
