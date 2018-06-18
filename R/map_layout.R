@@ -423,27 +423,32 @@ changeCoordsServer <- function(input, output, session,
           keep_code <- unique(map$code[final_coords_map$geoAreaId])
           # subset on countries
           tmp_map <- map[map$code %in% keep_code,]
-          # set unlink states
-          tmp_map$geoAreaId[!tmp_map$geoAreaId %in% final_coords_map$geoAreaId] <- NA
           
-          ind_na <- which(is.na(tmp_map$geoAreaId))
-          if(length(ind_na) > 0){
-            # have to find nearestArea...
-            treat_cty <- unique(tmp_map$code[ind_na])
+          if(nrow(tmp_map) > 0){
+            # set unlink states
+            tmp_map$geoAreaId[!tmp_map$geoAreaId %in% final_coords_map$geoAreaId] <- NA
             
-            for(cty in treat_cty){
-              ind_cty <- which(tmp_map$code %in% cty)
-              ind_miss <- which(tmp_map$code %in% cty & is.na(tmp_map$geoAreaId))
-              areas <- coords[coords$geoAreaId %in% tmp_map$geoAreaId[ind_cty], ]
-              if(nrow(areas) > 0){
-                areas_min <- suppressWarnings(apply(rgeos::gDistance(tmp_map[ind_miss, ], areas, byid = TRUE),2, which.min))
-                tmp_map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
+            ind_na <- which(is.na(tmp_map$geoAreaId))
+            if(length(ind_na) > 0){
+              # have to find nearestArea...
+              treat_cty <- unique(tmp_map$code[ind_na])
+              
+              for(cty in treat_cty){
+                ind_cty <- which(tmp_map$code %in% cty)
+                ind_miss <- which(tmp_map$code %in% cty & is.na(tmp_map$geoAreaId))
+                areas <- coords[coords$geoAreaId %in% tmp_map$geoAreaId[ind_cty], ]
+                if(nrow(areas) > 0){
+                  areas_min <- suppressWarnings(apply(rgeos::gDistance(tmp_map[ind_miss, ], areas, byid = TRUE),2, which.min))
+                  tmp_map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
+                }
               }
+              
+              tmp_map <- raster::aggregate(tmp_map, by = c("geoAreaId"))
+              map <- tmp_map[match(final_coords_map$geoAreaId, tmp_map$geoAreaId), ]
+            } else {
+              map <- map[final_coords_map$geoAreaId,]
             }
-            
-            tmp_map <- raster::aggregate(tmp_map, by = c("geoAreaId"))
-            map <- tmp_map[match(final_coords_map$geoAreaId, tmp_map$geoAreaId), ]
-          } else {
+          }else {
             map <- map[final_coords_map$geoAreaId,]
           }
         } else {
