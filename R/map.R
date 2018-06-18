@@ -265,7 +265,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (!is(x, "antaresData")) {
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
     } else {
-      x <- as.antaresDataList(x)
+      x <- copy(as.antaresDataList(x))
       if(!is.null(x$areas)){
         if(nrow(x$areas) == 0){
           x$areas <- NULL
@@ -360,6 +360,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                         type = c("detail", "avg"), mcYear,
                         initial = TRUE, session = NULL, outputId = "output1",
                         dateRange = NULL, sizeMiniPlot = FALSE, options = NULL) {
+      
+      if(!any(mapLayout$coords$area %in% unique(x$areas$area))){
+        return(combineWidgets(.getLabelLanguage("Invalid Map Layout : wrongs nodes/links informations", language)))
+      }
+      
       type <- match.arg(type)
       if (type == "avg") t <- NULL
       else if (is.null(t)) t <- 0
