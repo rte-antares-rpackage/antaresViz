@@ -179,12 +179,17 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         dateRange <- NULL
       }
       
+      flux_name <- .getColumnsLanguage('FLOW LIN.', language = language)
+      if(!flux_name %in% colnames(dt)){
+        flux_name <- "FLOW LIN."
+      }
+      
       if(!is.null(dateRange)){
         dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
-                       .(link, timeId, flow = `FLOW LIN.`)],
+                       .(link, timeId, flow = get(flux_name))],
                     linksDef, by = "link")
       } else {
-        dt <- merge(dt[,.(link, timeId, flow = `FLOW LIN.`)], linksDef, by = "link")
+        dt <- merge(dt[,.(link, timeId, flow = get(flux_name))], linksDef, by = "link")
       }
       
       if (!is.null(row)) {
