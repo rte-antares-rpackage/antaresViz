@@ -1,8 +1,8 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.14.0
-Date: 2018-06-12
+Version: 0.15.0
+Date: 2018-07-23
 Authors@R: c(
     person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = c("aut", "cre")),
     person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = "aut"),
@@ -27,7 +27,7 @@ Depends:
     antaresProcessing (>= 0.13.0), 
     spMaps (>= 0.2)
 Imports:
-    dygraphs (>= 1.1.1),
+    dygraphs (>= 1.1.1.6),
     shiny (>= 0.13.0),
     plotly (>= 4.5.6),
     htmltools,
