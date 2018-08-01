@@ -10,7 +10,7 @@ observe({
           "No study selected"
         ))
       } else {
-        # plotts and prodStack
+        # plotts and prodStack and exchangesStack
         ind_areas <- ind_keep_list_data$ind_areas
         if(length(ind_areas) > 0){
           # init / re-init module prodStack
@@ -43,6 +43,31 @@ observe({
               .compare = NULL
             }
           }
+          
+          #TODO must be deleted or no ? 
+          refStudyTrue <- .get_if_output_has_refStudy()
+          print(paste0("ref : " , refStudyTrue))
+          print(ind_areas)
+          print(typeof(list_data_all$antaresDataList[ind_areas]))
+          print(typeof(list_data_all$antaresDataList[ind_areas][1]))
+          print(typeof(list_data_all$antaresDataList[ind_areas][1][1]))
+          
+          if(refStudyTrue){
+            nameRefStudy <- .get_name_refStudy()
+            print(nameRefStudy)
+            print(paste0("refStudy : ", nameRefStudy))
+            print(class(list_data_all$antaresDataList[ind_areas]))
+            print(typeof(list_data_all$antaresDataList[ind_areas]))
+            print(typeof(list_data_all$antaresDataList[[1]][1]))
+            print(class(list_data_all$antaresDataList[[2]][1]))
+            
+            #TODO parfois ce sont des opts H5 qu'on passe dans list_data
+            #il faut donc pouvoir compare des optsH5
+            #voir le fichier TODO pour les prochaines etapes
+            print(names(list_data_all$antaresDataList[[1]]))
+            print(names(list_data_all$antaresDataList[[1]][1]))
+          }
+
           
           mod_prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
                                          h5requestFiltering = list_data_all$params[ind_areas],

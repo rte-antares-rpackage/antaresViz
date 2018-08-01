@@ -88,6 +88,9 @@ observe({
                        label = antaresViz:::.getLabelLanguage("Remove study", current_language$language))
     updateCheckboxInput(session, paste0("list_study_check", i), 
                         label = antaresViz:::.getLabelLanguage("Include study in analysis", current_language$language))
+    updateCheckboxInput(session, paste0("list_study_ref", i), 
+                        label = antaresViz:::.getLabelLanguage("Choose this study as a reference", current_language$language))
+    
   }
 
   cur_timeStep <- isolate({input$read_timeStep})
