@@ -12,6 +12,10 @@
 #'   districts. it can be a list of \code{antaresData} objects. 
 #'   In this case, one chart is created for each object. 
 #'   Can also contains opts who refer to a h5 file or list of opts.
+#' @param refStudy
+#'   An object of class \code{antaresData} created with function 
+#'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
+#'   districts. Can also contains an opts who refer to a h5 file.
 #' @param stack
 #'   Name of the stack to use. One can visualize available stacks with 
 #'   \code{prodStackAliases}
@@ -64,7 +68,7 @@
 #' @param name
 #'   name of the stack to create or update
 #' @param variables
-#'   A named list of expressions created with \code{\link[base]{alist}}. The
+#'   A named list of expressions created with \code{\link[base:list]{alist}}. The
 #'   name of each element is the name of the variable to draw in the stacked
 #'   graph. The element itself is an expression explaining how to compute the
 #'   variable (see examples).
@@ -73,7 +77,7 @@
 #'   \code{variables} is an alias, then this argument should be \code{NULL} in 
 #'   order to use default colors.
 #' @param lines
-#'   A named list of expressions created with \code{\link[base]{alist}}
+#'   A named list of expressions created with \code{\link[base:list]{alist}}
 #'   indicating how to compute the curves to display on top of the stacked graph.
 #'   It should be \code{NULL} if there is no curve to trace or if parameter
 #'   \code{variables} is an alias.
@@ -196,6 +200,7 @@
 #' 
 #' @export
 prodStack <- function(x,
+                      refStudy = NULL,
                       stack = "eco2mix",
                       areas = NULL, 
                       mcYear = "average",
@@ -255,10 +260,11 @@ prodStack <- function(x,
   init_areas <- areas
   init_dateRange <- dateRange
   
+
   processFun <- function(x) {
     
     # Check that input contains area or district data
-    if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
+    if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()' or an opts")
     
     if (is(x, "antaresDataTable")) {
       if (!attr(x, "type") %in% c("areas", "districts")) stop("'x' should contain area or district data")
@@ -371,6 +377,11 @@ prodStack <- function(x,
   }
   if (!interactive) {
     x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    
+    if(!is.null(refStudy)){
+      refStudy <- .cleanH5(refStudy, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+      x <- .compare_with_ref_study(x = x, refStudy = refStudy)
+    }
     
     
     params <- .getDataForComp(x = .giveListFormat(x),

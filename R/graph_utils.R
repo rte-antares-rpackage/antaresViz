@@ -321,3 +321,45 @@
     stop("You can at moment only use no interactive mode with one no h5 antares study.")
   }
 }
+
+#' Check for ref Study optsH5 or antaresData
+#' 
+#' @param x list of opts or antaresData 
+#' @param refStudy an opts or antaresData or a list !
+#' 
+#' @noRd
+.compare_with_ref_study <- function(x = NULL, refStudy = NULL){
+  if(!is.null(refStudy)){
+    if(is.list(refStudy)){
+      #cleanH5 return a list (and no antaresData)
+      x <- .compare_with_ref_study_one_element(x = x, refStudy = refStudy[[1]])
+      return(x)
+    }
+    #to work with an antaresData (no optsH5)
+    x <- .compare_with_ref_study_one_element(x = x, refStudy = refStudy)
+    return(x)
+  }
+  return(x)
+}
+
+#' Check for ref Study 
+#' 
+#' @param x list of opts or antaresData 
+#' @param refStudy an opts or antaresData  
+#' 
+#' @noRd
+.compare_with_ref_study_one_element <- function(x = NULL, refStudy = NULL){
+  if (!(is(refStudy, "antaresData") | is(refStudy, "simOptions"))) stop("'refStudy' should be an object of class 'antaresData created with readAntares()' or an opts")
+  
+  if(!("simOptions" %in% class(x))){
+    if(!("antaresData" %in% class(x))){
+      for(i in 1:length(x)){
+        x[[i]] <- compare(x = refStudy, y = x[[i]], method = "diff")
+      }
+    }else{
+      x <- compare(x = refStudy, y = x, method = "diff")
+    }
+  }
+  
+  return(x)
+}  

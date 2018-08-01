@@ -11,9 +11,10 @@ prodStackAliases()
 setProdStackAlias(name, variables, colors, lines = NULL, lineColors = NULL,
   lineWidth = 3, description = NULL)
 
-prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
-  dateRange = NULL, main = .getLabelLanguage("Production stack", language),
-  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
+prodStack(x, refStudy = NULL, stack = "eco2mix", areas = NULL,
+  mcYear = "average", dateRange = NULL,
+  main = .getLabelLanguage("Production stack", language), unit = c("MWh",
+  "GWh", "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
@@ -24,7 +25,7 @@ prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
 \arguments{
 \item{name}{name of the stack to create or update}
 
-\item{variables}{A named list of expressions created with \code{\link[base]{alist}}. The
+\item{variables}{A named list of expressions created with \code{\link[base:list]{alist}}. The
 name of each element is the name of the variable to draw in the stacked
 graph. The element itself is an expression explaining how to compute the
 variable (see examples).}
@@ -33,7 +34,7 @@ variable (see examples).}
 \code{variables} is an alias, then this argument should be \code{NULL} in 
 order to use default colors.}
 
-\item{lines}{A named list of expressions created with \code{\link[base]{alist}}
+\item{lines}{A named list of expressions created with \code{\link[base:list]{alist}}
 indicating how to compute the curves to display on top of the stacked graph.
 It should be \code{NULL} if there is no curve to trace or if parameter
 \code{variables} is an alias.}
@@ -52,6 +53,10 @@ should be \code{NULL} if there is no curve to trace or if parameter
 districts. it can be a list of \code{antaresData} objects. 
 In this case, one chart is created for each object. 
 Can also contains opts who refer to a h5 file or list of opts.}
+
+\item{refStudy}{An object of class \code{antaresData} created with function 
+\code{\link[antaresRead]{readAntares}} containing data for areas and or
+districts. Can also contains an opts who refer to a h5 file.}
 
 \item{stack}{Name of the stack to use. One can visualize available stacks with 
 \code{prodStackAliases}}
