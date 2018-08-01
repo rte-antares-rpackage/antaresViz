@@ -194,10 +194,10 @@ plotMap(x = mydata, mapLayout = ml, interactive = FALSE,
 setSimulationPath(path = path1)
 
 # Convert your study in h5 format
-writeAntaresH5(path = mynewpath)
+writeAntaresH5(path = myNewPath)
 
 # Redefine sim path with h5 file
-opts <- setSimulationPath(path = mynewpath)
+opts <- setSimulationPath(path = myNewPath)
 plotMap(x = opts, mapLayout = ml)
 
 # Compare elements in a single study
@@ -205,6 +205,7 @@ plotMap(x = opts, mapLayout = ml,  .compare = "mcYear")
 
 # Compare 2 studies
 plotMap(x = list(opts, opts2), mapLayout = ml)
+
 
 }
 
