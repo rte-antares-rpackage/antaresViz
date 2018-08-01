@@ -191,3 +191,67 @@ rev_ind_match <- match(colorsVars$Column, expand_language_columns$en)
 col_fr <- colorsVars[Column %in% expand_language_columns$en][, Column := expand_language_columns$fr[rev_ind_match[!is.na(rev_ind_match)]]]
 colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
 
+# for test
+# get the data from an htmlwidget
+# the first element is x and the following are y
+
+#' get data from htmlwidget
+#' 
+#' @param htmlwidget an htmlwidget
+#' @param widgetsNumber htmlwidget id number in the list
+#' 
+#' @noRd
+.get_data_from_htmlwidget <- function(htmlwidget = NULL, widgetsNumber = NULL){
+  if(!("htmlwidget" %in% class(htmlwidget))){
+    stop("no htmlwidget")
+  }
+  
+  if(length(htmlwidget$widgets)==1){
+    widgetsNumber <- 1
+  }
+  
+  if(is.null(widgetsNumber)){
+    stop("no widgetsNumber")
+  }
+  
+  resList <- list()
+  for(i in 1:length(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+    myLabelI <- htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels[[i]]
+    resList[[myLabelI]] <- htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$data[[i]]
+  }
+  
+  return(resList)
+}
+
+#' edit h5 file for TEST 
+#' currently only for hourly data and mcAll
+#' 
+#' @param pathH5 path H5 file
+#' @param area character
+#' @param timeId timeId to change
+#' @param antVar antares Variable to change
+#' @param newValue the newValue
+#' 
+#' @noRd
+.h5Antares_edit_variable <- function(pathH5 = NULL, area = NULL, timeId = 1, antVar = NULL, newValue = NULL){
+  
+  H5locAntaresh5 <- rhdf5::H5Fopen(name = pathH5)
+  hourly_data <- rhdf5::h5read(H5locAntaresh5, name = "/hourly/areas/mcAll")
+  
+  indexArea <- grep(area, getAreas())[1]
+  
+  areaData <- hourly_data$data[, , indexArea, 1]
+  
+  indexAntVar <- grep(antVar, hourly_data$structure[["variable"]])[1]
+  areaData[timeId, indexAntVar] <- newValue
+  hourly_data$data[, , indexArea, 1] <- areaData
+  
+  rhdf5::h5writeDataset.array(
+    obj = hourly_data$data, 
+    h5loc = H5locAntaresh5, 
+    name = "/hourly/areas/mcAll/data"
+  )
+  
+  rhdf5::H5Fclose(h5file = H5locAntaresh5)
+}
+
