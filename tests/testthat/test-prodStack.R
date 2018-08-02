@@ -154,7 +154,7 @@ describe("prodStack must work with refStudy, if x and y are optsH5, ", {
     #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
     optsData <- antaresRead::setSimulationPath(path = studyPath)
     suppressWarnings(writeAntaresH5(path = pathNewH5, opts = optsData, 
-                                    overwrite = TRUE))
+                                    overwrite = TRUE, supressMessages=TRUE))
     
     
     pathNewH5File <- file.path(pathNewH5, list.files(pathNewH5))
@@ -211,33 +211,49 @@ describe("prodStack must work with refStudy, if x is a list of optsH5 and y an o
         writeAntaresH5(
           path = pathNewH5, 
           opts = optsData, 
-          overwrite = TRUE)
+          overwrite = TRUE,
+          supressMessages=TRUE)
       )
     }
     myArea <- "b"
     pathH5FolderToEdit <- file.path(pathInitial, listFolderToCreate[[2]])
     pathH5FileToEdit <- file.path(pathH5FolderToEdit, list.files(pathH5FolderToEdit))
+    newValueLignite <- 100000
     .h5Antares_edit_variable(
       pathH5 = pathH5FileToEdit, 
       area = myArea, 
       timeId = 1:40, 
       antVar = "LIGNITE", 
-      newValue = 100000
+      newValue = newValueLignite
     )
     
     optsList <- list()
+    antaresDataListH5 <- list()
     for(i in 1:length(listFolderToCreate)){
       pathOptsI <- file.path(pathInitial, listFolderToCreate[[i]])
       optsList[[i]] <- setSimulationPath(path = pathOptsI)
+      antaresDataListH5[[i]] <- readAntares(areas = myArea)
     }
     DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
     PS1 <- prodStack(x = optsH5, interactive = FALSE, areas = myArea, dateRange = DR)
     PS2 <- prodStack(x = optsList, interactive = FALSE, areas = myArea, dateRange = DR)
-    PS3 <-  prodStack(x = optsList, refStudy = optsH5, interactive = FALSE, areas = myArea, dateRange = DR)
-    
-    #### ecrire des tests pour verifier qu un seul graphique ne change et pas les autres 
-    
-    
+    PS_List <-  prodStack(x = optsList, refStudy = optsH5, interactive = FALSE, areas = myArea, dateRange = DR)
+    #get the data from the h5 file
+    antaresDataRef <- readAntares(opts = optsH5, areas = myArea)
+    expect_equal(max(antaresDataListH5[[2]]$LIGNITE), newValueLignite) 
+    expect_equal(max(antaresDataListH5[[1]]$LIGNITE), max(antaresDataRef$LIGNITE)) 
+    expect_equal(max(antaresDataListH5[[3]]$LIGNITE), max(antaresDataRef$LIGNITE)) 
+    #get the data from htmlwidget
+    dataHtmlWidgetPS1 <- .get_data_from_htmlwidget(PS_List, widgetsNumber = 1)
+    dataHtmlWidgetPS2 <- .get_data_from_htmlwidget(PS_List, widgetsNumber = 2)
+    #compare data  
+    resCompareData1_ref <- antaresProcessing::compare(x= antaresDataRef, y = antaresDataListH5[[1]])
+    resCompareData2_ref <- antaresProcessing::compare(x= antaresDataRef, y = antaresDataListH5[[2]])
+    expect_equal(resCompareData1_ref[timeId==timeId[40] , LIGNITE], -dataHtmlWidgetPS1$lignite[[2]])
+    expect_equal(resCompareData2_ref[timeId==timeId[40] , LIGNITE], dataHtmlWidgetPS2$lignite[[2]])
+    #no change after timeID > 40
+    expect_equal(resCompareData1_ref[timeId==timeId[90] , LIGNITE], -dataHtmlWidgetPS1$lignite[[50]])
+    expect_equal(resCompareData2_ref[timeId==timeId[90] , LIGNITE], -dataHtmlWidgetPS2$lignite[[50]])
     
   }
 })
