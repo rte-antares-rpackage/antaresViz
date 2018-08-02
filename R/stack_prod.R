@@ -391,11 +391,13 @@ prodStack <- function(x,
     
     
     
-    L_w <- lapply(params$x, function(X){
-      X$plotWithLegend(1, areas, main, unit,
+    L_w <- lapply(seq_along(params$x), function(i){
+      myData <- params$x[[i]]
+      myData$plotWithLegend(i, areas, main, unit,
                        stack, params$x[[1]]$dateRange,
                        mcYear, legend, stepPlot, drawPoints)
     })
+    
     return(combineWidgets(list = L_w))
     
   } else {
