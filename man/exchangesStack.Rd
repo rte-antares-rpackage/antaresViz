@@ -79,7 +79,7 @@ of mcYears in one of studies will be selectable. If intersect, only mcYears in a
 studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
-typically h5requestFiltering = list(select = "NUCLEAR")}
+typically h5requestFiltering = list(areas = "a")}
 
 \item{stepPlot}{\code{boolean}, step style for curves.}
 

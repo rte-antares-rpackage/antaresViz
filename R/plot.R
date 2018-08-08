@@ -69,7 +69,8 @@
 #'   studies will be selectable.
 #' @param highlight highlight curve when mouse over
 #' @param secondAxis add second axis to graph
-#' 
+#' @param h5requestFiltering Contains arguments used by default for h5 request,
+#'   typically h5requestFiltering = list(mcYears = 2)
 #' @inheritParams prodStack
 #'   
 #' @return 

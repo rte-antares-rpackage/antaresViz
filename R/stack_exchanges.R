@@ -14,6 +14,8 @@
 #' @param area
 #'   Name of a single area. The flows from/to this area will be drawn by the
 #'   function.
+#' @param h5requestFiltering Contains arguments used by default for h5 request,
+#'   typically h5requestFiltering = list(areas = "a")
 #' @param ylab Title of the Y-axis.
 #' @inheritParams prodStack
 #' 

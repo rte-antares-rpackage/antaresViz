@@ -114,7 +114,7 @@ of mcYears in one of studies will be selectable. If intersect, only mcYears in a
 studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
-typically h5requestFiltering = list(select = "NUCLEAR")}
+typically h5requestFiltering = list(areas = "a", mcYears = 2)}
 
 \item{stepPlot}{\code{boolean}, step style for curves.}
 
@@ -232,7 +232,10 @@ prodStack(x = list(opts, opts2))
 
 # Compare 2 studies with argument refStudies 
 prodStack(x = opts, refStudy = opts2)
-prodStack(x = opts, refStudy = opts2, interactive = FALSE) 
+prodStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea) 
+prodStack(x = opts, refStudy = opts2, h5requestFiltering = list(areas = myArea, 
+mcYears = 2))
+
                
 }
 

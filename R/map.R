@@ -69,6 +69,8 @@
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
 #' @param sizeMiniPlot \code{boolean} variable size for miniplot
+#' @param h5requestFiltering Contains arguments used by default for h5 request,
+#'   typically h5requestFiltering = list(mcYears = 3)
 #' @inheritParams prodStack
 #'   
 #'   
