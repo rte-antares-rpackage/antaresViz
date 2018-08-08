@@ -28,7 +28,7 @@ r_github_packages:
  - rte-antares-rpackage/manipulateWidget@master
  - rte-antares-rpackage/antaresMaps@develop
  - rte-antares-rpackage/antaresRead@develop
- - rte-antares-rpackage/antaresProcessing@develop
+ - rte-antares-rpackage/antaresProcessing@develop_comp
  - rte-antares-rpackage/leaflet.minicharts
  
 addons:
