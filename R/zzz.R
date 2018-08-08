@@ -206,21 +206,46 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
     stop("no htmlwidget or no MWController")
   }
   
-  if (is(htmlwidget, "MWController")){
+  if (is(htmlwidget, "MWController") & !is.null(htmlwidget$charts)){
     if (length(htmlwidget$charts) == 1){
       widgetsNumber <- 1
     }
   }else{
-    if (length(htmlwidget$widgets) == 1){
-      widgetsNumber <- 1
+    if(!is.null(htmlwidget$widgets)){
+      if (length(htmlwidget$widgets) == 1){
+        widgetsNumber <- 1
+      }
     }
   }
 
-  
   if (is.null(widgetsNumber)){
     stop("no widgetsNumber")
   }
   
+  #check if data exist ====
+  if (is(htmlwidget, "MWController")){
+    if(is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]])){
+      stop("no data")
+    }
+    if(is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x)){
+      stop("no data")
+    }    
+    if(is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+      stop("no data")
+    }    
+  }else{
+    if(is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]])){
+      stop("no data")
+    }
+    if(is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x)){
+      stop("no data")
+    }
+    if(is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+      stop("no data")
+    }    
+  }
+  
+  #get the data =====
   resList <- list()
   if (is(htmlwidget, "MWController")){
     # htmlwidget$charts and no htmlwidget$widgets
