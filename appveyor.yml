@@ -16,11 +16,11 @@ build_script:
   - travis-tool.sh install_deps
   - travis-tool.sh install_bioc zlibbioc
   - travis-tool.sh install_bioc rhdf5
-  - ./travis-tool.sh install_github rte-antares-rpackage/antaresRead@develop
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresProcessing@develop_comp
-  - ./travis-tool.sh install_github rte-antares-rpackage/manipulateWidget@master
-  - ./travis-tool.sh install_github rte-antares-rpackage/antaresMaps@develop
-  - ./travis-tool.sh install_github rte-antares-rpackage/leaflet.minicharts
+  #- ./travis-tool.sh install_github rte-antares-rpackage/antaresMaps@develop
+  #- ./travis-tool.sh install_github rte-antares-rpackage/leaflet.minicharts
+  #- ./travis-tool.sh install_github rte-antares-rpackage/antaresRead@develop
+#  - ./travis-tool.sh install_github rte-antares-rpackage/manipulateWidget@master
 
 test_script:
   - travis-tool.sh run_tests
