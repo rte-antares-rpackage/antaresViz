@@ -1,15 +1,13 @@
 context("prodStack")
 
 describe("prodStack, no interactive", {
-  
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   testClass <- function(obj){
-    class(obj)[1] == 'combineWidgets'
+    class(obj)[1] == "combineWidgets"
   }
   listArgs <- list(noarg = list(x = dta, interactive = FALSE, areas = "a"),
                    areas2 = list(x = dta, interactive = FALSE, areas = c("a", "b"))
   )
-  
   
   lapply(listArgs, function(X){
     test_that (names(listArgs), {
@@ -44,26 +42,26 @@ describe("prodStack must work with refStudy, if x and y are antaresDataList, ", 
   resCompare <- antaresProcessing::compare(myData2, myData1, method = "diff")
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
   
-  expect_true(isTRUE(max(resCompare$areas$GAS)==max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
+  expect_true(isTRUE(max(resCompare$areas$GAS) == max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
   
   #pb timeZine local (PC, Travis, etc)
-  for(i in 0:5){
+  for (i in 0:5){
     timeEditShift <- lubridate::hours(i)
-    timeEditMinus <- as.Date(DR[1])-timeEditShift
-    timeEditPlus <- as.Date(DR[1])+timeEditShift
-    myData1$areas[ (time==timeEditMinus | time==timeEditPlus) & area==myArea, GAS := as.integer(GAS + 2500)]
+    timeEditMinus <- as.Date(DR[1]) - timeEditShift
+    timeEditPlus <- as.Date(DR[1]) + timeEditShift
+    myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1$areas[ time==DR[1] & area==myArea,]$GAS
-  #myData2$areas[ time==DR[1] & area==myArea,]$GAS
+  #myData1$areas[ time == DR[1] & area == myArea, ]$GAS
+  #myData2$areas[ time == DR[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2$areas[ time==DR[1] & area==myArea,]$GAS + 2500, myData1$areas[ time==DR[1] & area==myArea,]$GAS)))
+  expect_true(isTRUE(all.equal(myData2$areas[ time == DR[1] & area == myArea, ]$GAS + 2500, myData1$areas[ time == DR[1] & area == myArea, ]$GAS)))
   
   PS3 <-  prodStack(x = myData2, refStudy  = myData1, interactive = FALSE, areas = myArea, dateRange = DR)
   
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
   resCompare <- antaresProcessing::compare(myData1, myData2, method = "diff")
-  expect_true(all.equal(resCompare$areas[ time==DR[1] & area == myArea, GAS ], -(dataHtmlWidgetPS$neggas[[2]])))
+  expect_true(all.equal(resCompare$areas[ time == DR[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))
 })
@@ -74,50 +72,45 @@ describe("prodStack must work with refStudy, if x is a list of antaresData and y
   myData3 <- readAntares(areas = c("a", "b", "c"), links = "all", showProgress = FALSE)
   myData4 <- readAntares(areas = c("a", "b"), links = "all", showProgress = FALSE)
   myArea <- "a"
-  
   myDataList <- list(myData4, myData3, myData2)
-  
   DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
   PS1_list <-  prodStack(x = myDataList, refStudy = myData1, interactive = FALSE, areas = myArea, dateRange = DR)
-  
   resCompare <- antaresProcessing::compare(myDataList[[3]], myData1, method = "diff")
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS1_list, widgetsNumber = 3)
-  
   all.equal(max(resCompare$areas$GAS), max(dataHtmlWidgetPS$neggas, na.rm = TRUE))
-  
   #pb timeZone local (PC, Travis, etc)
-  for(i in 0:5){
+  for (i in 0:5){
     timeEditShift <- lubridate::hours(i)
-    timeEditMinus <- as.Date(DR[1])-timeEditShift
-    timeEditPlus <- as.Date(DR[1])+timeEditShift
-    myData1$areas[ (time==timeEditMinus | time==timeEditPlus) & area==myArea, GAS := as.integer(GAS + 2500)]
-    myData4$areas[ (time==timeEditMinus | time==timeEditPlus) & area==myArea, GAS := as.integer(GAS + 2500)]
-    myData3$areas[ (time==timeEditMinus | time==timeEditPlus) & area==myArea, GAS := as.integer(GAS + 2500)]
+    timeEditMinus <- as.Date(DR[1]) - timeEditShift
+    timeEditPlus <- as.Date(DR[1]) + timeEditShift
+    myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
+    myData4$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
+    myData3$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1$areas[ time==DR[1] & area==myArea,]$GAS
-  #myData3$areas[ time==DR[1] & area==myArea,]$GAS
+  #myData1$areas[ time == DR[1] & area == myArea, ]$GAS
+  #myData3$areas[ time == DR[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2$areas[ time==DR[1] & area==myArea,]$GAS + 2500, myData1$areas[ time==DR[1] & area==myArea,]$GAS)))
+  expect_true(isTRUE(all.equal(myData2$areas[ time == DR[1] & area == myArea, ]$GAS + 2500, myData1$areas[ time == DR[1] & area == myArea, ]$GAS)))
   
   PS1_list <-  prodStack(x = myDataList, refStudy = myData1, interactive = FALSE, areas = myArea, dateRange = DR)
   
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS1_list, widgetsNumber = 3)
   resCompare <- antaresProcessing::compare(myData1, myData2, method = "diff")
-  expect_true(all.equal(resCompare$areas[ time==DR[1] & area == myArea, GAS ], -(dataHtmlWidgetPS$neggas[[2]])))
+  expect_true(all.equal(resCompare$areas[ time == DR[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
   #after DR + 5 hours (no edit)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))
   
   #no change for myData3
   resCompare3 <- antaresProcessing::compare(myData3, myData1, method = "diff")
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS1_list, widgetsNumber = 2)
-  expect_true(all.equal(resCompare3$areas[ time==DR[1] & area == myArea, GAS], dataHtmlWidgetPS$neggas[[2]]))
+  expect_true(all.equal(resCompare3$areas[ time == DR[1] & area == myArea, GAS], dataHtmlWidgetPS$neggas[[2]]))
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))
   
 })
 
 describe("prodStack must work with refStudy, if x and y are optsH5, ", {
-  if(requireNamespace("rhdf5", quietly = TRUE)){
+  if (requireNamespace("rhdf5", quietly = TRUE)){
     
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
@@ -135,14 +128,14 @@ describe("prodStack must work with refStudy, if x and y are optsH5, ", {
     ## create a new folder h5
     pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
     pathNewH5 <- file.path(pathInitial, "testH5")
-    if(!dir.exists(pathNewH5)){
+    if (!dir.exists(pathNewH5)){
       dir.create(pathNewH5)
     }
     #write the study
     #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
     optsData <- antaresRead::setSimulationPath(path = studyPath)
     suppressWarnings(writeAntaresH5(path = pathNewH5, opts = optsData, 
-                                    overwrite = TRUE, supressMessages=TRUE))
+                                    overwrite = TRUE, supressMessages = TRUE))
     
     
     pathNewH5File <- file.path(pathNewH5, list.files(pathNewH5))
@@ -159,21 +152,21 @@ describe("prodStack must work with refStudy, if x and y are optsH5, ", {
     
     resOptsH5Old <- readAntares(opts = optsH5, areas = myArea, showProgress = FALSE)
     resOptsH5New <- readAntares(opts = optsH5New, areas = myArea, showProgress = FALSE)
-    expect_equal(resOptsH5New[time==DR[1] , LIGNITE], 15000)
+    expect_equal(resOptsH5New[time == DR[1], LIGNITE], 15000)
     
-    resCompareData <- antaresProcessing::compare(x= resOptsH5Old, y = resOptsH5New)
-    expect_equal(resCompareData[timeId==timeId[40], LIGNITE], -24000)
+    resCompareData <- antaresProcessing::compare(x = resOptsH5Old, y = resOptsH5New)
+    expect_equal(resCompareData[timeId == timeId[40], LIGNITE], -24000)
     
     dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
-    expect_equal(resCompareData[timeId==timeId[40] , LIGNITE], -dataHtmlWidgetPS$neglignite[[2]])
+    expect_equal(resCompareData[timeId == timeId[40], LIGNITE], -dataHtmlWidgetPS$neglignite[[2]])
     #no change after timeID > 40
-    expect_equal(resCompareData[timeId==timeId[90] , LIGNITE], -dataHtmlWidgetPS$neglignite[[50]])
+    expect_equal(resCompareData[timeId == timeId[90], LIGNITE], -dataHtmlWidgetPS$neglignite[[50]])
   }
   
 })
 
 describe("prodStack must work with refStudy, if x is a list of optsH5 and y an optsH5, ", {
-  if(requireNamespace("rhdf5", quietly = TRUE)){
+  if (requireNamespace("rhdf5", quietly = TRUE)){
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -182,9 +175,9 @@ describe("prodStack must work with refStudy, if x is a list of optsH5 and y an o
     pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
     
     listFolderToCreate <- c("testH5v2", "testH5v3", "testH5v4")
-    for(folder in listFolderToCreate){
+    for (folder in listFolderToCreate){
       pathNewH5 <- file.path(pathInitial, folder)
-      if(!dir.exists(pathNewH5)){
+      if (!dir.exists(pathNewH5)){
         dir.create(pathNewH5)
       }
       
@@ -196,7 +189,7 @@ describe("prodStack must work with refStudy, if x is a list of optsH5 and y an o
           path = pathNewH5, 
           opts = optsData, 
           overwrite = TRUE,
-          supressMessages=TRUE)
+          supressMessages = TRUE)
       )
     }
     myArea <- "b"
@@ -213,7 +206,7 @@ describe("prodStack must work with refStudy, if x is a list of optsH5 and y an o
     
     optsList <- list()
     antaresDataListH5 <- list()
-    for(i in 1:length(listFolderToCreate)){
+    for (i in 1:length(listFolderToCreate)){
       pathOptsI <- file.path(pathInitial, listFolderToCreate[[i]])
       optsList[[i]] <- setSimulationPath(path = pathOptsI)
       antaresDataListH5[[i]] <- readAntares(areas = myArea)
@@ -231,13 +224,13 @@ describe("prodStack must work with refStudy, if x is a list of optsH5 and y an o
     dataHtmlWidgetPS1 <- .get_data_from_htmlwidget(PS_List, widgetsNumber = 1)
     dataHtmlWidgetPS2 <- .get_data_from_htmlwidget(PS_List, widgetsNumber = 2)
     #compare data  
-    resCompareData1_ref <- antaresProcessing::compare(x= antaresDataRef, y = antaresDataListH5[[1]])
-    resCompareData2_ref <- antaresProcessing::compare(x= antaresDataRef, y = antaresDataListH5[[2]])
-    expect_equal(resCompareData1_ref[timeId==timeId[40] , LIGNITE], -dataHtmlWidgetPS1$lignite[[2]])
-    expect_equal(resCompareData2_ref[timeId==timeId[40] , LIGNITE], dataHtmlWidgetPS2$lignite[[2]])
+    resCompareData1_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[1]])
+    resCompareData2_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[2]])
+    expect_equal(resCompareData1_ref[timeId == timeId[40], LIGNITE], -dataHtmlWidgetPS1$lignite[[2]])
+    expect_equal(resCompareData2_ref[timeId == timeId[40], LIGNITE], dataHtmlWidgetPS2$lignite[[2]])
     #no change after timeID > 40
-    expect_equal(resCompareData1_ref[timeId==timeId[90] , LIGNITE], -dataHtmlWidgetPS1$lignite[[50]])
-    expect_equal(resCompareData2_ref[timeId==timeId[90] , LIGNITE], -dataHtmlWidgetPS2$lignite[[50]])
+    expect_equal(resCompareData1_ref[timeId == timeId[90], LIGNITE], -dataHtmlWidgetPS1$lignite[[50]])
+    expect_equal(resCompareData2_ref[timeId == timeId[90], LIGNITE], -dataHtmlWidgetPS2$lignite[[50]])
     
   }
 })
@@ -286,20 +279,20 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   resCompare <- antaresProcessing::compare(myData2, myData1, method = "diff")
   
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
-  expect_true(isTRUE(max(resCompare$GAS)==max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
+  expect_true(isTRUE(max(resCompare$GAS) == max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
   
   #pb timeZine local (PC, Travis, etc)
-  for(i in 0:5){
+  for (i in 0:5){
     timeEditShift <- lubridate::hours(i)
-    timeEditMinus <- as.Date(DR[1])-timeEditShift
-    timeEditPlus <- as.Date(DR[1])+timeEditShift
-    myData1[ (time==timeEditMinus | time==timeEditPlus) & area==myArea, GAS := as.integer(GAS + 2500)]
+    timeEditMinus <- as.Date(DR[1]) - timeEditShift
+    timeEditPlus <- as.Date(DR[1]) + timeEditShift
+    myData1[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1[ time==DR[1] & area==myArea,]$GAS
-  #myData2[ time==DR[1] & area==myArea,]$GAS
+  #myData1[ time == DR[1] & area == myArea, ]$GAS
+  #myData2[ time == DR[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2[ time==DR[1] & area==myArea,]$GAS + 2500, myData1[ time==DR[1] & area==myArea,]$GAS)))
+  expect_true(isTRUE(all.equal(myData2[ time == DR[1] & area == myArea, ]$GAS + 2500, myData1[ time == DR[1] & area == myArea, ]$GAS)))
   
   PS3 <-  prodStack(x = myData2, refStudy = myData1, areas = myArea, dateRange = DR, .runApp = FALSE, interactive = TRUE)
   expect_true(is(PS3, "MWController"))
@@ -311,7 +304,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
   PS3$init()
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
-  expect_true(all.equal(resCompare[ time==DR[1] & area == myArea, GAS ], -(dataHtmlWidgetPS$neggas[[2]])))
+  expect_true(all.equal(resCompare[ time == DR[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))   
   
@@ -340,20 +333,20 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   resCompare3_1 <- antaresProcessing::compare(myDataList[[2]], myData1, method = "diff")
   
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 2)
-  expect_true(isTRUE(max(resCompare3_1$GAS)==max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
+  expect_true(isTRUE(max(resCompare3_1$GAS) == max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
   
   #pb timeZine local (PC, Travis, etc)
-  for(i in 0:5){
+  for (i in 0:5){
     timeEditShift <- lubridate::hours(i)
-    timeEditMinus <- as.Date(DR[1])-timeEditShift
-    timeEditPlus <- as.Date(DR[1])+timeEditShift
-    myData3[ (time==timeEditMinus | time==timeEditPlus) & area==myArea, GAS := as.integer(GAS + 2500)]
+    timeEditMinus <- as.Date(DR[1]) - timeEditShift
+    timeEditPlus <- as.Date(DR[1]) + timeEditShift
+    myData3[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1[ time==DR[1] & area==myArea,]$GAS
-  #myData2[ time==DR[1] & area==myArea,]$GAS
+  #myData1[ time == DR[1] & area == myArea, ]$GAS
+  #myData2[ time == DR[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData3[ time==DR[1] & area==myArea,]$GAS, myData1[ time==DR[1] & area==myArea,]$GAS + 2500)))
+  expect_true(isTRUE(all.equal(myData3[ time == DR[1] & area == myArea, ]$GAS, myData1[ time == DR[1] & area == myArea, ]$GAS + 2500)))
   
   PS3 <-  prodStack(x = myDataList, refStudy = myData1, areas = myArea, dateRange = DR, .runApp = FALSE, interactive = TRUE)
   
@@ -366,7 +359,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
   PS3$init()
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 2)
-  expect_true(all.equal(resCompare3_1[ time==DR[1] & area == myArea, GAS ], -(dataHtmlWidgetPS$gas[[2]])))
+  expect_true(all.equal(resCompare3_1[ time == DR[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$gas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))   
   
@@ -390,20 +383,20 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   resCompare2_1 <- antaresProcessing::compare(myData2, myData1, method = "diff")
   
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 1)
-  expect_true(isTRUE(max(resCompare2_1$areas$GAS)==max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
+  expect_true(isTRUE(max(resCompare2_1$areas$GAS) == max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
   
   #pb timeZine local (PC, Travis, etc)
-  for(i in 0:5){
+  for (i in 0:5){
     timeEditShift <- lubridate::hours(i)
-    timeEditMinus <- as.Date(DR[1])-timeEditShift
-    timeEditPlus <- as.Date(DR[1])+timeEditShift
-    myData2$areas[ (time==timeEditMinus | time==timeEditPlus) & area==myArea, GAS := as.integer(GAS + 2500)]
+    timeEditMinus <- as.Date(DR[1]) - timeEditShift
+    timeEditPlus <- as.Date(DR[1]) + timeEditShift
+    myData2$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1[ time==DR[1] & area==myArea,]$GAS
-  #myData2[ time==DR[1] & area==myArea,]$GAS
+  #myData1[ time == DR[1] & area == myArea, ]$GAS
+  #myData2[ time == DR[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2$areas[ time==DR[1] & area==myArea,]$GAS, myData1$areas[ time==DR[1] & area==myArea,]$GAS + 2500)))
+  expect_true(isTRUE(all.equal(myData2$areas[ time == DR[1] & area == myArea, ]$GAS, myData1$areas[ time == DR[1] & area == myArea, ]$GAS + 2500)))
   
   PS3 <-  prodStack(x = myData2, refStudy = myData1, areas = myArea, dateRange = DR, .runApp = FALSE, interactive = TRUE)
   
@@ -416,7 +409,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
   PS3$init()
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 1)
-  expect_true(all.equal(resCompare2_1$areas[ time==DR[1] & area == myArea, GAS ], (dataHtmlWidgetPS$gas[[2]])))
+  expect_true(all.equal(resCompare2_1$areas[ time == DR[1] & area == myArea, GAS ], (dataHtmlWidgetPS$gas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))   
   
@@ -444,20 +437,20 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   resCompare2_1 <- antaresProcessing::compare(myDataList[[3]], myData1, method = "diff")
   
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 3)
-  expect_true(isTRUE(max(resCompare2_1$areas$GAS)==max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
+  expect_true(isTRUE(max(resCompare2_1$areas$GAS) == max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
   
   #pb timeZine local (PC, Travis, etc)
-  for(i in 0:5){
+  for (i in 0:5){
     timeEditShift <- lubridate::hours(i)
-    timeEditMinus <- as.Date(DR[1])-timeEditShift
-    timeEditPlus <- as.Date(DR[1])+timeEditShift
-    myData2$areas[ (time==timeEditMinus | time==timeEditPlus) & area==myArea, GAS := as.integer(GAS + 2500)]
+    timeEditMinus <- as.Date(DR[1]) - timeEditShift
+    timeEditPlus <- as.Date(DR[1]) + timeEditShift
+    myData2$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1[ time==DR[1] & area==myArea,]$GAS
-  #myData2[ time==DR[1] & area==myArea,]$GAS
+  #myData1[ time == DR[1] & area == myArea, ]$GAS
+  #myData2[ time == DR[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2$areas[ time==DR[1] & area==myArea,]$GAS, myData1$areas[ time==DR[1] & area==myArea,]$GAS + 2500)))
+  expect_true(isTRUE(all.equal(myData2$areas[ time == DR[1] & area == myArea, ]$GAS, myData1$areas[ time == DR[1] & area == myArea, ]$GAS + 2500)))
   
   PS3 <-  prodStack(x = myDataList, refStudy = myData1, areas = myArea, dateRange = DR, .runApp = FALSE, interactive = TRUE)
   
@@ -471,17 +464,17 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
   PS3$init()
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 3)
-  expect_true(all.equal(resCompare2_1$areas[ time==DR[1] & area == myArea, GAS ], (dataHtmlWidgetPS$gas[[2]])))
+  expect_true(all.equal(resCompare2_1$areas[ time == DR[1] & area == myArea, GAS ], (dataHtmlWidgetPS$gas[[2]])))
   #no change for myData3
   dataHtmlWidgetPS3 <- .get_data_from_htmlwidget(PS3, widgetsNumber = 2)
-  expect_true(all.equal(resCompare3_1$areas[ time==DR[1] & area == myArea, GAS ] , (dataHtmlWidgetPS3$gas[[2]])))
+  expect_true(all.equal(resCompare3_1$areas[ time == DR[1] & area == myArea, GAS ], (dataHtmlWidgetPS3$gas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))   
   
 })
 
 describe("prodStack must work with refStudy, if interactive is set to TRUE and if x, y are optsH5 , ", {
-  if(requireNamespace("rhdf5", quietly = TRUE)){
+  if (requireNamespace("rhdf5", quietly = TRUE)){
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -512,14 +505,14 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
     pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
     
     pathNewH5 <- file.path(pathInitial, "testH5")
-    if(!dir.exists(pathNewH5)){
+    if (!dir.exists(pathNewH5)){
       dir.create(pathNewH5)
     }
     #write the study
     #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
     optsData <- antaresRead::setSimulationPath(path = studyPath)
     suppressWarnings(writeAntaresH5(path = pathNewH5, opts = optsData, 
-                                    overwrite = TRUE, supressMessages=TRUE))
+                                    overwrite = TRUE, supressMessages = TRUE))
     
     
     pathNewH5File <- file.path(pathNewH5, list.files(pathNewH5))
@@ -563,22 +556,22 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
     resOptsH5New <- readAntares(opts = optsH5New, areas = myArea, showProgress = FALSE, mcYears = 2)
     #timeId for time = "2018-04-24 00:00:00 UTC" ? timeId = 2713
     timeIdVal <- 2713
-    expect_equal(resOptsH5New[timeId==timeIdVal , LIGNITE], 15000)
-    expect_equal(resOptsH5Old[timeId==timeIdVal , LIGNITE], 38000)
+    expect_equal(resOptsH5New[timeId == timeIdVal, LIGNITE], 15000)
+    expect_equal(resOptsH5Old[timeId == timeIdVal, LIGNITE], 38000)
     
-    resCompareData <- antaresProcessing::compare(x= resOptsH5Old, y = resOptsH5New)
-    expect_equal(resCompareData[timeId==timeIdVal, LIGNITE], -23000)
+    resCompareData <- antaresProcessing::compare(x = resOptsH5Old, y = resOptsH5New)
+    expect_equal(resCompareData[timeId == timeIdVal, LIGNITE], -23000)
     
     dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
-    expect_equal(resCompareData[timeId==timeIdVal, LIGNITE], -dataHtmlWidgetPS$neglignite[[1]])
+    expect_equal(resCompareData[timeId == timeIdVal, LIGNITE], -dataHtmlWidgetPS$neglignite[[1]])
     #no change after timeID > 40
-    expect_equal(resCompareData[timeId==(timeIdVal+90) , LIGNITE], -dataHtmlWidgetPS$neglignite[[50]])
+    expect_equal(resCompareData[timeId == (timeIdVal + 90), LIGNITE], -dataHtmlWidgetPS$neglignite[[50]])
   }
   
 })
 
 describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of optsH5 and y optsH5  , ", {
-  if(requireNamespace("rhdf5", quietly = TRUE)){
+  if (requireNamespace("rhdf5", quietly = TRUE)){
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -587,9 +580,9 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
     pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
     
     listFolderToCreate <- c("testH5v2", "testH5v3", "testH5v4")
-    for(folder in listFolderToCreate){
+    for (folder in listFolderToCreate){
       pathNewH5 <- file.path(pathInitial, folder)
-      if(!dir.exists(pathNewH5)){
+      if (!dir.exists(pathNewH5)){
         dir.create(pathNewH5)
       }
       
@@ -601,7 +594,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
           path = pathNewH5, 
           opts = optsData, 
           overwrite = TRUE,
-          supressMessages=TRUE)
+          supressMessages = TRUE)
       )
     }
     myArea <- "b"
@@ -609,7 +602,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
     pathH5FileToEdit <- file.path(pathH5FolderToEdit, list.files(pathH5FolderToEdit))
     newValueGAS <- 50000
     mcYearToTestList <- c(2, NULL)
-    for(mcYearToTest in mcYearToTestList){
+    for (mcYearToTest in mcYearToTestList){
       .h5Antares_edit_variable(
         pathH5 = pathH5FileToEdit, 
         area = myArea, 
@@ -621,7 +614,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
       
       optsList <- list()
       antaresDataListH5 <- list()
-      for(i in 1:length(listFolderToCreate)){
+      for (i in 1:length(listFolderToCreate)){
         pathOptsI <- file.path(pathInitial, listFolderToCreate[[i]])
         optsList[[i]] <- setSimulationPath(path = pathOptsI)
         antaresDataListH5[[i]] <- readAntares(areas = myArea, mcYear = mcYearToTest)
@@ -647,10 +640,10 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
       dataHtmlWidgetPS1 <- .get_data_from_htmlwidget(PSListNoInt, widgetsNumber = 1)
       dataHtmlWidgetPS2 <- .get_data_from_htmlwidget(PSListNoInt, widgetsNumber = 2)
       #compare data  
-      resCompareData1_ref <- antaresProcessing::compare(x= antaresDataRef, y = antaresDataListH5[[1]])
-      resCompareData2_ref <- antaresProcessing::compare(x= antaresDataRef, y = antaresDataListH5[[2]])
-      expect_equal(resCompareData1_ref[timeId==timeId[40] , GAS], -dataHtmlWidgetPS1$gas[[2]])
-      expect_equal(resCompareData2_ref[timeId==timeId[40] , GAS], dataHtmlWidgetPS2$gas[[2]])
+      resCompareData1_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[1]])
+      resCompareData2_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[2]])
+      expect_equal(resCompareData1_ref[timeId == timeId[40], GAS], -dataHtmlWidgetPS1$gas[[2]])
+      expect_equal(resCompareData2_ref[timeId == timeId[40], GAS], dataHtmlWidgetPS2$gas[[2]])
       
       #second, try without refStudy and interactive == FALSE
       PSListNoInt <-  prodStack(x = optsList,
@@ -706,19 +699,18 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
       resOptsH5New <- readAntares(opts = optsList[[2]], areas = myArea, showProgress = FALSE, mcYears = mcYearToTest)
       #timeId for time = "2018-04-24 00:00:00 UTC" ? timeId = 2713
       timeIdVal <- 2713
-      expect_equal(resOptsH5New[timeId==timeIdVal , GAS], newValueGAS)
-      expect_equal(resOptsH5Old[timeId==timeIdVal , GAS], 0)
+      expect_equal(resOptsH5New[timeId == timeIdVal, GAS], newValueGAS)
+      expect_equal(resOptsH5Old[timeId == timeIdVal, GAS], 0)
       
-      resCompareData <- antaresProcessing::compare(x= resOptsH5Old, y = resOptsH5New)
-      expect_equal(resCompareData[timeId==timeIdVal, GAS], newValueGAS)
+      resCompareData <- antaresProcessing::compare(x = resOptsH5Old, y = resOptsH5New)
+      expect_equal(resCompareData[timeId == timeIdVal, GAS], newValueGAS)
       
-      expect_equal(resCompareData[timeId==timeIdVal, GAS], dataHtmlWidgetPS31$gas[[1]])
+      expect_equal(resCompareData[timeId == timeIdVal, GAS], dataHtmlWidgetPS31$gas[[1]])
       #no change after timeID > 40
-      expect_equal(resCompareData[timeId==(timeIdVal+90) , GAS], dataHtmlWidgetPS31$gas[[50]])
+      expect_equal(resCompareData[timeId == (timeIdVal + 90), GAS], dataHtmlWidgetPS31$gas[[50]])
       expect_equal(0, dataHtmlWidgetPS21$gas[[1]])
       expect_equal(0, dataHtmlWidgetPS21$gas[[50]])
     }
   }
   
 })
-
