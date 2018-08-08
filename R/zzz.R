@@ -206,6 +206,9 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   print(class(htmlwidget$widgets))
   print(class(htmlwidget$widgets[[1]]))
   print(class(htmlwidget$widgets[[1]]$widgets[[1]]))
+  if(is.character(htmlwidget$widgets[[1]]$widgets[[1]])){
+    print(htmlwidget$widgets[[1]]$widgets[[1]])
+  }
   print(class(htmlwidget$widgets[[1]]$widgets[[1]]$x))
   print(class(htmlwidget$widgets[[1]]$widgets[[1]]$x$attrs))
   print(class(htmlwidget$widgets[[1]]$widgets[[1]]$x$attrs$labels))
