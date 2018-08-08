@@ -223,19 +223,19 @@ prodStack <- function(x,
                       legend = TRUE, legendId = sample(1e9, 1),
                       groupId = legendId,
                       legendItemsPerRow = 5,
-                      width = NULL, height = NULL, xyCompare = c("union","intersect"),
+                      width = NULL, height = NULL, xyCompare = c("union", "intersect"),
                       h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
                       timeSteph5 = "hourly",
                       mcYearh5 = NULL,
                       tablesh5 = c("areas", "links"), language = "en", 
                       hidden = NULL, ...) {
   
-  if(!is.null(compare) && !interactive){
+  if (!is.null(compare) && !interactive){
     stop("You can't use compare in no interactive mode")
   }
   
   # Check language
-  if(!language %in% availableLanguages_labels){
+  if (!language %in% availableLanguages_labels){
     stop("Invalid 'language' argument. Must be in : ", paste(availableLanguages_labels, collapse = ", "))  
   }
   
@@ -249,10 +249,10 @@ prodStack <- function(x,
   unit <- match.arg(unit)
   if (is.null(mcYear)) mcYear <- "average"
   
-  if(!is.null(compare) && "list" %in% class(x)){
-    if(length(x) == 1) x <- list(x[[1]], x[[1]])
+  if (!is.null(compare) && "list" %in% class(x)){
+    if (length(x) == 1) x <- list(x[[1]], x[[1]])
   }
-  if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
+  if (!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
     x <- list(x, x)
   }
   
@@ -261,8 +261,8 @@ prodStack <- function(x,
   h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
   compareOptions <- .compOpts(x, compare)
-  if(is.null(compare)){
-    if(compareOptions$ncharts > 1){
+  if (is.null(compare)){
+    if (compareOptions$ncharts > 1){
       compare <- ""
     }
   }
@@ -303,7 +303,7 @@ prodStack <- function(x,
       stackOpts <- .aliasToStackOptions(stack)
       dt <- x[area %in% areas]
       
-      if(length(mcYear) == 0){
+      if (length(mcYear) == 0){
         mcYear <- "average"
       }
       if (mcYear == "average") dt <- synthesize(dt)
@@ -314,7 +314,7 @@ prodStack <- function(x,
         .printWarningMcYear()
       }
       
-      if("annual" %in% attr(dt, "timeStep")){
+      if ("annual" %in% attr(dt, "timeStep")){
         dateRange <- NULL
       }
       
@@ -322,7 +322,7 @@ prodStack <- function(x,
         dt <- dt[as.Date(.timeIdToDate(dt$timeId, timeStep, opts = opts)) %between% dateRange]
       }
       
-      if(nrow(dt) == 0){
+      if (nrow(dt) == 0){
         return (combineWidgets(.getLabelLanguage("No data for this selection", language)))
       }
       
@@ -358,7 +358,7 @@ prodStack <- function(x,
                               dateRange = dateRange,
                               stepPlot = stepPlot, drawPoints = drawPoints, language = language), silent = TRUE)
       
-      if("try-error" %in% class(p)){
+      if ("try-error" %in% class(p)){
         return (
           combineWidgets(paste0(.getLabelLanguage("Can't visualize stack", language), " '", stack, "'<br>", p[1]))
         )
@@ -388,7 +388,7 @@ prodStack <- function(x,
   if (!interactive) {
     x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
     
-    if(!is.null(refStudy)){
+    if (!is.null(refStudy)){
       refStudy <- .cleanH5(refStudy, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
       x <- .compare_with_ref_study(x = x, refStudy = refStudy)
     }
@@ -431,8 +431,8 @@ prodStack <- function(x,
   manipulateWidget(
     {
       .tryCloseH5()
-      if(.id <= length(params$x)){
-        widget <- params$x[[max(1,.id)]]$plotWithLegend(.id, areas, main,
+      if (.id <= length(params$x)){
+        widget <- params$x[[max(1, .id)]]$plotWithLegend(.id, areas, main,
                                                         unit, stack, dateRange,
                                                         mcYear, legend,
                                                         stepPlot, drawPoints)
@@ -457,7 +457,7 @@ prodStack <- function(x,
       label = .getLabelLanguage("H5request", language),
       timeSteph5 = mwSelect(
         {
-          if(length(paramsH5) > 0){
+          if (length(paramsH5) > 0){
             choices = paramsH5$timeStepS
             names(choices) <- sapply(choices, function(x) .getLabelLanguage(x, language))
             choices
@@ -465,14 +465,14 @@ prodStack <- function(x,
             NULL
           }
         }, 
-        value =  if(.initial) {paramsH5$timeStepS[1]}else{NULL},
+        value =  if (.initial) {paramsH5$timeStepS[1]}else{NULL},
         label = .getLabelLanguage("timeStep", language), 
         multiple = FALSE, .display = !"timeSteph5" %in% hidden
       ),
       tables = mwSelect(
         {
-          if(length(paramsH5) > 0){
-            choices = paramsH5[["tabl"]][paramsH5[["tabl"]]%in%c("areas", "districts")]
+          if (length(paramsH5) > 0){
+            choices = paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "districts")]
             names(choices) <- sapply(choices, function(x) .getLabelLanguage(x, language))
             choices
           } else {
@@ -480,7 +480,7 @@ prodStack <- function(x,
           }
         },
         value = {
-          if(.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]]%in%c("areas", "districts")][1]}else{NULL}
+          if (.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "districts")][1]}else{NULL}
         }, 
         label = .getLabelLanguage("table", language), 
         multiple = FALSE, .display = !"tables" %in% hidden
@@ -492,7 +492,7 @@ prodStack <- function(x,
           ch
         },
         value = {
-          if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+          if (.initial){paramsH5[["mcYearS"]][1]}else{NULL}
         },
         label = .getLabelLanguage("mcYears to be imported", language), 
         multiple = TRUE, options = list(maxItems = 4),
@@ -507,8 +507,8 @@ prodStack <- function(x,
     ),
     
     sharerequest = mwSharedValue({
-      if(length(meanYearH5) > 0){
-        if(meanYearH5){
+      if (length(meanYearH5) > 0){
+        if (meanYearH5){
           list(timeSteph5_l = timeSteph5, mcYearh_l = NULL, tables_l = tables)
         } else {
           list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
@@ -521,28 +521,28 @@ prodStack <- function(x,
     x_tranform = mwSharedValue({
       
       h5requestFilteringTp <- paramsH5$h5requestFilter
-      if(!is.null(sharerequest))
+      if (!is.null(sharerequest))
       {
-        for(i in 1:length(h5requestFilteringTp))
+        for (i in 1:length(h5requestFilteringTp))
         {
-          if(sharerequest$tables == "areas"){
+          if (sharerequest$tables == "areas"){
             h5requestFilteringTp[[i]]$districts = NULL
           }
-          if(sharerequest$tables == "districts"){
+          if (sharerequest$tables == "districts"){
             h5requestFilteringTp[[i]]$areas = NULL
           }
         }
       }
       
-      if(!is.null(refStudy)){
+      if (!is.null(refStudy)){
         refStudy <- .loadH5Data(sharerequest, refStudy, h5requestFilter = h5requestFilteringTp[[1]])
       }
       
-      sapply(1:length(x_in),function(zz){
+      sapply(1:length(x_in), function(zz){
         x_in[[zz]] <- .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = h5requestFilteringTp[[zz]])
 
-        if(!is.null(refStudy)){
-          if(!is(x_in[[zz]], "simOptions")){
+        if (!is.null(refStudy)){
+          if (!is(x_in[[zz]], "simOptions")){
             x_in[[zz]] <- .compare_with_ref_study(x = as.antaresDataList(x_in[[zz]]), refStudy = as.antaresDataList(refStudy))
           }else{
             x_in[[zz]] <- .compare_with_ref_study(x = x_in[[zz]], refStudy = refStudy)
@@ -571,27 +571,27 @@ prodStack <- function(x,
         unique(vv$x$mcYear)
       }), xyCompare)
       names(allMcY) <- allMcY
-      if(is.null(allMcY)){
+      if (is.null(allMcY)){
         allMcY <- "average"
         names(allMcY) <- .getLabelLanguage("average", language)
       }
       allMcY
     }, value = {
-      if(.initial) mcYear
+      if (.initial) mcYear
       else NULL
     }, label = .getLabelLanguage("mcYear to be displayed", language), .display = !"mcYear" %in% hidden),
     
     main = mwText(main, label = .getLabelLanguage("title", language), .display = !"main" %in% hidden),
     
     dateRange = mwDateRange(value = {
-      if(.initial){
+      if (.initial){
         res <- NULL
-        if(!is.null(params)){
+        if (!is.null(params)){
           res <- c(.dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table),
                    .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table))
           ##Lock 7 days for hourly data
-          if(params$x[[1]]$timeStep == "hourly"){
-            if(params$x[[1]]$dateRange[2] - params$x[[1]]$dateRange[1]>7){
+          if (params$x[[1]]$timeStep == "hourly"){
+            if (params$x[[1]]$dateRange[2] - params$x[[1]]$dateRange[1] > 7){
               res[1] <- params$x[[1]]$dateRange[2] - 7
             }
           }
@@ -600,8 +600,8 @@ prodStack <- function(x,
       }else{NULL}
     }, 
     min = {      
-      if(!is.null(params)){
-        if(params$x[[1]]$timeStep != "annual"){
+      if (!is.null(params)){
+        if (params$x[[1]]$timeStep != "annual"){
           .dateRangeJoin(params = params, xyCompare = xyCompare, "min", tabl = table)
         } else {
           NULL
@@ -609,8 +609,8 @@ prodStack <- function(x,
       }
     }, 
     max = {      
-      if(!is.null(params)){
-        if(params$x[[1]]$timeStep != "annual"){
+      if (!is.null(params)){
+        if (params$x[[1]]$timeStep != "annual"){
           .dateRangeJoin(params = params, xyCompare = xyCompare, "max", tabl = table)
         } else {
           NULL
@@ -634,8 +634,8 @@ prodStack <- function(x,
       }), xyCompare))
     },
     value = {
-      if(.initial){
-        if(!is.null(areas)){
+      if (.initial){
+        if (!is.null(areas)){
           areas
         } else {
           as.character(.compareOperation(lapply(params$x, function(vv){
@@ -739,7 +739,7 @@ prodStack <- function(x,
   
   dt <- data.table(timeId = x$timeId)
   for (n in names(formulas)) {
-    dt[,c(n) := x[, eval(formulas[[n]]) / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]]
+    dt[, c(n) := x[, eval(formulas[[n]]) / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]]
   }
   
   p <- .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, lineWidth, legendId,
@@ -772,7 +772,3 @@ prodStackLegend <- function(stack = "eco2mix",
     legendId = legendId
   )
 }
-
-
-
-

@@ -5,17 +5,16 @@
 #' 
 #' @noRd
 .compOpts <- function(x, compare){
-  
   len <- 1
   
-  if("list" == class(x)[1]){
+  if ("list" == class(x)[1]){
     len <- length(x)
   }
-  if(length(x) > 1)
+  if (length(x) > 1)
   {
     
-    ncol = ifelse(len > 2, 2 ,1)
-    nrow = floor((len-1)/2) + 1 + ifelse(len == 2, 1, 0)
+    ncol = ifelse(len > 2, 2, 1)
+    nrow = floor((len - 1) / 2) + 1 + ifelse(len == 2, 1, 0)
     return(list(ncharts = len, nrow = nrow, ncol = ncol))
   }
   if(!is.null(compare)){
@@ -37,76 +36,76 @@
 #' 
 #' @noRd
 .dateRangeJoin <- function(params, xyCompare, minMax, tabl = NULL){
-  if(minMax == "min" & xyCompare == "union"){
-    if(!is.null(tabl))
+  if (minMax == "min" & xyCompare == "union"){
+    if (!is.null(tabl))
     {
       date_range <- lapply(params$x, function(X){
         X[[tabl]]$dateRange[1]
       })
       date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
       
-      return(min(do.call("c",date_range)))
+      return(min(do.call("c", date_range)))
     }else{
       date_range <- lapply(params$x, function(X){
         X$dateRange[1]
       })
       date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
       
-      return(min(do.call("c",date_range)))
+      return(min(do.call("c", date_range)))
     }
   }
-  if(minMax == "min" & xyCompare == "intersect"){
-    if(!is.null(tabl))
+  if (minMax == "min" & xyCompare == "intersect"){
+    if (!is.null(tabl))
     {
       date_range <- lapply(params$x, function(X){
         X[[tabl]]$dateRange[1]
       })
       date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
       
-      return(max(do.call("c",date_range)))
+      return(max(do.call("c", date_range)))
     }else{
       date_range <- lapply(params$x, function(X){
         X$dateRange[1]
       })
       date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
       
-      return(max(do.call("c",date_range)))
+      return(max(do.call("c", date_range)))
     }
   }
-  if(minMax == "max" & xyCompare == "union"){
-    if(!is.null(tabl))
+  if (minMax == "max" & xyCompare == "union"){
+    if (!is.null(tabl))
     {
       date_range <- lapply(params$x, function(X){
         X[[tabl]]$dateRange[2]
       })
       date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
       
-      return(max(do.call("c",date_range)))
+      return(max(do.call("c", date_range)))
     }else{
       date_range <- lapply(params$x, function(X){
         X$dateRange[2]
       })
       date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
 
-      return(max(do.call("c",date_range)))
+      return(max(do.call("c", date_range)))
     }
   }
-  if(minMax == "max" & xyCompare == "intersect"){
-    if(!is.null(tabl))
+  if (minMax == "max" & xyCompare == "intersect"){
+    if (!is.null(tabl))
     {
       date_range <- lapply(params$x, function(X){
         X[[tabl]]$dateRange[2]
       })
       date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
       
-      return(min(do.call("c",date_range)))
+      return(min(do.call("c", date_range)))
     }else{
       date_range <- lapply(params$x, function(X){
         X$dateRange[2]
       })
       date_range <- date_range[which(sapply(date_range, function(x) !is.null(x)))]
       
-      return(min(do.call("c",date_range)))
+      return(min(do.call("c", date_range)))
     }
   }
 }
@@ -125,7 +124,7 @@
 .transformDataForComp <- function(x, compare = NULL,
                                   compareOpts = NULL,
                                   processFun = as.antaresDataList, ...) {
-  if(!is.list(x)){return(NULL)}
+  if (!is.list(x)){return(NULL)}
   if (is.null(compareOpts)) compareOpts <- list()
   assert_that(is.function(processFun))
   assert_that(is.list(x))
@@ -148,10 +147,10 @@
 #' 
 #' @noRd
 .giveListFormat <- function(x){
-  if(.isSimOpts(x) | "antaresData" %in% class(x)){
+  if (.isSimOpts(x) | "antaresData" %in% class(x)){
     list(.rescoverFormat(x))
   }else{
-    if("list" %in% class(x)){
+    if ("list" %in% class(x)){
       lapply(x, .rescoverFormat)
     }else{
       stop("class x must be antaresData or simOptions or list")
@@ -165,11 +164,11 @@
 #' 
 #' @noRd
 .rescoverFormat <- function(x){
-  if("antaresData" %in% class(x))
+  if ("antaresData" %in% class(x))
   {
     re <- as.antaresDataList(x)
   }else{
-    if(.isSimOpts(x)){
+    if (.isSimOpts(x)){
       re <- x
     }else{
       stop("class x must be antaresData or simOptions")
@@ -201,16 +200,16 @@
 #' @noRd
 .loadH5Data <- function(sharerequest, dta, areas = NULL, links = NULL, clusters = NULL, 
                         districts = NULL, h5requestFilter = list()){
-  if(.isSimOpts(dta)){
+  if (.isSimOpts(dta)){
     gc()
-    if(length(sharerequest$mcYearh_l)==0) {mcYearh2 <- NULL}else{
-      if("all"%in%sharerequest$mcYearh_l){
+    if (length(sharerequest$mcYearh_l) == 0) {mcYearh2 <- NULL}else{
+      if ("all" %in% sharerequest$mcYearh_l){
         mcYearh2 <- "all"
       }else{
         mcYearh2 <- as.numeric(sharerequest$mcYearh_l)
       }
     }
-    if(!is.null(sharerequest$tables_l))
+    if (!is.null(sharerequest$tables_l))
     {
       if("areas" %in% sharerequest$tables_l){
         areas <- "all"
@@ -227,15 +226,15 @@
     }
     
     
-    argS <- list(areas = areas, links = links, clusters = clusters,districts = districts , mcYears = mcYearh2,
-                 timeStep = sharerequest$timeSteph5_l, opts = dta, showProgress=FALSE)
+    argS <- list(areas = areas, links = links, clusters = clusters, districts = districts, mcYears = mcYearh2,
+                 timeStep = sharerequest$timeSteph5_l, opts = dta, showProgress = FALSE)
     argS[names(h5requestFilter)] <- h5requestFilter
     dt <- do.call(readAntares,
                   argS)
     
     dt <- as.antaresDataList(dt)
     for(i in 1:length(dt)){
-      if(all(names(dt[[i]])%in%.idCols(dt[[i]]))){
+      if(all(names(dt[[i]]) %in% .idCols(dt[[i]]))){
         dt[[i]] <- NULL
       }
     }
@@ -262,7 +261,7 @@
       h5_filter <- h5requestFilter[[i]]
       h5_tables <- c("areas", "districts", "clusters", "links")
       if(!is.null(h5_filter)){
-        if(!(is.null(h5_filter$areas) & is.null(h5_filter$districts) & 
+        if (!(is.null(h5_filter$areas) & is.null(h5_filter$districts) & 
            is.null(h5_filter$links) & is.null(h5_filter$clusters))){
           h5_tables <- c("areas", "districts", "clusters", "links")
           h5_tables <- h5_tables[which(c(!is.null(h5_filter$areas), !is.null(h5_filter$districts),
@@ -329,8 +328,8 @@
 #' 
 #' @noRd
 .compare_with_ref_study <- function(x = NULL, refStudy = NULL){
-  if(!is.null(refStudy)){
-    if(is.list(refStudy)){
+  if (!is.null(refStudy)){
+    if (is.list(refStudy)){
       #cleanH5 return a list (and no antaresData)
       x <- .compare_with_ref_study_one_element(x = x, refStudy = refStudy[[1]])
       return(x)
@@ -350,23 +349,23 @@
 #' @noRd
 .compare_with_ref_study_one_element <- function(x = NULL, refStudy = NULL){
   if (!(is(refStudy, "antaresData") | is(refStudy, "simOptions"))) stop("'refStudy' should be an object of class 'antaresData created with readAntares()' or an opts")
-  
-  if(!("simOptions" %in% class(x))){
-    if(!("antaresData" %in% class(x))){
-      for(i in 1:length(x)){
+  #we cannot compare instances from simOptions
+  if (!("simOptions" %in% class(x))){
+    if (!("antaresData" %in% class(x))){
+      for (i in 1:length(x)){
         x[[i]] <- compare(x = refStudy, y = x[[i]], method = "diff")
       }
       return(x)
     }else{
       #case where refStudy is an antaresDataTable 
-      if(is(refStudy, "antaresDataTable")){
+      if (is(refStudy, "antaresDataTable")){
         #case where x is an antaresDataTable
-        if(is(x, "antaresDataTable")){
+        if (is(x, "antaresDataTable")){
           x <- compare(x = refStudy, y = x, method = "diff")
           return(x)
         }else{
           #case where x is an antaresDataList but with one element
-          if(length(names(x))==1 | is(x, "antaresDataList")){
+          if (length(names(x)) == 1 | is(x, "antaresDataList")){
             x <- compare(x = refStudy, y = x[[1]], method = "diff")
             return(x)
           }else{
@@ -376,17 +375,15 @@
       }else{
         stop("no case for compare?")
       }
-      
-      #
-      if((is(refStudy, "antaresDataList"))){
-        if(is(x, "antaresDataList")){
+      #case where refStudy is an antaresDataList 
+      if ((is(refStudy, "antaresDataList"))){
+        if (is(x, "antaresDataList")){
           x <- compare(x = refStudy, y = x, method = "diff")
           return(x)
         }else{
           stop(" no case for compare ? ")
         }
       }
-      
     }
   }
   stop(" no case for compare ? ")
