@@ -210,7 +210,6 @@
 #' 
 #' @export
 prodStack <- function(x,
-                      refStudy = NULL,
                       stack = "eco2mix",
                       areas = NULL, 
                       mcYear = "average",
@@ -228,7 +227,9 @@ prodStack <- function(x,
                       timeSteph5 = "hourly",
                       mcYearh5 = NULL,
                       tablesh5 = c("areas", "links"), language = "en", 
-                      hidden = NULL, ...) {
+                      hidden = NULL,
+                      refStudy = NULL,
+                      ...) {
   
   if (!is.null(compare) && !interactive){
     stop("You can't use compare in no interactive mode")

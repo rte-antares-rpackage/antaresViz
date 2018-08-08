@@ -11,16 +11,15 @@ prodStackAliases()
 setProdStackAlias(name, variables, colors, lines = NULL, lineColors = NULL,
   lineWidth = 3, description = NULL)
 
-prodStack(x, refStudy = NULL, stack = "eco2mix", areas = NULL,
-  mcYear = "average", dateRange = NULL,
-  main = .getLabelLanguage("Production stack", language), unit = c("MWh",
-  "GWh", "TWh"), compare = NULL, compareOpts = list(),
+prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
+  dateRange = NULL, main = .getLabelLanguage("Production stack", language),
+  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
   legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
   h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
   timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
-  language = "en", hidden = NULL, ...)
+  language = "en", hidden = NULL, refStudy = NULL, ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
@@ -53,10 +52,6 @@ should be \code{NULL} if there is no curve to trace or if parameter
 districts. it can be a list of \code{antaresData} objects. 
 In this case, one chart is created for each object. 
 Can also contains opts who refer to a h5 file or list of opts.}
-
-\item{refStudy}{An object of class \code{antaresData} created with function 
-\code{\link[antaresRead]{readAntares}} containing data for areas and or
-districts. Can also contains an opts who refer to a h5 file.}
 
 \item{stack}{Name of the stack to use. One can visualize available stacks with 
 \code{prodStackAliases}}
@@ -129,6 +124,10 @@ typically h5requestFiltering = list(areas = "a", mcYears = 2)}
 \item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
 
 \item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
+
+\item{refStudy}{An object of class \code{antaresData} created with function 
+\code{\link[antaresRead]{readAntares}} containing data for areas and or
+districts. Can also contains an opts who refer to a h5 file.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
