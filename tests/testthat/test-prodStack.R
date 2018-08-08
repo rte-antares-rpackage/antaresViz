@@ -40,7 +40,7 @@ describe("prodStack must work with refStudy, if x and y are antaresDataList, ", 
   PS3 <-  prodStack(x = myData2, refStudy  = myData1, interactive = FALSE, areas = myArea, dateRange = DR)
   
   resCompare <- antaresProcessing::compare(myData2, myData1, method = "diff")
-  dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
+  dataHtmlWidgetPS <- antaresViz::.get_data_from_htmlwidget(PS3)
   
   expect_true(isTRUE(max(resCompare$areas$GAS) == max(dataHtmlWidgetPS$neggas, na.rm = TRUE)))
   
