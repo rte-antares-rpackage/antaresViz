@@ -356,10 +356,38 @@
       for(i in 1:length(x)){
         x[[i]] <- compare(x = refStudy, y = x[[i]], method = "diff")
       }
+      return(x)
     }else{
-      x <- compare(x = refStudy, y = x, method = "diff")
+      #case where refStudy is an antaresDataTable 
+      if(is(refStudy, "antaresDataTable")){
+        #case where x is an antaresDataTable
+        if(is(x, "antaresDataTable")){
+          x <- compare(x = refStudy, y = x, method = "diff")
+          return(x)
+        }else{
+          #case where x is an antaresDataList but with one element
+          if(length(names(x))==1 | is(x, "antaresDataList")){
+            x <- compare(x = refStudy, y = x[[1]], method = "diff")
+            return(x)
+          }else{
+            stop("no case for compare")
+          }
+        }
+      }else{
+        stop("no case for compare?")
+      }
+      
+      #
+      if((is(refStudy, "antaresDataList"))){
+        if(is(x, "antaresDataList")){
+          x <- compare(x = refStudy, y = x, method = "diff")
+          return(x)
+        }else{
+          stop(" no case for compare ? ")
+        }
+      }
+      
     }
   }
-  
-  return(x)
+  stop(" no case for compare ? ")
 }  

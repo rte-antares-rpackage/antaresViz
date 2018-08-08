@@ -202,22 +202,37 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
 #' 
 #' @noRd
 .get_data_from_htmlwidget <- function(htmlwidget = NULL, widgetsNumber = NULL){
-  if(!("htmlwidget" %in% class(htmlwidget))){
-    stop("no htmlwidget")
+  if(!("htmlwidget" %in% class(htmlwidget) | "MWController" %in% class(htmlwidget))){
+    stop("no htmlwidget or no MWController")
   }
   
-  if(length(htmlwidget$widgets)==1){
-    widgetsNumber <- 1
+  if(is(htmlwidget, "MWController")){
+    if(length(htmlwidget$charts)==1){
+      widgetsNumber <- 1
+    }
+  }else{
+    if(length(htmlwidget$widgets)==1){
+      widgetsNumber <- 1
+    }
   }
+
   
   if(is.null(widgetsNumber)){
     stop("no widgetsNumber")
   }
   
   resList <- list()
-  for(i in 1:length(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
-    myLabelI <- htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels[[i]]
-    resList[[myLabelI]] <- htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$data[[i]]
+  if(is(htmlwidget, "MWController")){
+    # htmlwidget$charts and no htmlwidget$widgets
+    for(i in 1:length(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+      myLabelI <- htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$attrs$labels[[i]]
+      resList[[myLabelI]] <- htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$data[[i]]
+    }
+  }else{
+    for(i in 1:length(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+      myLabelI <- htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels[[i]]
+      resList[[myLabelI]] <- htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$data[[i]]
+    }
   }
   
   return(resList)
@@ -233,23 +248,42 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
 #' @param newValue the newValue
 #' 
 #' @noRd
-.h5Antares_edit_variable <- function(pathH5 = NULL, area = NULL, timeId = 1, antVar = NULL, newValue = NULL){
+.h5Antares_edit_variable <- function(pathH5 = NULL, area = NULL, timeId = 1, antVar = NULL, newValue = NULL, mcYear = NULL){
   
+  timeStepType <- "/hourly/areas"
   H5locAntaresh5 <- rhdf5::H5Fopen(name = pathH5)
-  hourly_data <- rhdf5::h5read(H5locAntaresh5, name = "/hourly/areas/mcAll")
+  if(is.null(mcYear)){
+    typeOfData <- "/mcAll"
+  }else{
+    typeOfData <- "/mcInd"
+  }
   
-  indexArea <- grep(area, getAreas())[1]
+  nameStructure <- paste0(timeStepType, typeOfData, "/structure")
+  hourlyDataStructure <- rhdf5::h5read(H5locAntaresh5, name = nameStructure)
+  indexArea <- grep(area, hourlyDataStructure$area)[1]
+  indexAntVar <- grep(antVar, hourlyDataStructure$variable)[1]
+  indexTimeId <- timeId
+  if(is.null(mcYear)){
+    indexMcYear <- 1
+  }else{
+    indexMcYear <- grep(mcYear, hourlyDataStructure$mcYear)[1]
+  }
   
-  areaData <- hourly_data$data[, , indexArea, 1]
+  listIndex <- list(timeId, indexAntVar, indexArea, indexMcYear)
+  #debug print(listIndex)
   
-  indexAntVar <- grep(antVar, hourly_data$structure[["variable"]])[1]
-  areaData[timeId, indexAntVar] <- newValue
-  hourly_data$data[, , indexArea, 1] <- areaData
+  hourlyData <- rhdf5::h5read(
+    H5locAntaresh5, 
+    name = paste0(timeStepType, typeOfData, "/data"),
+    index = listIndex)
+  
+  hourlyData[, , , ] <- newValue
   
   rhdf5::h5writeDataset.array(
-    obj = hourly_data$data, 
+    obj = hourlyData, 
     h5loc = H5locAntaresh5, 
-    name = "/hourly/areas/mcAll/data"
+    name = paste0(timeStepType, typeOfData, "/data"),
+    index = listIndex
   )
   
   rhdf5::H5Fclose(h5file = H5locAntaresh5)

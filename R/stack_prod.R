@@ -95,7 +95,7 @@
 #'   of mcYears in one of studies will be selectable. If intersect, only mcYears in all
 #'   studies will be selectable.
 #' @param h5requestFiltering Contains arguments used by default for h5 request,
-#'   typically h5requestFiltering = list(select = "NUCLEAR")
+#'   typically h5requestFiltering = list(areas = "a", mcYears = 2)
 #' @param stepPlot \code{boolean}, step style for curves.
 #' @param drawPoints \code{boolean}, add points on graph
 #' @param timeSteph5 \code{character} timeStep to read in h5 file. Only for Non interactive mode.
@@ -175,6 +175,11 @@
 #' 
 #' # Compare studies
 #' prodStack(list(mydata, mydata))
+#' # Compare studies with refStudy argument 
+#' prodStack(x = myData1, refStudy = myData2)
+#' prodStack(x = myData1, refStudy = myData2, interactive = FALSE)
+#' prodStack(x = list(myData2, myData3, myData4), refStudy = myData1)
+#' prodStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
 #' 
 #' 
 #' # Use h5 opts
@@ -194,8 +199,13 @@
 #' # Compare 2 studies
 #' prodStack(x = list(opts, opts2))
 #' 
+#' # Compare 2 studies with argument refStudies 
+#' prodStack(x = opts, refStudy = opts2)
+#' prodStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea) 
+#' prodStack(x = opts, refStudy = opts2, h5requestFiltering = list(areas = myArea, 
+#' mcYears = 2))
 #' 
-#'                 
+#'                
 #' }
 #' 
 #' @export
@@ -524,8 +534,22 @@ prodStack <- function(x,
         }
       }
       
+      if(!is.null(refStudy)){
+        refStudy <- .loadH5Data(sharerequest, refStudy, h5requestFilter = h5requestFilteringTp[[1]])
+      }
+      
       sapply(1:length(x_in),function(zz){
-        .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = h5requestFilteringTp[[zz]])
+        x_in[[zz]] <- .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = h5requestFilteringTp[[zz]])
+
+        if(!is.null(refStudy)){
+          if(!is(x_in[[zz]], "simOptions")){
+            x_in[[zz]] <- .compare_with_ref_study(x = as.antaresDataList(x_in[[zz]]), refStudy = as.antaresDataList(refStudy))
+          }else{
+            x_in[[zz]] <- .compare_with_ref_study(x = x_in[[zz]], refStudy = refStudy)
+          }
+         
+        }
+        x_in[[zz]]
       }, simplify = FALSE)
     }),
     

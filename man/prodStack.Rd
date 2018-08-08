@@ -206,6 +206,11 @@ prodStack(x = mydata, unit = "GWh", compare = c("mcYear", "areas"))
 
 # Compare studies
 prodStack(list(mydata, mydata))
+# Compare studies with refStudy argument 
+prodStack(x = myData1, refStudy = myData2)
+prodStack(x = myData1, refStudy = myData2, interactive = FALSE)
+prodStack(x = list(myData2, myData3, myData4), refStudy = myData1)
+prodStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
 
 
 # Use h5 opts
@@ -225,8 +230,10 @@ prodStack(x = opts, .compare = "mcYear")
 # Compare 2 studies
 prodStack(x = list(opts, opts2))
 
-
-                
+# Compare 2 studies with argument refStudies 
+prodStack(x = opts, refStudy = opts2)
+prodStack(x = opts, refStudy = opts2, interactive = FALSE) 
+               
 }
 
 }
