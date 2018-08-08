@@ -202,6 +202,7 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
 #' 
 #' @noRd
 .get_data_from_htmlwidget <- function(htmlwidget = NULL, widgetsNumber = NULL){
+  print(class(htmlwidget))
   if (!("htmlwidget" %in% class(htmlwidget) | "MWController" %in% class(htmlwidget))){
     stop("no htmlwidget or no MWController")
   }
