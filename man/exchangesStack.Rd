@@ -8,11 +8,12 @@ exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
   colors = NULL, main = NULL, ylab = NULL, unit = c("MWh", "GWh",
   "TWh"), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
-  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
-  language = "en", hidden = NULL, ...)
+  legendId = sample(1e+09, 1), groupId = legendId,
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
+  hidden = NULL, refStudy = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
@@ -79,7 +80,7 @@ of mcYears in one of studies will be selectable. If intersect, only mcYears in a
 studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
-typically h5requestFiltering = list(areas = "a")}
+typically h5requestFiltering = list(areas = "a", mcYears = 2)}
 
 \item{stepPlot}{\code{boolean}, step style for curves.}
 
@@ -94,6 +95,10 @@ typically h5requestFiltering = list(areas = "a")}
 \item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
 
 \item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
+
+\item{refStudy}{An object of class \code{antaresData} created with function 
+\code{\link[antaresRead]{readAntares}} containing data for areas and or
+districts. Can also contains an opts who refer to a h5 file.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }

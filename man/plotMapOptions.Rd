@@ -11,8 +11,8 @@ plotMapOptions(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
   areaColorScaleOpts = colorScaleOptions(), labelMinSize = 8,
   labelMaxSize = 24, linkDefaultCol = "#BEBECE", linkDefaultSize = 3,
   linkMaxSize = 15, linkColorScaleOpts = colorScaleOptions(),
-  legend = c("choose", "visible", "hidden"), tilesURL = defaultTilesURL(),
-  preprocess = function(map) {     map })
+  legend = c("choose", "visible", "hidden"),
+  tilesURL = defaultTilesURL(), preprocess = function(map) {     map })
 
 defaultTilesURL()
 

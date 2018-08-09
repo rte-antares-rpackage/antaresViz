@@ -12,10 +12,11 @@ plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   mcYear = "average", main = "", typeSizeAreaVars = FALSE,
   aliasSizeAreaVars = c(), compare = NULL, compareOpts = list(),
   interactive = getInteractivity(), options = plotMapOptions(),
-  width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
-  "intersect"), h5requestFiltering = list(), timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), sizeMiniPlot = FALSE,
-  language = "en", hidden = NULL, ...)
+  width = NULL, height = NULL, dateRange = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas",
+  "links"), sizeMiniPlot = FALSE, language = "en", hidden = NULL,
+  ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
