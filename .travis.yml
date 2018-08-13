@@ -54,6 +54,17 @@ r_binary_packages:
   - sourcetools
   - glue
   - rgdal
+  - data.table
+  - classInt
+  - base64enc
+  - reshape2
+  - colorspace
+  - scales
+  - png
+  - hexbin
+  - tidyr
+  - backports
+  - pryr
   
 bioc_packages:
   - rhdf5
