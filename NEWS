@@ -3,7 +3,7 @@ Copyright © 2016 RTE Réseau de transport d’électricité
 Changes in version 0.14.1 ()
 
 BUGFIXES:
-* prodStack() was not working correctly with a list of antaresData, only one legend was working with interactive set to FALSE.
+* prodStack() and exchangesStack() were not working correctly with a list of antaresData or antaresDataList, only one legend was working when the interactive parameter was set to FALSE.
 
 Changes in version 0.14.0 (2018-06-12)
 

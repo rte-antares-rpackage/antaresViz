@@ -65,8 +65,11 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            stepPlot = FALSE, drawPoints = FALSE,  
                            timeSteph5 = "hourly",
                            mcYearh5 = NULL,
-                           tablesh5 = c("areas", "links"), language = "en", 
-                           hidden = NULL, ...) {
+                           tablesh5 = c("areas", "links"), 
+                           language = "en", 
+                           hidden = NULL,
+                           refStudy = NULL,
+                           ...) {
   
   
   if(!is.null(compare) && !interactive){
@@ -121,25 +124,45 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   
   processFun <- function(x) {
     if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
-    row <- NULL # exchanges with rest of the world
+    rowList <- list() # exchanges with rest of the world
     
-    if (is(x, "antaresDataTable")) {
-      if (!attr(x, "type") == "links") stop("'x' should contain link data")
-    } else if (is(x, "antaresDataList")) {
-      if (is.null(x$links)) stop("'x' should contain link data")
-      
-      # If they are present, add the echanges with the rest of the world
-      if (!is.null(x$areas) && !is.null(x$areas$`ROW BAL.`)) {
-        if ("mcYear" %in% names(x$areas)) {
-          row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, mcYear, 
-                             flow = - `ROW BAL.`, to = "ROW", direction = 1)]
-        } else {
-          row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, 
-                             flow = - `ROW BAL.`, to = "ROW", direction = 1)]
-        }
-      }
-      x <- x$links
+    if(is.null(refStudy)){
+      Xlist <- list(x)
+      rowList <- list(NULL)
+    }else{
+      Xlist <- list(x, refStudy)
+      rowList <- list(NULL, NULL)
     }
+     print(class(Xlist))
+     print(class(x))
+    Xlist <- sapply(1:length(Xlist), function(i_x){
+      if (is(Xlist[[i_x]], "antaresDataTable")) {
+        if (!attr(Xlist[[i_x]], "type") == "links") stop("'x' should contain link data")
+      } else if (is(Xlist[[i_x]], "antaresDataList")) {
+        if (is.null(Xlist[[i_x]]$links)) stop("'x' should contain link data")
+        # If they are present, add the echanges with the rest of the world
+        if (!is.null(Xlist[[i_x]]$areas) && !is.null(Xlist[[i_x]]$areas$`ROW BAL.`)) {
+          if ("mcYear" %in% names(Xlist[[i_x]]$areas)) {
+            rowList[[i_x]] <- Xlist[[i_x]]$areas[, .(area, link = paste(area, " - ROW"), timeId, mcYear,
+                               flow = - `ROW BAL.`, to = "ROW", direction = 1)]
+          } else {
+            rowList[[i_x]] <- Xlist[[i_x]]$areas[, .(area, link = paste(area, " - ROW"), timeId, 
+                               flow = - `ROW BAL.`, to = "ROW", direction = 1)]
+          }
+        }
+        Xlist[[i_x]] <- Xlist[[i_x]]$links
+      }
+      Xlist[[i_x]]
+    }, simplify = FALSE)
+    # print(1)
+    # print(x)
+    x <- Xlist[[1]]
+    row <- rowList[[1]]
+    # print(2)
+    # print(x)
+    # print(class(Xlist))
+    # print(class(x))
+    
     
     # should mcYear parameter be displayed on the UI?
     displayMcYear <- !attr(x, "synthesis") && length(unique(x$mcYear)) > 1
@@ -264,13 +287,20 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   if (!interactive) {
     x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
     
+    if (!is.null(refStudy)){
+      refStudy <- .cleanH5(refStudy, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+      x <- .compare_with_ref_study(x = x, refStudy = refStudy)
+    }
+    
     params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun)
-    L_w <- lapply(params$x, function(X){
-      X$plotFun(1, X$area, X$dateRange, unit, mcYear, legend, stepPlot, drawPoints, main)
+    L_w <- lapply(seq_along(params$x), function(i){
+      myData <- params$x[[i]]
+      myData$plotFun(i, myData$area, myData$dateRange, 
+                     unit, mcYear, legend, 
+                     stepPlot, drawPoints, main)
     })
+    
     return(combineWidgets(list = L_w))  
-    
-    
   }
   
   table <- NULL
