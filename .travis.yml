@@ -55,7 +55,6 @@ r_binary_packages:
   - glue
   - rgdal
   - data.table
-  - classInt
   - base64enc
   - reshape2
   - colorspace
