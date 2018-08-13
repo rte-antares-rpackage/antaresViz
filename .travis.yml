@@ -19,7 +19,19 @@ r_packages:
   - covr
   - devtools
   - antaresProcessing
-
+  
+r_binary_packages:
+  - curl
+  - openssl
+  - jsonlite
+  - git2r
+  - httpuv
+  - rhdf5
+  - xts
+  - later
+  - stringi
+  - Rcpp
+  
 bioc_packages:
   - rhdf5
   - zlibbioc
