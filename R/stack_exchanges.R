@@ -124,48 +124,25 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   
   processFun <- function(x) {
     if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
-    rowList <- list() # exchanges with rest of the world
+    row <- NULL # exchanges with rest of the world
     
-    if(is.null(refStudy)){
-      Xlist <- list(x)
-      rowList <- list(NULL)
-    }else{
-      Xlist <- list(x, refStudy)
-      rowList <- list(NULL, NULL)
-    }
-     print(class(Xlist))
-     print(class(x))
-    XAndRowlist <- sapply(1:length(Xlist), function(i_x){
-      if (is(Xlist[[i_x]], "antaresDataTable")) {
-        if (!attr(Xlist[[i_x]], "type") == "links") stop("'x' should contain link data")
-      } else if (is(Xlist[[i_x]], "antaresDataList")) {
-        if (is.null(Xlist[[i_x]]$links)) stop("'x' should contain link data")
-        # If they are present, add the echanges with the rest of the world
-        if (!is.null(Xlist[[i_x]]$areas) && !is.null(Xlist[[i_x]]$areas$`ROW BAL.`)) {
-          if ("mcYear" %in% names(Xlist[[i_x]]$areas)) {
-            rowList[[i_x]] <- Xlist[[i_x]]$areas[, .(area, link = paste(area, " - ROW"), timeId, mcYear,
-                               flow = - `ROW BAL.`, to = "ROW", direction = 1)]
-          } else {
-            rowList[[i_x]] <- Xlist[[i_x]]$areas[, .(area, link = paste(area, " - ROW"), timeId, 
-                               flow = - `ROW BAL.`, to = "ROW", direction = 1)]
-          }
+    if (is(x, "antaresDataTable")) {
+      if (!attr(x, "type") == "links") stop("'x' should contain link data")
+    } else if (is(x, "antaresDataList")) {
+      if (is.null(x$links)) stop("'x' should contain link data")
+      
+      # If they are present, add the echanges with the rest of the world
+      if (!is.null(x$areas) && !is.null(x$areas$`ROW BAL.`)) {
+        if ("mcYear" %in% names(x$areas)) {
+          row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, mcYear, 
+                             flow = - `ROW BAL.`, to = "ROW", direction = 1)]
+        } else {
+          row <- x$areas[, .(area, link = paste(area, " - ROW"), timeId, 
+                             flow = - `ROW BAL.`, to = "ROW", direction = 1)]
         }
-        Xlist[[i_x]] <- Xlist[[i_x]]$links
       }
-      
-      list <- list(
-        x = Xlist[[i_x]], 
-        row = rowList[[i_x]])
-      
-    }, simplify = FALSE)
-    # print(1)
-    # print(x)
-    x <- XAndRowlist[[1]]$x
-    row <- XAndRowlist[[1]]$x
-    # print(2)
-    # print(x)
-    # print(class(Xlist))
-    # print(class(x))
+      x <- x$links
+    }
     
     
     # should mcYear parameter be displayed on the UI?
