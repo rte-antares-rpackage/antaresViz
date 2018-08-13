@@ -38,7 +38,6 @@ r_binary_packages:
   - markdown
   - V8
   - units
-  - e1071
   - rgeos
   - readr
   - utf8
@@ -54,7 +53,6 @@ r_binary_packages:
   - lazyeval
   - sourcetools
   - glue
-  - sf
   - rgdal
   
 bioc_packages:
