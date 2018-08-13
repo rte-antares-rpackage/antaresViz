@@ -135,7 +135,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     }
      print(class(Xlist))
      print(class(x))
-    Xlist <- sapply(1:length(Xlist), function(i_x){
+    XAndRowlist <- sapply(1:length(Xlist), function(i_x){
       if (is(Xlist[[i_x]], "antaresDataTable")) {
         if (!attr(Xlist[[i_x]], "type") == "links") stop("'x' should contain link data")
       } else if (is(Xlist[[i_x]], "antaresDataList")) {
@@ -152,12 +152,16 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         }
         Xlist[[i_x]] <- Xlist[[i_x]]$links
       }
-      Xlist[[i_x]]
+      
+      list <- list(
+        x = Xlist[[i_x]], 
+        row = rowList[[i_x]])
+      
     }, simplify = FALSE)
     # print(1)
     # print(x)
-    x <- Xlist[[1]]
-    row <- rowList[[1]]
+    x <- XAndRowlist[[1]]$x
+    row <- XAndRowlist[[1]]$x
     # print(2)
     # print(x)
     # print(class(Xlist))
