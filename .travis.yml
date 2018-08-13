@@ -30,6 +30,32 @@ r_binary_packages:
   - later
   - stringi
   - Rcpp
+  - maps
+  - dplyr
+  - bindrcpp
+  - processx
+  - raster
+  - markdown
+  - V8
+  - units
+  - e1071
+  - rgeos
+  - readr
+  - utf8
+  - fansi
+  - maptools
+  - sp
+  - protolite
+  - yaml
+  - covr
+  - lubridate
+  - htmltools
+  - digest
+  - lazyeval
+  - sourcetools
+  - glue
+  - sf
+  - rgdal
   
 bioc_packages:
   - rhdf5
