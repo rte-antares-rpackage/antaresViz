@@ -1,5 +1,5 @@
 describe("h5", {
-  if(requireNamespace("rhdf5", quietly = TRUE)){
+  if(.requireRhdf5_Antares(stopP = FALSE)){
     suppressMessages(writeAntaresH5(pathtemp))
     optsH5 <- setSimulationPath(pathtemp)
     

@@ -29,6 +29,7 @@ globalVariables(
 .timeIdToDate <- antaresRead:::.timeIdToDate
 .getTimeId <- antaresRead:::.getTimeId
 .mergeByRef <- antaresRead:::.mergeByRef
+.requireRhdf5_Antares <- antaresRead:::.requireRhdf5_Antares
 .checkColumns <- antaresProcessing:::.checkColumns
 .checkAttrs <- antaresProcessing:::.checkAttrs
 
