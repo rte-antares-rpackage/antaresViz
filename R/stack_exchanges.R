@@ -373,9 +373,29 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         areas <- NULL
         links <- NULL
       }
-      sapply(1:length(x_in),function(zz){
-        .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFilter = paramsH5$h5requestFilter[[zz]])
+      
+      
+      if (!is.null(refStudy)){
+        refStudy <- .loadH5Data(sharerequest, refStudy, h5requestFilter = h5requestFilteringTp[[1]])
+      }
+      
+      sapply(1:length(x_in), function(zz){
+        x_in[[zz]] <- .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = h5requestFilteringTp[[zz]])
+        
+        if (!is.null(refStudy)){
+          if (!is(x_in[[zz]], "simOptions")){
+            x_in[[zz]] <- .compare_with_ref_study(x = as.antaresDataList(x_in[[zz]]), refStudy = as.antaresDataList(refStudy))
+          }else{
+            x_in[[zz]] <- .compare_with_ref_study(x = x_in[[zz]], refStudy = refStudy)
+          }
+          
+        }
+        x_in[[zz]]
       }, simplify = FALSE)
+      
+      #sapply(1:length(x_in),function(zz){
+      #  .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFilter = paramsH5$h5requestFilter[[zz]])
+      #}, simplify = FALSE)
     }),
     
     mcYear = mwSelect({
