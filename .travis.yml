@@ -19,17 +19,62 @@ r_packages:
   - covr
   - devtools
   - antaresProcessing
-
+  
+r_binary_packages:
+  - curl
+  - openssl
+  - jsonlite
+  - git2r
+  - httpuv
+  - xts
+  - later
+  - stringi
+  - Rcpp
+  - maps
+  - dplyr
+  - bindrcpp
+  - processx
+  - raster
+  - markdown
+  - V8
+  - units
+  - rgeos
+  - readr
+  - utf8
+  - fansi
+  - maptools
+  - sp
+  - protolite
+  - yaml
+  - covr
+  - lubridate
+  - htmltools
+  - digest
+  - lazyeval
+  - sourcetools
+  - glue
+  - rgdal
+  - data.table
+  - base64enc
+  - reshape2
+  - colorspace
+  - scales
+  - png
+  - hexbin
+  - tidyr
+  - backports
+  - pryr
+  
 bioc_packages:
   - rhdf5
   - zlibbioc
   
 r_github_packages:
- - rte-antares-rpackage/manipulateWidget@master
- - rte-antares-rpackage/antaresMaps@develop
- - rte-antares-rpackage/antaresRead@develop
+ - rte-antares-rpackage/antaresRead@develop_rhdf2_25
  - rte-antares-rpackage/antaresProcessing@develop_comp
- - rte-antares-rpackage/leaflet.minicharts
+ #- rte-antares-rpackage/leaflet.minicharts
+ # - rte-antares-rpackage/manipulateWidget@master 
+ #- rte-antares-rpackage/antaresMaps@develop
  
 addons:
   apt:

@@ -13,7 +13,7 @@ exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
   xyCompare = c("union", "intersect"), h5requestFiltering = list(),
   stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
   mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
-  hidden = NULL, refStudy = NULL, ...)
+  hidden = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
@@ -95,10 +95,6 @@ typically h5requestFiltering = list(areas = "a", mcYears = 2)}
 \item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
 
 \item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
-
-\item{refStudy}{An object of class \code{antaresData} created with function 
-\code{\link[antaresRead]{readAntares}} containing data for areas and or
-districts. Can also contains an opts who refer to a h5 file.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
