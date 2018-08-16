@@ -1,6 +1,8 @@
+context("H5 utils")
+
 describe("h5", {
   if(.requireRhdf5_Antares(stopP = FALSE)){
-    suppressMessages(writeAntaresH5(pathtemp))
+    suppressMessages(writeAntaresH5(pathtemp, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
     expect_true(class(.getDateRange(optsH5, "hourly")) == "Date")

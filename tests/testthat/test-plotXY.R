@@ -1,3 +1,4 @@
+context("prodStack no interactive")
 
 describe("prodStack, no interactive", {
   if(.requireRhdf5_Antares(stopP = FALSE)){
