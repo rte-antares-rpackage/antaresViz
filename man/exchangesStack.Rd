@@ -13,7 +13,7 @@ exchangesStack(x, area = NULL, mcYear = "average", dateRange = NULL,
   xyCompare = c("union", "intersect"), h5requestFiltering = list(),
   stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
   mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
-  hidden = NULL, ...)
+  hidden = NULL, refStudy = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
@@ -80,7 +80,7 @@ of mcYears in one of studies will be selectable. If intersect, only mcYears in a
 studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
-typically h5requestFiltering = list(areas = "a", mcYears = 2)}
+typically h5requestFiltering = list(links = getLinks(areas = myArea), mcYears = myMcYear)}
 
 \item{stepPlot}{\code{boolean}, step style for curves.}
 
@@ -95,6 +95,10 @@ typically h5requestFiltering = list(areas = "a", mcYears = 2)}
 \item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
 
 \item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
+
+\item{refStudy}{An object of class \code{antaresData} created with function 
+\code{\link[antaresRead]{readAntares}} containing data for areas and or
+districts. Can also contains an opts who refer to a h5 file.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
@@ -133,7 +137,38 @@ exchangesStack(mydata, compare = "mcYear")
 exchangesStack(mydata, compare = "area")
 exchangesStack(mydata, compare = "unit")
 exchangesStack(mydata, compare = "legend")
+# Compare studies with refStudy argument 
+exchangesStack(x = myData1, refStudy = myData2)
+exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
+exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
+exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
 
+# Use h5 opts
+# Set path of simulaiton
+setSimulationPath(path = path1)
+
+# Convert your study in h5 format
+writeAntaresH5(path = mynewpath)
+
+# Redefine sim path with h5 file
+opts <- setSimulationPath(path = mynewpath)
+exchangesStack(x = opts)
+
+# Compare elements in a single study
+exchangesStack(x = opts, .compare = "mcYear")
+
+# Compare 2 studies
+exchangesStack(x = list(opts, opts2))
+
+# Compare 2 studies with argument refStudies 
+exchangesStack(x = opts, refStudy = opts2)
+exchangesStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea) 
+exchangesStack(x = opts, refStudy = opts2, h5requestFiltering = list(
+areas = getAreas(select = "a"), 
+links = getLinks(areas = myArea),
+mcYears = myMcYear))
+mcYears = 2))
+ 
 }
 
 }

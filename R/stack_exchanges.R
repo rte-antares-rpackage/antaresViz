@@ -15,6 +15,8 @@
 #'   Name of a single area. The flows from/to this area will be drawn by the
 #'   function.
 #' @param ylab Title of the Y-axis.
+#' @param h5requestFiltering Contains arguments used by default for h5 request,
+#'   typically h5requestFiltering = list(links = getLinks(areas = myArea), mcYears = myMcYear)
 #' @inheritParams prodStack
 #' 
 #' @return 
@@ -48,7 +50,38 @@
 #' exchangesStack(mydata, compare = "area")
 #' exchangesStack(mydata, compare = "unit")
 #' exchangesStack(mydata, compare = "legend")
+#' # Compare studies with refStudy argument 
+#' exchangesStack(x = myData1, refStudy = myData2)
+#' exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
+#' exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
+#' exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
 #' 
+#' # Use h5 opts
+#' # Set path of simulaiton
+#' setSimulationPath(path = path1)
+#' 
+#' # Convert your study in h5 format
+#' writeAntaresH5(path = mynewpath)
+#' 
+#' # Redefine sim path with h5 file
+#' opts <- setSimulationPath(path = mynewpath)
+#' exchangesStack(x = opts)
+#' 
+#' # Compare elements in a single study
+#' exchangesStack(x = opts, .compare = "mcYear")
+#' 
+#' # Compare 2 studies
+#' exchangesStack(x = list(opts, opts2))
+#' 
+#' # Compare 2 studies with argument refStudies 
+#' exchangesStack(x = opts, refStudy = opts2)
+#' exchangesStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea) 
+#' exchangesStack(x = opts, refStudy = opts2, h5requestFiltering = list(
+#' areas = getAreas(select = "a"), 
+#' links = getLinks(areas = myArea),
+#' mcYears = myMcYear))
+#' mcYears = 2))
+#'  
 #' }
 #' 
 #' @export
@@ -354,6 +387,10 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       }
     ),
     
+    
+    #TODO partager ce code avec prodStack() mais avant cree le widget tables_l et lui 
+    #mettre comme valeur links 
+    # ne pas montrer ce widget a l utilisateur 
     sharerequest = mwSharedValue({
       if(length(meanYearH5) > 0){
         if(meanYearH5){
@@ -373,29 +410,48 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         areas <- NULL
         links <- NULL
       }
+
+      # h5requestFilteringTp <- paramsH5$h5requestFilter
+      # if (!is.null(sharerequest))
+      # {
+      #   for (i in 1:length(h5requestFilteringTp))
+      #   {
+      #     if (sharerequest$tables == "areas"){
+      #       h5requestFilteringTp[[i]]$districts = NULL
+      #     }
+      #     if (sharerequest$tables == "districts"){
+      #       h5requestFilteringTp[[i]]$areas = NULL
+      #     }
+      #   }
+      # }
+
       
+      # TODO next version get only what we need 
+      # if(!is.null(area)){
+      #   print(area)
+      #   areas <- area
+      #   links <- getLinks(area)
+      # }else{
+      #   print(init_area)
+      #   areas <- init_area
+      #   links <- getLinks(init_area)
+      # }
       
       if (!is.null(refStudy)){
-        refStudy <- .loadH5Data(sharerequest, refStudy, h5requestFilter = h5requestFilteringTp[[1]])
+        refStudy <- .loadH5Data(sharerequest, refStudy, areas = areas, links = links, h5requestFilter = paramsH5$h5requestFilter[[1]])
       }
-      
+
       sapply(1:length(x_in), function(zz){
-        x_in[[zz]] <- .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = h5requestFilteringTp[[zz]])
-        
+        x_in[[zz]] <- .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFilter = paramsH5$h5requestFilter[[zz]])
         if (!is.null(refStudy)){
           if (!is(x_in[[zz]], "simOptions")){
             x_in[[zz]] <- .compare_with_ref_study(x = as.antaresDataList(x_in[[zz]]), refStudy = as.antaresDataList(refStudy))
           }else{
             x_in[[zz]] <- .compare_with_ref_study(x = x_in[[zz]], refStudy = refStudy)
           }
-          
         }
         x_in[[zz]]
       }, simplify = FALSE)
-      
-      #sapply(1:length(x_in),function(zz){
-      #  .loadH5Data(sharerequest, x_in[[zz]], areas = areas, links = links, h5requestFilter = paramsH5$h5requestFilter[[zz]])
-      #}, simplify = FALSE)
     }),
     
     mcYear = mwSelect({
