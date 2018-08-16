@@ -31,7 +31,7 @@ describe("prodStack, interactive", {
   expect_true("htmlwidget" %in% class(VV))
 })
 
-describe("prodStack must work with refStudy, if x and y are antaresDataList, ", {
+describe("prodStack must work with refStudy, if x and refStudy are antaresDataList, ", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   
@@ -66,7 +66,7 @@ describe("prodStack must work with refStudy, if x and y are antaresDataList, ", 
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))
 })
 
-describe("prodStack must work with refStudy, if x is a list of antaresData and y an antaresData, ", {
+describe("prodStack must work with refStudy, if x is a list of antaresDataList and refStudy an antaresDataList, ", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData3 <- readAntares(areas = c("a", "b", "c"), links = "all", showProgress = FALSE)
@@ -109,8 +109,8 @@ describe("prodStack must work with refStudy, if x is a list of antaresData and y
   
 })
 
-describe("prodStack must work with refStudy, if x and y are optsH5, ", {
-  if (requireNamespace("rhdf5", quietly = TRUE)){
+describe("prodStack must work with refStudy, if x and refStudy are optsH5, ", {
+  if (.requireRhdf5_Antares(stopP = FALSE)){
     
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
@@ -165,8 +165,8 @@ describe("prodStack must work with refStudy, if x and y are optsH5, ", {
   
 })
 
-describe("prodStack must work with refStudy, if x is a list of optsH5 and y an optsH5, ", {
-  if (requireNamespace("rhdf5", quietly = TRUE)){
+describe("prodStack must work with refStudy, if x is a list of optsH5 and refStudy an optsH5, ", {
+  if (.requireRhdf5_Antares(stopP = FALSE)){
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -235,7 +235,7 @@ describe("prodStack must work with refStudy, if x is a list of optsH5 and y an o
   }
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x and y are antaresData, ", {
+describe("prodStack must work with refStudy, if interactive is set to TRUE and if x and refStudy are antaresData, ", {
   myData1 <- readAntares(areas = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", showProgress = FALSE)
   
@@ -310,7 +310,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x a list of antaresData and y an antaresData, ", {
+describe("prodStack must work with refStudy, if interactive is set to TRUE and if x a list of antaresData and refStudy an antaresData, ", {
   myData1 <- readAntares(areas = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", showProgress = FALSE)
   myData3 <- readAntares(areas = "all", showProgress = FALSE)
@@ -365,7 +365,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is an antaresDataList and y an antaresDataList, ", {
+describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is an antaresDataList and refStudy an antaresDataList, ", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   
@@ -415,7 +415,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of antaresDataList and y an antaresDataList , ", {
+describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of antaresDataList and refStudy an antaresDataList , ", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData3 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
@@ -473,8 +473,8 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x, y are optsH5 , ", {
-  if (requireNamespace("rhdf5", quietly = TRUE)){
+describe("prodStack must work with refStudy, if interactive is set to TRUE and if x, refStudy are optsH5 , ", {
+  if (.requireRhdf5_Antares(stopP = FALSE)){
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -570,8 +570,8 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of optsH5 and y optsH5  , ", {
-  if (requireNamespace("rhdf5", quietly = TRUE)){
+describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of optsH5 and refStudy optsH5  , ", {
+  if (.requireRhdf5_Antares(stopP = FALSE)){
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
