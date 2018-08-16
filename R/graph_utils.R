@@ -14,10 +14,10 @@
   {
     
     ncol = ifelse(len > 2, 2, 1)
-    nrow = floor((len - 1) / 2) + 1 + ifelse(len == 2, 1, 0)
+    nrow = floor( (len - 1) / 2) + 1 + ifelse(len == 2, 1, 0)
     return(list(ncharts = len, nrow = nrow, ncol = ncol))
   }
-  if(!is.null(compare)){
+  if (!is.null(compare)){
     return(
       list(ncharts = 2, nrow = 2, ncol = 1)
     )
@@ -211,16 +211,16 @@
     }
     if (!is.null(sharerequest$tables_l))
     {
-      if("areas" %in% sharerequest$tables_l){
+      if ("areas" %in% sharerequest$tables_l){
         areas <- "all"
       }
-      if("links" %in% sharerequest$tables_l){
+      if ("links" %in% sharerequest$tables_l){
         links <- "all"
       }
-      if("clusters" %in% sharerequest$tables_l){
+      if ("clusters" %in% sharerequest$tables_l){
         clusters <- "all"
       }
-      if("districts" %in% sharerequest$tables_l){
+      if ("districts" %in% sharerequest$tables_l){
         districts <- "all"
       }
     }
@@ -233,8 +233,8 @@
                   argS)
     
     dt <- as.antaresDataList(dt)
-    for(i in 1:length(dt)){
-      if(all(names(dt[[i]]) %in% .idCols(dt[[i]]))){
+    for (i in 1:length(dt)){
+      if (all(names(dt[[i]]) %in% .idCols(dt[[i]]))){
         dt[[i]] <- NULL
       }
     }
@@ -256,11 +256,11 @@
 .h5ParamList <- function(X_I, xyCompare, h5requestFilter = NULL){
   listParam <- lapply(1:length(X_I), function(i){
     x <- X_I[[i]]
-    if(.isSimOpts(x)){
+    if (.isSimOpts(x)){
       tmp <- .h5Inf(x)
       h5_filter <- h5requestFilter[[i]]
       h5_tables <- c("areas", "districts", "clusters", "links")
-      if(!is.null(h5_filter)){
+      if (!is.null(h5_filter)){
         if (!(is.null(h5_filter$areas) & is.null(h5_filter$districts) & 
            is.null(h5_filter$links) & is.null(h5_filter$clusters))){
           h5_tables <- c("areas", "districts", "clusters", "links")
@@ -316,7 +316,7 @@
 
 
 .testXclassAndInteractive <- function(x, interactive){
-  if(!"antaresData" %in% class(x) & !interactive){
+  if (!"antaresData" %in% class(x) & !interactive){
     stop("You can at moment only use no interactive mode with one no h5 antares study.")
   }
 }
@@ -329,14 +329,21 @@
 #' @noRd
 .compare_with_ref_study <- function(x = NULL, refStudy = NULL){
   if (!is.null(refStudy)){
-    if (is.list(refStudy)){
+    # if x and refStudy are antaresDataList 
+    if (is(refStudy, "antaresDataList") & is(x, "antaresDataList")){
+      x <- compare(x = refStudy, y = x, method = "diff")
+      return(x)
+    } else if (is.list(refStudy)){
+      #if refStudy is a list because ...
       #cleanH5 return a list (and no antaresData)
       x <- .compare_with_ref_study_one_element(x = x, refStudy = refStudy[[1]])
       return(x)
+    } else {
+      #to work with an antaresData (no optsH5)
+      x <- .compare_with_ref_study_one_element(x = x, refStudy = refStudy)
+      return(x)
     }
-    #to work with an antaresData (no optsH5)
-    x <- .compare_with_ref_study_one_element(x = x, refStudy = refStudy)
-    return(x)
+
   }
   return(x)
 }
@@ -376,7 +383,7 @@
         stop("no case for compare?")
       }
       #case where refStudy is an antaresDataList 
-      if ((is(refStudy, "antaresDataList"))){
+      if ( (is(refStudy, "antaresDataList"))){
         if (is(x, "antaresDataList")){
           x <- compare(x = refStudy, y = x, method = "diff")
           return(x)
