@@ -212,7 +212,7 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
       widgetsNumber <- 1
     }
   }else{
-    if(!is.null(htmlwidget$widgets)){
+    if (!is.null(htmlwidget$widgets)){
       if (length(htmlwidget$widgets) == 1){
         widgetsNumber <- 1
       }
@@ -225,23 +225,23 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   
   #check if data exist ====
   if (is(htmlwidget, "MWController")){
-    if(is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]])){
+    if (is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]])){
       stop("no data")
     }
-    if(is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x)){
+    if (is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x)){
       stop("no data")
     }    
-    if(is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+    if (is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
       stop("no data")
     }    
   }else{
-    if(is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]])){
+    if (is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]])){
       stop("no data")
     }
-    if(is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x)){
+    if (is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x)){
       stop("no data")
     }
-    if(is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+    if (is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
       stop("no data")
     }    
   }
@@ -274,19 +274,35 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
 #' @param newValue the newValue
 #' 
 #' @noRd
-.h5Antares_edit_variable <- function(pathH5 = NULL, area = NULL, timeId = 1, antVar = NULL, newValue = NULL, mcYear = NULL){
+.h5Antares_edit_variable <- function(pathH5 = NULL, area = NULL, timeId = 1, antVar = NULL, newValue = NULL, mcYear = NULL, link = NULL){
   
-  timeStepType <- "/hourly/areas"
-  H5locAntaresh5 <- rhdf5::H5Fopen(name = pathH5)
+  if (!is.null(area) & !is.null(link)){
+    stop("area and link must not be set together")
+  }
+  
+  if (!is.null(area)){
+    categoryVar <- "areas"
+  }else{
+    categoryVar <- "links"
+  }
+  
   if (is.null(mcYear)){
     typeOfData <- "/mcAll"
   }else{
     typeOfData <- "/mcInd"
   }
-  
+  timeStepType <- paste("/hourly", categoryVar, sep = "/") 
   nameStructure <- paste0(timeStepType, typeOfData, "/structure")
+  
+  H5locAntaresh5 <- rhdf5::H5Fopen(name = pathH5)
   hourlyDataStructure <- rhdf5::h5read(H5locAntaresh5, name = nameStructure)
-  indexArea <- grep(area, hourlyDataStructure$area)[1]
+  
+  if (!is.null(area)){
+    indexCateroryInstance <- grep(area, hourlyDataStructure$area)[1]
+  }else{
+    indexCateroryInstance <- grep(link, hourlyDataStructure$link)[1]
+  }
+  
   indexAntVar <- grep(antVar, hourlyDataStructure$variable)[1]
   indexTimeId <- timeId
   if (is.null(mcYear)){
@@ -295,7 +311,7 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
     indexMcYear <- grep(mcYear, hourlyDataStructure$mcYear)[1]
   }
   
-  listIndex <- list(indexTimeId, indexAntVar, indexArea, indexMcYear)
+  listIndex <- list(indexTimeId, indexAntVar, indexCateroryInstance, indexMcYear)
   #debug print(listIndex)
   
   hourlyData <- rhdf5::h5read(
@@ -313,4 +329,5 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   )
   
   rhdf5::H5Fclose(h5file = H5locAntaresh5)
+  rhdf5::h5closeAll()
 }
