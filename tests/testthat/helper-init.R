@@ -2,6 +2,22 @@
 
 # Copy the test study in a temporary folder
 
+## force tests to be executed if in dev release which we define as
+## having a sub-release, eg 0.9.15.5 is one whereas 0.9.16 is not
+if (length(strsplit(packageDescription("antaresViz")$Version, "\\.")[[1]]) > 3) { 
+  Sys.setenv("RunAllAntaresVizTests"="yes")
+}
+.runThisTest <- FALSE
+.runThisTest <- Sys.getenv("RunAllAntaresVizTests") == "yes"
+
+if(.runThisTest){
+  .runProdStackTest <- TRUE
+  .runExchangesStackTest <- TRUE
+}else{
+  .runProdStackTest <- FALSE
+  .runExchangesStackTest <- FALSE  
+}
+
 path <- tempdir()
 
 sourcedir <- system.file("inst/testdata", package = "antaresRead")

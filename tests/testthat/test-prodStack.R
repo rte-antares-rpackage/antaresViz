@@ -111,7 +111,7 @@ describe("prodStack must work with refStudy, if x is a list of antaresDataList a
 
 describe("prodStack must work with refStudy, if x and refStudy are optsH5, ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
-    
+    skip_if_not(.runProdStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -167,6 +167,7 @@ describe("prodStack must work with refStudy, if x and refStudy are optsH5, ", {
 
 describe("prodStack must work with refStudy, if x is a list of optsH5 and refStudy an optsH5, ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
+    skip_if_not(.runProdStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -475,6 +476,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
 
 describe("prodStack must work with refStudy, if interactive is set to TRUE and if x, refStudy are optsH5 , ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
+    skip_if_not(.runProdStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -572,6 +574,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
 
 describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of optsH5 and refStudy optsH5  , ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
+    skip_if_not(.runProdStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     

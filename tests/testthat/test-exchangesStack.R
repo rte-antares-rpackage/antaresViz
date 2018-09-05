@@ -525,6 +525,7 @@ describe("exchangesStack, interactive, x is a list of antaresDataList and refStu
 
 describe("exchangesStack, no interactive, x and refStudy are optsH5 ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
+    skip_if_not(.runExchangesStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     myArea <- "a"
@@ -577,6 +578,7 @@ describe("exchangesStack, no interactive, x and refStudy are optsH5 ", {
 
 describe("exchangesStack, no interactive, x is a list of optH5 and refStudy are optsH5 ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
+    skip_if_not(.runExchangesStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
@@ -650,6 +652,7 @@ describe("exchangesStack, no interactive, x is a list of optH5 and refStudy are 
 
 describe("exchangesStack, interactive, x and refStudy are optsH5 ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
+    skip_if_not(.runExchangesStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     myArea <- "a"
@@ -784,6 +787,7 @@ describe("exchangesStack, interactive, x and refStudy are optsH5 ", {
 
 describe("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5  , ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
+    skip_if_not(.runExchangesStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
     optsH5 <- setSimulationPath(pathtemp)
     
