@@ -1,7 +1,7 @@
 context("exchangesStack")
 
 describe("no interactivy", {
-
+  
   mydata <- readAntares(links = "all", timeStep = "daily", showProgress = FALSE)
   # default parameters
   default_params <- exchangesStack(mydata, interactive = FALSE)
@@ -84,10 +84,10 @@ describe("exchangesStack, no interactive, x and refStudy are antaresDataList", {
   # edit myData2 to have a diff != 0
   #pb timeZone local (PC, Travis, etc)
   for (i in 0:5){
-   timeEditShift <- lubridate::hours(i)
-   timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-   timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-   myData2$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData2$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
   }
   exS21V1 <-  exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
   dataExS21V1 <- .get_data_from_htmlwidget(exS21V1)
@@ -144,10 +144,10 @@ describe("exchangesStack, no interactive, x is a list of antaresDataTable and re
   # edit myData3 to have a diff != 0
   #pb timeZone local (PC, Travis, etc)
   for (i in 0:5){
-   timeEditShift <- lubridate::hours(i)
-   timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-   timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-   myData3[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData3[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
   }
   exS21V1 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
   dataExS21V1 <- .get_data_from_htmlwidget(exS21V1, widgetsNumber = idWidget)
@@ -155,76 +155,77 @@ describe("exchangesStack, no interactive, x is a list of antaresDataTable and re
 })
 
 describe("exchangesStack, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
-   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-   myData3 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-   myData4 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-   
-   myDataList <- list(myData2, myData3, myData4)
-   myArea <- "a"
-   DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-   exS2 <-  exchangesStack(x = myDataList, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   # compare with myData3
-   idWidget <- 2
-   dataExS2 <- .get_data_from_htmlwidget(exS2, widgetsNumber = idWidget)
-   timeEditValue <- "2018-04-25T00:00:00.000Z"
-   indexHour <- grep(timeEditValue, dataExS2$hour)
-   expect_gt(indexHour, 2)
-   expect_equal(dataExS2$nega_offshore[indexHour], 9)
-   #identical myData, diff == 0 always
-   exS21V0 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   dataExS21V0 <- .get_data_from_htmlwidget(exS21V0, widgetsNumber = idWidget)
-   expect_equal(dataExS21V0$nega_offshore[indexHour], 0)
-   # edit myData3 to have a diff != 0
-   #pb timeZone local (PC, Travis, etc)
-   for (i in 0:5){
-     timeEditShift <- lubridate::hours(i)
-     timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-     timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-     myData3$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
-   }
-   exS21V1 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   dataExS21V1 <- .get_data_from_htmlwidget(exS21V1, widgetsNumber = idWidget)
-   expect_equal(dataExS21V1$a_offshore[indexHour], 2500)
-   #ROW not null in myData4
-   for (i in 0:5){
-     timeEditShift <- lubridate::hours(i)
-     timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-     timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-     myData4$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1500)]
-   }
-   #test if there is row
-   exList <-  exchangesStack(x = myDataList, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   dataExList <- .get_data_from_htmlwidget(exList, widgetsNumber = idWidget)
-   expect_equal(dataExList$a_offshore[indexHour], 2500 - 9)
-   idRowNotNull <- 3
-   dataExListRow <- .get_data_from_htmlwidget(exList, widgetsNumber = idRowNotNull)
-   expect_equal(dataExListRow$ROW[indexHour], 1500)
-   #with a refStudy
-   exListListV2 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   dataExListV2 <- .get_data_from_htmlwidget(exListListV2, widgetsNumber = idWidget)
-   expect_equal(dataExListV2$a_offshore[indexHour], 2500)
-   expect_equal(dataExListV2$ROW[indexHour], 0)
-   dataExListV2Row <- .get_data_from_htmlwidget(exListListV2, widgetsNumber = idRowNotNull)
-   expect_equal(dataExListV2Row$a_offshore[indexHour], 0)
-   expect_equal(dataExListV2Row$ROW[indexHour], 1500)
-   #ROW not null in refStudy myData1
-   for (i in 0:5){
-     timeEditShift <- lubridate::hours(i)
-     timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-     timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-     myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1000)]
-   }
-   exListListV3 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   dataExListV3 <- .get_data_from_htmlwidget(exListListV3, widgetsNumber = idRowNotNull)
-   expect_equal(dataExListV3$nega_offshore[indexHour], 0)
-   expect_equal(dataExListV3$ROW[indexHour], 500)
-   dataExListV3g2 <- .get_data_from_htmlwidget(exListListV3, widgetsNumber = idWidget)
-   expect_equal(dataExListV3g2$a_offshore[indexHour], 2500)
-   expect_equal(dataExListV3g2$negROW[indexHour], 1000)
+  myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myData3 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myData4 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  
+  myDataList <- list(myData2, myData3, myData4)
+  myArea <- "a"
+  DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+  exS2 <-  exchangesStack(x = myDataList, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  # compare with myData3
+  idWidget <- 2
+  dataExS2 <- .get_data_from_htmlwidget(exS2, widgetsNumber = idWidget)
+  timeEditValue <- "2018-04-25T00:00:00.000Z"
+  indexHour <- grep(timeEditValue, dataExS2$hour)
+  expect_gt(indexHour, 2)
+  expect_equal(dataExS2$nega_offshore[indexHour], 9)
+  #identical myData, diff == 0 always
+  exS21V0 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  dataExS21V0 <- .get_data_from_htmlwidget(exS21V0, widgetsNumber = idWidget)
+  expect_equal(dataExS21V0$nega_offshore[indexHour], 0)
+  # edit myData3 to have a diff != 0
+  #pb timeZone local (PC, Travis, etc)
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData3$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
+  }
+  exS21V1 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  dataExS21V1 <- .get_data_from_htmlwidget(exS21V1, widgetsNumber = idWidget)
+  expect_equal(dataExS21V1$a_offshore[indexHour], 2500)
+  #ROW not null in myData4
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData4$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1500)]
+  }
+  #test if there is row
+  exList <-  exchangesStack(x = myDataList, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  dataExList <- .get_data_from_htmlwidget(exList, widgetsNumber = idWidget)
+  expect_equal(dataExList$a_offshore[indexHour], 2500 - 9)
+  idRowNotNull <- 3
+  dataExListRow <- .get_data_from_htmlwidget(exList, widgetsNumber = idRowNotNull)
+  expect_equal(dataExListRow$ROW[indexHour], 1500)
+  #with a refStudy
+  exListListV2 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  dataExListV2 <- .get_data_from_htmlwidget(exListListV2, widgetsNumber = idWidget)
+  expect_equal(dataExListV2$a_offshore[indexHour], 2500)
+  expect_equal(dataExListV2$ROW[indexHour], 0)
+  dataExListV2Row <- .get_data_from_htmlwidget(exListListV2, widgetsNumber = idRowNotNull)
+  expect_equal(dataExListV2Row$a_offshore[indexHour], 0)
+  expect_equal(dataExListV2Row$ROW[indexHour], 1500)
+  #ROW not null in refStudy myData1
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1000)]
+  }
+  exListListV3 <-  exchangesStack(x = myDataList, refStudy = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  dataExListV3 <- .get_data_from_htmlwidget(exListListV3, widgetsNumber = idRowNotNull)
+  expect_equal(dataExListV3$nega_offshore[indexHour], 0)
+  expect_equal(dataExListV3$ROW[indexHour], 500)
+  dataExListV3g2 <- .get_data_from_htmlwidget(exListListV3, widgetsNumber = idWidget)
+  expect_equal(dataExListV3g2$a_offshore[indexHour], 2500)
+  expect_equal(dataExListV3g2$negROW[indexHour], 1000)
 })
 
 describe("exchangesStack, interactive, x and refStudy are antaresDataTable", {
+  skip_if_not(.runExchangesStackTest)
   myData1 <- readAntares(links = "all", showProgress = FALSE)
   myData2 <- readAntares(links = "all", showProgress = FALSE)
   myArea <- "a"
@@ -259,10 +260,10 @@ describe("exchangesStack, interactive, x and refStudy are antaresDataTable", {
   # edit myData2 to have a diff != 0
   #pb timeZone local (PC, Travis, etc)
   for (i in 0:5){
-   timeEditShift <- lubridate::hours(i)
-   timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-   timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-   myData2[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData2[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
   }
   exS21V1 <-  exchangesStack(x = myData1, refStudy = myData2, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
   resExS1V0 <- exS21V1$init()
@@ -275,96 +276,98 @@ describe("exchangesStack, interactive, x and refStudy are antaresDataTable", {
 })
 
 describe("exchangesStack, interactive, x and refStudy are antaresDataList", {
-   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-   myArea <- "a"
-   DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-   #no interactive
-   exS1 <-  exchangesStack(x = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   dataExS1 <- .get_data_from_htmlwidget(exS1)
-   timeEditValue <- "2018-04-25T00:00:00.000Z"
-   indexHour <- grep(timeEditValue, dataExS1$hour)
-   expect_gt(indexHour, 2)
-   expect_equal(dataExS1$nega_offshore[indexHour], 9)
-   # interactive no interactive
-   exS1I <-  exchangesStack(x = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   resExS1 <- exS1I$init()
-   expect_true(is(exS1I, "MWController"))
-   expect_equal(exS1I$ncharts, 1)
-   expect_equal(exS1I$ncol, 1)
-   expect_equal(exS1I$nrow, 1)
-   dataExS1I <- .get_data_from_htmlwidget(exS1I)
-   expect_equal(dataExS1I$nega_offshore[indexHour], 9)
-   
-   # interactive with refStudy but myData1 =myData2
-   exS21V0 <- exchangesStack(x = myData1, refStudy = myData2, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   exS21V0 <- exS21V0$init()
-   expect_true(is(exS21V0, "MWController"))
-   expect_equal(exS21V0$ncharts, 1)
-   expect_equal(exS21V0$ncol, 1)
-   expect_equal(exS21V0$nrow, 1)
-   dataExS21V0 <- .get_data_from_htmlwidget(exS21V0)
-   expect_equal(dataExS21V0$nega_offshore[indexHour], 0)
-   # edit myData2 to have a diff != 0
-   #pb timeZone local (PC, Travis, etc)
-   for (i in 0:5){
-     timeEditShift <- lubridate::hours(i)
-     timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-     timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-     myData2$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
-   }
-   exS21V1 <-  exchangesStack(x = myData1, refStudy = myData2, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   exS21V1 <- exS21V1$init()
-   expect_true(is(exS21V1, "MWController"))
-   expect_equal(exS21V1$ncharts, 1)
-   expect_equal(exS21V1$ncol, 1)
-   expect_equal(exS21V1$nrow, 1)
-   dataExS21V1 <- .get_data_from_htmlwidget(exS21V1)
-   expect_equal(dataExS21V1$nega_offshore[indexHour], 2500)
-   #ROW not null in myData1
-   for (i in 0:5){
-     timeEditShift <- lubridate::hours(i)
-     timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-     timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-     myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1500)]
-   }
-   #test if there is row
-   exS1V2 <-  exchangesStack(x = myData1,  .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   exS1V2 <- exS1V2$init()
-   expect_true(is(exS1V2, "MWController"))
-   expect_equal(exS1V2$ncharts, 1)
-   expect_equal(exS1V2$ncol, 1)
-   expect_equal(exS1V2$nrow, 1)
-   dataExS1V2 <- .get_data_from_htmlwidget(exS1V2)
-   expect_equal(dataExS1V2$ROW[indexHour], 1500)
-   exS21V2 <-  exchangesStack(x = myData1, refStudy = myData2, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   exS21V2 <- exS21V2$init()
-   expect_true(is(exS21V2, "MWController"))
-   expect_equal(exS21V2$ncharts, 1)
-   expect_equal(exS21V2$ncol, 1)
-   expect_equal(exS21V2$nrow, 1)
-   dataExS21V2 <- .get_data_from_htmlwidget(exS21V2)
-   expect_equal(dataExS21V2$nega_offshore[indexHour], 2500)
-   expect_equal(dataExS21V2$ROW[indexHour], 1500)
-   #ROW not null in myData2
-   for (i in 0:5){
-     timeEditShift <- lubridate::hours(i)
-     timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-     timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-     myData2$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1000)]
-   }
-   exS21V3 <-  exchangesStack(x = myData1, refStudy = myData2,  .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
-   exS21V3 <- exS21V3$init()
-   expect_true(is(exS21V3, "MWController"))
-   expect_equal(exS21V3$ncharts, 1)
-   expect_equal(exS21V3$ncol, 1)
-   expect_equal(exS21V3$nrow, 1)
-   dataExS21V3 <- .get_data_from_htmlwidget(exS21V3)
-   expect_equal(dataExS21V3$nega_offshore[indexHour], 2500)
-   expect_equal(dataExS21V3$ROW[indexHour], 500)
+  skip_if_not(.runExchangesStackTest)
+  myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myArea <- "a"
+  DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+  #no interactive
+  exS1 <-  exchangesStack(x = myData1, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  dataExS1 <- .get_data_from_htmlwidget(exS1)
+  timeEditValue <- "2018-04-25T00:00:00.000Z"
+  indexHour <- grep(timeEditValue, dataExS1$hour)
+  expect_gt(indexHour, 2)
+  expect_equal(dataExS1$nega_offshore[indexHour], 9)
+  # interactive no interactive
+  exS1I <-  exchangesStack(x = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  resExS1 <- exS1I$init()
+  expect_true(is(exS1I, "MWController"))
+  expect_equal(exS1I$ncharts, 1)
+  expect_equal(exS1I$ncol, 1)
+  expect_equal(exS1I$nrow, 1)
+  dataExS1I <- .get_data_from_htmlwidget(exS1I)
+  expect_equal(dataExS1I$nega_offshore[indexHour], 9)
+  
+  # interactive with refStudy but myData1 =myData2
+  exS21V0 <- exchangesStack(x = myData1, refStudy = myData2, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exS21V0 <- exS21V0$init()
+  expect_true(is(exS21V0, "MWController"))
+  expect_equal(exS21V0$ncharts, 1)
+  expect_equal(exS21V0$ncol, 1)
+  expect_equal(exS21V0$nrow, 1)
+  dataExS21V0 <- .get_data_from_htmlwidget(exS21V0)
+  expect_equal(dataExS21V0$nega_offshore[indexHour], 0)
+  # edit myData2 to have a diff != 0
+  #pb timeZone local (PC, Travis, etc)
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData2$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
+  }
+  exS21V1 <-  exchangesStack(x = myData1, refStudy = myData2, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exS21V1 <- exS21V1$init()
+  expect_true(is(exS21V1, "MWController"))
+  expect_equal(exS21V1$ncharts, 1)
+  expect_equal(exS21V1$ncol, 1)
+  expect_equal(exS21V1$nrow, 1)
+  dataExS21V1 <- .get_data_from_htmlwidget(exS21V1)
+  expect_equal(dataExS21V1$nega_offshore[indexHour], 2500)
+  #ROW not null in myData1
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1500)]
+  }
+  #test if there is row
+  exS1V2 <-  exchangesStack(x = myData1,  .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exS1V2 <- exS1V2$init()
+  expect_true(is(exS1V2, "MWController"))
+  expect_equal(exS1V2$ncharts, 1)
+  expect_equal(exS1V2$ncol, 1)
+  expect_equal(exS1V2$nrow, 1)
+  dataExS1V2 <- .get_data_from_htmlwidget(exS1V2)
+  expect_equal(dataExS1V2$ROW[indexHour], 1500)
+  exS21V2 <-  exchangesStack(x = myData1, refStudy = myData2, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exS21V2 <- exS21V2$init()
+  expect_true(is(exS21V2, "MWController"))
+  expect_equal(exS21V2$ncharts, 1)
+  expect_equal(exS21V2$ncol, 1)
+  expect_equal(exS21V2$nrow, 1)
+  dataExS21V2 <- .get_data_from_htmlwidget(exS21V2)
+  expect_equal(dataExS21V2$nega_offshore[indexHour], 2500)
+  expect_equal(dataExS21V2$ROW[indexHour], 1500)
+  #ROW not null in myData2
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData2$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1000)]
+  }
+  exS21V3 <-  exchangesStack(x = myData1, refStudy = myData2,  .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exS21V3 <- exS21V3$init()
+  expect_true(is(exS21V3, "MWController"))
+  expect_equal(exS21V3$ncharts, 1)
+  expect_equal(exS21V3$ncol, 1)
+  expect_equal(exS21V3$nrow, 1)
+  dataExS21V3 <- .get_data_from_htmlwidget(exS21V3)
+  expect_equal(dataExS21V3$nega_offshore[indexHour], 2500)
+  expect_equal(dataExS21V3$ROW[indexHour], 500)
 })
 
 describe("exchangesStack, interactive, x is a list of antaresDataTable and refStudy an antaresDataTable", {
+  skip_if_not(.runExchangesStackTest)
   myData1 <- readAntares(links = "all", showProgress = FALSE)
   myData2 <- readAntares(links = "all", showProgress = FALSE)
   myData3 <- readAntares(links = "all", showProgress = FALSE)
@@ -402,10 +405,10 @@ describe("exchangesStack, interactive, x is a list of antaresDataTable and refSt
   # edit myData3 to have a diff != 0
   #pb timeZone local (PC, Travis, etc)
   for (i in 0:5){
-   timeEditShift <- lubridate::hours(i)
-   timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-   timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-   myData3[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData3[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
   }
   exS21V1 <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
   exS21V1 <- exS21V1$init()
@@ -418,109 +421,110 @@ describe("exchangesStack, interactive, x is a list of antaresDataTable and refSt
 })
 
 describe("exchangesStack, interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
- myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
- myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
- myData3 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
- myData4 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
- 
- myDataList <- list(myData2, myData3, myData4)
- myArea <- "a"
- DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
- # no interactive
- exS2 <-  exchangesStack(x = myDataList, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
- # compare with myData3
- idWidget <- 2
- dataExS2 <- .get_data_from_htmlwidget(exS2, widgetsNumber = idWidget)
- timeEditValue <- "2018-04-25T00:00:00.000Z"
- indexHour <- grep(timeEditValue, dataExS2$hour)
- expect_gt(indexHour, 2)
- expect_equal(dataExS2$nega_offshore[indexHour], 9)
- # interactive 
- exSList1 <-  exchangesStack(x = myDataList, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
- exSList1 <- exSList1$init()
- expect_true(is(exSList1, "MWController"))
- expect_equal(exSList1$ncharts, 3)
- expect_equal(exSList1$ncol, 2)
- expect_equal(exSList1$nrow, 2)
- dataExS1I <- .get_data_from_htmlwidget(exSList1, widgetsNumber = idWidget)
- expect_equal(dataExS1I$nega_offshore[indexHour], 9)
- 
- #identical myData, diff == 0 always
- exSList1Ref <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
- exSList1Ref <- exSList1Ref$init()
- expect_true(is(exSList1Ref, "MWController"))
- expect_equal(exSList1Ref$ncharts, 3)
- expect_equal(exSList1Ref$ncol, 2)
- expect_equal(exSList1Ref$nrow, 2)
- dataExS21V0Ref <- .get_data_from_htmlwidget(exSList1Ref, widgetsNumber = idWidget)
- expect_equal(dataExS21V0Ref$nega_offshore[indexHour], 0)
- # edit myData3 to have a diff != 0
- #pb timeZone local (PC, Travis, etc)
- for (i in 0:5){
-   timeEditShift <- lubridate::hours(i)
-   timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-   timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-   myData3$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
- }
- exS21V1 <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
- exS21V1 <- exS21V1$init()
- expect_true(is(exS21V1, "MWController"))
- expect_equal(exS21V1$ncharts, 3)
- expect_equal(exS21V1$ncol, 2)
- expect_equal(exS21V1$nrow, 2)
- dataExS21V1 <- .get_data_from_htmlwidget(exS21V1, widgetsNumber = idWidget)
- expect_equal(dataExS21V1$a_offshore[indexHour], 2500)
- #ROW not null in myData4
- for (i in 0:5){
-   timeEditShift <- lubridate::hours(i)
-   timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-   timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-   myData4$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1500)]
- }
- #test if there is row
- exList <-  exchangesStack(x = myDataList, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
- exList <- exList$init()
- expect_true(is(exList, "MWController"))
- expect_equal(exList$ncharts, 3)
- expect_equal(exList$ncol, 2)
- expect_equal(exList$nrow, 2)
- dataExList <- .get_data_from_htmlwidget(exList, widgetsNumber = idWidget)
- expect_equal(dataExList$a_offshore[indexHour], 2500 - 9)
- idRowNotNull <- 3
- dataExListRow <- .get_data_from_htmlwidget(exList, widgetsNumber = idRowNotNull)
- expect_equal(dataExListRow$ROW[indexHour], 1500)
- #with a refStudy
- exListListV2 <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
- exListListV2 <- exListListV2$init()
- expect_true(is(exListListV2, "MWController"))
- expect_equal(exListListV2$ncharts, 3)
- expect_equal(exListListV2$ncol, 2)
- expect_equal(exListListV2$nrow, 2) 
- dataExListV2 <- .get_data_from_htmlwidget(exListListV2, widgetsNumber = idWidget)
- expect_equal(dataExListV2$a_offshore[indexHour], 2500)
- expect_equal(dataExListV2$ROW[indexHour], 0)
- dataExListV2Row <- .get_data_from_htmlwidget(exListListV2, widgetsNumber = idRowNotNull)
- expect_equal(dataExListV2Row$a_offshore[indexHour], 0)
- expect_equal(dataExListV2Row$ROW[indexHour], 1500)
- #ROW not null in refStudy myData1
- for (i in 0:5){
-   timeEditShift <- lubridate::hours(i)
-   timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-   timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-   myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1000)]
- }
- exListListV3 <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
- exListListV3 <- exListListV3$init()
- expect_true(is(exListListV3, "MWController"))
- expect_equal(exListListV3$ncharts, 3)
- expect_equal(exListListV3$ncol, 2)
- expect_equal(exListListV3$nrow, 2) 
- dataExListV3 <- .get_data_from_htmlwidget(exListListV3, widgetsNumber = idRowNotNull)
- expect_equal(dataExListV3$nega_offshore[indexHour], 0)
- expect_equal(dataExListV3$ROW[indexHour], 500)
- dataExListV3g2 <- .get_data_from_htmlwidget(exListListV3, widgetsNumber = idWidget)
- expect_equal(dataExListV3g2$a_offshore[indexHour], 2500)
- expect_equal(dataExListV3g2$negROW[indexHour], 1000)
+  skip_if_not(.runExchangesStackTest)
+  myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myData3 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myData4 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  
+  myDataList <- list(myData2, myData3, myData4)
+  myArea <- "a"
+  DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+  # no interactive
+  exS2 <-  exchangesStack(x = myDataList, interactive = FALSE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  # compare with myData3
+  idWidget <- 2
+  dataExS2 <- .get_data_from_htmlwidget(exS2, widgetsNumber = idWidget)
+  timeEditValue <- "2018-04-25T00:00:00.000Z"
+  indexHour <- grep(timeEditValue, dataExS2$hour)
+  expect_gt(indexHour, 2)
+  expect_equal(dataExS2$nega_offshore[indexHour], 9)
+  # interactive 
+  exSList1 <-  exchangesStack(x = myDataList, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exSList1 <- exSList1$init()
+  expect_true(is(exSList1, "MWController"))
+  expect_equal(exSList1$ncharts, 3)
+  expect_equal(exSList1$ncol, 2)
+  expect_equal(exSList1$nrow, 2)
+  dataExS1I <- .get_data_from_htmlwidget(exSList1, widgetsNumber = idWidget)
+  expect_equal(dataExS1I$nega_offshore[indexHour], 9)
+  
+  #identical myData, diff == 0 always
+  exSList1Ref <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exSList1Ref <- exSList1Ref$init()
+  expect_true(is(exSList1Ref, "MWController"))
+  expect_equal(exSList1Ref$ncharts, 3)
+  expect_equal(exSList1Ref$ncol, 2)
+  expect_equal(exSList1Ref$nrow, 2)
+  dataExS21V0Ref <- .get_data_from_htmlwidget(exSList1Ref, widgetsNumber = idWidget)
+  expect_equal(dataExS21V0Ref$nega_offshore[indexHour], 0)
+  # edit myData3 to have a diff != 0
+  #pb timeZone local (PC, Travis, etc)
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData3$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
+  }
+  exS21V1 <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exS21V1 <- exS21V1$init()
+  expect_true(is(exS21V1, "MWController"))
+  expect_equal(exS21V1$ncharts, 3)
+  expect_equal(exS21V1$ncol, 2)
+  expect_equal(exS21V1$nrow, 2)
+  dataExS21V1 <- .get_data_from_htmlwidget(exS21V1, widgetsNumber = idWidget)
+  expect_equal(dataExS21V1$a_offshore[indexHour], 2500)
+  #ROW not null in myData4
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData4$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1500)]
+  }
+  #test if there is row
+  exList <-  exchangesStack(x = myDataList, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exList <- exList$init()
+  expect_true(is(exList, "MWController"))
+  expect_equal(exList$ncharts, 3)
+  expect_equal(exList$ncol, 2)
+  expect_equal(exList$nrow, 2)
+  dataExList <- .get_data_from_htmlwidget(exList, widgetsNumber = idWidget)
+  expect_equal(dataExList$a_offshore[indexHour], 2500 - 9)
+  idRowNotNull <- 3
+  dataExListRow <- .get_data_from_htmlwidget(exList, widgetsNumber = idRowNotNull)
+  expect_equal(dataExListRow$ROW[indexHour], 1500)
+  #with a refStudy
+  exListListV2 <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exListListV2 <- exListListV2$init()
+  expect_true(is(exListListV2, "MWController"))
+  expect_equal(exListListV2$ncharts, 3)
+  expect_equal(exListListV2$ncol, 2)
+  expect_equal(exListListV2$nrow, 2) 
+  dataExListV2 <- .get_data_from_htmlwidget(exListListV2, widgetsNumber = idWidget)
+  expect_equal(dataExListV2$a_offshore[indexHour], 2500)
+  expect_equal(dataExListV2$ROW[indexHour], 0)
+  dataExListV2Row <- .get_data_from_htmlwidget(exListListV2, widgetsNumber = idRowNotNull)
+  expect_equal(dataExListV2Row$a_offshore[indexHour], 0)
+  expect_equal(dataExListV2Row$ROW[indexHour], 1500)
+  #ROW not null in refStudy myData1
+  for (i in 0:5){
+    timeEditShift <- lubridate::hours(i)
+    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+    myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, `ROW BAL.` := as.integer(`ROW BAL.` - 1000)]
+  }
+  exListListV3 <-  exchangesStack(x = myDataList, refStudy = myData1, .runApp = FALSE, interactive = TRUE, area = myArea, dateRange = DR, stepPlot = TRUE)
+  exListListV3 <- exListListV3$init()
+  expect_true(is(exListListV3, "MWController"))
+  expect_equal(exListListV3$ncharts, 3)
+  expect_equal(exListListV3$ncol, 2)
+  expect_equal(exListListV3$nrow, 2) 
+  dataExListV3 <- .get_data_from_htmlwidget(exListListV3, widgetsNumber = idRowNotNull)
+  expect_equal(dataExListV3$nega_offshore[indexHour], 0)
+  expect_equal(dataExListV3$ROW[indexHour], 500)
+  dataExListV3g2 <- .get_data_from_htmlwidget(exListListV3, widgetsNumber = idWidget)
+  expect_equal(dataExListV3g2$a_offshore[indexHour], 2500)
+  expect_equal(dataExListV3g2$negROW[indexHour], 1000)
 })
 
 describe("exchangesStack, no interactive, x and refStudy are optsH5 ", {
@@ -695,11 +699,11 @@ describe("exchangesStack, interactive, x and refStudy are optsH5 ", {
     expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 0)
     # refStudy with interactive
     ESRefI <-  exchangesStack(x = optsH5, 
-                             refStudy = optsH5, 
-                             interactive = TRUE,
-                             .runApp = FALSE, 
-                             area = myArea, 
-                             dateRange = DR)
+                              refStudy = optsH5, 
+                              interactive = TRUE,
+                              .runApp = FALSE, 
+                              area = myArea, 
+                              dateRange = DR)
     ESRefI <- ESRefI$init()
     expect_true(is(ESRefI, "MWController"))
     expect_equal(ESRefI$ncharts, 1)
@@ -744,10 +748,10 @@ describe("exchangesStack, interactive, x and refStudy are optsH5 ", {
     expect_equal(dataHtmlWidgetES1New$a_offshore[2], 15000)
     # with interactive
     ES1NewI <-  exchangesStack(x = optsH5New, 
-                              interactive = TRUE,
-                              .runApp = FALSE,
-                              area = myArea, 
-                              dateRange = DR)
+                               interactive = TRUE,
+                               .runApp = FALSE,
+                               area = myArea, 
+                               dateRange = DR)
     ES1NewI <- ES1NewI$init()
     expect_true(is(ES1NewI, "MWController"))
     expect_equal(ES1NewI$ncharts, 1)
@@ -768,12 +772,12 @@ describe("exchangesStack, interactive, x and refStudy are optsH5 ", {
     expect_gt(dataHtmlWidgetES1Ref$a_offshore[2], 15000)
     # interactive, refStudy,  
     ES1NewRefI <-  exchangesStack(x = optsH5New, 
-                                 refStudy = optsH5, 
-                                 interactive = TRUE,
-                                 .runApp = FALSE,
-                                 area = myArea, 
-                                 dateRange = DR,
-                                 mcYearh5 = 1)
+                                  refStudy = optsH5, 
+                                  interactive = TRUE,
+                                  .runApp = FALSE,
+                                  area = myArea, 
+                                  dateRange = DR,
+                                  mcYearh5 = 1)
     ES1NewRefI <- ES1NewRefI$init()
     expect_true(is(ES1NewRefI, "MWController"))
     expect_equal(ES1NewRefI$ncharts, 1)
@@ -842,21 +846,21 @@ describe("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5
       #try without refStudy and interactive == FALSE
       myArea <- "a"
       ESListNoInt <-  exchangesStack(x = optsList,
-                                dateRange = DR,
-                                area = myArea,
-                                interactive = FALSE,
-                                mcYearh5 = mcYearToTest)
+                                     dateRange = DR,
+                                     area = myArea,
+                                     interactive = FALSE,
+                                     mcYearh5 = mcYearToTest)
       
       dataHtmlWidgetESNoInt <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 2)
       expect_equal(max(dataHtmlWidgetESNoInt$a_offshore, na.rm = TRUE), 50000)
       
       # try with refStudy 
       ESListNoInt <-  exchangesStack(x = optsList, 
-                                refStudy = optsH5, 
-                                interactive = FALSE, 
-                                areas = myArea, 
-                                dateRange = DR,
-                                mcYearh5 = mcYearToTest)
+                                     refStudy = optsH5, 
+                                     interactive = FALSE, 
+                                     areas = myArea, 
+                                     dateRange = DR,
+                                     mcYearh5 = mcYearToTest)
       ## get the data from htmlwidget
       dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 1)
       dataHtmlWidgetES2 <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 2)
@@ -867,7 +871,7 @@ describe("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5
       expect_equal(max(antaresDataListH5[[1]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`)) 
       expect_equal(max(antaresDataListH5[[3]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`)) 
       expect_equal(antaresDataListH5[[2]]$`OV. COST`, antaresDataRef$`OV. COST`)
-    
+      
       ## compare data  
       resCompareData1_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[1]])
       resCompareData2_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[2]])
