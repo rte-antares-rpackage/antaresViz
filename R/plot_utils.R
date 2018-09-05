@@ -217,8 +217,35 @@
   listParamsCheck
 }
 
+.check_x <- function(x = NULL){
+  if("list" %in% class(x)){
+    for(elementI in x){
+      .check_x(elementI)
+    }
+  }else{
+    if(!(!.isSimOpts(x)| !.isAntaresData(x))){
+      stop("'x' should be an object of class 'antaresData' (or 'simOptions') created with 'readAntares()' (or 'setSimulationPath()')")
+    }else{
+      return(TRUE)
+    } 
+  }
+}
+
+
+.check_x_simOptions <- function(x = NULL){
+  if (!.isSimOpts(x)){
+    stop("'x' should be an object of class 'simOptions' created with 'setSimulationPath()'")
+  }else {
+    return(TRUE)
+  }
+}
+
 .check_x_antaresData <- function(x = NULL){
-  if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()' or an opts")
+  if (!.isAntaresData(x)){
+    stop("'x' should be an object of class 'antaresData created with readAntares()' or an opts")
+  }else {
+    return(TRUE)
+  }
 }
 
 .getParamsNoInt <- function(x = NULL, refStudy = NULL, listParamH5NoInt = NULL, compare = NULL, compareOptions = NULL, processFun = NULL){

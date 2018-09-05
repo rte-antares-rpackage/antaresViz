@@ -187,6 +187,15 @@
   "simOptions" %in% class(x)
 }
 
+#' Test antaresData
+#' 
+#' @param x if x is antaresData class
+#' 
+#' @noRd
+.isAntaresData <- function(x){
+  "antaresData" %in% class(x)
+}
+
 
 #' Load h5 data
 #' 
