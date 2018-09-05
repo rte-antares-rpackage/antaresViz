@@ -178,17 +178,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     hidden = NULL, ...) {
   
   
-  if(!is.null(compare) && !interactive){
-    stop("You can't use compare in no interactive mode")
-  }
+  .check_compare_interactive(compare, interactive)
   
   Column <- optionsT <- NULL
   tpMap <- plotMapOptions()
   
-  # Check language
-  if(!language %in% availableLanguages_labels){
-    stop("Invalid 'language' argument. Must be in : ", paste(availableLanguages_labels, collapse = ", "))  
-  }
+  .check_languages(language)
   
   if(language != "en"){
     colAreaVar <- .getColumnsLanguage(colAreaVar, language)

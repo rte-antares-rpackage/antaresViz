@@ -161,3 +161,84 @@
   }
   invisible(TRUE)
 }
+
+#' Compare cannot work when interactive is FALSE
+#' 
+#' @param compareP List of option to compare
+#' @param interactiveP if TRUE then return a shiny gadget and FALSE a htmlwidget  
+#' 
+#' @noRd
+.check_compare_interactive <- function(compareP = NULL, interactiveP = NULL){
+  if(!is.null(compareP) && !interactiveP){
+    stop("You can't use compare in no interactive mode")
+  }
+}
+
+#' Check app language
+#' 
+#' @param language app language
+#' @noRd
+.check_languages <- function(language){
+  # Check language
+  if(!language %in% availableLanguages_labels){
+    stop("Invalid 'language' argument. Must be in : ", paste(availableLanguages_labels, collapse = ", "))  
+  }
+}
+
+#' Check parameters for stack
+#' 
+#' @param listParamsCheck a list of param to check and correct 
+#' @noRd
+.check_params_A_get_cor_val <- function(listParamsCheck = NULL){
+  .check_compare_interactive(listParamsCheck$compare, listParamsCheck$interactive)
+  .check_languages(listParamsCheck$language)
+  # Check hidden
+  .validHidden(listParamsCheck$hidden, listParamsCheck$exchangesStackValHidden)
+  #Check compare
+  .validCompare(listParamsCheck$compare,  listParamsCheck$exchangesStackValCompare)
+  if (is.null(listParamsCheck$mcYear)) listParamsCheck$mcYear <- "average"
+  
+  if(!is.null(listParamsCheck$compare) && "list" %in% class(listParamsCheck$x)){
+    if(length(listParamsCheck$x) == 1) listParamsCheck$x <- list(listParamsCheck$x[[1]], listParamsCheck$x[[1]])
+  }
+  if(!is.null(listParamsCheck$compare) && ("antaresData" %in% class(listParamsCheck$x)  | "simOptions" %in% class(listParamsCheck$x))){
+    listParamsCheck$x <- list(listParamsCheck$x, listParamsCheck$x)
+  }
+  
+  listParamsCheck$h5requestFiltering <- .convertH5Filtering(h5requestFiltering = listParamsCheck$h5requestFiltering, x = listParamsCheck$x)
+  
+  listParamsCheck$compareOptions <- .compOpts(listParamsCheck$x, listParamsCheck$compare)
+  if(is.null(listParamsCheck$compare)){
+    if(listParamsCheck$compareOptions$ncharts > 1){
+      listParamsCheck$compare <- list()
+    }
+  }
+  
+  listParamsCheck
+}
+
+.check_x_antaresData <- function(x = NULL){
+  if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()' or an opts")
+}
+
+.getParamsNoInt <- function(x = NULL, refStudy = NULL, listParamH5NoInt = NULL, compare = NULL, compareOptions = NULL, processFun = NULL){
+  timeSteph5 <- listParamH5NoInt$timeSteph5
+  mcYearh5 <- listParamH5NoInt$mcYearh5
+  tablesh5 <- listParamH5NoInt$tablesh5
+  h5requestFiltering <- listParamH5NoInt$h5requestFiltering
+  
+  x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+  
+  if (!is.null(refStudy)){
+    refStudy <- .cleanH5(refStudy, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    x <- .compare_with_ref_study(x = x, refStudy = refStudy)
+  }
+  
+  params <- .getDataForComp(x = .giveListFormat(x),
+                            y = NULL,
+                            compare = compare, 
+                            compareOpts = compareOptions, 
+                            processFun = processFun)
+  
+  params
+}

@@ -90,7 +90,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
                            compare = NULL, compareOpts = list(),
                            interactive = getInteractivity(), 
-                           legend = TRUE, legendId = sample(1e9, 1), groupId = legendId,
+                           legend = TRUE, legendId = sample(1e9, 1), 
+                           groupId = legendId,
                            legendItemsPerRow = 5,
                            width = NULL, height = NULL,
                            xyCompare = c("union","intersect"),
@@ -104,61 +105,42 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            refStudy = NULL,
                            ...) {
   
+  #we can hide these values
+  exchangesStackValHidden <- c("H5request", "timeSteph5", "mcYearhH5", "mcYear", "main", 
+                               "dateRange", "unit", "area", "legend", "stepPlot", "drawPoints")
+  exchangesStackValCompare <- c("mcYear", "main", "unit", "area", "legend", "stepPlot", "drawPoints")
   
-  if(!is.null(compare) && !interactive){
-    stop("You can't use compare in no interactive mode")
-  }
-  
-  # Check language
-  if(!language %in% availableLanguages_labels){
-    stop("Invalid 'language' argument. Must be in : ", paste(availableLanguages_labels, collapse = ", "))  
-  }
-  
-  # Check hidden
-  .validHidden(hidden, c("H5request", "timeSteph5", "mcYearhH5", "mcYear", "main", 
-                         "dateRange", "unit", "area", "legend", "stepPlot", "drawPoints"))
-  
-  #Check compare
-  .validCompare(compare,  c("mcYear", "main", "unit", "area", "legend", "stepPlot", "drawPoints"))
-  
-  unit <- match.arg(unit)
-  if (is.null(mcYear)) mcYear <- "average"
-  
-  init_area <- area
+  listParamsCheck <- list(
+    x= x,
+    compare = compare, 
+    interactive = interactive, 
+    language = language, 
+    hidden = hidden,
+    valHidden = exchangesStackValHidden, 
+    valCompare = exchangesStackValCompare,
+    mcYear = mcYear,
+    h5requestFiltering = h5requestFiltering,
+    compareOptions = compareOpts
+  )
+
+  listParamsCheck <- .check_params_A_get_cor_val(listParamsCheck)
+  x <- listParamsCheck$x
+  compare <- listParamsCheck$compare
+  compareOptions <- listParamsCheck$compareOptions
+  h5requestFiltering <- listParamsCheck$h5requestFiltering
+  mcYear <- listParamsCheck$mcYear
   
   xyCompare <- match.arg(xyCompare)
+  unit <- match.arg(unit)
   
+  init_area <- area
   init_dateRange <- dateRange
   
-  if(!is.null(compare) && "list" %in% class(x)){
-    if(length(x) == 1) x <- list(x[[1]], x[[1]])
-  }
-  if(!is.null(compare) && ("antaresData" %in% class(x)  | "simOptions" %in% class(x))){
-    x <- list(x, x)
-  }
-  # .testXclassAndInteractive(x, interactive)
-  
-  
-  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
-  
-  # Generate a group number for dygraph objects
-  if (!("dateRange" %in% compare)) {
-    group <- sample(1e9, 1)
-  } else {
-    group <- NULL
-  }
-  
-  compareOptions <- .compOpts(x, compare)
-  if(is.null(compare)){
-    if(compareOptions$ncharts > 1){
-      compare <- list()
-    }
-  }
-  
   processFun <- function(x) {
-    if (!is(x, "antaresData")) stop("'x' should be an object of class 'antaresData created with readAntares()'")
+    .check_x_antaresData(x)
     row <- NULL # exchanges with rest of the world
     
+    # Check that input contains links data
     if (is(x, "antaresDataTable")) {
       if (!attr(x, "type") == "links") stop("'x' should contain link data")
     } else if (is(x, "antaresDataList")) {
@@ -299,14 +281,20 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   }
   
   if (!interactive) {
-    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    listParamH5NoInt <- list(
+      timeSteph5 = timeSteph5,
+      mcYearh5 = mcYearh5,
+      tablesh5 = tablesh5, 
+      h5requestFiltering = h5requestFiltering
+    )
     
-    if (!is.null(refStudy)){
-      refStudy <- .cleanH5(refStudy, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
-      x <- .compare_with_ref_study(x = x, refStudy = refStudy)
-    }
+    params <- .getParamsNoInt(x = x, 
+                             refStudy = refStudy, 
+                             listParamH5NoInt = listParamH5NoInt, 
+                             compare = compare, 
+                             compareOptions = compareOptions, 
+                             processFun = processFun)
     
-    params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun)
     L_w <- lapply(seq_along(params$x), function(i){
       myData <- params$x[[i]]
       myData$plotFun(i, myData$area, myData$dateRange, 

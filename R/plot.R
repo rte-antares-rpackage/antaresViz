@@ -201,14 +201,9 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    hidden = NULL, ...) {
   
   
-  if(!is.null(compare) && !interactive){
-    stop("You can't use compare in no interactive mode")
-  }
+  .check_compare_interactive(compare, interactive)
   
-  # Check language
-  if(!language %in% availableLanguages_labels){
-    stop("Invalid 'language' argument. Must be in : ", paste(availableLanguages_labels, collapse = ", "))  
-  }
+  .check_languages(language)
   
   if(language != "en"){
     variable <- .getColumnsLanguage(variable, language)
