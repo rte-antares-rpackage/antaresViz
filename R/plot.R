@@ -8,6 +8,10 @@
 #'   Object of class \code{antaresData}. Alternatively, it can be a list of 
 #'   \code{antaresData} objects. In this case, one chart is created for each
 #'   object. Can also be opts object from h5 file or list of opts object from h5 file.
+#' @param refStudy
+#'   An object of class \code{antaresData} created with function 
+#'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
+#'   districts. Can also contains an opts who refer to a h5 file.
 #' @param table
 #'   Name of the table to display when \code{x} is an \code{antaresDataList}
 #'   object.
@@ -173,7 +177,11 @@
 #' 
 #' 
 #' @export
-tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL, 
+tsPlot <- function(x,
+                   refStudy = NULL,
+                   table = NULL, 
+                   variable = NULL, 
+                   elements = NULL, 
                    variable2Axe = NULL,
                    mcYear = "average",
                    type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
@@ -201,6 +209,7 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    hidden = NULL, ...) {
   
   
+  .check_x(x)
   .check_compare_interactive(compare, interactive)
   
   .check_languages(language)
@@ -420,11 +429,18 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    
-    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
-    params <- .transformDataForComp(.giveListFormat(x), compare, compareOpts, 
-                                    processFun = processFun, 
-                                    elements = elements, dateRange = dateRange)
+    listParamH5NoInt <- list(
+      timeSteph5 = timeSteph5,
+      mcYearh5 = mcYearh5,
+      tablesh5 = tablesh5, 
+      h5requestFiltering = h5requestFiltering
+    )
+    params <- .getParamsNoInt(x = x, 
+                              refStudy = refStudy, 
+                              listParamH5NoInt = listParamH5NoInt, 
+                              compare = compare, 
+                              compareOptions = compareOptions, 
+                              processFun = processFun)
     
     # paramCoe <- .testParamsConsistency(params = params, mcYear = mcYear)
     # mcYear <- paramCoe$mcYear
