@@ -237,7 +237,7 @@ prodStack <- function(x,
   prodStackValCompare <- c("mcYear", "main", "unit", "areas", "legend", "stack", "stepPlot", "drawPoints")
   
   listParamsCheck <- list(
-    x= x,
+    x = x,
     compare = compare, 
     interactive = interactive, 
     language = language, 
@@ -523,23 +523,11 @@ prodStack <- function(x,
         }
       }
       
-      if (!is.null(refStudy)){
-        refStudy <- .loadH5Data(sharerequest, refStudy, h5requestFilter = h5requestFilteringTp[[1]])
-      }
-      
-      sapply(1:length(x_in), function(zz){
-        x_in[[zz]] <- .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = h5requestFilteringTp[[zz]])
-
-        if (!is.null(refStudy)){
-          if (!is(x_in[[zz]], "simOptions")){
-            x_in[[zz]] <- .compare_with_ref_study(x = as.antaresDataList(x_in[[zz]]), refStudy = as.antaresDataList(refStudy))
-          }else{
-            x_in[[zz]] <- .compare_with_ref_study(x = x_in[[zz]], refStudy = refStudy)
-          }
-         
-        }
-        x_in[[zz]]
-      }, simplify = FALSE)
+      resXT <- .get_x_transform(x_in = x_in,
+                                sharerequest = sharerequest,
+                                refStudy = refStudy, 
+                                h5requestFilter = h5requestFilteringTp )
+      resXT 
     }),
     
     params = mwSharedValue({

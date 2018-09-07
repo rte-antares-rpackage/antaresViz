@@ -653,7 +653,6 @@ describe("exchangesStack, no interactive, x is a list of optH5 and refStudy are 
   }
 })
 
-
 describe("exchangesStack, interactive, x and refStudy are optsH5 ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runExchangesStackTest)
@@ -822,8 +821,6 @@ describe("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5
     myLink <- getLinks()[1]
     newValueFlow <- 50000
     mcYearToTestList <- c(2, NULL)
-    #TODO remove
-    mcYearToTest <- c(NULL) 
     for (mcYearToTest in mcYearToTestList){
       .h5Antares_edit_variable(
         pathH5 = pathH5FileToEdit, 
@@ -850,7 +847,6 @@ describe("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5
                                      area = myArea,
                                      interactive = FALSE,
                                      mcYearh5 = mcYearToTest)
-      
       dataHtmlWidgetESNoInt <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 2)
       expect_equal(max(dataHtmlWidgetESNoInt$a_offshore, na.rm = TRUE), 50000)
       
