@@ -184,9 +184,44 @@
 #' 
 #' @noRd
 .isSimOpts <- function(x){
-  "simOptions" %in% class(x)
+  if ("simOptions" %in% class(x)){
+    if (!is.null(x$h5path)){
+      if (!file.exists(x$h5path)){
+        warning(paste0("h5file does not exists for this study :",
+                       x$studyName))
+        return(FALSE)
+      }else{
+        return(TRUE)
+      }
+    }else{
+      #opts but no h5 (TXT)
+      return(TRUE)
+    }
+  }else{
+    return(FALSE)
+  }
 }
 
+#' Test lits opst
+#' 
+#' @param test if x is list of simOptions class
+#' 
+#' @noRd
+.isListSimOpts <- function(x){
+  if ("list" %in% class(x)){
+    if (length(x) > 0){
+      if (.isSimOpts(x[[1]])){
+        return(TRUE)
+      }else{
+        return(FALSE)
+      }
+    }else{
+      return(FALSE)
+    }
+  }else{
+    return(FALSE)
+  }
+}
 #' Test antaresData
 #' 
 #' @param x if x is antaresData class
