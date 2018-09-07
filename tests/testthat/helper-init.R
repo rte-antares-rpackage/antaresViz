@@ -11,11 +11,14 @@ if (length(strsplit(packageDescription("antaresViz")$Version, "\\.")[[1]]) > 3) 
 .runThisTest <- Sys.getenv("RunAllAntaresVizTests") == "yes"
 
 if(.runThisTest){
+  #TODO replace by TRUE before push to origin
   .runProdStackTest <- TRUE
   .runExchangesStackTest <- TRUE
+  .runTsPlotTest <- TRUE
 }else{
   .runProdStackTest <- FALSE
   .runExchangesStackTest <- FALSE  
+  .runTsPlotTest <- FALSE
 }
 
 path <- tempdir()
