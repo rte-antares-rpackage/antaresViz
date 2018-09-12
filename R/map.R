@@ -147,11 +147,19 @@
 #' # Compare 2 studies
 #' plotMap(x = list(opts, opts2), mapLayout = ml)
 #' 
-#' 
+#' # Compare 2 studies with argument refStudies 
+#' plotMap(x = opts, refStudy = opts2, mapLayout = ml)
+#' plotMap(x = opts, refStudy = opts2, mapLayout = ml, interactive = FALSE, mcYearh5 = 2) 
+#' plotMap(x = opts, refStudy = opts2, mapLayout = ml, h5requestFiltering = 
+#' list(mcYears = myMcYear))
 #' }
 #' 
 #' @export
-plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+plotMap <- function(x, 
+                    refStudy = NULL,
+                    mapLayout, 
+                    colAreaVar = "none", 
+                    sizeAreaVars = c(),
                     areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
                     uniqueScale = FALSE,
                     showLabels = FALSE,
@@ -177,7 +185,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     sizeMiniPlot = FALSE,language = "en", 
                     hidden = NULL, ...) {
   
-  
+  .check_x(x)
   .check_compare_interactive(compare, interactive)
   
   Column <- optionsT <- NULL
@@ -490,7 +498,29 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   if (!interactive) {
-    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    
+    listParamH5NoInt <- list(
+      timeSteph5 = timeSteph5,
+      mcYearh5 = mcYearh5,
+      tablesh5 = tablesh5, 
+      h5requestFiltering = h5requestFiltering
+    )
+    params <- .getParamsNoInt(x = x, 
+                              refStudy = refStudy, 
+                              listParamH5NoInt = listParamH5NoInt, 
+                              compare = compare, 
+                              compareOptions = compareOptions, 
+                              processFun = processFun,
+                              mapLayout = mapLayout)
+    
+    # before refStudy x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    # 
+    # params <- .getDataForComp(.giveListFormat(x), 
+    #                           NULL, 
+    #                           compare, 
+    #                           compareOpts, 
+    #                           processFun = processFun, 
+    #                           mapLayout = mapLayout)
     
     if(!typeSizeAreaVars){
       sizeAreaVars <- sizeAreaVars
@@ -498,7 +528,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       sizeAreaVars <- unique(do.call("c", map_alias[aliasSizeAreaVars]))
     }
     
-    params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
     L_w <- lapply(params$x, function(X){
       X$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
                 popupAreaVars = popupAreaVars, areaChartType = areaChartType,
@@ -645,9 +674,18 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       }
     }),
     x_tranform = mwSharedValue({
-      sapply(1:length(x_in),function(zz){
-        .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = paramsH5$h5requestFilter[[zz]])
-      }, simplify = FALSE)
+      # before 
+      # sapply(1:length(x_in),function(zz){
+      #   .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = paramsH5$h5requestFilter[[zz]])
+      # }, simplify = FALSE)
+      # 
+      
+      resXT <- .get_x_transform(x_in = x_in,
+                                sharerequest = sharerequest,
+                                refStudy = refStudy, 
+                                h5requestFilter = paramsH5$h5requestFilter )
+      resXT 
+      
     }),
     
     ##Stop h5

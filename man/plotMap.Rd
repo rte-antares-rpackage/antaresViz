@@ -4,25 +4,29 @@
 \alias{plotMap}
 \title{Display results of a simulation on a map}
 \usage{
-plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
-  areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
-  uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
-  labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
-  popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
-  mcYear = "average", main = "", typeSizeAreaVars = FALSE,
-  aliasSizeAreaVars = c(), compare = NULL, compareOpts = list(),
-  interactive = getInteractivity(), options = plotMapOptions(),
-  width = NULL, height = NULL, dateRange = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas",
-  "links"), sizeMiniPlot = FALSE, language = "en", hidden = NULL,
-  ...)
+plotMap(x, refStudy = NULL, mapLayout, colAreaVar = "none",
+  sizeAreaVars = c(), areaChartType = c("bar", "pie", "polar-area",
+  "polar-radius"), uniqueScale = FALSE, showLabels = FALSE,
+  popupAreaVars = c(), labelAreaVar = "none", colLinkVar = "none",
+  sizeLinkVar = "none", popupLinkVars = c(), type = c("detail",
+  "avg"), timeId = NULL, mcYear = "average", main = "",
+  typeSizeAreaVars = FALSE, aliasSizeAreaVars = c(), compare = NULL,
+  compareOpts = list(), interactive = getInteractivity(),
+  options = plotMapOptions(), width = NULL, height = NULL,
+  dateRange = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"),
+  sizeMiniPlot = FALSE, language = "en", hidden = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
 \code{\link[antaresRead]{readAntares}} and containing areas and links data.
  It can be a list of \code{antaresData} objects. 
  In this case, one chart is created for each object.}
+
+\item{refStudy}{An object of class \code{antaresData} created with function 
+\code{\link[antaresRead]{readAntares}} containing data for areas and or
+districts. Can also contains an opts who refer to a h5 file.}
 
 \item{mapLayout}{Object created with function \code{\link{mapLayout}}}
 
