@@ -192,10 +192,16 @@ rev_ind_match <- match(colorsVars$Column, expand_language_columns$en)
 col_fr <- colorsVars[Column %in% expand_language_columns$en][, Column := expand_language_columns$fr[rev_ind_match[!is.na(rev_ind_match)]]]
 colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
 
+
+.check_if_is_html_cont <- function(htmlWidget = NULL){
+  if (!("htmlwidget" %in% class(htmlWidget) | "MWController" %in% class(htmlWidget))){
+    stop("no htmlwidget or no MWController")
+  }
+}
+
 # for test
 # get the data from an htmlwidget
 # the first element is x and the following are y
-
 #' get data from htmlwidget
 #' 
 #' @param htmlwidget an htmlwidget
@@ -203,9 +209,7 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
 #' 
 #' @noRd
 .get_data_from_htmlwidget <- function(htmlwidget = NULL, widgetsNumber = NULL){
-  if (!("htmlwidget" %in% class(htmlwidget) | "MWController" %in% class(htmlwidget))){
-    stop("no htmlwidget or no MWController")
-  }
+  .check_if_is_html_cont(htmlwidget)
   
   if (is(htmlwidget, "MWController") & !is.null(htmlwidget$charts)){
     if (length(htmlwidget$charts) == 1){

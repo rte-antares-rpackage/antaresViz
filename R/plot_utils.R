@@ -255,7 +255,14 @@
   }
 }
 
-.getParamsNoInt <- function(x = NULL, refStudy = NULL, listParamH5NoInt = NULL, compare = NULL, compareOptions = NULL, processFun = NULL){
+.getParamsNoInt <- function(x = NULL, 
+                            refStudy = NULL, 
+                            listParamH5NoInt = NULL, 
+                            compare = NULL, 
+                            compareOptions = NULL, 
+                            processFun = NULL,
+                            ...){
+  
   timeSteph5 <- listParamH5NoInt$timeSteph5
   mcYearh5 <- listParamH5NoInt$mcYearh5
   tablesh5 <- listParamH5NoInt$tablesh5
@@ -272,7 +279,8 @@
                             y = NULL,
                             compare = compare, 
                             compareOpts = compareOptions, 
-                            processFun = processFun)
+                            processFun = processFun,
+                            ...)
   
   params
 }
@@ -313,4 +321,69 @@
     stop("no data")
   }
   dataInApp
+}
+
+
+#' Get Data from result returned by plotMap
+#' 
+#' @noRd
+.getDataFromPlotMap <- function(area = NULL, time = NULL, variable = NULL, htmlPlotMap = NULL, idWidget = NULL){
+  widgetTest <- .get_chart_or_widget(htmlPlotMap , idWidget)
+  
+  dates <- .getAllDates(htmlPlotMap, idWidget)
+  indexTime <- .getIndexOneDate(time, dates)
+  indexArea <- .getIndexOneArea(area, htmlPlotMap, idWidget)
+  indexVar <- .getIndexOneVar(variable, htmlPlotMap, idWidget)
+  widgetTest$x$calls[[13]]$args[[2]][[indexArea]][[indexTime, indexVar]]
+}
+
+.get_chart_or_widget <- function(htmlPlotMap = NULL, idWidget = NULL){
+  .check_if_is_html_cont(htmlPlotMap)
+  
+  if("htmlwidget" %in% class(htmlPlotMap)){
+    typeChart <- htmlPlotMap$widgets
+  }else{
+    typeChart <- htmlPlotMap$charts
+  }
+  
+  if(is.null(idWidget)){
+    if(length(typeChart) > 1){
+      stop("you must specify the param 'idWidget'")
+    }else{
+      idWidget <- 1
+    }
+  }
+  #get charts or plots to check 
+  chartToCheck <- typeChart[[idWidget]]
+  
+  chartToCheck
+}
+
+.getIndexOneVar <- function(variable = NULL, htmlPlotMap = NULL, idWidget = NULL){
+  labelVarS <- .getLabelPlotMap(htmlPlotMap, idWidget)
+  grep(paste0("^",variable,"$"), labelVarS)
+}
+
+.getIndexOneArea <- function(area = NULL, htmlPlotMap = NULL, idWidget = NULL){
+  listAreas <- .getAreaNamePlotMap(htmlPlotMap, idWidget)
+  grep(paste0("^",area,"$"), listAreas)
+}
+
+.getIndexOneDate <- function( date = NULL, dates = NULL){
+  grep(date, dates)
+}
+
+.getAllDates <- function(htmlPlotMap = NULL, idWidget = NULL){
+  widgetTest <- .get_chart_or_widget(htmlPlotMap , idWidget)
+  return(widgetTest$x$calls[[9]]$args[[2]])
+}
+
+.getLabelPlotMap <- function(htmlPlotMap = NULL, idWidget = NULL){
+  widgetTest <- .get_chart_or_widget(htmlPlotMap , idWidget)
+  return(widgetTest$x$calls[[13]]$args[[7]]$labels)
+}
+
+.getAreaNamePlotMap <- function(htmlPlotMap = NULL, idWidget = NULL){
+  widgetTest <- .get_chart_or_widget(htmlPlotMap , idWidget)
+  return(widgetTest$x$calls[[2]]$args[[2]])
 }
