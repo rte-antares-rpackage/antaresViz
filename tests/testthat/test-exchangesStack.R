@@ -1,6 +1,6 @@
 context("exchangesStack")
 
-describe("no interactivy", {
+describe("no interactive", {
   
   mydata <- readAntares(links = "all", timeStep = "daily", showProgress = FALSE)
   # default parameters

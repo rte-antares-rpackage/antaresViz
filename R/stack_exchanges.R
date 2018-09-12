@@ -75,12 +75,11 @@
 #' 
 #' # Compare 2 studies with argument refStudies 
 #' exchangesStack(x = opts, refStudy = opts2)
-#' exchangesStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea) 
+#' exchangesStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea)
 #' exchangesStack(x = opts, refStudy = opts2, h5requestFiltering = list(
 #' areas = getAreas(select = "a"), 
 #' links = getLinks(areas = myArea),
 #' mcYears = myMcYear))
-#' mcYears = 2))
 #'  
 #' }
 #' 
