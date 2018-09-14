@@ -717,3 +717,13 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   }
   
 })
+
+describe("prodStack, no interactive, ne error with compare main", {
+  myData <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  myApplica <- prodStack(x = myData, 
+                         interactive = TRUE, 
+                         compare = "main",
+                         .runApp = FALSE)
+  myApplica$init()
+  expect_true(is(myApplica, "MWController"))
+})

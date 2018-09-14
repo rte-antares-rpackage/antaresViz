@@ -200,9 +200,9 @@
   .check_compare_interactive(listParamsCheck$compare, listParamsCheck$interactive)
   .check_languages(listParamsCheck$language)
   # Check hidden
-  .validHidden(listParamsCheck$hidden, listParamsCheck$exchangesStackValHidden)
+  .validHidden(listParamsCheck$hidden, listParamsCheck$valHidden)
   #Check compare
-  .validCompare(listParamsCheck$compare,  listParamsCheck$exchangesStackValCompare)
+  .validCompare(listParamsCheck$compare,  listParamsCheck$valCompare)
   if (is.null(listParamsCheck$mcYear)) listParamsCheck$mcYear <- "average"
   
   if (!is.null(listParamsCheck$compare) && "list" %in% class(listParamsCheck$x)){
