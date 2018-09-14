@@ -144,15 +144,12 @@ for(j in 1:16){
                 messageToPrint <- paste0(antaresViz:::.getLabelLanguage("To use a reference, select at least two studies, number of studies selected :", 
                                                                         current_language$language),
                                          countCheck)
-                print(current_language$language)
-                print(messageToPrint)
-                print(antaresViz:::.getLabelLanguage("To use a reference, select at least two studies, number of studies selected :",current_language$language))
                 showModal(modalDialog(
                   easyClose = TRUE,
                   footer = NULL,
                   messageToPrint
                 ))
-                #on ne prend pas une etude en reference si on a pas deux etudes en analyse
+                #we must have more that 2 studies to be able to choose a reference study
                 updateCheckboxInput(session, paste0("list_study_ref", k), 
                                     label = antaresViz:::.getLabelLanguage("Choose this study as a reference", current_language$language),
                                     value = FALSE)
@@ -181,9 +178,7 @@ for(j in 1:16){
 .get_if_output_has_refStudy <- function(){
   for(j in 1:16){
     l_j <- j
-    print(l_j)
     if(!is.null(input[[paste0("list_study_ref", l_j)]])){
-      print(paste0("statusRef :", input[[paste0("list_study_ref", l_j)]]))
       if(input[[paste0("list_study_ref", l_j)]] > 0){
         return(TRUE)
       }
@@ -197,18 +192,26 @@ for(j in 1:16){
   list_data <- list_data_all$antaresDataList
   for(j in 1:16){
     l_j <- j
-    print(l_j)
-    print(names(list_data))
-    print(names(list_data)[l_j])
     if(!is.null(input[[paste0("list_study_ref", l_j)]])){
-      print(paste0("statusRef :", input[[paste0("list_study_ref", l_j)]]))
       if(input[[paste0("list_study_ref", l_j)]] > 0){
         refStudyName <- names(list_data)[l_j]
-        print(refStudyName)
         return(refStudyName)
       }
     }
   }
-  
   return(FALSE)
+}
+
+# get the name of the ref Study
+.get_id_refStudy <- function(){
+  list_data <- list_data_all$antaresDataList
+  for(j in 1:16){
+    l_j <- j
+    if(!is.null(input[[paste0("list_study_ref", l_j)]])){
+      if(input[[paste0("list_study_ref", l_j)]] > 0){
+        return(l_j)
+      }
+    }
+  }
+  return(0)
 }
