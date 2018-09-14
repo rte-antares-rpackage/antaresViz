@@ -14,7 +14,8 @@ if(.runThisTest){
   .runProdStackTest <- TRUE
   .runExchangesStackTest <- TRUE
   .runTsPlotTest <- TRUE
-  #bug when executing in the Test environment
+  #bug when executing in the Test environment, so keep 
+  # .runPlotMapTest to FALSE
   .runPlotMapTest <- FALSE
 }else{
   .runProdStackTest <- FALSE
