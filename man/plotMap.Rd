@@ -137,7 +137,7 @@ typically h5requestFiltering = list(mcYears = 3)}
 An htmlwidget of class "leaflet". It can be modified with package 
 \code{leaflet}. By default the function starts a shiny gadget that lets the
 user play with most of the parameters of the function. The function returns
-a leaflet map when the user clicks on the button \code{"done"}.
+a leaflet map when the user clicks on the button \code{"OK"}.
 }
 \description{
 This function generates an interactive map that let the user visually explore
@@ -211,7 +211,11 @@ plotMap(x = opts, mapLayout = ml,  .compare = "mcYear")
 # Compare 2 studies
 plotMap(x = list(opts, opts2), mapLayout = ml)
 
-
+# Compare 2 studies with argument refStudies 
+plotMap(x = opts, refStudy = opts2, mapLayout = ml)
+plotMap(x = opts, refStudy = opts2, mapLayout = ml, interactive = FALSE, mcYearh5 = 2) 
+plotMap(x = opts, refStudy = opts2, mapLayout = ml, h5requestFiltering = 
+list(mcYears = myMcYear))
 }
 
 }
