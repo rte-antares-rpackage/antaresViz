@@ -96,7 +96,7 @@
 #' An htmlwidget of class "leaflet". It can be modified with package 
 #' \code{leaflet}. By default the function starts a shiny gadget that lets the
 #' user play with most of the parameters of the function. The function returns
-#' a leaflet map when the user clicks on the button \code{"done"}.
+#' a leaflet map when the user clicks on the button \code{"OK"}.
 #' 
 #' @examples 
 #' \dontrun{
@@ -304,12 +304,9 @@ plotMap <- function(x,
       if(!is.null(x$areas)){
         x$areas <- x$areas[timeId %in% timeIdTp]
       }
-      
       if(!is.null(x$links)){
         x$links <- x$links[timeId %in% timeIdTp]
       }
-      
-      
     }
     
     # Keep only links and areas present in the data
@@ -378,8 +375,6 @@ plotMap <- function(x,
       # Prepare data
       if (mcYear == "average") x <- syntx
       
-      # print("dateRange")
-      # print(dateRange)
       if(!is.null(dateRange)){
         dateRange <- sort(dateRange)
         # xx <<- copy(x)
@@ -411,9 +406,18 @@ plotMap <- function(x,
       if (initial) {
         assign("currentMapLayout", mapLayout, envir = env_plotFun)
         map <- .initMap(x, mapLayout, options, language = language) %>% syncWith(group)
-      } else if(!isTRUE(all.equal(mapLayout, get("currentMapLayout", envir = env_plotFun)))){
-        assign("currentMapLayout", mapLayout)
-        map <- .initMap(x, mapLayout, options, language = language) %>% syncWith(group)
+        #TODO 
+        #IF WE DONT COMMENT THIS LINES THEN WE HAVE A BUG 
+        ## with 2 or more optsH5, plotFun return always a htmlWidget (and not a leafet_proxy)
+        ## for the first graph and so we cannot update the first one 
+        ## .initMap : return a leaflet Htmlwidget
+        ## maybe we will need to do something if we have different mapLayout for different studies
+        ## ??
+      # } else if(!isTRUE(all.equal(mapLayout, get("currentMapLayout", envir = env_plotFun)))){
+      #   print(" no initial 1")
+      #   print(group)
+      #   assign("currentMapLayout", mapLayout)
+      #   map <- .initMap(x, mapLayout, options, language = language) %>% syncWith(group)
       } else {
         # in some case, map doesn't existed yet....!
         if("output_1_zoom" %in% names(session$input)){
@@ -513,15 +517,6 @@ plotMap <- function(x,
                               processFun = processFun,
                               mapLayout = mapLayout)
     
-    # before refStudy x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
-    # 
-    # params <- .getDataForComp(.giveListFormat(x), 
-    #                           NULL, 
-    #                           compare, 
-    #                           compareOpts, 
-    #                           processFun = processFun, 
-    #                           mapLayout = mapLayout)
-    
     if(!typeSizeAreaVars){
       sizeAreaVars <- sizeAreaVars
     } else {
@@ -569,7 +564,6 @@ plotMap <- function(x,
           } else {
             sizeAreaVars <- unique(do.call("c", map_alias[aliasSizeAreaVars]))
           }
-          
           widget <- params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                             colAreaVar = colAreaVar,
                                             sizeAreaVars = sizeAreaVars,
@@ -590,7 +584,10 @@ plotMap <- function(x,
                                             sizeMiniPlot = sizeMiniPlot,
                                             options = tmp_options)
           
+
+          
           # controlWidgetSize(widget, language) # bug due to leaflet and widget
+
           widget
         } else {
           combineWidgets(.getLabelLanguage("No data for this selection", language))
@@ -674,12 +671,6 @@ plotMap <- function(x,
       }
     }),
     x_tranform = mwSharedValue({
-      # before 
-      # sapply(1:length(x_in),function(zz){
-      #   .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = paramsH5$h5requestFilter[[zz]])
-      # }, simplify = FALSE)
-      # 
-      
       resXT <- .get_x_transform(x_in = x_in,
                                 sharerequest = sharerequest,
                                 refStudy = refStudy, 
@@ -944,7 +935,7 @@ plotMap <- function(x,
       if(length(x_tranform) > 0 & length(mapLayout) > 0){
         .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                         processFun = processFun, mapLayout = mapLayout)
-      } 
+      }
     }),
     options = mwSharedValue({options}),
     optionsT = mwSharedValue({
