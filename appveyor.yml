@@ -12,6 +12,30 @@ install:
 
 # Adapt as necessary starting from here
 
+environment:
+  global:
+    WARNINGS_ARE_ERRORS: 1
+
+  matrix:
+  - R_VERSION: devel
+    GCC_PATH: mingw_32
+    USE_RTOOLS: true
+
+  - R_VERSION: devel
+    R_ARCH: x64
+    GCC_PATH: mingw_64
+    USE_RTOOLS: true
+
+  - R_VERSION: release
+    R_ARCH: x64
+
+  - R_VERSION: stable
+
+  - R_VERSION: patched
+    USE_RTOOLS: true
+  
+
+
 build_script:
   - travis-tool.sh install_deps
   - travis-tool.sh install_bioc zlibbioc
