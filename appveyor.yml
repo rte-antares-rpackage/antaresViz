@@ -37,6 +37,7 @@ environment:
 
 
 build_script:
+  - set _R_CHECK_FORCE_SUGGESTS_=false
   - travis-tool.sh install_deps
   #before 
   #- travis-tool.sh install_bioc zlibbioc
