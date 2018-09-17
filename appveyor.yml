@@ -38,8 +38,11 @@ environment:
 
 build_script:
   - travis-tool.sh install_deps
-  - travis-tool.sh install_bioc zlibbioc
-  - travis-tool.sh install_bioc rhdf5
+  #before 
+  #- travis-tool.sh install_bioc zlibbioc
+  #- travis-tool.sh install_bioc rhdf5
+  #after "'BiocInstaller' and 'biocLite()' are deprecated, use the 'BiocManager' CRAN"
+  - travis-tool.sh install_bioc_deps
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresProcessing@develop_comp
   - ./travis-tool.sh install_github rte-antares-rpackage/antaresRead@develop_rhdf2_25
   #- ./travis-tool.sh install_github tidyverse/tidyselect 
