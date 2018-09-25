@@ -33,7 +33,7 @@
 plotXY <- function(data, x, y, precision = 30, sizeOnCount = FALSE, outLine = TRUE,
                      transform = NULL)
 {
-  if(!.requireRhdf5_Antares(stopP = FALSE)){
+  if(!requireNamespace("rbokeh")){
     stop("You should install 'rbokeh' library")
   }
   if(!"data.frame"%in%class(data)){
