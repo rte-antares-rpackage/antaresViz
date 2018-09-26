@@ -167,6 +167,13 @@
 #' # Compare 2 studies
 #' plot(x = list(opts, opts2))
 #' 
+#' # Compare 2 studies with argument refStudy 
+#' plot(x = opts, refStudy = opts2)
+#' plot(x = opts, refStudy = opts2, type = "ts", interactive = FALSE, mcYearh5 = 2)
+#' plot(x = opts, refStudy = opts2, type = "ts", dateRange = DR, h5requestFiltering = list(
+#' mcYears = mcYears = mcYearToTest))
+#' 
+#' 
 #' }
 #' 
 #' 

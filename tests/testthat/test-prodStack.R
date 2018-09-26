@@ -117,7 +117,11 @@ describe("prodStack must work with refStudy, if x and refStudy are optsH5, ", {
     
     myArea <- "b"
     DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-    PS3 <-  prodStack(x = optsH5, refStudy = optsH5, interactive = FALSE, areas = myArea, dateRange = DR)
+    PS3 <-  prodStack(x = optsH5, 
+                      refStudy = optsH5, 
+                      interactive = FALSE, 
+                      areas = myArea, 
+                      dateRange = DR)
     
     #check that PS1 == PS2 or PS3 == 0
     dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
