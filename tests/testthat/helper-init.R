@@ -11,9 +11,9 @@ if (length(strsplit(packageDescription("antaresViz")$Version, "\\.")[[1]]) > 3) 
 .runThisTest <- Sys.getenv("RunAllAntaresVizTests") == "yes"
 
 if(.runThisTest){
-  .runProdStackTest <- TRUE
-  .runExchangesStackTest <- TRUE
-  .runTsPlotTest <- TRUE
+  .runProdStackTest <- FALSE
+  .runExchangesStackTest <- FALSE
+  .runTsPlotTest <- FALSE
   #bug when executing in the Test environment, so keep 
   # .runPlotMapTest to FALSE
   .runPlotMapTest <- FALSE
