@@ -336,7 +336,11 @@
   indexArea <- .getIndexOneArea(area, htmlPlotMap, idWidget)
   print("get indexVar")
   indexVar <- .getIndexOneVar(variable, htmlPlotMap, idWidget)
-  widgetTest$x$calls[[13]]$args[[2]][[indexArea]][[indexTime, indexVar]]
+  print("get class")
+  res <- widgetTest$x$calls[[13]]$args[[2]][[indexArea]][[indexTime, indexVar]]
+  print("get widget")
+  
+  return(res)
 }
 
 .get_chart_or_widget <- function(htmlPlotMap = NULL, idWidget = NULL){
