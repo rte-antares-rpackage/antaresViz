@@ -85,7 +85,8 @@ averaged.}
 
 \item{typeSizeAreaVars}{\code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}}
 
-\item{aliasSizeAreaVars}{If \code{aliasSizeAreaVars}, name of alias.}
+\item{aliasSizeAreaVars}{If \code{typeSizeAreaVars} is set to TRUE, name of alias. You can find the list 
+of alias with the function \code{\link[antaresRead]{showAliases}}}
 
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
