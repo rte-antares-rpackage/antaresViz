@@ -50,10 +50,12 @@ describe("plotMap, no interactive, x and refStudy are antaresDataList", {
                         colAreaVar = "LOAD",
                         sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
   expect_true("htmlwidget" %in% class(resPlotMap))
+  print("before getData")
   valToValid <- .getDataFromPlotMap(area = "c", 
                       time = "sam. 05 mai 2018<br/>17:00",
                       variable = "LOAD",
                       htmlPlotMap = resPlotMap)
+  print("after getData")
   expect_gt(valToValid, 50000)
   # with refStudy
   resPlotMap <- plotMap(x = dta, 

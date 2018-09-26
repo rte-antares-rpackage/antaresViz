@@ -328,11 +328,13 @@
 #' 
 #' @noRd
 .getDataFromPlotMap <- function(area = NULL, time = NULL, variable = NULL, htmlPlotMap = NULL, idWidget = NULL){
+  print("get chart")
   widgetTest <- .get_chart_or_widget(htmlPlotMap , idWidget)
-  
+  print("get dates")
   dates <- .getAllDates(htmlPlotMap, idWidget)
   indexTime <- .getIndexOneDate(time, dates)
   indexArea <- .getIndexOneArea(area, htmlPlotMap, idWidget)
+  print("get indexVar")
   indexVar <- .getIndexOneVar(variable, htmlPlotMap, idWidget)
   widgetTest$x$calls[[13]]$args[[2]][[indexArea]][[indexTime, indexVar]]
 }
