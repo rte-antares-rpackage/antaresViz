@@ -332,7 +332,9 @@
   widgetTest <- .get_chart_or_widget(htmlPlotMap , idWidget)
   print("get dates")
   dates <- .getAllDates(htmlPlotMap, idWidget)
+  print("get time b")
   indexTime <- .getIndexOneDate(time, dates)
+  print("get time a")
   indexArea <- .getIndexOneArea(area, htmlPlotMap, idWidget)
   print("get indexVar")
   indexVar <- .getIndexOneVar(variable, htmlPlotMap, idWidget)
@@ -383,11 +385,11 @@
 
 .getIndexOneDate <- function( date = NULL, dates = NULL){
   res <- grep(date, dates)
-  if(res < 1){
+  if(length(res) < 1){
     dataT <- translateToEn(date)
-    res <- grep(date, dates)
+    res <- grep(dataT, dates)
   }
-  if(res < 1){
+  if(length(res) < 1){
     stop("no date in dates")
   }
   res
@@ -398,7 +400,7 @@
 .translateToEn <- function(date = NULL){
   frenchDay <- c("lun.", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim.")
   enDay <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-  #only two month now...
+  #only two months now...
   frenchMonth <- c("avr.", "mai")
   enMonth <- c("Apr", "May")
   
@@ -417,7 +419,6 @@
                    x = date)
     }
   }
-  
   date
 }
 
