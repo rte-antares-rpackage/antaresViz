@@ -382,7 +382,43 @@
 }
 
 .getIndexOneDate <- function( date = NULL, dates = NULL){
-  grep(date, dates)
+  res <- grep(date, dates)
+  if(res < 1){
+    dataT <- translateToEn(date)
+    res <- grep(date, dates)
+  }
+  if(res < 1){
+    stop("no date in dates")
+  }
+  res
+}
+
+#translate date into english date for dygraph on appveyour and travis
+# localy, R works on french and not in english
+.translateToEn <- function(date = NULL){
+  frenchDay <- c("lun.", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim.")
+  enDay <- c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+  #only two month now...
+  frenchMonth <- c("avr.", "mai")
+  enMonth <- c("Apr", "May")
+  
+  for(indexDay in 1:length(frenchDay)){
+    if(grepl(pattern = frenchDay[indexDay], x = date)){
+      date <- gsub(pattern = frenchDay[indexDay], 
+                   replacement = enDay[indexDay], 
+                   x = date)
+    }
+  }
+  for(indexMonth in 1:length(frenchMonth)){
+    if(grepl(pattern = frenchMonth[indexMonth], x = date)){
+      print(frenchMonth[indexMonth])
+      date <- gsub(pattern = frenchMonth[indexMonth], 
+                   replacement = enMonth[indexMonth], 
+                   x = date)
+    }
+  }
+  
+  date
 }
 
 .getAllDates <- function(htmlPlotMap = NULL, idWidget = NULL){
