@@ -337,6 +337,10 @@
   print("get indexVar")
   indexVar <- .getIndexOneVar(variable, htmlPlotMap, idWidget)
   print("get class")
+  print(indexArea)
+  print(indexTime)
+  print(indexVar)
+  print(class(widgetTest$x$calls[[13]]$args[[2]]))
   res <- widgetTest$x$calls[[13]]$args[[2]][[indexArea]][[indexTime, indexVar]]
   print("get widget")
   
