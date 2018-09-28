@@ -1,6 +1,6 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
-Changes in version 0.15.0 (2018-09-18)
+Changes in version 0.15.0 (2018-09-28)
 
 NEW FEATURES:
 * In prodStack(), exchangesStack(), tsPlot() and plotMap() it is now possible to compare several studies with a reference. A new  'refStudy' parameter can be used to set the reference study. 
