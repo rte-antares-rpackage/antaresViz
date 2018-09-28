@@ -328,27 +328,13 @@
 #' 
 #' @noRd
 .getDataFromPlotMap <- function(area = NULL, time = NULL, variable = NULL, htmlPlotMap = NULL, idWidget = NULL){
-  print("get chart")
+
   widgetTest <- .get_chart_or_widget(htmlPlotMap , idWidget)
-  print("get dates")
   dates <- .getAllDates(htmlPlotMap, idWidget)
-  print("get time b")
-  print(time)
-  print(dates)
   indexTime <- .getIndexOneDate(time, dates)
-  print("get time a")
   indexArea <- .getIndexOneArea(area, htmlPlotMap, idWidget)
-  print("get indexVar")
   indexVar <- .getIndexOneVar(variable, htmlPlotMap, idWidget)
-  print("get class")
-  print(indexArea)
-  print(time)
-  print(dates)
-  print(indexTime)
-  print(indexVar)
-  print(class(widgetTest$x$calls[[13]]$args[[2]]))
   res <- widgetTest$x$calls[[13]]$args[[2]][[indexArea]][[indexTime, indexVar]]
-  print("get widget")
   
   return(res)
 }
@@ -415,7 +401,6 @@
   }
   for(indexMonth in 1:length(frenchMonth)){
     if(grepl(pattern = frenchMonth[indexMonth], x = date)){
-      print(frenchMonth[indexMonth])
       date <- gsub(pattern = frenchMonth[indexMonth], 
                    replacement = enMonth[indexMonth], 
                    x = date)
