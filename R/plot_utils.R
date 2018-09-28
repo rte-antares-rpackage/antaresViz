@@ -388,7 +388,7 @@
 .getIndexOneDate <- function( date = NULL, dates = NULL){
   res <- grep(date, dates)
   if(length(res) < 1){
-    dataT <- translateToEn(date)
+    dataT <- .translateToEn(date)
     res <- grep(dataT, dates)
   }
   if(length(res) < 1){
