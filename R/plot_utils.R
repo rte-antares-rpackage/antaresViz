@@ -333,6 +333,8 @@
   print("get dates")
   dates <- .getAllDates(htmlPlotMap, idWidget)
   print("get time b")
+  print(time)
+  print(dates)
   indexTime <- .getIndexOneDate(time, dates)
   print("get time a")
   indexArea <- .getIndexOneArea(area, htmlPlotMap, idWidget)
