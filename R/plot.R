@@ -69,7 +69,8 @@
 #'   studies will be selectable.
 #' @param highlight highlight curve when mouse over
 #' @param secondAxis add second axis to graph
-#' 
+#' @param h5requestFiltering Contains arguments used by default for h5 request,
+#'   typically h5requestFiltering = list(mcYears = 2)
 #' @inheritParams prodStack
 #'   
 #' @return 
@@ -166,13 +167,24 @@
 #' # Compare 2 studies
 #' plot(x = list(opts, opts2))
 #' 
+#' # Compare 2 studies with argument refStudy 
+#' plot(x = opts, refStudy = opts2)
+#' plot(x = opts, refStudy = opts2, type = "ts", interactive = FALSE, mcYearh5 = 2)
+#' plot(x = opts, refStudy = opts2, type = "ts", dateRange = DR, h5requestFiltering = list(
+#' mcYears = mcYears = mcYearToTest))
+#' 
+#' 
 #' }
 #' 
 #' 
 #' 
 #' 
 #' @export
-tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL, 
+tsPlot <- function(x,
+                   refStudy = NULL,
+                   table = NULL, 
+                   variable = NULL, 
+                   elements = NULL, 
                    variable2Axe = NULL,
                    mcYear = "average",
                    type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
@@ -200,14 +212,11 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                    hidden = NULL, ...) {
   
   
-  if(!is.null(compare) && !interactive){
-    stop("You can't use compare in no interactive mode")
-  }
+  .check_x(x)
+  .check_compare_interactive(compare, interactive)
   
-  # Check language
-  if(!language %in% availableLanguages_labels){
-    stop("Invalid 'language' argument. Must be in : ", paste(availableLanguages_labels, collapse = ", "))  
-  }
+  .check_languages(language)
+  .check_h5_param(x, mcYear, interactive)
   
   if(language != "en"){
     variable <- .getColumnsLanguage(variable, language)
@@ -424,11 +433,18 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   # If not in interactive mode, generate a simple graphic, else create a GUI
   # to interactively explore the data
   if (!interactive) {
-    
-    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
-    params <- .transformDataForComp(.giveListFormat(x), compare, compareOpts, 
-                                    processFun = processFun, 
-                                    elements = elements, dateRange = dateRange)
+    listParamH5NoInt <- list(
+      timeSteph5 = timeSteph5,
+      mcYearh5 = mcYearh5,
+      tablesh5 = tablesh5, 
+      h5requestFiltering = h5requestFiltering
+    )
+    params <- .getParamsNoInt(x = x, 
+                              refStudy = refStudy, 
+                              listParamH5NoInt = listParamH5NoInt, 
+                              compare = compare, 
+                              compareOptions = compareOptions, 
+                              processFun = processFun)
     
     # paramCoe <- .testParamsConsistency(params = params, mcYear = mcYear)
     # mcYear <- paramCoe$mcYear
@@ -572,10 +588,12 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
   }),
   
   x_tranform = mwSharedValue({
-    dataInApp <- sapply(1:length(x_in),function(zz){
-      .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = paramsH5$h5requestFilter[[zz]])
-    }, simplify = FALSE)
-    dataInApp
+    
+    resXT <- .get_x_transform(x_in = x_in,
+                              sharerequest = sharerequest,
+                              refStudy = refStudy, 
+                              h5requestFilter = paramsH5$h5requestFilter )
+    resXT 
   }),
   
   table = mwSelect(
@@ -822,8 +840,14 @@ tsPlot <- function(x, table = NULL, variable = NULL, elements = NULL,
                 .display = !"main" %in% hidden),
   
   params = mwSharedValue({
-    .transformDataForComp(x_tranform, compare, compareOpts, processFun = processFun, 
-                          elements = init_elements, dateRange = init_dateRange)
+    #.transformDataForComp(x_tranform, compare, compareOpts, processFun = processFun, 
+    #                      elements = init_elements, dateRange = init_dateRange)
+    .getDataForComp(x = x_tranform, y = NULL, compare,
+                    compareOpts = compareOptions, 
+                    processFun = processFun,
+                    elements = init_elements,
+                    dateRange = init_dateRange)
+    
   }),
   
   .compare = {

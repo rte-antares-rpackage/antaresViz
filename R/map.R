@@ -27,7 +27,8 @@
 #' @param typeSizeAreaVars
 #'   \code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}
 #' @param aliasSizeAreaVars
-#'   If \code{aliasSizeAreaVars}, name of alias.
+#'   If \code{typeSizeAreaVars} is set to TRUE, name of alias. You can find the list 
+#'   of alias with the function \code{\link[antaresRead]{showAliases}}
 #' @param areaChartType
 #'   If parameter \code{sizeAreaVars} contains multiple variables, this parameter
 #'   determines the type of representation. Possible values are \code{"bar"} for
@@ -69,6 +70,8 @@
 #'   List of parameters that override some default visual settings. See the
 #'   help of \code{\link{plotMapOptions}}.
 #' @param sizeMiniPlot \code{boolean} variable size for miniplot
+#' @param h5requestFiltering Contains arguments used by default for h5 request,
+#'   typically h5requestFiltering = list(mcYears = 3)
 #' @inheritParams prodStack
 #'   
 #'   
@@ -94,7 +97,7 @@
 #' An htmlwidget of class "leaflet". It can be modified with package 
 #' \code{leaflet}. By default the function starts a shiny gadget that lets the
 #' user play with most of the parameters of the function. The function returns
-#' a leaflet map when the user clicks on the button \code{"done"}.
+#' a leaflet map when the user clicks on the button \code{"OK"}.
 #' 
 #' @examples 
 #' \dontrun{
@@ -133,10 +136,10 @@
 #' setSimulationPath(path = path1)
 #' 
 #' # Convert your study in h5 format
-#' writeAntaresH5(path = mynewpath)
+#' writeAntaresH5(path = myNewPath)
 #' 
 #' # Redefine sim path with h5 file
-#' opts <- setSimulationPath(path = mynewpath)
+#' opts <- setSimulationPath(path = myNewPath)
 #' plotMap(x = opts, mapLayout = ml)
 #' 
 #' # Compare elements in a single study
@@ -145,10 +148,19 @@
 #' # Compare 2 studies
 #' plotMap(x = list(opts, opts2), mapLayout = ml)
 #' 
+#' # Compare 2 studies with argument refStudies 
+#' plotMap(x = opts, refStudy = opts2, mapLayout = ml)
+#' plotMap(x = opts, refStudy = opts2, mapLayout = ml, interactive = FALSE, mcYearh5 = 2) 
+#' plotMap(x = opts, refStudy = opts2, mapLayout = ml, h5requestFiltering = 
+#' list(mcYears = myMcYear))
 #' }
 #' 
 #' @export
-plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
+plotMap <- function(x, 
+                    refStudy = NULL,
+                    mapLayout, 
+                    colAreaVar = "none", 
+                    sizeAreaVars = c(),
                     areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
                     uniqueScale = FALSE,
                     showLabels = FALSE,
@@ -174,18 +186,13 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                     sizeMiniPlot = FALSE,language = "en", 
                     hidden = NULL, ...) {
   
-  
-  if(!is.null(compare) && !interactive){
-    stop("You can't use compare in no interactive mode")
-  }
+  .check_x(x)
+  .check_compare_interactive(compare, interactive)
   
   Column <- optionsT <- NULL
   tpMap <- plotMapOptions()
   
-  # Check language
-  if(!language %in% availableLanguages_labels){
-    stop("Invalid 'language' argument. Must be in : ", paste(availableLanguages_labels, collapse = ", "))  
-  }
+  .check_languages(language)
   
   if(language != "en"){
     colAreaVar <- .getColumnsLanguage(colAreaVar, language)
@@ -265,7 +272,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
     if (!is(x, "antaresData")) {
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
     } else {
-      x <- as.antaresDataList(x)
+      x <- copy(as.antaresDataList(x))
       if(!is.null(x$areas)){
         if(nrow(x$areas) == 0){
           x$areas <- NULL
@@ -298,12 +305,9 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       if(!is.null(x$areas)){
         x$areas <- x$areas[timeId %in% timeIdTp]
       }
-      
       if(!is.null(x$links)){
         x$links <- x$links[timeId %in% timeIdTp]
       }
-      
-      
     }
     
     # Keep only links and areas present in the data
@@ -360,6 +364,11 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                         type = c("detail", "avg"), mcYear,
                         initial = TRUE, session = NULL, outputId = "output1",
                         dateRange = NULL, sizeMiniPlot = FALSE, options = NULL) {
+      
+      if(!any(mapLayout$coords$area %in% unique(x$areas$area))){
+        return(combineWidgets(.getLabelLanguage("Invalid Map Layout : wrongs nodes/links informations", language)))
+      }
+      
       type <- match.arg(type)
       if (type == "avg") t <- NULL
       else if (is.null(t)) t <- 0
@@ -367,8 +376,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       # Prepare data
       if (mcYear == "average") x <- syntx
       
-      # print("dateRange")
-      # print(dateRange)
       if(!is.null(dateRange)){
         dateRange <- sort(dateRange)
         # xx <<- copy(x)
@@ -400,9 +407,18 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       if (initial) {
         assign("currentMapLayout", mapLayout, envir = env_plotFun)
         map <- .initMap(x, mapLayout, options, language = language) %>% syncWith(group)
-      } else if(!isTRUE(all.equal(mapLayout, get("currentMapLayout", envir = env_plotFun)))){
-        assign("currentMapLayout", mapLayout)
-        map <- .initMap(x, mapLayout, options, language = language) %>% syncWith(group)
+        #TODO 
+        #IF WE DONT COMMENT THIS LINES THEN WE HAVE A BUG 
+        ## with 2 or more optsH5, plotFun return always a htmlWidget (and not a leafet_proxy)
+        ## for the first graph and so we cannot update the first one 
+        ## .initMap : return a leaflet Htmlwidget
+        ## maybe we will need to do something if we have different mapLayout for different studies
+        ## ??
+      # } else if(!isTRUE(all.equal(mapLayout, get("currentMapLayout", envir = env_plotFun)))){
+      #   print(" no initial 1")
+      #   print(group)
+      #   assign("currentMapLayout", mapLayout)
+      #   map <- .initMap(x, mapLayout, options, language = language) %>% syncWith(group)
       } else {
         # in some case, map doesn't existed yet....!
         if("output_1_zoom" %in% names(session$input)){
@@ -487,7 +503,20 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
   }
   
   if (!interactive) {
-    x <- .cleanH5(x, timeSteph5, mcYearh5, tablesh5, h5requestFiltering)
+    
+    listParamH5NoInt <- list(
+      timeSteph5 = timeSteph5,
+      mcYearh5 = mcYearh5,
+      tablesh5 = tablesh5, 
+      h5requestFiltering = h5requestFiltering
+    )
+    params <- .getParamsNoInt(x = x, 
+                              refStudy = refStudy, 
+                              listParamH5NoInt = listParamH5NoInt, 
+                              compare = compare, 
+                              compareOptions = compareOptions, 
+                              processFun = processFun,
+                              mapLayout = mapLayout)
     
     if(!typeSizeAreaVars){
       sizeAreaVars <- sizeAreaVars
@@ -495,7 +524,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       sizeAreaVars <- unique(do.call("c", map_alias[aliasSizeAreaVars]))
     }
     
-    params <- .getDataForComp(.giveListFormat(x), NULL, compare, compareOpts, processFun = processFun, mapLayout = mapLayout)
     L_w <- lapply(params$x, function(X){
       X$plotFun(t = timeId, colAreaVar = colAreaVar, sizeAreaVars = sizeAreaVars,
                 popupAreaVars = popupAreaVars, areaChartType = areaChartType,
@@ -537,7 +565,6 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
           } else {
             sizeAreaVars <- unique(do.call("c", map_alias[aliasSizeAreaVars]))
           }
-          
           widget <- params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
                                             colAreaVar = colAreaVar,
                                             sizeAreaVars = sizeAreaVars,
@@ -558,7 +585,10 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
                                             sizeMiniPlot = sizeMiniPlot,
                                             options = tmp_options)
           
+
+          
           # controlWidgetSize(widget, language) # bug due to leaflet and widget
+
           widget
         } else {
           combineWidgets(.getLabelLanguage("No data for this selection", language))
@@ -642,9 +672,12 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       }
     }),
     x_tranform = mwSharedValue({
-      sapply(1:length(x_in),function(zz){
-        .loadH5Data(sharerequest, x_in[[zz]], h5requestFilter = paramsH5$h5requestFilter[[zz]])
-      }, simplify = FALSE)
+      resXT <- .get_x_transform(x_in = x_in,
+                                sharerequest = sharerequest,
+                                refStudy = refStudy, 
+                                h5requestFilter = paramsH5$h5requestFilter )
+      resXT 
+      
     }),
     
     ##Stop h5
@@ -903,7 +936,7 @@ plotMap <- function(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
       if(length(x_tranform) > 0 & length(mapLayout) > 0){
         .getDataForComp(x_tranform, NULL, compare, compareOpts, 
                         processFun = processFun, mapLayout = mapLayout)
-      } 
+      }
     }),
     options = mwSharedValue({options}),
     optionsT = mwSharedValue({

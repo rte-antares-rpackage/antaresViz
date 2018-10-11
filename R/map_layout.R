@@ -14,13 +14,13 @@
 #'   on the map.
 #' @param map
 #'   An optional \code{\link[sp]{SpatialPolygons}} or 
-#'   \code{\link[sp]{SpatialPolygonsDataFrame}} object. See \code{\link[spMaps]{getSpMaps}}
+#'   \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} object. See \code{\link[spMaps:spMaps]{getSpMaps}}
 #'   
 #' @param map_builder \code{logical} Add inputs for build custom map ? Defaut to TRUE.
 #' 
 #' @details 
 #' With \code{map_builder} option, you can build a quiet custom map using \code{spMaps} package. 
-#' This package help you to build \code{\link[sp]{SpatialPolygonsDataFrame}} on Europe. 
+#' This package help you to build \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} on Europe. 
 #' Moreover, you can use two options in the module : 
 #' 
 #' \itemize{
@@ -93,12 +93,12 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = getSpMaps(),
 #' @seealso \code{\link{mapLayout}}
 plotMapLayout <- function(mapLayout){
   
-  if(!is.null(mapLayout$all_coords)){
+  if (!is.null(mapLayout$all_coords)){
     coords <- data.frame(mapLayout$all_coords)
     colnames(coords) <- gsub("^x$", "lon", colnames(coords))
     colnames(coords) <- gsub("^y$", "lat", colnames(coords))
     coords$info <- coords$area
-  } else if(is.null(mapLayout$all_coords)){
+  } else if (is.null(mapLayout$all_coords)){
     coords <- data.frame(mapLayout$coords)
     colnames(coords) <- gsub("^x$", "lon", colnames(coords))
     colnames(coords) <- gsub("^y$", "lat", colnames(coords))
@@ -122,29 +122,29 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
   tagList(
     fluidRow(
       column(3, 
-             if(map_builder){
+             if (map_builder){
                selectInput(ns("ml_countries"), "Countries : ", width = "100%",
                            choices = choices_map, selected = "all", multiple = TRUE)
              }
       ),
       column(3, 
-             if(map_builder){
+             if (map_builder){
                selectInput(ns("ml_states"), "States : ", width = "100%",
                            choices = choices_map, selected = NULL, multiple = TRUE)
              }
       ),   
       column(2, 
-             if(map_builder){
+             if (map_builder){
                div(br(), checkboxInput(ns("merge_cty"), "Merge countries ?", TRUE), align = "center")
              }
       ), 
       column(2, 
-             if(map_builder){
+             if (map_builder){
                div(br(), checkboxInput(ns("merge_ste"), "Merge states ?", TRUE), align = "center")
              }
       ), 
       column(2, 
-             if(map_builder){
+             if (map_builder){
                div(br(), actionButton(ns("set_map_ml"), "Set map"), align = "center")
              }
       )
@@ -173,7 +173,7 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
         htmlOutput(ns("info")),
         conditionalPanel(
           condition = paste0("output['", ns("control_state"), "'] < 2"),
-          imageOutput(ns("preview"), height="150px"),
+          imageOutput(ns("preview"), height = "150px"),
           tags$p(),
           actionButton(ns("state"), "Next")
         )
@@ -223,10 +223,10 @@ changeCoordsServer <- function(input, output, session,
   outputOptions(output, "control_state", suspendWhenHidden = FALSE)
   
   current_map <- reactive({
-    if(!map_builder){
+    if (!map_builder){
       map()
     } else {
-      if(!is.null(map()) & input$set_map_ml == 0){
+      if (!is.null(map()) & input$set_map_ml == 0){
         map()
       } else {
         getSpMaps(countries = isolate(input$ml_countries), states = isolate(input$ml_states), 
@@ -237,7 +237,7 @@ changeCoordsServer <- function(input, output, session,
   
   data <- reactive({
     input$reset_ml
-    if(!is.null(layout())){
+    if (!is.null(layout())){
       if (what() == "areas") {
         coords <- copy(layout()$areas)
         info <- coords$area
@@ -264,7 +264,7 @@ changeCoordsServer <- function(input, output, session,
   data_points <- reactiveValues()
   
   observe({
-    if(!is.null(data())){
+    if (!is.null(data())){
       cur_points <- data.frame(lon = data()$coords$x, lat = data()$coords$y, 
                                oldLon = data()$coords$x, oldLat = data()$coords$y,
                                color = data()$coords$color, info = as.character(data()$info), stringsAsFactors = FALSE)
@@ -287,7 +287,7 @@ changeCoordsServer <- function(input, output, session,
   renderPreview <- function(pt) {
     renderPlot({
       points <- isolate(data_points$points)
-      if(!is.null(points)){
+      if (!is.null(points)){
         col <- rep("#cccccc", nrow(points))
         col[pt] <- "red"
         cex <- rep(1, nrow(points))
@@ -300,13 +300,13 @@ changeCoordsServer <- function(input, output, session,
   }
   
   observeEvent(input$state, {
-    if(input$state > 0){
+    if (input$state > 0){
       current_state$state <- current_state$state + 1
     }
   })
   
   observeEvent(input$reset_ml, {
-    if(input$state >= 0){
+    if (input$state >= 0){
       current_state$state <- 0
     }
   })
@@ -330,8 +330,8 @@ changeCoordsServer <- function(input, output, session,
   })
   
   observe({
-    if(!is.null(input$map_init)){
-      if(input$map_init){
+    if (!is.null(input$map_init)){
+      if (input$map_init){
         lfDragPoints$map <- leafletDragPoints(NULL, current_map(), reset_map = TRUE)
       }
     }
@@ -397,7 +397,7 @@ changeCoordsServer <- function(input, output, session,
     
     # Put coords in right order
     ord <- order(c(data_points$pt1, data_points$pt2, (1:length(coords))[-c(data_points$pt1, data_points$pt2)]))
-    mapCoords <- coords[ord,]
+    mapCoords <- coords[ord, ]
     
     final_coords <- data()$coords
     final_links <- data()$links
@@ -406,48 +406,53 @@ changeCoordsServer <- function(input, output, session,
     final_coords$y <- sp::coordinates(mapCoords)[, 2]
     
     if (what() == "areas") {
-      final_links[final_coords, `:=`(x0 = x, y0 = y),on=c(from = "area")]
-      final_links[final_coords, `:=`(x1 = x, y1 = y),on=c(to = "area")]
+      final_links[final_coords, `:=`(x0 = x, y0 = y), on = c(from = "area")]
+      final_links[final_coords, `:=`(x1 = x, y1 = y), on = c(to = "area")]
     } else {
-      final_links[final_coords, `:=`(x0 = x, y0 = y),on=c(fromDistrict = "district")]
-      final_links[final_coords, `:=`(x1 = x, y1 = y),on=c(toDistrict = "district")]
+      final_links[final_coords, `:=`(x0 = x, y0 = y), on = c(fromDistrict = "district")]
+      final_links[final_coords, `:=`(x1 = x, y1 = y), on = c(toDistrict = "district")]
     }
     
     if (!is.null(map)) {
       final_coords$geoAreaId <- mapCoords$geoAreaId
-      final_coords_map <- final_coords[!is.na(final_coords$geoAreaId),]
-      if(!isolate(input$merge_ste)){
-        map <- map[final_coords_map$geoAreaId,]
+      final_coords_map <- final_coords[!is.na(final_coords$geoAreaId), ]
+      if (!isolate(input$merge_ste)){
+        map <- map[final_coords_map$geoAreaId, ]
       } else {
-        if(all(c("name", "code") %in% names(map))){
+        if (all(c("name", "code") %in% names(map))){
           keep_code <- unique(map$code[final_coords_map$geoAreaId])
           # subset on countries
-          tmp_map <- map[map$code %in% keep_code,]
-          # set unlink states
-          tmp_map$geoAreaId[!tmp_map$geoAreaId %in% final_coords_map$geoAreaId] <- NA
+          tmp_map <- map[map$code %in% keep_code, ]
           
-          ind_na <- which(is.na(tmp_map$geoAreaId))
-          if(length(ind_na) > 0){
-            # have to find nearestArea...
-            treat_cty <- unique(tmp_map$code[ind_na])
+          if (nrow(tmp_map) > 0){
+            # set unlink states
+            tmp_map$geoAreaId[!tmp_map$geoAreaId %in% final_coords_map$geoAreaId] <- NA
             
-            for(cty in treat_cty){
-              ind_cty <- which(tmp_map$code %in% cty)
-              ind_miss <- which(tmp_map$code %in% cty & is.na(tmp_map$geoAreaId))
-              areas <- coords[coords$geoAreaId %in% tmp_map$geoAreaId[ind_cty], ]
-              if(nrow(areas) > 0){
-                areas_min <- suppressWarnings(apply(rgeos::gDistance(tmp_map[ind_miss, ], areas, byid = TRUE),2, which.min))
-                tmp_map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
+            ind_na <- which(is.na(tmp_map$geoAreaId))
+            if (length(ind_na) > 0){
+              # have to find nearestArea...
+              treat_cty <- unique(tmp_map$code[ind_na])
+              
+              for (cty in treat_cty){
+                ind_cty <- which(tmp_map$code %in% cty)
+                ind_miss <- which(tmp_map$code %in% cty & is.na(tmp_map$geoAreaId))
+                areas <- coords[coords$geoAreaId %in% tmp_map$geoAreaId[ind_cty], ]
+                if (nrow(areas) > 0){
+                  areas_min <- suppressWarnings(apply(rgeos::gDistance(tmp_map[ind_miss, ], areas, byid = TRUE), 2, which.min))
+                  tmp_map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
+                }
               }
+              
+              tmp_map <- raster::aggregate(tmp_map, by = c("geoAreaId"))
+              map <- tmp_map[match(final_coords_map$geoAreaId, tmp_map$geoAreaId), ]
+            } else {
+              map <- map[final_coords_map$geoAreaId, ]
             }
-            
-            tmp_map <- raster::aggregate(tmp_map, by = c("geoAreaId"))
-            map <- tmp_map[match(final_coords_map$geoAreaId, tmp_map$geoAreaId), ]
-          } else {
-            map <- map[final_coords_map$geoAreaId,]
+          }else {
+            map <- map[final_coords_map$geoAreaId, ]
           }
         } else {
-          map <- map[final_coords_map$geoAreaId,]
+          map <- map[final_coords_map$geoAreaId, ]
         }
         # remove if multiple same polygon. Needed other change...
         # map <- map[!duplicated(map$geoAreaId), ]
@@ -464,7 +469,7 @@ changeCoordsServer <- function(input, output, session,
     
     cur_coords$data <- res
     
-    if(stopApp){
+    if (stopApp){
       stopApp(res)
     }
   })
@@ -590,7 +595,7 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   }
   
   # Add custom elements
-  if(is.function(preprocess)){
+  if (is.function(preprocess)){
     map <- preprocess(map)
   }
   

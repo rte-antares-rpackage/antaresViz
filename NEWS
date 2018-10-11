@@ -1,5 +1,15 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+Changes in version 0.15.0 (2018-09-28)
+
+NEW FEATURES:
+* In prodStack(), exchangesStack(), tsPlot() and plotMap() it is now possible to compare several studies with a reference. A new  'refStudy' parameter can be used to set the reference study. 
+* runAppAntaresViz() we can use a reference study with all manipulateWidget modules.
+
+BUGFIXES:
+* prodStack() and exchangesStack() were not working correctly with a list of antaresData or antaresDataList, only one legend was working when the interactive parameter was set to FALSE.
+* plotMap() was not working correctly with a list of optsH5, the first graph was not updated correctly when the interactive parameter was set to TRUE.
+
 Changes in version 0.14.0 (2018-06-12)
 
 NEW FEATURES:

@@ -8,7 +8,9 @@ layout <- reactive({
         if(packageVersion("antaresRead") <= '2.0.0'){
           readLayout(opts = list_data_all$opts[ind_map][[1]])
         } else {
-          readLayout(opts = list_data_all$opts[ind_map])
+          tmp <- tryCatch(readLayout(opts = list_data_all$opts[ind_map]), 
+                          error = function(e) return(readLayout(opts = list_data_all$opts[ind_map][[1]])))
+          tmp
         }
       }else{
         NULL
@@ -83,6 +85,7 @@ observe({
         ind_map <- unique(sort(c(ind_keep_list_data$ind_areas, ind_keep_list_data$ind_links)))
         if(length(ind_map) > 0){
           if(!is.null(ml)){
+            refStudy <- ind_keep_list_data$refStudy
             
             # init / re-init module plotMap
             id_plotMap   <- paste0("plotMap_", round(runif(1, 1, 100000000)))
@@ -110,15 +113,17 @@ observe({
             } else {
               .compare = NULL
             }
-            
-            mod_plotMap <- plotMap(list_data_all$antaresDataList[ind_map], ml, 
+            mod_plotMap <- plotMap(x = list_data_all$antaresDataList[ind_map], 
+                                   refStudy = refStudy,
+                                   mapLayout = ml, 
                                    interactive = TRUE, .updateBtn = TRUE, 
                                    .updateBtnInit = TRUE, compare = .compare,
                                    language = language,
                                    #export with webshot dont work with leaflet and mapLayout
                                    .exportBtn = FALSE,
                                    h5requestFiltering = list_data_all$params[ind_map],
-                                   xyCompare = "union", .runApp = FALSE)
+                                   xyCompare = "union", 
+                                   .runApp = FALSE)
             
             if("MWController" %in% class(modules$plotMap)){
               modules$plotMap$clear()

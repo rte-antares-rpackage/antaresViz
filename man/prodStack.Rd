@@ -8,23 +8,24 @@
 \usage{
 prodStackAliases()
 
-setProdStackAlias(name, variables, colors, lines = NULL, lineColors = NULL,
-  lineWidth = 3, description = NULL)
+setProdStackAlias(name, variables, colors, lines = NULL,
+  lineColors = NULL, lineWidth = 3, description = NULL)
 
 prodStack(x, stack = "eco2mix", areas = NULL, mcYear = "average",
-  dateRange = NULL, main = .getLabelLanguage("Production stack", language),
-  unit = c("MWh", "GWh", "TWh"), compare = NULL, compareOpts = list(),
-  interactive = getInteractivity(), legend = TRUE,
-  legendId = sample(1e+09, 1), groupId = legendId, legendItemsPerRow = 5,
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
-  timeSteph5 = "hourly", mcYearh5 = NULL, tablesh5 = c("areas", "links"),
-  language = "en", hidden = NULL, ...)
+  dateRange = NULL, main = .getLabelLanguage("Production stack",
+  language), unit = c("MWh", "GWh", "TWh"), compare = NULL,
+  compareOpts = list(), interactive = getInteractivity(),
+  legend = TRUE, legendId = sample(1e+09, 1), groupId = legendId,
+  legendItemsPerRow = 5, width = NULL, height = NULL,
+  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
+  stepPlot = FALSE, drawPoints = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
+  hidden = NULL, refStudy = NULL, ...)
 }
 \arguments{
 \item{name}{name of the stack to create or update}
 
-\item{variables}{A named list of expressions created with \code{\link[base]{alist}}. The
+\item{variables}{A named list of expressions created with \code{\link[base:list]{alist}}. The
 name of each element is the name of the variable to draw in the stacked
 graph. The element itself is an expression explaining how to compute the
 variable (see examples).}
@@ -33,7 +34,7 @@ variable (see examples).}
 \code{variables} is an alias, then this argument should be \code{NULL} in 
 order to use default colors.}
 
-\item{lines}{A named list of expressions created with \code{\link[base]{alist}}
+\item{lines}{A named list of expressions created with \code{\link[base:list]{alist}}
 indicating how to compute the curves to display on top of the stacked graph.
 It should be \code{NULL} if there is no curve to trace or if parameter
 \code{variables} is an alias.}
@@ -109,7 +110,7 @@ of mcYears in one of studies will be selectable. If intersect, only mcYears in a
 studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
-typically h5requestFiltering = list(select = "NUCLEAR")}
+typically h5requestFiltering = list(areas = "a", mcYears = 2)}
 
 \item{stepPlot}{\code{boolean}, step style for curves.}
 
@@ -124,6 +125,10 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 \item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
 
 \item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
+
+\item{refStudy}{An object of class \code{antaresData} created with function 
+\code{\link[antaresRead]{readAntares}} containing data for areas and or
+districts. Can also contains an opts who refer to a h5 file.}
 
 \item{...}{Other arguments for \code{\link{manipulateWidget}}}
 }
@@ -201,6 +206,11 @@ prodStack(x = mydata, unit = "GWh", compare = c("mcYear", "areas"))
 
 # Compare studies
 prodStack(list(mydata, mydata))
+# Compare studies with refStudy argument 
+prodStack(x = myData1, refStudy = myData2)
+prodStack(x = myData1, refStudy = myData2, interactive = FALSE)
+prodStack(x = list(myData2, myData3, myData4), refStudy = myData1)
+prodStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
 
 
 # Use h5 opts
@@ -220,8 +230,13 @@ prodStack(x = opts, .compare = "mcYear")
 # Compare 2 studies
 prodStack(x = list(opts, opts2))
 
+# Compare 2 studies with argument refStudies 
+prodStack(x = opts, refStudy = opts2)
+prodStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea) 
+prodStack(x = opts, refStudy = opts2, h5requestFiltering = list(areas = myArea, 
+mcYears = 2))
 
-                
+               
 }
 
 }

@@ -146,6 +146,9 @@ Re-Init layout;Remise à zéro
 Map Layout;Positions
 Done;Valider
 Next;Suivant
+Choose this study as a reference;Choisir cette étude comme référence
 Please place the following point on the map;Placer le point suivant sur la carte
 Drag the markers on the map to adjust coordinates then click the 'Done' button;Ajuster le positionnement les marqueurs sur la carte et avant de cliquer sur le bouton 'Valider'
 You can click on a marker to display information;Vous pouvez cliquer sur un marqueur pour afficher des informations
+Invalid Map Layout : wrongs nodes/links informations;Informations sur les positions invalides : tous les noeuds sont manquants
+To use a reference, select at least two studies, number of studies selected :;Pour utiliser une référence, sélectionnez au moins deux études, nombre d'études sélectionnées :

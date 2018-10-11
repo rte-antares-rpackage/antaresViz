@@ -65,7 +65,29 @@ function(input, output, session) {
           # with links
           ind_links <- intersect(which(list_data_all$have_links), ind_all)
           
-          list(ind_all = ind_all, ind_areas = ind_areas, ind_links = ind_links)
+          # refStudy
+          refStudyTrue <- .get_if_output_has_refStudy()
+          idRefStudy <- 0
+          if(refStudyTrue){
+            nameRefStudy <- .get_name_refStudy()
+            idRefStudy <- .get_id_refStudy()
+            validAreas <- setdiff(ind_areas, idRefStudy)
+            validLinks <- setdiff(ind_links, idRefStudy)
+          }else{
+            validAreas <- ind_areas
+            validLinks <- ind_links
+          }
+          
+          if(idRefStudy > 0){
+            refStudy <- list_data_all$antaresDataList[idRefStudy][[1]]
+          }else{
+            refStudy <- NULL
+          }
+          
+          list(ind_all = ind_all, 
+               ind_areas = validAreas, 
+               ind_links = validLinks,
+               refStudy = refStudy)
         } else {
           NULL
         }

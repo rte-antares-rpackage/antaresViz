@@ -12,15 +12,44 @@ install:
 
 # Adapt as necessary starting from here
 
+environment:
+  global:
+    WARNINGS_ARE_ERRORS: 1
+
+  matrix:
+  - R_VERSION: devel
+    GCC_PATH: mingw_32
+    USE_RTOOLS: true
+
+  - R_VERSION: devel
+    R_ARCH: x64
+    GCC_PATH: mingw_64
+    USE_RTOOLS: true
+
+  - R_VERSION: release
+    R_ARCH: x64
+
+  - R_VERSION: stable
+
+  - R_VERSION: patched
+    USE_RTOOLS: true
+  
+
+
 build_script:
+  - set _R_CHECK_FORCE_SUGGESTS_=false
   - travis-tool.sh install_deps
-  - travis-tool.sh install_bioc zlibbioc
-  - travis-tool.sh install_bioc rhdf5
-  - ./travis-tool.sh install_github rte-antares-rpackage/antaresRead@develop
-  - ./travis-tool.sh install_github rte-antares-rpackage/antaresProcessing@develop
-  - ./travis-tool.sh install_github rte-antares-rpackage/manipulateWidget@master
-  - ./travis-tool.sh install_github rte-antares-rpackage/antaresMaps@develop
-  - ./travis-tool.sh install_github rte-antares-rpackage/leaflet.minicharts
+  #before 
+  #- travis-tool.sh install_bioc zlibbioc
+  #- travis-tool.sh install_bioc rhdf5
+  #after "'BiocInstaller' and 'biocLite()' are deprecated, use the 'BiocManager' CRAN"
+  - travis-tool.sh install_bioc_deps
+  - ./travis-tool.sh install_github rte-antares-rpackage/antaresProcessing@next_release
+  - ./travis-tool.sh install_github rte-antares-rpackage/antaresRead@next_release
+  #- ./travis-tool.sh install_github tidyverse/tidyselect 
+  #- ./travis-tool.sh install_github rte-antares-rpackage/antaresMaps@develop
+  #- ./travis-tool.sh install_github rte-antares-rpackage/leaflet.minicharts
+#  - ./travis-tool.sh install_github rte-antares-rpackage/manipulateWidget@master
 
 test_script:
   - travis-tool.sh run_tests

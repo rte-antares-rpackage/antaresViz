@@ -45,8 +45,68 @@
 #'   
 #' @examples 
 #' \dontrun{
-#' params <- plotMapOptions(areaDefaultCol = "red", linkDefaultCol = "orange")
-#' plotMap(mydata, mylayout, options = params)
+#' 
+#' # Example : Change color for area variables 
+#' 
+#' library(antaresViz)
+#' 
+#' studyPath <- "path/to/study"
+#' setSimulationPath(path = studyPath, simulation = -1)
+#' myData<-readAntares(areas = "all", links = "all")
+#' 
+#' ml<-readRDS(file = "path/to/mapLayout.rds")
+#' 
+#' myOption<-plotMapOptions(areaChartColors = c("yellow", "violetred"))
+#' 
+#' plotMap(myData, 
+#'         ml, 
+#'         sizeAreaVars = c("SOLAR", "WIND"), 
+#'         type="avg", 
+#'         interactive = FALSE, 
+#'        options = myOption
+#' )
+#' 
+#' # for pie chart 
+#' plotMap(myData, 
+#'         ml, 
+#'         sizeAreaVars = c("SOLAR", "WIND"), 
+#'         type="avg", 
+#'         interactive = FALSE, 
+#'         options = myOption,
+#'         areaChartType = "pie",
+#'         sizeMiniPlot = TRUE
+#' )
+#' 
+#' # Example : Change color for link and area variables 
+#' myOption <- plotMapOptions(areaChartColors = c("yellow", "violetred"), linkDefaultCol = "green")
+#' plotMap(myData, 
+#'         ml, 
+#'         type="avg", 
+#'         sizeAreaVars = c("SOLAR", "WIND"), 
+#'         interactive = FALSE, 
+#'         options = myOption
+#' )
+#' 
+#' # Change default area color 
+#' myOption <- plotMapOptions(areaDefaultCol = "green")
+#' plotMap(myData, 
+#'         ml, 
+#'         interactive = FALSE, 
+#'         options = myOption
+#' )
+#' 
+#' # Change the scale 
+#' plotMap(myData, 
+#'         ml, 
+#'         colAreaVar = "MRG. PRICE",
+#'         options = plotMapOptions(
+#'           areaColorScaleOpts = colorScaleOptions(
+#'             breaks = c(-1000, 100, 200, 20000),
+#'             colors = c("green", "orange", "red")
+#'           )
+#'         ),
+#'         interactive = FALSE
+#' )
 #' }
 #' 
 #' @export
