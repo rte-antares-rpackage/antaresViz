@@ -142,7 +142,11 @@
     }
     
     # 5- Finally plot !!
-    colors <- unname(c("#FFFFFF", rev(colors), colors))
+    if(is.null(lines)){
+      colors <- unname(c("#FFFFFF", rev(colors), colors))
+    } else {
+      colors <- unname(c(rep(rev(lineColors), length(lines)), "#FFFFFF", rev(colors), colors))
+    }
     
     g <- dygraph(as.xts.data.table(dt), main = main, group = groupId, width = width, height = height)  %>%
       dyOptions(
@@ -168,9 +172,9 @@
     
     if (length(lines) > 0) {
       for (i in 1:length(lines)) {
-        g <- g %>% dySeries(name = paste0("opp", lines[i]), color = lineColors[i], 
+        g <- g %>% dySeries(name = paste0("opp", lines[i]), 
                             fillGraph = FALSE, strokeWidth = 0)
-        g <- g %>% dySeries(name = lines[i], color = lineColors[i], 
+        g <- g %>% dySeries(name = lines[i], 
                             fillGraph = FALSE, strokeWidth = lineWidth[i])
       }
     }

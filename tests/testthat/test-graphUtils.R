@@ -8,7 +8,7 @@ describe(".compOpts", {
   expect_true(.compOpts(list(), NULL)$ncharts == 1)
 })  
 
-if(requireNamespace("rhdf5", quietly = TRUE)){
+if(.requireRhdf5_Antares(stopP = FALSE)){
   context(".dateRangeJoin")
   describe(".dateRangeJoin", {
     dt <- list()

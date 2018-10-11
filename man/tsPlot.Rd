@@ -7,12 +7,13 @@
 \alias{plot.list}
 \title{plot time series contained in an antaresData object}
 \usage{
-tsPlot(x, table = NULL, variable = NULL, elements = NULL,
-  variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
-  "monotone", "density", "cdf", "heatmap"), dateRange = NULL,
-  typeConfInt = FALSE, confInt = 0, minValue = NULL, maxValue = NULL,
-  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
-  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
+tsPlot(x, refStudy = NULL, table = NULL, variable = NULL,
+  elements = NULL, variable2Axe = NULL, mcYear = "average",
+  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
+  dateRange = NULL, typeConfInt = FALSE, confInt = 0,
+  minValue = NULL, maxValue = NULL, aggregate = c("none", "mean",
+  "sum", "mean by areas", "sum by areas"), compare = NULL,
+  compareOpts = list(), interactive = getInteractivity(),
   colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
   legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
   width = NULL, height = NULL, xyCompare = c("union", "intersect"),
@@ -21,43 +22,49 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
   mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
   hidden = NULL, ...)
 
-\method{plot}{antaresData}(x, table = NULL, variable = NULL,
-  elements = NULL, variable2Axe = NULL, mcYear = "average",
-  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-  dateRange = NULL, typeConfInt = FALSE, confInt = 0, minValue = NULL,
-  maxValue = NULL, aggregate = c("none", "mean", "sum", "mean by areas",
-  "sum by areas"), compare = NULL, compareOpts = list(),
-  interactive = getInteractivity(), colors = NULL, main = NULL,
-  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
-  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
-  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"), language = "en", hidden = NULL, ...)
-
-\method{plot}{simOptions}(x, table = NULL, variable = NULL,
-  elements = NULL, variable2Axe = NULL, mcYear = "average",
-  type = c("ts", "barplot", "monotone", "density", "cdf", "heatmap"),
-  dateRange = NULL, typeConfInt = FALSE, confInt = 0, minValue = NULL,
-  maxValue = NULL, aggregate = c("none", "mean", "sum", "mean by areas",
-  "sum by areas"), compare = NULL, compareOpts = list(),
-  interactive = getInteractivity(), colors = NULL, main = NULL,
-  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
-  colorScaleOpts = colorScaleOptions(20), width = NULL, height = NULL,
-  xyCompare = c("union", "intersect"), h5requestFiltering = list(),
-  highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
-  secondAxis = FALSE, timeSteph5 = "hourly", mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"), language = "en", hidden = NULL, ...)
-
-\method{plot}{list}(x, table = NULL, variable = NULL, elements = NULL,
-  variable2Axe = NULL, mcYear = "average", type = c("ts", "barplot",
-  "monotone", "density", "cdf", "heatmap"), dateRange = NULL,
-  typeConfInt = FALSE, confInt = 0, minValue = NULL, maxValue = NULL,
+\method{plot}{antaresData}(x, refStudy = NULL, table = NULL,
+  variable = NULL, elements = NULL, variable2Axe = NULL,
+  mcYear = "average", type = c("ts", "barplot", "monotone", "density",
+  "cdf", "heatmap"), dateRange = NULL, typeConfInt = FALSE,
+  confInt = 0, minValue = NULL, maxValue = NULL,
   aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
-  compare = NULL, compareOpts = list(), interactive = getInteractivity(),
-  colors = NULL, main = NULL, ylab = NULL, legend = TRUE,
-  legendItemsPerRow = 5, colorScaleOpts = colorScaleOptions(20),
-  width = NULL, height = NULL, xyCompare = c("union", "intersect"),
+  compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOpts = colorScaleOptions(20), width = NULL,
+  height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
+  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
+  hidden = NULL, ...)
+
+\method{plot}{simOptions}(x, refStudy = NULL, table = NULL,
+  variable = NULL, elements = NULL, variable2Axe = NULL,
+  mcYear = "average", type = c("ts", "barplot", "monotone", "density",
+  "cdf", "heatmap"), dateRange = NULL, typeConfInt = FALSE,
+  confInt = 0, minValue = NULL, maxValue = NULL,
+  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOpts = colorScaleOptions(20), width = NULL,
+  height = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
+  drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
+  hidden = NULL, ...)
+
+\method{plot}{list}(x, refStudy = NULL, table = NULL,
+  variable = NULL, elements = NULL, variable2Axe = NULL,
+  mcYear = "average", type = c("ts", "barplot", "monotone", "density",
+  "cdf", "heatmap"), dateRange = NULL, typeConfInt = FALSE,
+  confInt = 0, minValue = NULL, maxValue = NULL,
+  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  compare = NULL, compareOpts = list(),
+  interactive = getInteractivity(), colors = NULL, main = NULL,
+  ylab = NULL, legend = TRUE, legendItemsPerRow = 5,
+  colorScaleOpts = colorScaleOptions(20), width = NULL,
+  height = NULL, xyCompare = c("union", "intersect"),
   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE,
   drawPoints = FALSE, secondAxis = FALSE, timeSteph5 = "hourly",
   mcYearh5 = NULL, tablesh5 = c("areas", "links"), language = "en",
@@ -67,6 +74,10 @@ tsPlot(x, table = NULL, variable = NULL, elements = NULL,
 \item{x}{Object of class \code{antaresData}. Alternatively, it can be a list of 
 \code{antaresData} objects. In this case, one chart is created for each
 object. Can also be opts object from h5 file or list of opts object from h5 file.}
+
+\item{refStudy}{An object of class \code{antaresData} created with function 
+\code{\link[antaresRead]{readAntares}} containing data for areas and or
+districts. Can also contains an opts who refer to a h5 file.}
 
 \item{table}{Name of the table to display when \code{x} is an \code{antaresDataList}
 object.}
@@ -162,7 +173,7 @@ of mcYears in one of studies will be selectable. If intersect, only mcYears in a
 studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
-typically h5requestFiltering = list(select = "NUCLEAR")}
+typically h5requestFiltering = list(mcYears = 2)}
 
 \item{highlight}{highlight curve when mouse over}
 
@@ -280,6 +291,13 @@ plot(x = opts)
 plot(x = opts, .compare = "mcYear")
 # Compare 2 studies
 plot(x = list(opts, opts2))
+
+# Compare 2 studies with argument refStudy 
+plot(x = opts, refStudy = opts2)
+plot(x = opts, refStudy = opts2, type = "ts", interactive = FALSE, mcYearh5 = 2)
+plot(x = opts, refStudy = opts2, type = "ts", dateRange = DR, h5requestFiltering = list(
+mcYears = mcYears = mcYearToTest))
+
 
 }
 

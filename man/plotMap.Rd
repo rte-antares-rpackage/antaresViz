@@ -4,24 +4,29 @@
 \alias{plotMap}
 \title{Display results of a simulation on a map}
 \usage{
-plotMap(x, mapLayout, colAreaVar = "none", sizeAreaVars = c(),
-  areaChartType = c("bar", "pie", "polar-area", "polar-radius"),
-  uniqueScale = FALSE, showLabels = FALSE, popupAreaVars = c(),
-  labelAreaVar = "none", colLinkVar = "none", sizeLinkVar = "none",
-  popupLinkVars = c(), type = c("detail", "avg"), timeId = NULL,
-  mcYear = "average", main = "", typeSizeAreaVars = FALSE,
-  aliasSizeAreaVars = c(), compare = NULL, compareOpts = list(),
-  interactive = getInteractivity(), options = plotMapOptions(),
-  width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union",
-  "intersect"), h5requestFiltering = list(), timeSteph5 = "hourly",
-  mcYearh5 = NULL, tablesh5 = c("areas", "links"), sizeMiniPlot = FALSE,
-  language = "en", hidden = NULL, ...)
+plotMap(x, refStudy = NULL, mapLayout, colAreaVar = "none",
+  sizeAreaVars = c(), areaChartType = c("bar", "pie", "polar-area",
+  "polar-radius"), uniqueScale = FALSE, showLabels = FALSE,
+  popupAreaVars = c(), labelAreaVar = "none", colLinkVar = "none",
+  sizeLinkVar = "none", popupLinkVars = c(), type = c("detail",
+  "avg"), timeId = NULL, mcYear = "average", main = "",
+  typeSizeAreaVars = FALSE, aliasSizeAreaVars = c(), compare = NULL,
+  compareOpts = list(), interactive = getInteractivity(),
+  options = plotMapOptions(), width = NULL, height = NULL,
+  dateRange = NULL, xyCompare = c("union", "intersect"),
+  h5requestFiltering = list(), timeSteph5 = "hourly",
+  mcYearh5 = NULL, tablesh5 = c("areas", "links"),
+  sizeMiniPlot = FALSE, language = "en", hidden = NULL, ...)
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
 \code{\link[antaresRead]{readAntares}} and containing areas and links data.
  It can be a list of \code{antaresData} objects. 
  In this case, one chart is created for each object.}
+
+\item{refStudy}{An object of class \code{antaresData} created with function 
+\code{\link[antaresRead]{readAntares}} containing data for areas and or
+districts. Can also contains an opts who refer to a h5 file.}
 
 \item{mapLayout}{Object created with function \code{\link{mapLayout}}}
 
@@ -80,7 +85,8 @@ averaged.}
 
 \item{typeSizeAreaVars}{\code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}}
 
-\item{aliasSizeAreaVars}{If \code{aliasSizeAreaVars}, name of alias.}
+\item{aliasSizeAreaVars}{If \code{typeSizeAreaVars} is set to TRUE, name of alias. You can find the list 
+of alias with the function \code{\link[antaresRead]{showAliases}}}
 
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
@@ -112,7 +118,7 @@ of mcYears in one of studies will be selectable. If intersect, only mcYears in a
 studies will be selectable.}
 
 \item{h5requestFiltering}{Contains arguments used by default for h5 request,
-typically h5requestFiltering = list(select = "NUCLEAR")}
+typically h5requestFiltering = list(mcYears = 3)}
 
 \item{timeSteph5}{\code{character} timeStep to read in h5 file. Only for Non interactive mode.}
 
@@ -132,7 +138,7 @@ typically h5requestFiltering = list(select = "NUCLEAR")}
 An htmlwidget of class "leaflet". It can be modified with package 
 \code{leaflet}. By default the function starts a shiny gadget that lets the
 user play with most of the parameters of the function. The function returns
-a leaflet map when the user clicks on the button \code{"done"}.
+a leaflet map when the user clicks on the button \code{"OK"}.
 }
 \description{
 This function generates an interactive map that let the user visually explore
@@ -194,10 +200,10 @@ plotMap(x = mydata, mapLayout = ml, interactive = FALSE,
 setSimulationPath(path = path1)
 
 # Convert your study in h5 format
-writeAntaresH5(path = mynewpath)
+writeAntaresH5(path = myNewPath)
 
 # Redefine sim path with h5 file
-opts <- setSimulationPath(path = mynewpath)
+opts <- setSimulationPath(path = myNewPath)
 plotMap(x = opts, mapLayout = ml)
 
 # Compare elements in a single study
@@ -206,6 +212,11 @@ plotMap(x = opts, mapLayout = ml,  .compare = "mcYear")
 # Compare 2 studies
 plotMap(x = list(opts, opts2), mapLayout = ml)
 
+# Compare 2 studies with argument refStudies 
+plotMap(x = opts, refStudy = opts2, mapLayout = ml)
+plotMap(x = opts, refStudy = opts2, mapLayout = ml, interactive = FALSE, mcYearh5 = 2) 
+plotMap(x = opts, refStudy = opts2, mapLayout = ml, h5requestFiltering = 
+list(mcYears = myMcYear))
 }
 
 }

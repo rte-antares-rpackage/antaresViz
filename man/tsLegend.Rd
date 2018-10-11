@@ -5,8 +5,8 @@
 \alias{tsLegend}
 \title{Plot an interactive legend for time series plots}
 \usage{
-prodStackLegend(stack = "eco2mix", legendItemsPerRow = 5, legendId = "",
-  language = "en")
+prodStackLegend(stack = "eco2mix", legendItemsPerRow = 5,
+  legendId = "", language = "en")
 
 tsLegend(labels, colors, types = "line", legendItemsPerRow = 5,
   legendId = "")

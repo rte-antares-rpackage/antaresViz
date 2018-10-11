@@ -29,6 +29,7 @@ globalVariables(
 .timeIdToDate <- antaresRead:::.timeIdToDate
 .getTimeId <- antaresRead:::.getTimeId
 .mergeByRef <- antaresRead:::.mergeByRef
+.requireRhdf5_Antares <- antaresRead:::.requireRhdf5_Antares
 .checkColumns <- antaresProcessing:::.checkColumns
 .checkAttrs <- antaresProcessing:::.checkAttrs
 
@@ -47,7 +48,7 @@ pkgEnv <- antaresRead:::pkgEnv
 #
 # The definition of the variables used in aliases is stored in file 
 # "GraphicalCharter.csv"
-graphicalCharter <- fread(input=system.file("GraphicalCharter.csv", package = "antaresViz"))
+graphicalCharter <- fread(input = system.file("GraphicalCharter.csv", package = "antaresViz"))
 
 formulas <- lapply(graphicalCharter$formula, function(s) parse(text = s))
 names(formulas) <- graphicalCharter$name
@@ -126,14 +127,14 @@ antaresVizSizeGraphError_fr = "Trop de donn\u00e9es,veuillez r\u00e9duire votre 
 Il est \u00e9galement possible d'utiliser la fonction 'limitSizeGraph' en R ou l'onglet 'Memory Controls' dans shiny (si pr\u00e9sent) pour changer la limite."
 
 # language for labels
-language_labels <- fread(input=system.file("language_labels.csv", package = "antaresViz"), encoding = "UTF-8")
+language_labels <- fread(input = system.file("language_labels.csv", package = "antaresViz"), encoding = "UTF-8")
 
 availableLanguages_labels <- colnames(language_labels)
 
 .getLabelLanguage <- function(label, language = "en"){
-  if(language %in% colnames(language_labels)){
+  if (language %in% colnames(language_labels)){
     up_label <- language_labels[get("en") %in% label, get(language)]
-    if(length(up_label) == 0){
+    if (length(up_label) == 0){
       up_label <- label
     } else {
       # in case of double
@@ -146,7 +147,7 @@ availableLanguages_labels <- colnames(language_labels)
 }
 
 # language for columns
-language_columns <- fread(input=system.file("language_columns.csv", package = "antaresViz"), encoding = "UTF-8")
+language_columns <- fread(input = system.file("language_columns.csv", package = "antaresViz"), encoding = "UTF-8")
 
 language_columns$en <- as.character(language_columns$en)
 
@@ -165,10 +166,10 @@ language_columns[, tmp_row := NULL]
 
 
 .getColumnsLanguage <- function(columns, language = "en"){
-  if(language %in% colnames(language_columns)){
+  if (language %in% colnames(language_columns)){
     ind_match <- match(columns, language_columns$en)
     up_columns <- columns
-    if(any(!is.na(ind_match))){
+    if (any(!is.na(ind_match))){
       up_columns[which(!is.na(ind_match))] <- language_columns[[language]][ind_match[!is.na(ind_match)]]
     }
   } else {
@@ -178,7 +179,7 @@ language_columns[, tmp_row := NULL]
 }
 
 # map color
-colorsVars <- fread(input=system.file("color.csv", package = "antaresViz"))
+colorsVars <- fread(input = system.file("color.csv", package = "antaresViz"))
 colorsVars <- unique(colorsVars, by = "Column")
 colorsVars$colors <- rgb(colorsVars$red, colorsVars$green, colorsVars$blue, maxColorValue = 255)
 
@@ -191,3 +192,146 @@ rev_ind_match <- match(colorsVars$Column, expand_language_columns$en)
 col_fr <- colorsVars[Column %in% expand_language_columns$en][, Column := expand_language_columns$fr[rev_ind_match[!is.na(rev_ind_match)]]]
 colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
 
+
+.check_if_is_html_cont <- function(htmlWidget = NULL){
+  if (!("htmlwidget" %in% class(htmlWidget) | "MWController" %in% class(htmlWidget))){
+    stop("no htmlwidget or no MWController")
+  }
+}
+
+# for test
+# get the data from an htmlwidget
+# the first element is x and the following are y
+#' get data from htmlwidget
+#' 
+#' @param htmlwidget an htmlwidget
+#' @param widgetsNumber htmlwidget id number in the list
+#' 
+#' @noRd
+.get_data_from_htmlwidget <- function(htmlwidget = NULL, widgetsNumber = NULL){
+  .check_if_is_html_cont(htmlwidget)
+  
+  if (is(htmlwidget, "MWController") & !is.null(htmlwidget$charts)){
+    if (length(htmlwidget$charts) == 1){
+      widgetsNumber <- 1
+    }
+  }else{
+    if (!is.null(htmlwidget$widgets)){
+      if (length(htmlwidget$widgets) == 1){
+        widgetsNumber <- 1
+      }
+    }
+  }
+
+  if (is.null(widgetsNumber)){
+    stop("no widgetsNumber")
+  }
+  
+  #check if data exist ====
+  if (is(htmlwidget, "MWController")){
+    if (is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]])){
+      stop("no data")
+    }
+    if (is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x)){
+      stop("no data")
+    }    
+    if (is.null(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+      stop("no data")
+    }    
+  }else{
+    if (is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]])){
+      stop("no data")
+    }
+    if (is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x)){
+      stop("no data")
+    }
+    if (is.null(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+      stop("no data")
+    }    
+  }
+  
+  #get the data =====
+  resList <- list()
+  if (is(htmlwidget, "MWController")){
+    # htmlwidget$charts and no htmlwidget$widgets
+    for (i in 1:length(htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+      myLabelI <- htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$attrs$labels[[i]]
+      resList[[myLabelI]] <- htmlwidget$charts[[widgetsNumber]]$widgets[[1]]$x$data[[i]]
+    }
+  }else{
+    for (i in 1:length(htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels)){
+      myLabelI <- htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$attrs$labels[[i]]
+      resList[[myLabelI]] <- htmlwidget$widgets[[widgetsNumber]]$widgets[[1]]$x$data[[i]]
+    }
+  }
+  
+  return(resList)
+}
+
+#' edit h5 file for TEST 
+#' currently only for hourly data and areas
+#' 
+#' @param pathH5 path H5 file
+#' @param area character
+#' @param timeId timeId to change
+#' @param antVar antares Variable to change
+#' @param newValue the newValue
+#' 
+#' @noRd
+.h5Antares_edit_variable <- function(pathH5 = NULL, area = NULL, timeId = 1, antVar = NULL, newValue = NULL, mcYear = NULL, link = NULL){
+  
+  if (!is.null(area) & !is.null(link)){
+    stop("area and link must not be set together")
+  }
+  
+  if (!is.null(area)){
+    categoryVar <- "areas"
+  }else{
+    categoryVar <- "links"
+  }
+  
+  if (is.null(mcYear)){
+    typeOfData <- "/mcAll"
+  }else{
+    typeOfData <- "/mcInd"
+  }
+  timeStepType <- paste("/hourly", categoryVar, sep = "/") 
+  nameStructure <- paste0(timeStepType, typeOfData, "/structure")
+  
+  H5locAntaresh5 <- rhdf5::H5Fopen(name = pathH5)
+  hourlyDataStructure <- rhdf5::h5read(H5locAntaresh5, name = nameStructure)
+  
+  if (!is.null(area)){
+    indexCateroryInstance <- grep(area, hourlyDataStructure$area)[1]
+  }else{
+    indexCateroryInstance <- grep(link, hourlyDataStructure$link)[1]
+  }
+  
+  indexAntVar <- grep(antVar, hourlyDataStructure$variable)[1]
+  indexTimeId <- timeId
+  if (is.null(mcYear)){
+    indexMcYear <- 1
+  }else{
+    indexMcYear <- grep(mcYear, hourlyDataStructure$mcYear)[1]
+  }
+  
+  listIndex <- list(indexTimeId, indexAntVar, indexCateroryInstance, indexMcYear)
+  #debug print(listIndex)
+  
+  hourlyData <- rhdf5::h5read(
+    H5locAntaresh5, 
+    name = paste0(timeStepType, typeOfData, "/data"),
+    index = listIndex)
+  
+  hourlyData[,,,] <- newValue
+  
+  rhdf5::h5writeDataset.array(
+    obj = hourlyData, 
+    h5loc = H5locAntaresh5, 
+    name = paste0(timeStepType, typeOfData, "/data"),
+    index = listIndex
+  )
+  
+  rhdf5::H5Fclose(h5file = H5locAntaresh5)
+  rhdf5::h5closeAll()
+}

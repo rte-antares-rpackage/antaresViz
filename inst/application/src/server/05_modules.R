@@ -10,8 +10,9 @@ observe({
           "No study selected"
         ))
       } else {
-        # plotts and prodStack
+        # plotts and prodStack and exchangesStack
         ind_areas <- ind_keep_list_data$ind_areas
+        refStudy <- ind_keep_list_data$refStudy
         if(length(ind_areas) > 0){
           # init / re-init module prodStack
           id_prodStack <- paste0("prodStack_", round(runif(1, 1, 100000000)))
@@ -44,12 +45,19 @@ observe({
             }
           }
           
-          mod_prodStack <- prodStack(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
-                                         h5requestFiltering = list_data_all$params[ind_areas],
-                                         unit = "GWh", interactive = TRUE, .updateBtn = TRUE, 
-                                          language = language,
-                                     .exportBtn = TRUE, .exportType = c("html2canvas"),
-                                         .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
+          mod_prodStack <- prodStack(x = list_data_all$antaresDataList[ind_areas], 
+                                     refStudy = refStudy,
+                                     xyCompare = "union",
+                                     h5requestFiltering = list_data_all$params[ind_areas],
+                                     unit = "GWh", 
+                                     interactive = TRUE, 
+                                     .updateBtn = TRUE, 
+                                     language = language,
+                                     .exportBtn = TRUE, 
+                                     .exportType = c("html2canvas"),
+                                     .updateBtnInit = TRUE, 
+                                     compare = .compare, 
+                                     .runApp = FALSE)
           
           if("MWController" %in% class(modules$prodStack)){
             modules$prodStack$clear()
@@ -90,7 +98,9 @@ observe({
             }
           }
           
-          mod_plotts <- plot(list_data_all$antaresDataList[ind_areas], xyCompare = "union",
+          mod_plotts <- plot( x = list_data_all$antaresDataList[ind_areas], 
+                              refStudy = refStudy, 
+                              xyCompare = "union",
                                  h5requestFiltering = list_data_all$params[ind_areas],
                                  interactive = TRUE, .updateBtn = TRUE, language = language,
                                 .exportBtn = TRUE, .exportType = c("html2canvas"),
@@ -143,11 +153,13 @@ observe({
               .compare = NULL
             }
           }
-          mod_exchangesStack <- exchangesStack(list_data_all$antaresDataList[ind_links], xyCompare = "union",
-                                                   h5requestFiltering = list_data_all$params[ind_links],
-                                                   interactive = TRUE, .updateBtn = TRUE, language = language, 
-                                                   .exportBtn = TRUE, .exportType = c("html2canvas"),
-                                                   .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
+          mod_exchangesStack <- exchangesStack(x = list_data_all$antaresDataList[ind_links], 
+                                               refStudy = refStudy,
+                                               xyCompare = "union",
+                                               h5requestFiltering = list_data_all$params[ind_links],
+                                               interactive = TRUE, .updateBtn = TRUE, language = language, 
+                                               .exportBtn = TRUE, .exportType = c("html2canvas"),
+                                               .updateBtnInit = TRUE, compare = .compare, .runApp = FALSE)
           
           if("MWController" %in% class(modules$exchangesStack)){
             modules$exchangesStack$clear()
