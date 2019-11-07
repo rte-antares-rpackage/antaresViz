@@ -1,5 +1,6 @@
 <img src="man/figures/antares_simulator.png" align="right" width=250 />
 <br/>
+
 # antaresViz 
 
 > `antaresViz` is the package to visualize the results of your Antares simulations that you have imported in the R session with package `antaresRead`. It provides some functions that generate interactive visualisations. Moreover, by default, these functions launch a shiny widget that provides some controls to dynamically choose what data is displayed in the graphics.
