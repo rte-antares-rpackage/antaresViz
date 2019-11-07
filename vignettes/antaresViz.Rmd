@@ -4,16 +4,13 @@ author: "RTE"
 date: "`r Sys.Date()`"
 output: html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{quick-start}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 
-
-![](antareslogo.png)
-
-This package works along with RTE's adequacy software ANTARES : https://antares.rte-france.com/
+This package works along with RTE's adequacy software ANTARES : https://antares-simulator.org/
 
 `antaresViz` is a package which proposes relevant graphs and maps to vizualize the results of an ANTARES study, with numerous settings and possible customizations.
 
@@ -59,35 +56,80 @@ Moreover, this function is __really easy to use__. It opens a shiny interface wh
 plot(data_hourly_synthesis)
 ```
 
-![](plot_resized.gif)
+```{r, echo=FALSE}
+knitr::include_graphics(path = "figures/plot_resized.gif")
+```
 
 
 Note that all the interface manipulation can also be set directly in the arguments of the `plot` function. Some examples of the multiple graphs that can be returned by this function are given below.
 
+
+
+
 ###### Barplot of Loss of Load Duration (LOLD) for several districts of the study
 
 ```{r barplot, eval = FALSE}
-plot(data_annual_synthesis, table = "districts" ,variable = "LOLD", type = "barplot", elements = c("00_a", "00_b", "00_c", "00_d", "00_e", "00_f", "00_g", "00_h", "00_i"), interactive = FALSE, width = "100%", height = 400)
+plot(
+  data_annual_synthesis, 
+  table = "districts", 
+  variable = "LOLD", 
+  type = "barplot", 
+  elements = c("00_a", "00_b", "00_c", "00_d",
+               "00_e", "00_f", "00_g", "00_h", "00_i"), 
+  interactive = FALSE, 
+  width = "100%",
+  height = 400
+)
 ```
 
 
 ###### Time series of the load in an area with average value and 95% confidence interval.
 
 ```{r ts, eval=FALSE}
-plot(data_hourly_allmc, table = "areas" ,variable = "LOAD", type = "ts", elements = "23_b", confInt = 0.95, dateRange = c("2018-01-08", "2018-01-14"), width = "100%", height = 400, interactive = FALSE)
+plot(
+  data_hourly_allmc,
+  table = "areas",
+  variable = "LOAD",
+  type = "ts", 
+  elements = "23_b",
+  confInt = 0.95,
+  dateRange = c("2018-01-08", "2018-01-14"), 
+  width = "100%",
+  height = 400,
+  interactive = FALSE
+)
 ```
 
 
 ###### Probability density function of the wind power generation in two areas
 ```{r density, eval=FALSE}
-plot(data_hourly_synthesis, table = "areas" ,variable = "WIND", type = "density", elements = c("01_a", "02_a"), interactive = FALSE, width = "100%", height = 400)
+plot(
+  data_hourly_synthesis, 
+  table = "areas",
+  variable = "WIND",
+  type = "density", 
+  elements = c("01_a", "02_a"),
+  interactive = FALSE, 
+  width = "100%",
+  height = 400
+)
 ```
 
 
 ###### Heatmap of the congestion probability of one interconnection
 
 ```{r heatmap, eval=FALSE}
-plot(data_hourly_synthesis_1year, table = "links", variable = "CONG. PROB +", type = "heatmap", elements = "25_c - 26_d", interactive = FALSE, width = "100%", height = 400, main = "Congestion probability")
+plot(
+  data_hourly_synthesis_1year, 
+  table = "links", 
+  variable = "CONG. PROB +",
+  type = "heatmap", 
+  elements = "25_c - 26_d", 
+  interactive = FALSE, 
+  width = "100%", 
+  height = 400,
+  main = "Congestion probability"
+)
 ```
 
 
@@ -110,7 +152,17 @@ prodStack(data_hourly_synthesis)
 Once again, this function is easy to use and opens a shiny interface which let the user manipulate the selected areas and time range. Some settings can also be passed to the function through its (optionnal) arguments.
 
 ```{r prodStack, eval = FALSE}
-prodStack(data_hourly_synthesis, stack = "eco2mix", areas = "37_h", dateRange = c("2018-01-08", "2018-01-21"), main = "Production stack", unit = "GWh",  interactive = FALSE, width = "100%", height = 500)
+prodStack(
+  data_hourly_synthesis, 
+  stack = "eco2mix",
+  areas = "37_h", 
+  dateRange = c("2018-01-08", "2018-01-21"),
+  main = "Production stack",
+  unit = "GWh",  
+  interactive = FALSE, 
+  width = "100%",
+  height = 500
+)
 ```
 
 The graphical template used by default is the one of the RTE's application [eco2mix](http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique). This template can though be redefined completely by the user with the function `setProdStackAlias()`.
@@ -118,7 +170,16 @@ The graphical template used by default is the one of the RTE's application [eco2
 The `exchangesStack()` function proposes similar graphs with a superposition of all the imports and exports of an area.
 
 ```{r exchangeStack, eval = FALSE}
-exchangesStack(data_hourly_synthesis, area = "37_h", dateRange = c("2018-01-08", "2018-01-21"), main = "Import/Export of area 37_h", unit = "GWh",  interactive = FALSE, width = "100%", height = 500)
+exchangesStack(
+  data_hourly_synthesis, 
+  area = "37_h", 
+  dateRange = c("2018-01-08", "2018-01-21"),
+  main = "Import/Export of area 37_h", 
+  unit = "GWh", 
+  interactive = FALSE,
+  width = "100%", 
+  height = 500
+)
 ```
 
 ## Everything looks better on a map
@@ -133,7 +194,10 @@ antares_layout <- antaresRead::readLayout(opts = antaresRead::setSimulationPath(
 map_layout <- mapLayout(layout = antares_layout)
 ```
 
-![](maplyout_resized.gif)
+```{r, echo=FALSE}
+knitr::include_graphics(path = "figures/maplyout_resized.gif")
+```
+
 
 (Once again : the study presented here is fictionnal !)
 
@@ -161,7 +225,26 @@ This first map depicts the annual CO2 emissions of all the areas of the ANTARES 
 
 
 ```{r plotmap_co2, eval = FALSE}
-plotMap(data_annual_filtered, map_layout, showLabels = TRUE, sizeAreaVar = "CO2 EMIS.", interactive = FALSE, labelAreaVar = "CO2 EMIS.", colAreaVar = "CO2 EMIS.", type = "avg", options = plotMapOptions(areaDefaultSize = 30, labelMaxSize = 8, labelMinSize = 14, areaColorScaleOpts = colorScaleOptions(zeroCol = "white", posCol = "red2")), width = "100%", height = 600)
+plotMap(
+  data_annual_filtered, map_layout, 
+  showLabels = TRUE, 
+  sizeAreaVar = "CO2 EMIS.",
+  interactive = FALSE,
+  labelAreaVar = "CO2 EMIS.", 
+  colAreaVar = "CO2 EMIS.",
+  type = "avg",
+  options = plotMapOptions(
+    areaDefaultSize = 30, 
+    labelMaxSize = 8,
+    labelMinSize = 14,
+    areaColorScaleOpts = colorScaleOptions(
+      zeroCol = "white", 
+      posCol = "red2"
+    )
+  ), 
+  width = "100%", 
+  height = 600
+)
 ```
 
 
@@ -170,7 +253,28 @@ plotMap(data_annual_filtered, map_layout, showLabels = TRUE, sizeAreaVar = "CO2 
 This map illustrates the annual balance (MWh exported if positive - or imported if negative - during an hour) of each area and the annual flows of each link.
 
 ```{r plotmap_flows, eval = FALSE}
-plotMap(data_annual_synthesis, map_layout, showLabels = TRUE, colAreaVar = "BALANCE", interactive = FALSE, labelAreaVar = "BALANCE", sizeLinkVar = "FLOW LIN.", type = "avg", options = plotMapOptions(areaDefaultSize = 30, labelMaxSize = 10, labelMinSize = 8, areaColorScaleOpts = colorScaleOptions(negCol = "tomato3", zeroCol = "white", posCol = "blue3")), width = "100%", height = 600)
+plotMap(
+  data_annual_synthesis, 
+  map_layout,
+  showLabels = TRUE,
+  colAreaVar = "BALANCE", 
+  interactive = FALSE, 
+  labelAreaVar = "BALANCE",
+  sizeLinkVar = "FLOW LIN.",
+  type = "avg",
+  options = plotMapOptions(
+    areaDefaultSize = 30,
+    labelMaxSize = 10,
+    labelMinSize = 8, 
+    areaColorScaleOpts = colorScaleOptions(
+      negCol = "tomato3",
+      zeroCol = "white",
+      posCol = "blue3"
+    )
+  ),
+  width = "100%",
+  height = 600
+)
 ```
 
 
@@ -179,9 +283,23 @@ plotMap(data_annual_synthesis, map_layout, showLabels = TRUE, colAreaVar = "BALA
 The proportion of each energy type in the annual production of each area is illustrated on this next map. The actual generated energies (in MWh) can be known by clicking on the pie charts.
 
 ```{r plotmap_mix, eval = FALSE}
-data_annual_synthesis$areas <- data_annual_synthesis$areas[, `:=`(THERMAL = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`, HYDRO =`H. ROR` + `H. STOR`)]
+data_annual_synthesis$areas <- data_annual_synthesis$areas[, `:=`(
+  THERMAL = NUCLEAR + LIGNITE + COAL + GAS + OIL + `MIX. FUEL` + `MISC. DTG`, HYDRO =`H. ROR` + `H. STOR`
+)]
 
-plotMap(data_annual_synthesis, map_layout, interactive = FALSE, sizeAreaVars = c("HYDRO", "SOLAR", "WIND", "THERMAL"), popupAreaVars = c("HYDRO", "SOLAR", "WIND", "THERMAL"),areaChartType = "pie", type = "avg", options = plotMapOptions(areaDefaultSize = 25), width = "100%", height = 600)
+plotMap(
+  data_annual_synthesis,
+  map_layout,
+  interactive = FALSE,
+  sizeAreaVars = c("HYDRO", "SOLAR", "WIND", "THERMAL"), 
+  popupAreaVars = c("HYDRO", "SOLAR", "WIND", "THERMAL"),
+  areaChartType = "pie", type = "avg", 
+  options = plotMapOptions(
+    areaDefaultSize = 25
+  ),
+  width = "100%",
+  height = 600
+)
 ```
 
 

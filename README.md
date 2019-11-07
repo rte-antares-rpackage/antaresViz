@@ -1,29 +1,37 @@
+<img src="man/figures/antares_simulator.png" align="right" width=250 />
+<br/>
+# antaresViz 
+
+> `antaresViz` is the package to visualize the results of your Antares simulations that you have imported in the R session with package `antaresRead`. It provides some functions that generate interactive visualisations. Moreover, by default, these functions launch a shiny widget that provides some controls to dynamically choose what data is displayed in the graphics.
+
+<!-- badges: start -->
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/antaresViz)](https://cran.r-project.org/package=antaresViz)
 [![Travis-CI Build Status](https://travis-ci.org/rte-antares-rpackage/antaresViz.svg?branch=master)](https://travis-ci.org/rte-antares-rpackage/antaresViz)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/rte-antares-rpackage/antaresViz?branch=master&svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/antaresViz)[![codecov](https://codecov.io/gh/rte-antares-rpackage/antaresViz/branch/develop/graph/badge.svg)](https://codecov.io/gh/rte-antares-rpackage/antaresViz)
-
-
-# The package antaresViz: visualize the results of an Antares simulation
-
-`antaresViz` is the package to visualize the results of your Antares simulations that you have imported in the R session with package `antaresRead`. It provides some functions that generate interactive visualisations. Moreover, by default, these functions launch a shiny widget that provides some controls to dynamically choose what data is displayed in the graphics.
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/rte-antares-rpackage/antaresViz?branch=master&svg=true)](https://ci.appveyor.com/project/rte-antares-rpackage/antaresViz)
+[![codecov](https://codecov.io/gh/rte-antares-rpackage/antaresViz/branch/develop/graph/badge.svg)](https://codecov.io/gh/rte-antares-rpackage/antaresViz)
+<!-- badges: end -->
 
 
 ## Installation
 
-This package has been published on CRAN, so you can install it easily:
+You can install stable version from CRAN with:
+
 ```r
 install.packages("antaresViz")
 ```
 
 To install the last development version:
+
 ```r
-devtools::install_github("rte-antares-rpackage/antaresViz", ref ="develop")
+devtools::install_github("rte-antares-rpackage/antaresViz")
 ```
 
-To display the help of the package and see all the functions it provides, type:
+To display the help of the package and see all the functions it provides, use:
+
 ```r 
 help(package="antaresViz")
 ```
+
 
 ## Basic plots
 
@@ -40,11 +48,14 @@ For more information, run:
 ?plot.antaresDataTable
 ```
 
+
 ## Stacks
 
 Function `prodStack` generates a production stack for a set of areas. Different stacks have been defined. One can see their definition with command `productionStackAliases()`.
 
 With function `exchangesStack`, one can visualize the evolution and origin/destination of imports and exports for a given area.
+
+
 
 ## Maps
 
@@ -71,14 +82,16 @@ plotMap(myData, myMapLayout)
 
 You can use `spMaps` to set a map background or download some files at http://www.gadm.org/country.
 
+
 ## Contributing:
 
 Contributions to the library are welcome and can be submitted in the form of pull requests to this repository.
 
 ## ANTARES :
- Antares is a powerful software developed by RTE to simulate and study electric power systems (more information about Antares here : <https://antares.rte-france.com>).
+ Antares is a powerful software developed by RTE to simulate and study electric power systems (more information about Antares here : <https://antares-simulator.org/>).
  
  ANTARES is now an open-source project (since 2018), you can download the sources [here](https://github.com/AntaresSimulatorTeam/Antares_Simulator) if you want to use this package. 
+
 
 ## License Information:
 

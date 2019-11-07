@@ -49,7 +49,7 @@ Imports:
     assertthat,
     rAmCharts,
     utils
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: testthat,
     covr,
     rhdf5 (>= 2.20.2),
