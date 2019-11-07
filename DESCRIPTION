@@ -1,14 +1,14 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.15.0
-Date: 2018-09-28
+Version: 0.15.0.900
 Authors@R: c(
-    person("Jalal-Edine", "ZAWAM", , "jalal-edine.zawam@rte-france.com", role = c("aut", "cre")),
-    person("Francois", "Guillem", , "francois.guillem@rte-france.com", role = "aut"),
+    person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
+    person("Jalal-Edine", "Zawam", role = "aut"),
+    person("Francois", "Guillem", role = "aut"),
     person("Benoit", "Thieurmel", email = "benoit.thieurmel@datastorm.fr", role = "aut"),
-    person(given = "Titouan", family = "Robert", email = "titouan.robert@datastorm.fr", role = "aut"),
-    person("Baptiste", "SEGUINOT", , "baptiste.seguinot@rte-france.com", role = "ctb"),
+    person("Titouan", "Robert", role = "aut"),
+    person("Baptiste", "Seguinot", role = "ctb"),
     person("RTE", role = "cph")
     )
 Maintainer: Jalal-Edine ZAWAM <jalal-edine.zawam@rte-france.com>
