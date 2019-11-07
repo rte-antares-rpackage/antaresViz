@@ -34,7 +34,7 @@ observe({
                   title = "Error reading data",
                   easyClose = TRUE,
                   footer = NULL,
-                  paste("Please update input. Error : ", e, sep = "\n")
+                  paste("Please update input. Error : ", e$message, sep = "\n")
                 ))
                 list()
               })}, 
@@ -43,14 +43,14 @@ observe({
                 title = "Warning reading data",
                 easyClose = TRUE,
                 footer = NULL,
-                w
+                w$message
               ))
             }
           )
           
           # removeVirtualAreas
           if(input$rmva_ctrl){
-            if(length(data) > 0){
+            if(length(data) > 0) {
               data <- withCallingHandlers({
                 tryCatch({
                   removeVirtualAreas(x = data, 
@@ -58,24 +58,25 @@ observe({
                                      production = input$rmva_production,
                                      reassignCosts = input$rmva_reassignCosts, 
                                      newCols = input$rmva_newCols)},
-                  error = function(e){
+                  error = function(e) {
                     showModal(modalDialog(
                       title = "removeVirtualAreas : error",
                       easyClose = TRUE,
                       footer = NULL,
-                      paste("Please update input. Error : ", e, sep = "\n")
+                      paste("Please update input. Error : ", e$message, sep = "\n")
                     ))
                     list()
                   })}, 
-                warning = function(w){
+                warning = function(w) {
                   showModal(modalDialog(
                     title = "removeVirtualAreas : warning",
                     easyClose = TRUE,
                     footer = NULL,
-                    w
+                    w$message
                   ))
                 }
               )
+              verif_data <<- copy(data)
             }
           }
           
