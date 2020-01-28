@@ -55,10 +55,5 @@ Suggests:
     rhdf5 (>= 2.20.2),
     rbokeh,
     knitr,
-    visNetwork,
-    rmarkdown,
-    dplyr,
-    rnaturalearth,
-    ggplot2,
-    sf
+    visNetwork
 VignetteBuilder: knitr
