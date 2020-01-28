@@ -4,8 +4,11 @@
 \alias{plotThermalGroupCapacities}
 \title{Plot for Thermal Group Capacities}
 \usage{
-plotThermalGroupCapacities(data, area = "all",
-  main = "Thermal group capacities")
+plotThermalGroupCapacities(
+  data,
+  area = "all",
+  main = "Thermal group capacities"
+)
 }
 \arguments{
 \item{data}{data.table of Thermal Group capacities}

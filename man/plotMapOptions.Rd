@@ -6,19 +6,37 @@
 \alias{colorScaleOptions}
 \title{Graphical options for plotMap}
 \usage{
-plotMapOptions(areaDefaultCol = "#DDDDE5", areaDefaultSize = 30,
-  areaMaxSize = 50, areaMaxHeight = 50, areaChartColors = NULL,
-  areaColorScaleOpts = colorScaleOptions(), labelMinSize = 8,
-  labelMaxSize = 24, linkDefaultCol = "#BEBECE", linkDefaultSize = 3,
-  linkMaxSize = 15, linkColorScaleOpts = colorScaleOptions(),
+plotMapOptions(
+  areaDefaultCol = "#DDDDE5",
+  areaDefaultSize = 30,
+  areaMaxSize = 50,
+  areaMaxHeight = 50,
+  areaChartColors = NULL,
+  areaColorScaleOpts = colorScaleOptions(),
+  labelMinSize = 8,
+  labelMaxSize = 24,
+  linkDefaultCol = "#BEBECE",
+  linkDefaultSize = 3,
+  linkMaxSize = 15,
+  linkColorScaleOpts = colorScaleOptions(),
   legend = c("choose", "visible", "hidden"),
-  tilesURL = defaultTilesURL(), preprocess = function(map) {     map })
+  tilesURL = defaultTilesURL(),
+  preprocess = function(map) {     map }
+)
 
 defaultTilesURL()
 
-colorScaleOptions(breaks = 5, domain = NULL, negCol = "#FF0000",
-  zeroCol = "#FAFAFA", posCol = "#0000FF", naCol = "#EEEEEE",
-  zeroTol = NULL, colors = NULL, levels = NULL)
+colorScaleOptions(
+  breaks = 5,
+  domain = NULL,
+  negCol = "#FF0000",
+  zeroCol = "#FAFAFA",
+  posCol = "#0000FF",
+  naCol = "#EEEEEE",
+  zeroTol = NULL,
+  colors = NULL,
+  levels = NULL
+)
 }
 \arguments{
 \item{areaDefaultCol}{default color of areas.}

@@ -4,8 +4,7 @@
 \alias{savePlotAsPng}
 \title{Save interactive plot as a png image}
 \usage{
-savePlotAsPng(plot, file = "Rplot.png", width = 600, height = 480,
-  ...)
+savePlotAsPng(plot, file = "Rplot.png", width = 600, height = 480, ...)
 }
 \arguments{
 \item{plot}{A plot generated with one of the functions of this package.}
