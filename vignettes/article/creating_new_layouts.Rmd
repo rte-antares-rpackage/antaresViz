@@ -66,4 +66,17 @@ code:
 map <- as(st_transform(german_zones, crs = 4326), "Spatial")
 ```
 
+This `map` is then used to generate a `mapLayout` object:
+
+```{r, eval=FALSE}
+zone_layout <- list(
+  coords = coords,
+  links = links,
+  map = map,
+  all_coords = coords
+)
+class(zone_layout) <- "mapLayout"
+attr(zone_layout, "type") <- "areas"
+```
+
 
