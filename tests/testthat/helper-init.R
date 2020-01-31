@@ -27,19 +27,33 @@ if(.runThisTest){
 path <- tempdir()
 
 sourcedir <- system.file("inst/testdata", package = "antaresRead")
-if (sourcedir == ""){sourcedir <- system.file("testdata", package = "antaresRead")}
+if (sourcedir == ""){
+  sourcedir <- system.file("testdata", package = "antaresRead")
+}
 
 
 # Hack: For some unknown reason, this script is executed at some point of
 # the R CMD CHECK before package is correctly installed and tests actually run.
 # The following "if" prevents errors at this step
 if (sourcedir != "") {
-  if (Sys.info()["sysname"] == "Windows") {
-    untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path,
-          extras = "--force-local")
-  } else {
-    untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path)
+  
+  ar_path_study <- file.path(sourcedir, "antares-test-study.tar.gz")
+  if (!file.exists(ar_path_study)) {
+    ar_path_study <- file.path(sourcedir, "antares-test-study-latest.tar.gz")
   }
+  
+  # if (Sys.info()["sysname"] == "Windows") {
+  #   untar(
+  #     tarfile = ar_path_study,
+  #     exdir = path,
+  #     extras = "--force-local"
+  #   )
+  # } else {
+    untar(
+      tarfile = ar_path_study,
+      exdir = path
+    )
+  # }
   assign("studyPath", file.path(path, "test_case"), envir = globalenv())
   assign("nweeks", 2, envir = globalenv())
   assign("pathtemp", path, envir = globalenv())
