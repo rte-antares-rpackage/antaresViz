@@ -4,8 +4,15 @@
 \alias{plotXY}
 \title{Plot density between X et Y with rbokeh}
 \usage{
-plotXY(data, x, y, precision = 30, sizeOnCount = FALSE,
-  outLine = TRUE, transform = NULL)
+plotXY(
+  data,
+  x,
+  y,
+  precision = 30,
+  sizeOnCount = FALSE,
+  outLine = TRUE,
+  transform = NULL
+)
 }
 \arguments{
 \item{data}{\code{data.frame} can be antaresData object}

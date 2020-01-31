@@ -4,14 +4,29 @@
 \alias{plot.mapLayout}
 \title{Plot method for map layout}
 \usage{
-\method{plot}{mapLayout}(x, colAreas = x$coords$color, dataAreas = 1,
-  opacityArea = 1, areaMaxSize = 30, areaMaxHeight = 50,
+\method{plot}{mapLayout}(
+  x,
+  colAreas = x$coords$color,
+  dataAreas = 1,
+  opacityArea = 1,
+  areaMaxSize = 30,
+  areaMaxHeight = 50,
   areaChartType = c("auto", "bar", "pie", "polar-area", "polar-radius"),
-  labelArea = NULL, labelMinSize = 8, labelMaxSize = 8,
-  colLinks = "#CCCCCC", sizeLinks = 3, opacityLinks = 1,
-  dirLinks = 0, links = TRUE, areas = TRUE,
-  tilesURL = defaultTilesURL(), preprocess = function(map) {     map },
-  width = NULL, height = NULL, ...)
+  labelArea = NULL,
+  labelMinSize = 8,
+  labelMaxSize = 8,
+  colLinks = "#CCCCCC",
+  sizeLinks = 3,
+  opacityLinks = 1,
+  dirLinks = 0,
+  links = TRUE,
+  areas = TRUE,
+  tilesURL = defaultTilesURL(),
+  preprocess = function(map) {     map },
+  width = NULL,
+  height = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{Object created with function \code{\link{mapLayout}}}

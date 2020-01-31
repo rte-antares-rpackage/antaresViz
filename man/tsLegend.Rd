@@ -5,11 +5,14 @@
 \alias{tsLegend}
 \title{Plot an interactive legend for time series plots}
 \usage{
-prodStackLegend(stack = "eco2mix", legendItemsPerRow = 5,
-  legendId = "", language = "en")
+prodStackLegend(
+  stack = "eco2mix",
+  legendItemsPerRow = 5,
+  legendId = "",
+  language = "en"
+)
 
-tsLegend(labels, colors, types = "line", legendItemsPerRow = 5,
-  legendId = "")
+tsLegend(labels, colors, types = "line", legendItemsPerRow = 5, legendId = "")
 }
 \arguments{
 \item{stack}{Name of the stack to use. One can visualize available stacks with 

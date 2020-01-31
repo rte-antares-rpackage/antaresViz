@@ -4,8 +4,12 @@
 \alias{mapLayout}
 \title{Place areas of a study on a map}
 \usage{
-mapLayout(layout, what = c("areas", "districts"), map = getSpMaps(),
-  map_builder = TRUE)
+mapLayout(
+  layout,
+  what = c("areas", "districts"),
+  map = getSpMaps(),
+  map_builder = TRUE
+)
 }
 \arguments{
 \item{layout}{object returned by function \code{\link[antaresRead]{readLayout}}}
