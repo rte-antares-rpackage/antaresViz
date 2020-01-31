@@ -90,6 +90,18 @@ is mostly useful to share a unique legend between two or more time series plots.
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/article/creating_new_layouts.html">Creating new layouts</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -123,11 +135,14 @@ default, the different functions already output a legend. This function
 is mostly useful to share a unique legend between two or more time series plots.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>prodStackLegend</span>(<span class='kw'>stack</span> <span class='kw'>=</span> <span class='st'>"eco2mix"</span>, <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>legendId</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>)
+    <pre class="usage"><span class='fu'>prodStackLegend</span>(
+  <span class='kw'>stack</span> <span class='kw'>=</span> <span class='st'>"eco2mix"</span>,
+  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>legendId</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>
+)
 
-<span class='fu'>tsLegend</span>(<span class='no'>labels</span>, <span class='no'>colors</span>, <span class='kw'>types</span> <span class='kw'>=</span> <span class='st'>"line"</span>, <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>legendId</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
+<span class='fu'>tsLegend</span>(<span class='no'>labels</span>, <span class='no'>colors</span>, <span class='kw'>types</span> <span class='kw'>=</span> <span class='st'>"line"</span>, <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>legendId</span> <span class='kw'>=</span> <span class='st'>""</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

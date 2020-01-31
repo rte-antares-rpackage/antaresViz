@@ -87,6 +87,18 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/article/creating_new_layouts.html">Creating new layouts</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -117,71 +129,168 @@
     <p>This function generates an interactive plot of an antares time series.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tsPlot</span>(<span class='no'>x</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>table</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>elements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>variable2Axe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
+    <pre class="usage"><span class='fu'>tsPlot</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>table</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>elements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variable2Axe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
   <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ts"</span>, <span class='st'>"barplot"</span>, <span class='st'>"monotone"</span>, <span class='st'>"density"</span>, <span class='st'>"cdf"</span>, <span class='st'>"heatmap"</span>),
-  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>typeConfInt</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>confInt</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>aggregate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"mean"</span>,
-  <span class='st'>"sum"</span>, <span class='st'>"mean by areas"</span>, <span class='st'>"sum by areas"</span>), <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
-  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>colorScaleOpts</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>colorScaleOptions</a></span>(<span class='fl'>20</span>),
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
-  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>highlight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>secondAxis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
-  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>), <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
-  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>typeConfInt</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>confInt</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>aggregate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"mean"</span>, <span class='st'>"sum"</span>, <span class='st'>"mean by areas"</span>, <span class='st'>"sum by areas"</span>),
+  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
+  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>colorScaleOpts</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>colorScaleOptions</a></span>(<span class='fl'>20</span>),
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
+  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>highlight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>secondAxis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
+  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
+  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
+  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for antaresData</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>table</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>elements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>variable2Axe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ts"</span>, <span class='st'>"barplot"</span>, <span class='st'>"monotone"</span>, <span class='st'>"density"</span>,
-  <span class='st'>"cdf"</span>, <span class='st'>"heatmap"</span>), <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>typeConfInt</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>confInt</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(
+  <span class='no'>x</span>,
+  <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>table</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>elements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variable2Axe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ts"</span>, <span class='st'>"barplot"</span>, <span class='st'>"monotone"</span>, <span class='st'>"density"</span>, <span class='st'>"cdf"</span>, <span class='st'>"heatmap"</span>),
+  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>typeConfInt</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>confInt</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>aggregate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"mean"</span>, <span class='st'>"sum"</span>, <span class='st'>"mean by areas"</span>, <span class='st'>"sum by areas"</span>),
-  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(), <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>colorScaleOpts</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>colorScaleOptions</a></span>(<span class='fl'>20</span>), <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
-  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>highlight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>secondAxis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
-  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>), <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
-  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
+  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>colorScaleOpts</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>colorScaleOptions</a></span>(<span class='fl'>20</span>),
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
+  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>highlight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>secondAxis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
+  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
+  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
+  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for simOptions</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>table</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>elements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>variable2Axe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ts"</span>, <span class='st'>"barplot"</span>, <span class='st'>"monotone"</span>, <span class='st'>"density"</span>,
-  <span class='st'>"cdf"</span>, <span class='st'>"heatmap"</span>), <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>typeConfInt</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>confInt</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(
+  <span class='no'>x</span>,
+  <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>table</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>elements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variable2Axe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ts"</span>, <span class='st'>"barplot"</span>, <span class='st'>"monotone"</span>, <span class='st'>"density"</span>, <span class='st'>"cdf"</span>, <span class='st'>"heatmap"</span>),
+  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>typeConfInt</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>confInt</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>aggregate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"mean"</span>, <span class='st'>"sum"</span>, <span class='st'>"mean by areas"</span>, <span class='st'>"sum by areas"</span>),
-  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(), <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>colorScaleOpts</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>colorScaleOptions</a></span>(<span class='fl'>20</span>), <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
-  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>highlight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>secondAxis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
-  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>), <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
-  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
+  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>colorScaleOpts</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>colorScaleOptions</a></span>(<span class='fl'>20</span>),
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
+  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>highlight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>secondAxis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
+  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
+  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
+  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)
 
 <span class='co'># S3 method for list</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>table</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>elements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>variable2Axe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ts"</span>, <span class='st'>"barplot"</span>, <span class='st'>"monotone"</span>, <span class='st'>"density"</span>,
-  <span class='st'>"cdf"</span>, <span class='st'>"heatmap"</span>), <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>typeConfInt</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>confInt</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(
+  <span class='no'>x</span>,
+  <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>table</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variable</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>elements</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>variable2Axe</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ts"</span>, <span class='st'>"barplot"</span>, <span class='st'>"monotone"</span>, <span class='st'>"density"</span>, <span class='st'>"cdf"</span>, <span class='st'>"heatmap"</span>),
+  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>typeConfInt</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>confInt</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>minValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>maxValue</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>aggregate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"none"</span>, <span class='st'>"mean"</span>, <span class='st'>"sum"</span>, <span class='st'>"mean by areas"</span>, <span class='st'>"sum by areas"</span>),
-  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(), <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>colorScaleOpts</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>colorScaleOptions</a></span>(<span class='fl'>20</span>), <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
-  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>highlight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>secondAxis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
-  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>), <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
-  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
+  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>colorScaleOpts</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>colorScaleOptions</a></span>(<span class='fl'>20</span>),
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
+  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>highlight</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>secondAxis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
+  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
+  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
+  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

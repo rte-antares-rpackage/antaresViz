@@ -89,6 +89,18 @@ gadget that let the user which variables to represent." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/article/creating_new_layouts.html">Creating new layouts</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -121,19 +133,43 @@ the results of an Antares simulation. By default the function starts a Shiny
 gadget that let the user which variables to represent.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotMap</span>(<span class='no'>x</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>mapLayout</span>, <span class='kw'>colAreaVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
-  <span class='kw'>sizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>areaChartType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bar"</span>, <span class='st'>"pie"</span>, <span class='st'>"polar-area"</span>,
-  <span class='st'>"polar-radius"</span>), <span class='kw'>uniqueScale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>showLabels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>popupAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>labelAreaVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>colLinkVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
-  <span class='kw'>sizeLinkVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>popupLinkVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"detail"</span>,
-  <span class='st'>"avg"</span>), <span class='kw'>timeId</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>typeSizeAreaVars</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>aliasSizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(), <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
-  <span class='kw'>options</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>plotMapOptions</a></span>(), <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
-  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(), <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
-  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
-  <span class='kw'>sizeMiniPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>, <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>plotMap</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>mapLayout</span>,
+  <span class='kw'>colAreaVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>sizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>areaChartType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bar"</span>, <span class='st'>"pie"</span>, <span class='st'>"polar-area"</span>, <span class='st'>"polar-radius"</span>),
+  <span class='kw'>uniqueScale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>showLabels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>popupAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>labelAreaVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>colLinkVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>sizeLinkVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>popupLinkVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"detail"</span>, <span class='st'>"avg"</span>),
+  <span class='kw'>timeId</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
+  <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>""</span>,
+  <span class='kw'>typeSizeAreaVars</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>aliasSizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
+  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
+  <span class='kw'>options</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>plotMapOptions</a></span>(),
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
+  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
+  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
+  <span class='kw'>sizeMiniPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
+  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

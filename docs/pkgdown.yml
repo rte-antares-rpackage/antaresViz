@@ -3,4 +3,5 @@ pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
   antaresViz: antaresViz.html
+  creating_new_layouts: article/creating_new_layouts.html
 

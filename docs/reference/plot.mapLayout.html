@@ -89,6 +89,18 @@ map layout created with function mapLayout." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/article/creating_new_layouts.html">Creating new layouts</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -122,14 +134,29 @@ map layout created with function <code><a href='mapLayout.html'>mapLayout</a></c
     </div>
 
     <pre class="usage"><span class='co'># S3 method for mapLayout</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>colAreas</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>coords</span>$<span class='no'>color</span>, <span class='kw'>dataAreas</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>opacityArea</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>areaMaxSize</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='kw'>areaMaxHeight</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(
+  <span class='no'>x</span>,
+  <span class='kw'>colAreas</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>coords</span>$<span class='no'>color</span>,
+  <span class='kw'>dataAreas</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>opacityArea</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>areaMaxSize</span> <span class='kw'>=</span> <span class='fl'>30</span>,
+  <span class='kw'>areaMaxHeight</span> <span class='kw'>=</span> <span class='fl'>50</span>,
   <span class='kw'>areaChartType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"bar"</span>, <span class='st'>"pie"</span>, <span class='st'>"polar-area"</span>, <span class='st'>"polar-radius"</span>),
-  <span class='kw'>labelArea</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>labelMinSize</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>labelMaxSize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
-  <span class='kw'>colLinks</span> <span class='kw'>=</span> <span class='st'>"#CCCCCC"</span>, <span class='kw'>sizeLinks</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>opacityLinks</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>dirLinks</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>links</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>areas</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>tilesURL</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>defaultTilesURL</a></span>(), <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>map</span>) {     <span class='no'>map</span> },
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>labelArea</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>labelMinSize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
+  <span class='kw'>labelMaxSize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
+  <span class='kw'>colLinks</span> <span class='kw'>=</span> <span class='st'>"#CCCCCC"</span>,
+  <span class='kw'>sizeLinks</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>opacityLinks</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>dirLinks</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>links</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>areas</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>tilesURL</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>defaultTilesURL</a></span>(),
+  <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>map</span>) {     <span class='no'>map</span> },
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

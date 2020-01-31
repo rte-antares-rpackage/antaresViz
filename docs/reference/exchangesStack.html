@@ -89,6 +89,18 @@ values imports." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/article/creating_new_layouts.html">Creating new layouts</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -121,16 +133,36 @@ an area with its neighbours. Positive values denotes exports and negative
 values imports.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>exchangesStack</span>(<span class='no'>x</span>, <span class='kw'>area</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>, <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"MWh"</span>, <span class='st'>"GWh"</span>,
-  <span class='st'>"TWh"</span>), <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(), <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>legendId</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1e+09</span>, <span class='fl'>1</span>), <span class='kw'>groupId</span> <span class='kw'>=</span> <span class='no'>legendId</span>,
-  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>), <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
-  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>), <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
-  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>exchangesStack</span>(
+  <span class='no'>x</span>,
+  <span class='kw'>area</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
+  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"MWh"</span>, <span class='st'>"GWh"</span>, <span class='st'>"TWh"</span>),
+  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
+  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>legendId</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1e+09</span>, <span class='fl'>1</span>),
+  <span class='kw'>groupId</span> <span class='kw'>=</span> <span class='no'>legendId</span>,
+  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
+  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
+  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
+  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
+  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

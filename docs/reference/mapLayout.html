@@ -90,6 +90,18 @@ study. The result should then be saved in an external file and be reused." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/article/creating_new_layouts.html">Creating new layouts</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -123,8 +135,12 @@ and can be used in functions. This function should be used only once per
 study. The result should then be saved in an external file and be reused.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mapLayout</span>(<span class='no'>layout</span>, <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"districts"</span>), <span class='kw'>map</span> <span class='kw'>=</span> <span class='fu'>getSpMaps</span>(),
-  <span class='kw'>map_builder</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>mapLayout</span>(
+  <span class='no'>layout</span>,
+  <span class='kw'>what</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"districts"</span>),
+  <span class='kw'>map</span> <span class='kw'>=</span> <span class='fu'>getSpMaps</span>(),
+  <span class='kw'>map_builder</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">

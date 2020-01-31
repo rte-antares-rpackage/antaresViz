@@ -88,6 +88,18 @@ of maps created with plotMap." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/article/creating_new_layouts.html">Creating new layouts</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -119,19 +131,37 @@ of maps created with plotMap." />
 of maps created with <code><a href='plotMap.html'>plotMap</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotMapOptions</span>(<span class='kw'>areaDefaultCol</span> <span class='kw'>=</span> <span class='st'>"#DDDDE5"</span>, <span class='kw'>areaDefaultSize</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>areaMaxSize</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>areaMaxHeight</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='kw'>areaChartColors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>areaColorScaleOpts</span> <span class='kw'>=</span> <span class='fu'>colorScaleOptions</span>(), <span class='kw'>labelMinSize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
-  <span class='kw'>labelMaxSize</span> <span class='kw'>=</span> <span class='fl'>24</span>, <span class='kw'>linkDefaultCol</span> <span class='kw'>=</span> <span class='st'>"#BEBECE"</span>, <span class='kw'>linkDefaultSize</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>linkMaxSize</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>linkColorScaleOpts</span> <span class='kw'>=</span> <span class='fu'>colorScaleOptions</span>(),
+    <pre class="usage"><span class='fu'>plotMapOptions</span>(
+  <span class='kw'>areaDefaultCol</span> <span class='kw'>=</span> <span class='st'>"#DDDDE5"</span>,
+  <span class='kw'>areaDefaultSize</span> <span class='kw'>=</span> <span class='fl'>30</span>,
+  <span class='kw'>areaMaxSize</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>areaMaxHeight</span> <span class='kw'>=</span> <span class='fl'>50</span>,
+  <span class='kw'>areaChartColors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>areaColorScaleOpts</span> <span class='kw'>=</span> <span class='fu'>colorScaleOptions</span>(),
+  <span class='kw'>labelMinSize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
+  <span class='kw'>labelMaxSize</span> <span class='kw'>=</span> <span class='fl'>24</span>,
+  <span class='kw'>linkDefaultCol</span> <span class='kw'>=</span> <span class='st'>"#BEBECE"</span>,
+  <span class='kw'>linkDefaultSize</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>linkMaxSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
+  <span class='kw'>linkColorScaleOpts</span> <span class='kw'>=</span> <span class='fu'>colorScaleOptions</span>(),
   <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"choose"</span>, <span class='st'>"visible"</span>, <span class='st'>"hidden"</span>),
-  <span class='kw'>tilesURL</span> <span class='kw'>=</span> <span class='fu'>defaultTilesURL</span>(), <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>map</span>) {     <span class='no'>map</span> })
+  <span class='kw'>tilesURL</span> <span class='kw'>=</span> <span class='fu'>defaultTilesURL</span>(),
+  <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>map</span>) {     <span class='no'>map</span> }
+)
 
 <span class='fu'>defaultTilesURL</span>()
 
-<span class='fu'>colorScaleOptions</span>(<span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>domain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>negCol</span> <span class='kw'>=</span> <span class='st'>"#FF0000"</span>,
-  <span class='kw'>zeroCol</span> <span class='kw'>=</span> <span class='st'>"#FAFAFA"</span>, <span class='kw'>posCol</span> <span class='kw'>=</span> <span class='st'>"#0000FF"</span>, <span class='kw'>naCol</span> <span class='kw'>=</span> <span class='st'>"#EEEEEE"</span>,
-  <span class='kw'>zeroTol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>levels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>colorScaleOptions</span>(
+  <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fl'>5</span>,
+  <span class='kw'>domain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>negCol</span> <span class='kw'>=</span> <span class='st'>"#FF0000"</span>,
+  <span class='kw'>zeroCol</span> <span class='kw'>=</span> <span class='st'>"#FAFAFA"</span>,
+  <span class='kw'>posCol</span> <span class='kw'>=</span> <span class='st'>"#0000FF"</span>,
+  <span class='kw'>naCol</span> <span class='kw'>=</span> <span class='st'>"#EEEEEE"</span>,
+  <span class='kw'>zeroTol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>levels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
