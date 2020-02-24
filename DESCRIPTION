@@ -1,7 +1,7 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.15.0.900
+Version: 0.15.1
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "Zawam", role = "aut"),
@@ -56,4 +56,3 @@ Suggests:
     knitr,
     visNetwork
 VignetteBuilder: knitr
-Remotes: rte-antares-rpackage/antaresRead
