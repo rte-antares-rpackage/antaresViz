@@ -31,7 +31,7 @@
   if (!is.null(dateRange)) assert_that(are_equal(length(dateRange), 2))
   
   listVar <- sapply(variable, function(V){
-    tpl$value <- x[, .SD, .SDcols = V]
+    tpl$value <- x[, lapply(.SD, as.vector), .SDcols = V]
     tpl
   }, simplify = FALSE)
   if (length(listVar) > 1){
