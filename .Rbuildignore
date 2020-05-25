@@ -8,3 +8,4 @@ inst/examples
 ^docs$
 ^pkgdown$
 ^cran-comments\.md$
+^CRAN-RELEASE$

@@ -1,12 +1,12 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.15.1
+Version: 0.15.1.900
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "Zawam", role = "aut"),
     person("Francois", "Guillem", role = "aut"),
-    person("Benoit", "Thieurmel", email = "benoit.thieurmel@datastorm.fr", role = "aut"),
+    person("Benoit", "Thieurmel", role = "aut"),
     person("Titouan", "Robert", role = "aut"),
     person("Baptiste", "Seguinot", role = "ctb"),
     person("RTE", role = "cph")
@@ -47,12 +47,12 @@ Imports:
     assertthat,
     rAmCharts,
     utils
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Suggests: 
     testthat,
     covr,
     rhdf5 (>= 2.20.2),
-    rbokeh,
+    ggplot2,
     knitr,
     visNetwork
 VignetteBuilder: knitr

@@ -327,13 +327,17 @@ prodStack <- function(x,
       #     main <- paste0("Tirage ", mcYear)
       #   }
       # }
-      
-      names(stackOpts$variables) <- sapply(names(stackOpts$variables), function(x){
-        .getColumnsLanguage(x, language)
-      })
-      names(stackOpts$lines) <- sapply(names(stackOpts$lines), function(x){
-        .getColumnsLanguage(x, language)
-      })
+      # browser()
+      if (!is.null(stackOpts$variables)) {
+        names(stackOpts$variables) <- sapply(names(stackOpts$variables), function(x){
+          .getColumnsLanguage(x, language)
+        })
+      }
+      if (!is.null(stackOpts$lines)) {
+        names(stackOpts$lines) <- sapply(names(stackOpts$lines), function(x){
+          .getColumnsLanguage(x, language)
+        })
+      }
       
       p <- try(.plotProdStack(dt,
                               stackOpts$variables,
@@ -734,12 +738,16 @@ prodStackLegend <- function(stack = "eco2mix",
   
   stackOpts <- .aliasToStackOptions(stack)
   
-  names(stackOpts$variables) <- sapply(names(stackOpts$variables), function(x){
-    .getColumnsLanguage(x, language)
-  })
-  names(stackOpts$lines) <- sapply(names(stackOpts$lines), function(x){
-    .getColumnsLanguage(x, language)
-  })
+  if (!is.null(stackOpts$variables)) {
+    names(stackOpts$variables) <- sapply(names(stackOpts$variables), function(x){
+      .getColumnsLanguage(x, language)
+    })
+  }
+  if (!is.null(stackOpts$lines)) {
+    names(stackOpts$lines) <- sapply(names(stackOpts$lines), function(x){
+      .getColumnsLanguage(x, language)
+    })
+  }
   
   tsLegend(
     labels = c(names(stackOpts$variables), names(stackOpts$lines)), 

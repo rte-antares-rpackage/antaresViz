@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_XY.R
 \name{plotXY}
 \alias{plotXY}
-\title{Plot density between X et Y with rbokeh}
+\title{Plot density between X et Y with ggplot2 and plotly}
 \usage{
 plotXY(
   data,
@@ -21,16 +21,16 @@ plotXY(
 
 \item{y}{\code{character}, y variable}
 
-\item{precision}{\code{numeric} precision for plot}
+\item{precision}{Deprecated.}
 
-\item{sizeOnCount}{\code{boolean}, should addapt size of object based on count}
+\item{sizeOnCount}{Deprecated.}
 
-\item{outLine}{\code{boolean}, add outline on your shape}
+\item{outLine}{Deprecated.}
 
-\item{transform}{\code{funciton}, transform function apply on count (by cells), can be log}
+\item{transform}{Deprecated.}
 }
 \description{
-This function take somes arguments from rbokeh and make plot.
+Plot density between X et Y with ggplot2 and plotly
 }
 \examples{
 \dontrun{
