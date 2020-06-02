@@ -1,6 +1,6 @@
 name;red;green;blue;formula;Needed_Col
 pumpedStorage;17;71;185;PSP;PSP
-import/export;150;150;150;-(BALANCE + `ROW BAL.`);BALANCE,ROW BAL.
+import/export;150;150;150;- BALANCE + `ROW BAL.`;BALANCE,ROW BAL.
 mustRunTotal;120;136;194;mustRunTotal;mustRunTotal
 mustRunPartial;120;236;194;mustRunPartial;mustRunPartial
 mustRun;220;236;94;mustRun;mustRun

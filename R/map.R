@@ -389,7 +389,7 @@ plotMap <- function(x,
           if("Date" %in% class(x$areas$time)){
             x$areas[,time := as.POSIXct(time, tz = "UTC")]
           }
-          x$areas  <- x$areas[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2] + 1, tz = "UTC")]
+          x$areas  <- x$areas[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2], tz = "UTC") + 1]
         }
         if(!is.null(x$links))
         {
@@ -400,7 +400,7 @@ plotMap <- function(x,
           if("Date" %in% class(x$links$time)){
             x$links[,time := as.POSIXct(time, tz = "UTC")]
           }
-          x$links <- x$links[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2] + 1, tz = "UTC")]
+          x$links <- x$links[time >= as.POSIXlt(dateRange[1], tz = "UTC") & time < as.POSIXlt(dateRange[2], tz = "UTC") + 1]
         }
       }
       

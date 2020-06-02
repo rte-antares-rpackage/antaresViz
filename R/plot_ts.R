@@ -81,12 +81,14 @@
   
   legendId <- sample(1e9, 1)
   
-  if(length(uniqueElements) == 1){
-    dycol <- colors[1]
-  } else {
+  # if(length(uniqueElements) == 1){
+  #   dycol <- colors[1]
+  # } else {
     dycol <- NULL
-  }
+  # }
   
+    print(dycol)
+    
   g <- dygraph(as.xts.data.table(dt), main = main, group = group) %>% 
     dyOptions(
       includeZero = TRUE, 
