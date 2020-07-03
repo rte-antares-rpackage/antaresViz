@@ -80,13 +80,7 @@
   }
   
   legendId <- sample(1e9, 1)
-  
-  if(length(uniqueElements) == 1){
-    dycol <- colors[1]
-  } else {
-    dycol <- NULL
-  }
-  
+
   g <- dygraph(as.xts.data.table(dt), main = main, group = group) %>% 
     dyOptions(
       includeZero = TRUE, 
@@ -94,7 +88,7 @@
       axisLineColor = gray(0.6), 
       axisLabelColor = gray(0.6), 
       labelsKMB = TRUE,
-      colors = dycol, 
+      colors = NULL, 
       useDataTimezone = TRUE,
       stepPlot = stepPlot,
       drawPoints = drawPoints
