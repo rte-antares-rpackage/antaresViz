@@ -19,17 +19,15 @@ check_structure <- function(x, y = NULL, compare = NULL, compareOpts = NULL) {
 adt <- readAntares(showProgress = FALSE)
 adl <- readAntares("all", "all", showProgress = FALSE)
 
-describe(".getDataForComp", {
-  it("always returns the same structure whatever the input data", {
-    check_structure(adt)
-    check_structure(adt, compare = "test")
-    check_structure(adt, compareOpts = list(ncharts = 3))
-    check_structure(adt, adt)
-    check_structure(list(adt, adt, adt))
-    check_structure(adl)
-    check_structure(adl, compare = "test")
-    check_structure(adl, compareOpts = list(ncharts = 3))
-    check_structure(adl, adl)
-    check_structure(list(adl, adl, adl))
-  })
+test_that(".getDataForComp", {
+  check_structure(adt)
+  check_structure(adt, compare = "test")
+  check_structure(adt, compareOpts = list(ncharts = 3))
+  check_structure(adt, adt)
+  check_structure(list(adt, adt, adt))
+  check_structure(adl)
+  check_structure(adl, compare = "test")
+  check_structure(adl, compareOpts = list(ncharts = 3))
+  check_structure(adl, adl)
+  check_structure(list(adl, adl, adl))
 })

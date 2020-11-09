@@ -1,6 +1,6 @@
 context("exchangesStack")
 
-describe("no interactive", {
+test_that("no interactive", {
   
   mydata <- readAntares(links = "all", timeStep = "daily", showProgress = FALSE)
   # default parameters
@@ -13,7 +13,7 @@ describe("no interactive", {
   # - tester les retours d'erreurs
 })
 
-describe("exchangesStack, no interactive", {
+test_that("exchangesStack, no interactive", {
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   testClass <- function(obj){
     class(obj)[1] == "combineWidgets"
@@ -24,21 +24,18 @@ describe("exchangesStack, no interactive", {
                    ylab = list(x = dta, interactive = FALSE, areas = "all", main = "Title", ylab = "Subt")
   )
   lapply(listArgs, function(X){
-    test_that (names(listArgs), {
-      re1 <- do.call(exchangesStack, X)
-      expect_true(testClass(re1))
-    })
+    re1 <- do.call(exchangesStack, X)
+    expect_true(testClass(re1))
   })
   
 })
 
-describe("exchangesStack, no interactive return error", {
+test_that("exchangesStack, no interactive return error", {
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   expect_error(exchangesStack(dta, interactive = FALSE, compare = "areas"))
-  
 })
 
-describe("exchangesStack, no interactive, x and refStudy are antaresDataTable", {
+test_that("exchangesStack, no interactive, x and refStudy are antaresDataTable", {
   myData1 <- readAntares(links = "all", showProgress = FALSE)
   myData2 <- readAntares(links = "all", showProgress = FALSE)
   myArea <- "a"
@@ -66,7 +63,7 @@ describe("exchangesStack, no interactive, x and refStudy are antaresDataTable", 
   expect_equal(dataExS21V1$nega_offshore[indexHour], 2500)
 })
 
-describe("exchangesStack, no interactive, x and refStudy are antaresDataList", {
+test_that("exchangesStack, no interactive, x and refStudy are antaresDataList", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myArea <- "a"
@@ -120,7 +117,7 @@ describe("exchangesStack, no interactive, x and refStudy are antaresDataList", {
   expect_equal(dataExS21V3$ROW[indexHour], 500)
 })
 
-describe("exchangesStack, no interactive, x is a list of antaresDataTable and refStudy an antaresDataTable", {
+test_that("exchangesStack, no interactive, x is a list of antaresDataTable and refStudy an antaresDataTable", {
   myData1 <- readAntares(links = "all", showProgress = FALSE)
   myData2 <- readAntares(links = "all", showProgress = FALSE)
   myData3 <- readAntares(links = "all", showProgress = FALSE)
@@ -154,7 +151,7 @@ describe("exchangesStack, no interactive, x is a list of antaresDataTable and re
   expect_equal(dataExS21V1$a_offshore[indexHour], 2500)
 })
 
-describe("exchangesStack, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
+test_that("exchangesStack, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData3 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
@@ -224,7 +221,7 @@ describe("exchangesStack, no interactive, x is a list of antaresDataList and ref
   expect_equal(dataExListV3g2$negROW[indexHour], 1000)
 })
 
-describe("exchangesStack, interactive, x and refStudy are antaresDataTable", {
+test_that("exchangesStack, interactive, x and refStudy are antaresDataTable", {
   skip_if_not(.runExchangesStackTest)
   myData1 <- readAntares(links = "all", showProgress = FALSE)
   myData2 <- readAntares(links = "all", showProgress = FALSE)
@@ -275,7 +272,7 @@ describe("exchangesStack, interactive, x and refStudy are antaresDataTable", {
   expect_equal(dataExS21V1$nega_offshore[indexHour], 2500)
 })
 
-describe("exchangesStack, interactive, x and refStudy are antaresDataList", {
+test_that("exchangesStack, interactive, x and refStudy are antaresDataList", {
   skip_if_not(.runExchangesStackTest)
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
@@ -366,7 +363,7 @@ describe("exchangesStack, interactive, x and refStudy are antaresDataList", {
   expect_equal(dataExS21V3$ROW[indexHour], 500)
 })
 
-describe("exchangesStack, interactive, x is a list of antaresDataTable and refStudy an antaresDataTable", {
+test_that("exchangesStack, interactive, x is a list of antaresDataTable and refStudy an antaresDataTable", {
   skip_if_not(.runExchangesStackTest)
   myData1 <- readAntares(links = "all", showProgress = FALSE)
   myData2 <- readAntares(links = "all", showProgress = FALSE)
@@ -420,7 +417,7 @@ describe("exchangesStack, interactive, x is a list of antaresDataTable and refSt
   expect_equal(dataExS21V1$a_offshore[indexHour], 2500)
 })
 
-describe("exchangesStack, interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
+test_that("exchangesStack, interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
   skip_if_not(.runExchangesStackTest)
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
@@ -527,7 +524,7 @@ describe("exchangesStack, interactive, x is a list of antaresDataList and refStu
   expect_equal(dataExListV3g2$negROW[indexHour], 1000)
 })
 
-describe("exchangesStack, no interactive, x and refStudy are optsH5 ", {
+test_that("exchangesStack, no interactive, x and refStudy are optsH5 ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runExchangesStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
@@ -580,7 +577,7 @@ describe("exchangesStack, no interactive, x and refStudy are optsH5 ", {
   }
 })
 
-describe("exchangesStack, no interactive, x is a list of optH5 and refStudy are optsH5 ", {
+test_that("exchangesStack, no interactive, x is a list of optH5 and refStudy are optsH5 ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runExchangesStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
@@ -653,7 +650,7 @@ describe("exchangesStack, no interactive, x is a list of optH5 and refStudy are 
   }
 })
 
-describe("exchangesStack, interactive, x and refStudy are optsH5 ", {
+test_that("exchangesStack, interactive, x and refStudy are optsH5 ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runExchangesStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
@@ -788,7 +785,7 @@ describe("exchangesStack, interactive, x and refStudy are optsH5 ", {
   }
 })
 
-describe("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5  , ", {
+test_that("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5  , ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runExchangesStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))

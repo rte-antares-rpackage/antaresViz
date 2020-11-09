@@ -1,6 +1,6 @@
 context("plotMap")
 
-describe("plotMap, no interactive", {
+test_that("plotMap, no interactive", {
   
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   testClass <- function(obj){
@@ -15,15 +15,13 @@ describe("plotMap, no interactive", {
   )
   
   lapply(listArgs, function(X){
-    test_that (names(listArgs), {
-      re1 <- do.call(plotMap, X)
-      expect_true(testClass(re1))
-    })
+    re1 <- do.call(plotMap, X)
+    expect_true(testClass(re1))
   })
   
 })
 
-describe("plotMap, no interactive return error", {
+test_that("plotMap, no interactive return error", {
   
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
@@ -33,7 +31,7 @@ describe("plotMap, no interactive return error", {
   
 })
 
-describe("plotMap, interactive", {
+test_that("plotMap, interactive", {
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
   VV <- plotMap(x = dta, mapLayout = ml, .runApp = FALSE, interactive = TRUE)
@@ -41,7 +39,7 @@ describe("plotMap, interactive", {
   expect_true("MWController" %in% class(VV))
 })
 
-describe("plotMap, no interactive, x and refStudy are antaresDataList", {
+test_that("plotMap, no interactive, x and refStudy are antaresDataList", {
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
   resPlotMap <- plotMap(x = dta, 
@@ -85,7 +83,7 @@ describe("plotMap, no interactive, x and refStudy are antaresDataList", {
   expect_equal(valToValid, 2500)
 })
 
-describe("plotMap, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
+test_that("plotMap, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
   data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   dataList <- list(data1, data1, data1)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
@@ -136,7 +134,7 @@ describe("plotMap, no interactive, x is a list of antaresDataList and refStudy a
   expect_equal(valToValid, 2500)
 })
 
-describe("plotMap, interactive, x and refStudy are antaresDataList", {
+test_that("plotMap, interactive, x and refStudy are antaresDataList", {
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
   #interactive
@@ -187,7 +185,7 @@ describe("plotMap, interactive, x and refStudy are antaresDataList", {
   expect_equal(valToValid, 2500)
 })
 
-describe("plotMap, interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
+test_that("plotMap, interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
   data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   dataList <- list(data1, data1, data1)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
@@ -243,7 +241,7 @@ describe("plotMap, interactive, x is a list of antaresDataList and refStudy an a
   expect_equal(valToValid, 2500)
 })
 
-describe("plotMap, interactive, x and refStudy are optsH5", {
+test_that("plotMap, interactive, x and refStudy are optsH5", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runPlotMapTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))

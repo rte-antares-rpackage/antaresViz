@@ -1,7 +1,7 @@
 context(".compOpts")
 
 
-describe(".compOpts", {
+test_that(".compOpts", {
   
   expect_true(.compOpts("", "cp")$ncharts == 2)
   expect_true(.compOpts("", NULL)$ncharts == 1)
@@ -10,7 +10,7 @@ describe(".compOpts", {
 
 if(.requireRhdf5_Antares(stopP = FALSE)){
   context(".dateRangeJoin")
-  describe(".dateRangeJoin", {
+  test_that(".dateRangeJoin", {
     dt <- list()
     dt$x <- list(list(dateRange = as.Date(c("2010-01-01", "2010-01-10"))),
                  list(dateRange = as.Date(c("2010-01-02", "2010-01-09"))))
@@ -35,7 +35,7 @@ if(.requireRhdf5_Antares(stopP = FALSE)){
   })
   
   context(".loadH5Data")
-  describe(".loadH5Data", {
+  test_that(".loadH5Data", {
     opts <- setSimulationPath(studyPath)
     sharerequest <- list()
     sharerequest$mcYearh_l <- "all"

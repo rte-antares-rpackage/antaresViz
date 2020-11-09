@@ -1,6 +1,6 @@
 context("tsPlot")
 
-describe("tsPlot, no interactive", {
+test_that("tsPlot, no interactive", {
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   testClass <- function(obj){
     class(obj)[1] == 'combineWidgets'
@@ -19,17 +19,15 @@ describe("tsPlot, no interactive", {
   )
   
   lapply(listArgs, function(X){
-    test_that (names(listArgs), {
-      re1 <- do.call(tsPlot, X)
-      expect_true(testClass(re1))
-    })
+    re1 <- do.call(tsPlot, X)
+    expect_true(testClass(re1))
   })
   
 })
 
 
 
-describe("tsPlot, no interactive return error", {
+test_that("tsPlot, no interactive return error", {
   
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   
@@ -37,7 +35,7 @@ describe("tsPlot, no interactive return error", {
   
 })
 
-describe("tsPlot, work with compare", {
+test_that("tsPlot, work with compare", {
   
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE, mcYears = "all")
   exList <-  tsPlot(x = dta, .runApp = FALSE, interactive = TRUE, compare = "mcYear")
@@ -64,7 +62,7 @@ describe("tsPlot, work with compare", {
   
 })
 
-describe("tsPlot, no interactive, x and refStudy are antaresDataTable", {
+test_that("tsPlot, no interactive, x and refStudy are antaresDataTable", {
   myData1 <- readAntares(links = "all", showProgress = FALSE)
   myData2 <- readAntares(links = "all", showProgress = FALSE)
   myLink <- "a - a_offshore" 
@@ -109,7 +107,7 @@ describe("tsPlot, no interactive, x and refStudy are antaresDataTable", {
   expect_equal(dataTsDa2[[myArea]][[indexHour]], 0)
 })
 
-describe("tsPlot, no interactive, x and refStudy are antaresDataList", {
+test_that("tsPlot, no interactive, x and refStudy are antaresDataList", {
   myArea <- "b"
   myLink <- "a - a_offshore" 
   myData1 <- readAntares(links = myLink, areas = myArea, showProgress = FALSE, mcYears = 1)

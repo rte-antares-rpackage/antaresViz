@@ -1,6 +1,6 @@
 context("plotThermalGroupCapacities")
 
-describe("plotThermalGroupCapacities", {
+test_that("plotThermalGroupCapacities", {
   opts <- setSimulationPath(studyPath)
   GG <- plotThermalGroupCapacities( data = thermalGroupCapacities(opts))
   

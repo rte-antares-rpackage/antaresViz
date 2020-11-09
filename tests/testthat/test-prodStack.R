@@ -1,6 +1,6 @@
 context("prodStack")
 
-describe("prodStack, no interactive", {
+test_that("prodStack, no interactive", {
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   testClass <- function(obj){
     class(obj)[1] == "combineWidgets"
@@ -10,28 +10,26 @@ describe("prodStack, no interactive", {
   )
   
   lapply(listArgs, function(X){
-    test_that (names(listArgs), {
-      re1 <- do.call(prodStack, X)
-      expect_true(testClass(re1))
-    })
+    re1 <- do.call(prodStack, X)
+    expect_true(testClass(re1))
   })
   
 })
 
-describe("prodStack, no interactive return error", {
+test_that("prodStack, no interactive return error", {
   
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   expect_error(prodStack(dta, interactive = FALSE, compare = "areas"))
   
 })
 
-describe("prodStack, interactive", {
+test_that("prodStack, interactive", {
   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   VV <- prodStack(dta, interactive = FALSE)
   expect_true("htmlwidget" %in% class(VV))
 })
 
-describe("prodStack must work with refStudy, if x and refStudy are antaresDataList, ", {
+test_that("prodStack must work with refStudy, if x and refStudy are antaresDataList, ", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   
@@ -66,7 +64,7 @@ describe("prodStack must work with refStudy, if x and refStudy are antaresDataLi
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))
 })
 
-describe("prodStack must work with refStudy, if x is a list of antaresDataList and refStudy an antaresDataList, ", {
+test_that("prodStack must work with refStudy, if x is a list of antaresDataList and refStudy an antaresDataList, ", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData3 <- readAntares(areas = c("a", "b", "c"), links = "all", showProgress = FALSE)
@@ -109,7 +107,7 @@ describe("prodStack must work with refStudy, if x is a list of antaresDataList a
   
 })
 
-describe("prodStack must work with refStudy, if x and refStudy are optsH5, ", {
+test_that("prodStack must work with refStudy, if x and refStudy are optsH5, ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runProdStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
@@ -169,7 +167,7 @@ describe("prodStack must work with refStudy, if x and refStudy are optsH5, ", {
   
 })
 
-describe("prodStack must work with refStudy, if x is a list of optsH5 and refStudy an optsH5, ", {
+test_that("prodStack must work with refStudy, if x is a list of optsH5 and refStudy an optsH5, ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runProdStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
@@ -240,7 +238,7 @@ describe("prodStack must work with refStudy, if x is a list of optsH5 and refStu
   }
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x and refStudy are antaresData, ", {
+test_that("prodStack must work with refStudy, if interactive is set to TRUE and if x and refStudy are antaresData, ", {
   myData1 <- readAntares(areas = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", showProgress = FALSE)
   
@@ -315,7 +313,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x a list of antaresData and refStudy an antaresData, ", {
+test_that("prodStack must work with refStudy, if interactive is set to TRUE and if x a list of antaresData and refStudy an antaresData, ", {
   myData1 <- readAntares(areas = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", showProgress = FALSE)
   myData3 <- readAntares(areas = "all", showProgress = FALSE)
@@ -370,7 +368,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is an antaresDataList and refStudy an antaresDataList, ", {
+test_that("prodStack must work with refStudy, if interactive is set to TRUE and if x is an antaresDataList and refStudy an antaresDataList, ", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   
@@ -420,7 +418,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of antaresDataList and refStudy an antaresDataList , ", {
+test_that("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of antaresDataList and refStudy an antaresDataList , ", {
   myData1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myData3 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
@@ -478,7 +476,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x, refStudy are optsH5 , ", {
+test_that("prodStack must work with refStudy, if interactive is set to TRUE and if x, refStudy are optsH5 , ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runProdStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
@@ -576,7 +574,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of optsH5 and refStudy optsH5  , ", {
+test_that("prodStack must work with refStudy, if interactive is set to TRUE and if x is a list of optsH5 and refStudy optsH5  , ", {
   if (.requireRhdf5_Antares(stopP = FALSE)){
     skip_if_not(.runProdStackTest)
     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
@@ -722,7 +720,7 @@ describe("prodStack must work with refStudy, if interactive is set to TRUE and i
   
 })
 
-describe("prodStack, no interactive, ne error with compare main", {
+test_that("prodStack, no interactive, ne error with compare main", {
   myData <- readAntares(areas = "all", links = "all", showProgress = FALSE)
   myApplica <- prodStack(x = myData, 
                          interactive = TRUE, 
