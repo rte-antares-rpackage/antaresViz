@@ -1,5 +1,9 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+# antaresViz 0.15.3 (2020-11-12)
+
+* Fixed tests failing on CRAN.
+
 
 # antaresViz 0.15.2 (2020-05-26)
 
