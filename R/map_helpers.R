@@ -198,12 +198,12 @@
     }
     
     # Chart options
-    if (length(sizeAreaVars) < 2) areaChartType <- "polar-area"
+    if (length(sizeAreaVars) < 1) areaChartType <- "polar-area"
     if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
     
     # Labels
     labels <- NULL
-    if (length(sizeAreaVars) < 2) {
+    if (length(sizeAreaVars) < 1) {
       if (labelAreaVar == "none") {
         showLabels <- FALSE
       } else {
@@ -229,12 +229,12 @@
                      .attr("fill", opts.fillColor);
                      }
                      ')
-      if (length(sizeAreaVars) < 2) width <- 0
+      if (length(sizeAreaVars) == 0) width <- 0
       else width <- areaWidth
     } else {
       onChange <- JS(NULL)
       width <- areaWidth
-      if (length(sizeAreaVars) >= 2) {
+      if (length(sizeAreaVars) >= 1) {
         optsArea$color <- options$areaDefaultCol
         optsArea$pal <- NULL
       }
@@ -244,7 +244,7 @@
     {
       if(is.matrix(optsArea$size))
       {
-        if(ncol(optsArea$size) > 1 )
+        if(ncol(optsArea$size) >= 1 )
         {
           optsArea$Va <- rowSums(optsArea$size)
           optsArea$VaP <- optsArea$Va / max(optsArea$Va)
