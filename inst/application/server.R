@@ -52,12 +52,20 @@ function(input, output, session) {
     
     if(input$update_module > 0){
       
-      if(!is.null(rdsData)){
+      if(!is.null(rdsData())){
+        
+        print("i have founs the buuuug")
+
+        print(list_data_all)       
+        list(ind_all = list_data_all$opts[[1]]$synthesis,
+             ind_areas = list_data_all$opts[[1]]$areaList,
+             ind_links =list_data_all$opts[[1]]$linkList,
+             refStudy = NULL)
         
         return(list(ind_all = list_data_all$opts[[1]]$synthesis,
                     ind_areas = list_data_all$opts[[1]]$areaList,
                     ind_links =list_data_all$opts[[1]]$linkList,
-                    refStudy = list_data_all$opts[[1]]))
+                    refStudy = NULL))
 
 
       }

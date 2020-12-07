@@ -19,6 +19,7 @@ observeEvent(
 
 rdsData <- reactive({
   file <- input$fileRDS
+  if(is.null(file))return(NULL)
   req(file)
   readRDS(file$datapath)
 })

@@ -1,4 +1,5 @@
 observe({
+
   ind_keep_list_data <- ind_keep_list_data()
   language <- current_language$language
   isolate({
@@ -44,7 +45,6 @@ observe({
               .compare = NULL
             }
           }
-          
           mod_prodStack <- prodStack(x = list_data_all$antaresDataList[ind_areas], 
                                      refStudy = refStudy,
                                      xyCompare = "union",
@@ -58,7 +58,6 @@ observe({
                                      .updateBtnInit = TRUE, 
                                      compare = .compare, 
                                      .runApp = FALSE)
-          
           if("MWController" %in% class(modules$prodStack)){
             modules$prodStack$clear()
           }
