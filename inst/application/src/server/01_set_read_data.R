@@ -17,6 +17,16 @@ observeEvent(
   }
 )
 
+rdsData <- reactive({
+  file <- input$fileRDS
+  req(file)
+  readRDS(file$datapath)
+})
+
+
+
+
+
 output$directory_message <- renderText({
   if(length(input$directory) > 0){
     if(input$directory == 0){
@@ -26,6 +36,12 @@ output$directory_message <- renderText({
     }
   }
 })
+
+
+output$directory_message2 <- renderText({
+      antaresViz:::.getLabelLanguage("Please first choose a rds file with antares output", current_language$language)
+})
+
 
 # list files in directory
 dir_files <- reactive({a

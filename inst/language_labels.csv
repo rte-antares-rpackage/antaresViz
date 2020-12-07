@@ -146,6 +146,7 @@ Re-Init layout;Remise à zéro
 Map Layout;Positions
 Done;Valider
 Next;Suivant
+Choose a rds file with antares output;Choisir un fichier RDS avec des output antares
 Choose this study as a reference;Choisir cette étude comme référence
 Please place the following point on the map;Placer le point suivant sur la carte
 Drag the markers on the map to adjust coordinates then click the 'Done' button;Ajuster le positionnement les marqueurs sur la carte et avant de cliquer sur le bouton 'Valider'

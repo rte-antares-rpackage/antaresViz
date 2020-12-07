@@ -3,7 +3,7 @@ observe({
   language <- current_language$language
   isolate({
     if(input$update_module > 0){
-      if(is.null(ind_keep_list_data)){
+      if(is.null(ind_keep_list_data) && is.null(rdsData())){
         showModal(modalDialog(
           easyClose = TRUE,
           footer = NULL,

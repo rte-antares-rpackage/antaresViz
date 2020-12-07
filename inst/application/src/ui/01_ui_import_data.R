@@ -22,7 +22,14 @@ tabPanel(textOutput("label_tab_import_data"),
                             column(5, 
                                    h3(textOutput("directory_message"), style = "color : red")
                             )
-           )
+           ),
+           column(12, 
+                  #directoryInput('folderRDS', label = 'Choose RDS folder', value = 'C:\\Users\\Datastorm\\Documents\\git\\bpNumerique2018\\inst\\application_bp')
+                 column(4,  fileInput("fileRDS", "Choose rds File who contains antares data", accept = ".rds")),
+                  column(5, 
+                         h3(textOutput("directory_message2"), style = "color : red")
+                  )
+                  )
          ), 
          
          conditionalPanel(condition = "output.have_study",

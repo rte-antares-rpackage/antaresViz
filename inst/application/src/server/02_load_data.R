@@ -2,7 +2,30 @@
 # Importation de nouvelles donnees
 #-----------------
 observe({
+  
+  if(exists('rdsData')){
+    try({
+    rdsData()
+    isolate({
+    data <- rdsData()
+    n_list <- length(list_data_all$antaresDataList) + 1
+
+    list_data_all$antaresDataList[[n_list]] <- data
+
+    # write params and links control
+    list_data_all$params[[n_list]] <- list()
+    list_data_all$opts[[n_list]] <- attributes(data)$opts
+
+    list_data_all$have_areas[[n_list]] <- "area" %in% unique(unlist(lapply(data, names))) | "area" %in% names(data)
+    list_data_all$have_links[[n_list]] <- "link" %in% unique(unlist(lapply(data, names))) | "link" %in% names(data)
+
+    })
+
+    })
+  }
+  
   if(input$import_data > 0){
+    print('imp')
     isolate({
       if(!is.null(opts())){
         # not a .h5 file, so read data
@@ -145,16 +168,17 @@ observe({
       }
     })
   }
+  
 })
 
 observe({
-  if(input$import_data > 0){
+  if(input$import_data > 0 || !is.null(rdsData())){
     updateTabsetPanel(session, inputId = "tab_data", selected = "<div id=\"label_tab_analysis\" class=\"shiny-text-output\"></div>")
   }
 })
 
 # control : have data
 output$have_data <- reactive({
-  length(list_data_all$antaresDataList) > 0
+  length(list_data_all$antaresDataList) > 0 || !is.null(rdsData())
 })
 outputOptions(output, "have_data", suspendWhenHidden = FALSE)

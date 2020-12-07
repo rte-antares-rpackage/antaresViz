@@ -45,7 +45,23 @@ function(input, output, session) {
   # launch when click on ""Launch Analysis" button
   # and get back which opts / data to keep
   ind_keep_list_data <- reactive({
+    
+    
+    
+    
+    
     if(input$update_module > 0){
+      
+      if(!is.null(rdsData)){
+        
+        return(list(ind_all = list_data_all$opts[[1]]$synthesis,
+                    ind_areas = list_data_all$opts[[1]]$areaList,
+                    ind_links =list_data_all$opts[[1]]$linkList,
+                    refStudy = list_data_all$opts[[1]]))
+
+
+      }
+      
       isolate({
         names_input <- names(input)
         keep_input <- names_input[grepl("^list_study_check", names_input)]
