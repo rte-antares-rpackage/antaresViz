@@ -39,7 +39,7 @@ output$directory_message <- renderText({
 
 
 output$directory_message2 <- renderText({
-      antaresViz:::.getLabelLanguage("Please first choose a rds file with antares output", current_language$language)
+      antaresViz:::.getLabelLanguage("Choose a rds file with antares output", current_language$language)
 })
 
 

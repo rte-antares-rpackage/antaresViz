@@ -153,3 +153,4 @@ Drag the markers on the map to adjust coordinates then click the 'Done' button;A
 You can click on a marker to display information;Vous pouvez cliquer sur un marqueur pour afficher des informations
 Invalid Map Layout : wrongs nodes/links informations;Informations sur les positions invalides : tous les noeuds sont manquants
 To use a reference, select at least two studies, number of studies selected :;Pour utiliser une référence, sélectionnez au moins deux études, nombre d'études sélectionnées :
+Choose rds File who contains antares data;Choisir un fichier rds avec des données antares
