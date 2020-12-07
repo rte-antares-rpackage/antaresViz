@@ -56,11 +56,6 @@ function(input, output, session) {
         
         print("i have founs the buuuug")
 
-        print(list_data_all)       
-        list(ind_all = list_data_all$opts[[1]]$synthesis,
-             ind_areas = list_data_all$opts[[1]]$areaList,
-             ind_links =list_data_all$opts[[1]]$linkList,
-             refStudy = NULL)
         
         return(list(ind_all = list_data_all$opts[[1]]$synthesis,
                     ind_areas = list_data_all$opts[[1]]$areaList,
