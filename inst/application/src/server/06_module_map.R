@@ -9,11 +9,6 @@ layout <- reactive({
           readLayout(opts = list_data_all$opts[ind_map][[1]])
         } else {
           
-          print("blabla")
-          print(ind_map)
-          print(list_data_all$opts)
-          
-          
           tmp <- tryCatch(readLayout(opts = list_data_all$opts[ind_map]), 
                           error = function(e) return(readLayout(opts = list_data_all$opts)))
           tmp

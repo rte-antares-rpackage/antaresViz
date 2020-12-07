@@ -13,12 +13,19 @@ observe({
     list_data_all$antaresDataList[[n_list]] <- data
 
     # write params and links control
-    list_data_all$params[[n_list]] <- list()
+    
     list_data_all$opts[[n_list]] <- attributes(data)$opts
 
     list_data_all$have_areas[[n_list]] <- "area" %in% unique(unlist(lapply(data, names))) | "area" %in% names(data)
     list_data_all$have_links[[n_list]] <- "link" %in% unique(unlist(lapply(data, names))) | "link" %in% names(data)
 
+    params <- list(
+      areas = attributes(data)$opts$areaList, links = attributes(data)$opts$linkList, 
+      clusters = attributes(data)$opts$areaList, districts =  attributes(data)$opts$districtList,
+      select = "all"
+    )
+    list_data_all$params[[n_list]] <- params
+    
     })
 
     })
