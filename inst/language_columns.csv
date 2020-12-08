@@ -47,7 +47,7 @@ mustRun;mustRun
 bioenergy;Autre renouvelable
 wind;Eolien
 solar;Solaire
-nuclear;Nucléaire
+nuclear;Nucleaire
 hydraulic;Hydraulique
 gas;Gaz
 coal;Charbon
@@ -59,9 +59,9 @@ thermal;Thermique
 thermalDispatchable;Thermique acheminables
 hydraulicDispatchable;Hydraulique acheminable
 oil;Fioul
-generation;Génération
+generation;Generation
 economy;Economie
-adequacy;Adéquation
+adequacy;Adequation
 mixFuel;Thermique mixte
 misc. DTG;Thermique autre
 hydraulicRor;Hydraulique_fil
