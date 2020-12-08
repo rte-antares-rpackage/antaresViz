@@ -60,7 +60,7 @@ function(input, output, session) {
         return(list(ind_all = list_data_all$opts[[1]]$synthesis,
                     ind_areas = list_data_all$opts[[1]]$areaList,
                     ind_links =list_data_all$opts[[1]]$linkList,
-                    refStudy = NULL))
+                    refStudy = "Ref"))
 
 
       }
