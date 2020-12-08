@@ -2,40 +2,35 @@
 # Importation de nouvelles donnees
 #-----------------
 observe({
-  
-  
-  
-  if(exists('rdsData')){
-    if(!is.null(rdsData())){
-      
-      try({
-        rdsData()
-        isolate({
-          data <- rdsData()
-          n_list <- length(list_data_all$antaresDataList) + 1
-          
-          list_data_all$antaresDataList[[n_list]] <- data
-          
-          # write params and links control
-          
-          list_data_all$opts[[n_list]] <- attributes(data)$opts
-          
-          list_data_all$have_areas[[n_list]] <- "area" %in% unique(unlist(lapply(data, names))) | "area" %in% names(data)
-          list_data_all$have_links[[n_list]] <- "link" %in% unique(unlist(lapply(data, names))) | "link" %in% names(data)
-          
-          params <- list(
-            areas = attributes(data)$opts$areaList, links = attributes(data)$opts$linkList, 
-            clusters = attributes(data)$opts$areaList, districts =  attributes(data)$opts$districtList,
-            select = "all"
-          )
-          list_data_all$params[[n_list]] <- params
-          
-        })
+  req(rdsData())
+  if(!is.null(rdsData())){
+    try({
+      isolate({
+        data <- rdsData()
+        n_list <- length(list_data_all$antaresDataList) + 1
         
+        list_data_all$antaresDataList[[n_list]] <- data
+        
+        names(list_data_all$antaresDataList)[[n_list]] <- rev(unlist(strsplit(attributes(data)$opts$simPath, "/")))[1]
+        
+        # write params and links control
+        list_data_all$opts[[n_list]] <- attributes(data)$opts
+        
+        list_data_all$have_areas[n_list] <- "area" %in% unique(unlist(lapply(data, names))) | "area" %in% names(data)
+        list_data_all$have_links[n_list] <- "link" %in% unique(unlist(lapply(data, names))) | "link" %in% names(data)
+        
+        params <- list(
+          areas = attributes(data)$opts$areaList, links = attributes(data)$opts$linkList, 
+          clusters = attributes(data)$opts$areaList, districts =  attributes(data)$opts$districtList,
+          select = "all"
+        )
+        list_data_all$params[[n_list]] <- params
       })
-    }
-    
-  } 
+    })
+  }
+})
+
+observe({
   if(input$import_data > 0){
     isolate({
       if(!is.null(opts())){

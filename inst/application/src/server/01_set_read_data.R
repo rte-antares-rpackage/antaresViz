@@ -18,10 +18,22 @@ observeEvent(
 )
 
 rdsData <- reactive({
+  req(input$fileRDS)
   file <- input$fileRDS
-  if(is.null(file))return(NULL)
-  req(file)
-  readRDS(file$datapath)
+  if(is.null(file)) return(NULL)
+  data <- tryCatch(readRDS(file$datapath), error = function(e) NULL)
+  if(!is.null(data)){
+    if(!"antaresData" %in% class(data)){
+      showModal(modalDialog(
+        title = "Error importing .RDS data",
+        easyClose = TRUE,
+        footer = NULL,
+        "Not an 'antaresData', output of 'readAntares' function."
+      ))
+      data <- NULL
+    }
+  }
+  data
 })
 
 
@@ -31,7 +43,7 @@ rdsData <- reactive({
 output$directory_message <- renderText({
   if(length(input$directory) > 0){
     if(input$directory == 0){
-      antaresViz:::.getLabelLanguage("Please first choose a folder with antares output", current_language$language)
+      antaresViz:::.getLabelLanguage("Or choose a folder with antares output", current_language$language)
     } else {
       antaresViz:::.getLabelLanguage("No antares output found in directory", current_language$language)
     }
@@ -40,7 +52,7 @@ output$directory_message <- renderText({
 
 
 output$directory_message2 <- renderText({
-      antaresViz:::.getLabelLanguage("Choose a rds file with antares output", current_language$language)
+  antaresViz:::.getLabelLanguage("Choose a .RDS file with antares output", current_language$language)
 })
 
 
@@ -252,24 +264,24 @@ observe({
   opts <- opts()
   if(!is.null(current_language) & !is.null(opts)) {
     isolate({
-        if(!opts$parameters$general$`year-by-year`){
-          sel <- isolate({input$read_type_mcYears})
-          choices <- c("synthetic")
-          names(choices) <- sapply(choices, function(x){
-            antaresViz:::.getLabelLanguage(x, current_language)
-          })
-          updateRadioButtons(session, "read_type_mcYears", paste0(antaresViz:::.getLabelLanguage("mcYears selection", current_language), " : "),
-                             choices, selected = sel, inline = TRUE)
-          updateCheckboxInput(session, "read_hydroStorage", antaresViz:::.getLabelLanguage("hydroStorage", current_language), FALSE)
-        } else {
-          sel <- isolate({input$read_type_mcYears})
-          choices <- c("synthetic", "all", "custom")
-          names(choices) <- sapply(choices, function(x){
-            antaresViz:::.getLabelLanguage(x, current_language)
-          })
-          updateRadioButtons(session, "read_type_mcYears", paste0(antaresViz:::.getLabelLanguage("mcYears selection", current_language), " : "),
-                             choices, selected = sel, inline = TRUE)
-        }
+      if(!opts$parameters$general$`year-by-year`){
+        sel <- isolate({input$read_type_mcYears})
+        choices <- c("synthetic")
+        names(choices) <- sapply(choices, function(x){
+          antaresViz:::.getLabelLanguage(x, current_language)
+        })
+        updateRadioButtons(session, "read_type_mcYears", paste0(antaresViz:::.getLabelLanguage("mcYears selection", current_language), " : "),
+                           choices, selected = sel, inline = TRUE)
+        updateCheckboxInput(session, "read_hydroStorage", antaresViz:::.getLabelLanguage("hydroStorage", current_language), FALSE)
+      } else {
+        sel <- isolate({input$read_type_mcYears})
+        choices <- c("synthetic", "all", "custom")
+        names(choices) <- sapply(choices, function(x){
+          antaresViz:::.getLabelLanguage(x, current_language)
+        })
+        updateRadioButtons(session, "read_type_mcYears", paste0(antaresViz:::.getLabelLanguage("mcYears selection", current_language), " : "),
+                           choices, selected = sel, inline = TRUE)
+      }
     })
   }
 })

@@ -1,7 +1,17 @@
 tabPanel(textOutput("label_tab_import_data"),
          h3(textOutput("title_import_data")),
          fluidRow(
-           column(5, 
+           column(4,  
+                  fileInput("fileRDS", 
+                            label = NULL,
+                            # antaresViz:::.getLabelLanguage("Choose rds File who contains antares data"), 
+                            accept = ".rds", width = "100%")),
+           column(8, 
+                  h3(textOutput("directory_message2"), style = "color : red;margin-top:0px")
+           )
+         ),
+         fluidRow(
+           column(4, 
                   directoryInput('directory', label = '', value = 'C:\\Users\\Datastorm\\Documents\\git\\bpNumerique2018\\inst\\application_bp\\data')
            ), 
            conditionalPanel(condition = "output.ctrl_is_antares_study | output.ctrl_is_antares_h5", 
@@ -19,17 +29,10 @@ tabPanel(textOutput("label_tab_import_data"),
                             )
            ),
            conditionalPanel(condition = "output.ctrl_is_antares_study === false & output.ctrl_is_antares_h5 === false", 
-                            column(5, 
+                            column(8, 
                                    h3(textOutput("directory_message"), style = "color : red")
                             )
-           ),
-           column(12, 
-                  #directoryInput('folderRDS', label = 'Choose RDS folder', value = 'C:\\Users\\Datastorm\\Documents\\git\\bpNumerique2018\\inst\\application_bp')
-                 column(4,  fileInput("fileRDS", antaresViz:::.getLabelLanguage("Choose rds File who contains antares data"), accept = ".rds")),
-                  column(5, 
-                         h3(textOutput("directory_message2"), style = "color : red")
-                  )
-                  )
+           )
          ), 
          
          conditionalPanel(condition = "output.have_study",
