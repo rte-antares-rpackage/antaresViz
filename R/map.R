@@ -273,6 +273,10 @@ plotMap <- function(x,
       stop("Argument 'x' must be an object of class 'antaresData' created with function 'readAntares'.")
     } else {
       x <- copy(as.antaresDataList(x))
+      if(!is.null(attributes(x$areas)$hvdcAreas)){
+        x <- hvdcModification(x, removeHvdcAreas = TRUE, reafectLinks = FALSE)
+      }
+      
       if(!is.null(x$areas)){
         if(nrow(x$areas) == 0){
           x$areas <- NULL

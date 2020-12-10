@@ -240,6 +240,8 @@
       }
     }
     
+    if(is.null(sizeMiniPlot))sizeMiniPlot <- FALSE
+    
     if(sizeMiniPlot)
     {
       if(is.matrix(optsArea$size))
