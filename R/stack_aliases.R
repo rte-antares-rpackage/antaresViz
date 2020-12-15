@@ -64,6 +64,14 @@ setProdStackAlias <- function(name, variables, colors, lines = NULL,
     stop("Number of line colors and number of lines should be equal.")
   }
   
+  if(length(lines) > 0){
+    same_name <- intersect(names(variables), names(lines))
+    if(length(same_name) > 0){
+      stop("Can't use same name(s) for both variables and lines : '", 
+           paste(same_name, collapse = "', '"), "'.")
+    }
+  }
+  
   if(length(lineWidth) == 0){
     lineWidth <- rep(3, length(lines))
   } else if(length(lineWidth) == 1){
