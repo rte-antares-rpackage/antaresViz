@@ -88,5 +88,6 @@ tabPanel("Read data",
                                            )
                           )
          ),
+         
          div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center")
 )

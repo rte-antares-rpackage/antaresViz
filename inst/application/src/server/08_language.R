@@ -147,6 +147,12 @@ output$title_removeVirtualAreas <- renderText({
   paste0(antaresViz:::.getLabelLanguage("Remove virtual Areas", current_language$language), " : ")
 })
 
+
+output$title_hvdc <- renderText({
+  paste0(antaresViz:::.getLabelLanguage("Hvdc areas", current_language$language), " : ")
+})
+
+
 output$title_removeVirtualAreas_h5 <- renderText({
   paste0(antaresViz:::.getLabelLanguage("Remove virtual Areas", current_language$language), " : ")
 })

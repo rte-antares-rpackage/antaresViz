@@ -137,6 +137,12 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   
   processFun <- function(x) {
     .check_x_antaresData(x)
+    
+    
+    if(!is.null(attributes(x$areas)$hvdcAreas)){
+      x <- hvdcModification(x, removeHvdcAreas = TRUE, reafectLinks = TRUE)
+    }
+    
     row <- NULL # exchanges with rest of the world
     
     # Check that input contains links data

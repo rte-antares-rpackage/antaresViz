@@ -130,6 +130,15 @@ tabPanel(textOutput("label_tab_import_data"),
                                                                      )
                                                     )
                                    ),
+                                   
+                                  fluidRow( 
+                                   column(3, 
+                                          h4(textOutput("title_hvdc"))
+                                          
+                                   ),
+                                   
+                                   
+                                   column(9, selectInput("hvdc", "hvdc", choices = NULL, selected = NULL, multiple = TRUE))),
                                    div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center"),
                                    
                                    # convert h5
@@ -233,6 +242,8 @@ tabPanel(textOutput("label_tab_import_data"),
                                                                                                )
                                                                               ),
                                                                               
+                                                                              
+                                                                     
                                                                               fluidRow(
                                                                                 column(12,
                                                                                        div(actionButton("write_h5", "Convert study to h5", icon = icon("floppy-o")), align = "center")                                                           )

@@ -217,7 +217,7 @@ observe({
       updateSelectInput(session, "rmva_production_h5", paste0(antaresViz:::.getLabelLanguage("production", current_language), " : "), 
                         choices = opts$areaList, selected = NULL)
       
-      
+      updateSelectInput(session, "hvdc",choices = areas[areas!="all"], selected = NULL)
     })
   }
 })

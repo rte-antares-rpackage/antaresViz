@@ -77,6 +77,13 @@ observe({
             }
           )
           
+          if(!is.null(input$hvdc)){
+            if(input$hvdc[1] != ""){
+              data <- setHvdcAreas(data, input$hvdc)
+            }
+          }
+          
+          
           # removeVirtualAreas
           if(input$rmva_ctrl){
             if(length(data) > 0) {
