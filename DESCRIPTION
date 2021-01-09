@@ -54,6 +54,7 @@ Suggests:
     covr,
     rhdf5 (>= 2.20.2),
     ggplot2,
+    hexbin,
     knitr,
     visNetwork,
     rmarkdown
