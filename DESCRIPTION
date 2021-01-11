@@ -1,7 +1,7 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.15.3
+Version: 0.15.4
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "Zawam", role = "aut"),
@@ -54,6 +54,7 @@ Suggests:
     covr,
     rhdf5 (>= 2.20.2),
     ggplot2,
+    hexbin,
     knitr,
     visNetwork,
     rmarkdown
