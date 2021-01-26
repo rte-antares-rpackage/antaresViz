@@ -1,7 +1,17 @@
 tabPanel(textOutput("label_tab_import_data"),
          h3(textOutput("title_import_data")),
          fluidRow(
-           column(5, 
+           column(4,  
+                  fileInput("fileRDS", 
+                            label = NULL,
+                            # antaresViz:::.getLabelLanguage("Choose rds File who contains antares data"), 
+                            accept = ".rds", width = "100%")),
+           column(8, 
+                  h3(textOutput("directory_message2"), style = "color : red;margin-top:0px")
+           )
+         ),
+         fluidRow(
+           column(4, 
                   directoryInput('directory', label = '', value = 'C:\\Users\\Datastorm\\Documents\\git\\bpNumerique2018\\inst\\application_bp\\data')
            ), 
            conditionalPanel(condition = "output.ctrl_is_antares_study | output.ctrl_is_antares_h5", 
@@ -19,7 +29,7 @@ tabPanel(textOutput("label_tab_import_data"),
                             )
            ),
            conditionalPanel(condition = "output.ctrl_is_antares_study === false & output.ctrl_is_antares_h5 === false", 
-                            column(5, 
+                            column(8, 
                                    h3(textOutput("directory_message"), style = "color : red")
                             )
            )
@@ -120,6 +130,15 @@ tabPanel(textOutput("label_tab_import_data"),
                                                                      )
                                                     )
                                    ),
+                                   
+                                  fluidRow( 
+                                   column(3, 
+                                          h4(textOutput("title_hvdc"))
+                                          
+                                   ),
+                                   
+                                   
+                                   column(9, selectInput("hvdc", "hvdc", choices = NULL, selected = NULL, multiple = TRUE))),
                                    div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center"),
                                    
                                    # convert h5
@@ -223,6 +242,8 @@ tabPanel(textOutput("label_tab_import_data"),
                                                                                                )
                                                                               ),
                                                                               
+                                                                              
+                                                                     
                                                                               fluidRow(
                                                                                 column(12,
                                                                                        div(actionButton("write_h5", "Convert study to h5", icon = icon("floppy-o")), align = "center")                                                           )

@@ -8,8 +8,9 @@ layout <- reactive({
         if(packageVersion("antaresRead") <= '2.0.0'){
           readLayout(opts = list_data_all$opts[ind_map][[1]])
         } else {
+          
           tmp <- tryCatch(readLayout(opts = list_data_all$opts[ind_map]), 
-                          error = function(e) return(readLayout(opts = list_data_all$opts[ind_map][[1]])))
+                          error = function(e) return(readLayout(opts = list_data_all$opts)))
           tmp
         }
       }else{

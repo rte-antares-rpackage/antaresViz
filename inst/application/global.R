@@ -4,7 +4,7 @@ require(antaresViz)
 require(manipulateWidget)
 require(data.table)
 
-
+options(shiny.maxRequestSize = 100*1024^2)
 # choose a directory
 source("src/scripts/directoryInput.R")
 

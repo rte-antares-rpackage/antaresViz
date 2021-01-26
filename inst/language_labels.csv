@@ -132,7 +132,7 @@ No data imported;Pas de données importées
 No areas imported;Pas noeuds importés 
 No links imported;Pas de liens importés
 No antares output found in directory;Pas d'étude(s) antares trouvée(s) dans le répertoire
-Please first choose a folder with antares output;Sélectionner un répertoire contenant des études antares
+Or choose a folder with antares output; Ou sélectionner un répertoire contenant des études antares
 Please set or import a map layout before;Editer ou importer le positionnement des points
 Download Layout;Télécharger le positionnement
 Import a layout;Importer un positionnement
@@ -146,9 +146,12 @@ Re-Init layout;Remise à zéro
 Map Layout;Positions
 Done;Valider
 Next;Suivant
+Choose a .RDS file with antares output;Choisir un fichier .RDS avec des sorties antares
 Choose this study as a reference;Choisir cette étude comme référence
 Please place the following point on the map;Placer le point suivant sur la carte
 Drag the markers on the map to adjust coordinates then click the 'Done' button;Ajuster le positionnement les marqueurs sur la carte et avant de cliquer sur le bouton 'Valider'
 You can click on a marker to display information;Vous pouvez cliquer sur un marqueur pour afficher des informations
 Invalid Map Layout : wrongs nodes/links informations;Informations sur les positions invalides : tous les noeuds sont manquants
 To use a reference, select at least two studies, number of studies selected :;Pour utiliser une référence, sélectionnez au moins deux études, nombre d'études sélectionnées :
+Choose rds File who contains antares data;Choisir un fichier .RDS avec des données antares
+Hvdc areas;Zones Hvdc
