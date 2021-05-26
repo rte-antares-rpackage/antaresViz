@@ -1,5 +1,11 @@
 function(input, output, session) {
 
+  output$is_manipulate_new_version <- reactive({
+    packageVersion("manipulateWidget") >= "0.11"
+  })
+  
+  outputOptions(output, "is_manipulate_new_version", suspendWhenHidden = FALSE)
+  
   #----------------
   # Write h5
   #----------------

@@ -21,6 +21,8 @@
   
   if (length(variable) == 0){return(tpl[0])}
   if ("all" %in% elements) elements <- uniqueElement
+  if(is.null(typeConfInt)) typeConfInt <- FALSE
+  
   aggregate <- match.arg(aggregate)
   assert_that(inherits(x, "data.table"))
   assert_that(inherits(tpl, "data.table"))

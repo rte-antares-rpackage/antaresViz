@@ -13,6 +13,9 @@
                      legendItemsPerRow = 5,
                      width = NULL, height = NULL, language = "en", ...) {
   
+  if(is.null(typeConfInt)) typeConfInt <- FALSE
+  if(is.null(confInt)) confInt <- 0
+  
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(value = mean(value)), by = element] 
   } else {

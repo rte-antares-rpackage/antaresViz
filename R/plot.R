@@ -280,6 +280,9 @@ tsPlot <- function(x,
     x <- as.antaresDataList(x)
     
     lapply(x, function(x) {
+      
+      x <- copy(x)
+      
       idCols <- .idCols(x)
       
       if(language != "en"){
@@ -477,7 +480,10 @@ tsPlot <- function(x,
   manipulateWidget({
     .tryCloseH5()
 
-    if(.id <= length(params$x)){
+    # udpate for mw 0.11 & 0.10.1
+    if(!is.null(params)){
+      ind <- .id %% length(params$x)
+      if(ind == 0) ind <- length(params$x)
       
       if(length(mcYear) == 0){return(combineWidgets(.getLabelLanguage("Please select some mcYears", language)))}
       
@@ -485,9 +491,9 @@ tsPlot <- function(x,
       
       if(length(elements) == 0){return(combineWidgets(.getLabelLanguage("Please select some elements", language)))}
       
-      if(length(params[["x"]][[max(1,.id)]]) == 0){return(combineWidgets(.getLabelLanguage("No data", language)))}
+      if(length(params[["x"]][[ind]]) == 0){return(combineWidgets(.getLabelLanguage("No data", language)))}
       
-      if(is.null(params[["x"]][[max(1,.id)]][[table]])){
+      if(is.null(params[["x"]][[ind]][[table]])){
         return(combineWidgets(
           paste0("Table ", table, " ", .getLabelLanguage("not exists in this study", language))
         ))
@@ -499,12 +505,14 @@ tsPlot <- function(x,
         aggregate <- "none"
       }
       
-
-      widget <- params[["x"]][[max(1,.id)]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, typeConfInt, confInt, 
-                                                             dateRange, minValue, maxValue, aggregate, legend, 
-                                                             highlight, stepPlot, drawPoints, main)
-
+      
+      widget <- params[["x"]][[ind]][[table]]$plotFun(mcYear, .id, variable, variable2Axe, elements, type, 
+                                                      typeConfInt, confInt, 
+                                                      dateRange, minValue, maxValue, aggregate, legend, 
+                                                      highlight, stepPlot, drawPoints, main)
+      
       controlWidgetSize(widget, language)
+      
     } else {
       combineWidgets(.getLabelLanguage("No data for this selection", language))
     }

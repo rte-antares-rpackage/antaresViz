@@ -95,36 +95,53 @@ observe({
             input_data$data[grepl("^plotMap", input_id), input_id := paste0(id_plotMap, "-shared_", input)]
             
             output[["plotMap_ui"]] <- renderUI({
-              mwModuleUI(id = id_plotMap, height = "800px")
+              if(packageVersion("manipulateWidget") < "0.11"){
+                mwModuleUI(id = id_plotMap, height = "800px")
+              } else {
+                mwModuleUI(id = id_plotMap, height = 800, updateBtn = TRUE)
+              }
             })
             
-            .compare <- input$sel_compare_plotMap
-            if(input$sel_compare_mcyear){
-              .compare <- unique(c(.compare, "mcYear"))
+            if(packageVersion("manipulateWidget") < "0.11"){
+              .compare <- input$sel_compare_plotMap
+              if(input$sel_compare_mcyear){
+                .compare <- unique(c(.compare, "mcYear"))
+              }
+              
+              if(length(.compare) > 0){
+                list_compare <- vector("list", length(.compare))
+                names(list_compare) <- .compare
+                # set main with study names
+                # if(length(ind_map) != 1){
+                #   list_compare$main <- names(list_data_all$antaresDataList[ind_map])
+                # }
+                .compare <- list_compare
+              } else {
+                .compare = NULL
+              }
+            } else {
+              .compare <- NULL
             }
             
-            if(length(.compare) > 0){
-              list_compare <- vector("list", length(.compare))
-              names(list_compare) <- .compare
-              # set main with study names
-              # if(length(ind_map) != 1){
-              #   list_compare$main <- names(list_data_all$antaresDataList[ind_map])
-              # }
-              .compare <- list_compare
-            } else {
-              .compare = NULL
+            plotMap_args <- list(
+              x = list_data_all$antaresDataList[ind_map], 
+              mapLayout = ml, 
+              interactive = TRUE, 
+              .updateBtn = TRUE, 
+              compare = .compare,
+              language = language, 
+              .exportBtn = TRUE, 
+              .exportType = "webshot",
+              h5requestFiltering = list_data_all$params[ind_map],
+              xyCompare = "union", 
+              .runApp = FALSE
+            )
+            
+            if(packageVersion("manipulateWidget") < "0.11"){
+              plotMap_args$.updateBtnInit <- TRUE
             }
-            mod_plotMap <- plotMap(x = list_data_all$antaresDataList[ind_map], 
-                                   refStudy = refStudy,
-                                   mapLayout = ml, 
-                                   interactive = TRUE, .updateBtn = TRUE, 
-                                   .updateBtnInit = TRUE, compare = .compare,
-                                   language = language,
-                                   #export with webshot dont work with leaflet and mapLayout
-                                   .exportBtn = FALSE,
-                                   h5requestFiltering = list_data_all$params[ind_map],
-                                   xyCompare = "union", 
-                                   .runApp = FALSE)
+            
+            mod_plotMap <- do.call(antaresViz::plotMap, plotMap_args)
             
             if("MWController" %in% class(modules$plotMap)){
               modules$plotMap$clear()

@@ -4,6 +4,9 @@
   
   uniqueElements <- as.character(sort(unique(dt$element)))
   plotConfInt <- FALSE
+  if(is.null(typeConfInt)) typeConfInt <- FALSE
+  if(is.null(confInt)) confInt <- 0
+  
   # If dt contains several Monte-Carlo scenario, compute aggregate statistics
   if (is.null(dt$mcYear)) {
     dt <- dt[, .(
