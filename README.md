@@ -6,7 +6,7 @@
 > `antaresViz` is the package to visualize the results of your Antares simulations that you have imported in the R session with package `antaresRead`. It provides some functions that generate interactive visualisations. Moreover, by default, these functions launch a shiny widget that provides some controls to dynamically choose what data is displayed in the graphics.
 
 <!-- badges: start -->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/antaresViz)](https://cran.r-project.org/package=antaresViz)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/antaresViz)](https://cran.r-project.org/package=antaresViz)
 [![codecov](https://codecov.io/gh/rte-antares-rpackage/antaresViz/branch/develop/graph/badge.svg)](https://codecov.io/gh/rte-antares-rpackage/antaresViz)
 [![R build status](https://github.com/rte-antares-rpackage/antaresViz/workflows/R-CMD-check/badge.svg)](https://github.com/rte-antares-rpackage/antaresViz/actions)
 <!-- badges: end -->
@@ -80,7 +80,7 @@ myData <- readAntares(areas = "all", links = "all")
 plotMap(myData, myMapLayout)
 ```
 
-You can use `spMaps` to set a map background or download some files at http://www.gadm.org/country.
+You can use `spMaps` to set a map background or download some files at https://gadm.org/download_country_v3.html.
 
 
 ## Contributing:
@@ -97,6 +97,6 @@ Contributions to the library are welcome and can be submitted in the form of pul
 
 Copyright 2015-2016 RTE (France)
 
-* RTE: http://www.rte-france.com
+* RTE: https://www.rte-france.com/
 
 This Source Code is subject to the terms of the GNU General Public License, version 2 or any higher version. If a copy of the GPL-v2 was not distributed with this file, You can obtain one at https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html.
