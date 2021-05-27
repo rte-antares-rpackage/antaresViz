@@ -30,6 +30,9 @@
   
   uniqueElements <- as.character(sort(unique(dt$element)))
   plotConfInt <- FALSE
+  if(is.null(typeConfInt)) typeConfInt <- FALSE
+  if(is.null(confInt)) confInt <- 0
+  
   if (is.null(group)) group <- sample(1e9, 1)
   
   if(typeConfInt){

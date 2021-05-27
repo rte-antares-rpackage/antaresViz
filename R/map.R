@@ -556,8 +556,11 @@ plotMap <- function(x,
     {
       if(!is.null(params))
       {
-        if(.id <= length(params$x)){
-          .tryCloseH5()
+        .tryCloseH5()
+        # udpate for mw 0.11 & 0.10.1
+        if(!is.null(params)){
+          ind <- .id %% length(params$x)
+          if(ind == 0) ind <- length(params$x)
           
           tmp_options <- optionsT
           if(is.null(tmp_options)){
@@ -569,7 +572,8 @@ plotMap <- function(x,
           } else {
             sizeAreaVars <- unique(do.call("c", map_alias[aliasSizeAreaVars]))
           }
-          widget <- params$x[[.id]]$plotFun(t = params$x[[.id]]$timeId,
+          
+          widget <- params$x[[ind]]$plotFun(t = params$x[[ind]]$timeId,
                                             colAreaVar = colAreaVar,
                                             sizeAreaVars = sizeAreaVars,
                                             popupAreaVars = popupAreaVars,
@@ -589,14 +593,15 @@ plotMap <- function(x,
                                             sizeMiniPlot = sizeMiniPlot,
                                             options = tmp_options)
           
-
+          
           
           # controlWidgetSize(widget, language) # bug due to leaflet and widget
-
           widget
-        } else {
+          
+        }else {
           combineWidgets(.getLabelLanguage("No data for this selection", language))
         }
+        
       }else{
         combineWidgets()
       }

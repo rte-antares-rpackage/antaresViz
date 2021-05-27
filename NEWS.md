@@ -1,5 +1,11 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+# antaresViz 0.16
+
+* Fixed bug with new shiny version
+* Fixed bug due to language
+* manipulateWidget > 0.11 support
+
 # antaresViz 0.15.4
 
 * Fixed tests failing on CRAN

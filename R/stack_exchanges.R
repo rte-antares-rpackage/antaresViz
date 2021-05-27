@@ -325,8 +325,11 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
   manipulateWidget(
     {
       .tryCloseH5()
-      if (.id <= length(params$x)){
-        widget <- params$x[[max(1, .id)]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main)
+      # udpate for mw 0.11 & 0.10.1
+      if(!is.null(params)){
+        ind <- .id %% length(params$x)
+        if(ind == 0) ind <- length(params$x)
+        widget <- params$x[[ind]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main)
         controlWidgetSize(widget, language)
       } else {
         combineWidgets(.getLabelLanguage("No data for this selection", language))
