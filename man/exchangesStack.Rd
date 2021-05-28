@@ -128,7 +128,7 @@ package \code{dygraphs}.
 }
 \description{
 This function draws a stack representing the evolution of the exchanges of
-an area with its neighbours. Positive values denotes exports and negative 
+an area with its neighbours. Positive values denotes exports and negative
 values imports.
 }
 \details{
@@ -157,7 +157,7 @@ exchangesStack(mydata, compare = "mcYear")
 exchangesStack(mydata, compare = "area")
 exchangesStack(mydata, compare = "unit")
 exchangesStack(mydata, compare = "legend")
-# Compare studies with refStudy argument 
+# Compare studies with refStudy argument
 exchangesStack(x = myData1, refStudy = myData2)
 exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
 exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
@@ -180,14 +180,14 @@ exchangesStack(x = opts, .compare = "mcYear")
 # Compare 2 studies
 exchangesStack(x = list(opts, opts2))
 
-# Compare 2 studies with argument refStudy 
+# Compare 2 studies with argument refStudy
 exchangesStack(x = opts, refStudy = opts2)
 exchangesStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea)
 exchangesStack(x = opts, refStudy = opts2, h5requestFiltering = list(
-areas = getAreas(select = "a"), 
+areas = getAreas(select = "a"),
 links = getLinks(areas = myArea),
 mcYears = myMcYear))
- 
+
 }
 
 }

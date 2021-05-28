@@ -23,7 +23,7 @@ License: GPL (>= 2) | file LICENSE
 LazyData: TRUE
 Encoding: UTF-8
 Depends:
-    antaresRead (>= 2.0.0),
+    antaresRead (>= 2.2.6),
     antaresProcessing (>= 0.13.0), 
     spMaps (>= 0.2)
 Imports:
