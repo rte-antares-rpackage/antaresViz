@@ -1,11 +1,11 @@
 #' @noRd
-leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL, 
+leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL,
                               init = FALSE, reset_map = FALSE, draggable = TRUE) {
-  if (!is.null(map)) map <- geojsonio::geojson_json(map)
+  if (!is.null(map)) map <- geojsonio::geojson_json(map[!duplicated(map$"geoAreaId"), ])
 
   if(!is.null(geopoints)){
     geopoints$avg <- (geopoints$lat + geopoints$lon) / 2
-    
+
     firstPoint <- which.min(geopoints$avg)
     secondPoint <- which.max(geopoints$avg)
   }
@@ -13,15 +13,15 @@ leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL
   x = list(geopoints = geopoints, map = map, init = init, reset_map = reset_map, draggable = draggable)
 
   attr(x, 'TOJSON_ARGS') <- list(dataframe = "rows")
-  
+
   # get leaflet dependencies
   list_dep <- list()
-  
+
   leaflet_dependency <- htmlwidgets::getDependency("leaflet")
   names_leaflet_dependency <- sapply(leaflet_dependency, function(x) x$name)
   ind_leaflet <- which(names_leaflet_dependency %in% "leaflet")
   list_dep[[1]] <- leaflet_dependency[[ind_leaflet[1]]]
-  
+
   list_dep[[2]] <- htmltools::htmlDependency(
     name = "Leaflet.AwesomeMarkers",
     version = "2.0.1",
@@ -29,7 +29,7 @@ leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL
     script  = "leaflet.awesome-markers.min.js",
     stylesheet = "leaflet.awesome-markers.css"
   )
-  
+
   # create widget
   htmlwidgets::createWidget(
     name = 'leafletDragPoints',
@@ -39,7 +39,7 @@ leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL
     package = 'antaresViz',
     sizingPolicy = htmlwidgets::sizingPolicy(
       browser.fill = TRUE
-    ), 
+    ),
     dependencies = list_dep
   )
 }
