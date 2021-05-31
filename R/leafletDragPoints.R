@@ -1,7 +1,15 @@
 #' @noRd
 leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL,
                               init = FALSE, reset_map = FALSE, draggable = TRUE) {
-  if (!is.null(map)) map <- geojsonio::geojson_json(map[!duplicated(map$"geoAreaId"), ])
+  if (!is.null(map)){
+    if("geoAreaId" %in% names(map)){
+      map <- geojsonio::geojson_json(map[!duplicated(map$"geoAreaId"), ])
+    } else if("code" %in% names(map)){
+      map <- geojsonio::geojson_json(map[!duplicated(map$"code"), ])
+    } else {
+      map <- geojsonio::geojson_json(map)
+    }
+  }
 
   if(!is.null(geopoints)){
     geopoints$avg <- (geopoints$lat + geopoints$lon) / 2
