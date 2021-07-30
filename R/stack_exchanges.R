@@ -280,7 +280,7 @@ exchangesStack <- function(x,
 
       # Stack
       if (stack != "default"){
-      g <- try(.plotProdExchangesStack(dt,
+      g <- try(.plotExchangesStack(dt,
                                        stackOpts$variables,
                                        stackOpts$colors,
                                        stackOpts$lines,
@@ -699,7 +699,7 @@ exchangesStack <- function(x,
 #' next series is drawn from 0.
 #' 
 #' @noRd
-.plotProdExchangesStack <- function(x, variables, colors, lines, lineColors, lineWidth, opts, timeStep,
+.plotExchangesStack <- function(x, variables, colors, lines, lineColors, lineWidth, opts, timeStep,
                                     main = NULL, unit = "MWh", legendId = "",
                                     groupId = legendId, width = NULL, height = NULL, dateRange = NULL, yMin=NULL, yMax=NULL, customTicks = NULL,
                                     stepPlot = FALSE, drawPoints = FALSE, updateLegendOnMouseOver=TRUE, language = "en", type = "Exchanges") {
