@@ -6,10 +6,14 @@
 \usage{
 exchangesStack(
   x,
+  stack = "default",
   area = NULL,
   mcYear = "average",
   dateRange = NULL,
   colors = NULL,
+  yMin = NULL,
+  yMax = NULL,
+  customTicks = NULL,
   main = NULL,
   ylab = NULL,
   unit = c("MWh", "GWh", "TWh"),
@@ -19,6 +23,7 @@ exchangesStack(
   legend = TRUE,
   legendId = sample(1e+09, 1),
   groupId = legendId,
+  updateLegendOnMouseOver = TRUE,
   legendItemsPerRow = 5,
   width = NULL,
   height = NULL,
@@ -41,6 +46,9 @@ exchangesStack(
 If it also contains area data with column `ROW BAL.`, then exchanges with
 the rest of the world are also displayed on the chart.}
 
+\item{stack}{Name of the stack to use. If \code{default}, all flows available will be plotted. One can visualize available stacks with 
+\code{exchangesStackAliases}}
+
 \item{area}{Name of a single area. The flows from/to this area will be drawn by the
 function.}
 
@@ -55,6 +63,12 @@ displayed. If NULL, then all data is displayed.}
 \item{colors}{Vector of colors with same length as parameter \code{variables}. If 
 \code{variables} is an alias, then this argument should be \code{NULL} in 
 order to use default colors.}
+
+\item{yMin}{\code{numeric}, the minimum value to be displayed on all y Axis. If \code{NULL}, the min value is automatically set}
+
+\item{yMax}{\code{numeric}, the maximum value to be displayed on all y Axis. If \code{NULL}, the max value is automatically set}
+
+\item{customTicks}{\code{numeric} vector of the custom ticks values to be displayed on the y Axis. If \code{NULL}, the ticks are automatically generated}
 
 \item{main}{Title of the graph.}
 
@@ -86,6 +100,8 @@ usefull when one wants to create a shared legend with
 \item{groupId}{Parameter that can be used to synchronize the horizontal 
 zoom of multiple charts. All charts that need to be synchronized must
 have the same group.}
+
+\item{updateLegendOnMouseOver}{\code{LogicalValue}. If \code{TRUE} the legend will be updated when the mouse is over a stack. If \code{FALSE} the legend will be updated on a click}
 
 \item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
 
@@ -132,6 +148,11 @@ an area with its neighbours. Positive values denotes exports and negative
 values imports.
 }
 \details{
+User can either plot all flows from/to an area using the \code{default} stack or use a custom one.
+User can see available stacks with \code{exchangesStackAliases} and create new ones
+with \code{setExchangesStackAlias}.
+
+
 Compare argument can take following values :
 \itemize{
    \item "mcYear"

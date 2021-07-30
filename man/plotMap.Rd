@@ -18,6 +18,7 @@ plotMap(
   colLinkVar = "none",
   sizeLinkVar = "none",
   popupLinkVars = c(),
+  closePopupOnClick = TRUE,
   type = c("detail", "avg"),
   timeId = NULL,
   mcYear = "average",
@@ -91,7 +92,9 @@ the default color is used for all links}
 \item{sizeLinkVar}{Name of a variable present in \code{x$links}. Its values are represented by
 the line width of the links on the map.}
 
-\item{popupLinkVars}{Vector of variables to display when user clicks on a link.}
+\item{popupLinkVars}{Vector of variables to display when user clicks on a link}
+
+\item{closePopupOnClick}{\code{LogicalValue}, if \code{TRUE} the popups will automatically be closed with each click. If \code{FALSE}, the popups will stay open.}
 
 \item{type}{If \code{type="avg"}, the data is averaged by area/and or link and
 represented on the map. If it is equal to \code{"detail"}, only one time

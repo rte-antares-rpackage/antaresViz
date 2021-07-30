@@ -24,6 +24,9 @@ prodStack(
   areas = NULL,
   mcYear = "average",
   dateRange = NULL,
+  yMin = NULL,
+  yMax = NULL,
+  customTicks = NULL,
   main = .getLabelLanguage("Production stack", language),
   unit = c("MWh", "GWh", "TWh"),
   compare = NULL,
@@ -32,6 +35,7 @@ prodStack(
   legend = TRUE,
   legendId = sample(1e+09, 1),
   groupId = legendId,
+  updateLegendOnMouseOver = TRUE,
   legendItemsPerRow = 5,
   width = NULL,
   height = NULL,
@@ -94,6 +98,12 @@ averaged.}
 \item{dateRange}{A vector of two dates. Only data points between these two dates are 
 displayed. If NULL, then all data is displayed.}
 
+\item{yMin}{\code{numeric}, the minimum value to be displayed on all y Axis. If \code{NULL}, the min value is automatically set}
+
+\item{yMax}{\code{numeric}, the maximum value to be displayed on all y Axis. If \code{NULL}, the max value is automatically set}
+
+\item{customTicks}{\code{numeric} vector of the custom ticks values to be displayed on the y Axis. If \code{NULL}, the ticks are automatically generated}
+
 \item{main}{Title of the graph.}
 
 \item{unit}{Unit used in the graph. Possible values are "MWh", "GWh" or "TWh".}
@@ -122,6 +132,8 @@ usefull when one wants to create a shared legend with
 \item{groupId}{Parameter that can be used to synchronize the horizontal 
 zoom of multiple charts. All charts that need to be synchronized must
 have the same group.}
+
+\item{updateLegendOnMouseOver}{\code{LogicalValue}. If \code{TRUE} the legend will be updated when the mouse is over a stack. If \code{FALSE} the legend will be updated on a click}
 
 \item{legendItemsPerRow}{Number of elements to put in each row of the legend.}
 
