@@ -5,10 +5,10 @@
 #' This function draws a stack representing the evolution of the exchanges of
 #' an area with its neighbours. Positive values denotes exports and negative
 #' values imports.
-#' 
 #' User can either plot all flows from/to an area using the \code{default} stack or use a custom one.
 #' User can see available stacks with \code{exchangesStackAliases} and create new ones
 #' with \code{setExchangesStackAlias}.
+#' 
 #' @param x
 #'   Object of class \code{antaresData} created with function
 #'   \code{\link[antaresRead]{readAntares}}. It is required to contain link data.
@@ -23,6 +23,9 @@
 #' @param ylab Title of the Y-axis.
 #' @param h5requestFiltering Contains arguments used by default for h5 request,
 #'   typically h5requestFiltering = list(links = getLinks(areas = myArea), mcYears = myMcYear)
+#' @param description
+#'   Description of the stack. It is displayed by function 
+#'   \code{exchangesStackAliases}.
 #' @inheritParams prodStack
 #'
 #' @return

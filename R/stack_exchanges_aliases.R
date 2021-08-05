@@ -1,6 +1,6 @@
 # Copyright © 2016 RTE Réseau de transport d’électricité
 
-
+#' @rdname exchangesStack 
 #' @export
 #' 
 
@@ -51,7 +51,7 @@ exchangesStackAliases <- function() {
   }
 }
 
-
+#' @rdname exchangesStack
 #' @export
 #' 
 
