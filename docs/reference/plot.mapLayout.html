@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -39,7 +43,6 @@
 <meta property="og:description" content="This method can be used to visualize the network of an antares study.
 It generates an interactive map with a visual representaiton of a
 map layout created with function mapLayout." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -57,7 +60,7 @@ map layout created with function mapLayout." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -71,7 +74,7 @@ map layout created with function mapLayout." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresViz</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.15.0.900</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.16</span>
       </span>
     </div>
 
@@ -79,7 +82,7 @@ map layout created with function mapLayout." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -101,11 +104,14 @@ map layout created with function mapLayout." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/rte-antares-rpackage/antaresViz">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/rte-antares-rpackage/antaresViz/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -134,29 +140,29 @@ map layout created with function <code><a href='mapLayout.html'>mapLayout</a></c
     </div>
 
     <pre class="usage"><span class='co'># S3 method for mapLayout</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(
-  <span class='no'>x</span>,
-  <span class='kw'>colAreas</span> <span class='kw'>=</span> <span class='no'>x</span>$<span class='no'>coords</span>$<span class='no'>color</span>,
-  <span class='kw'>dataAreas</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>opacityArea</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>areaMaxSize</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>areaMaxHeight</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-  <span class='kw'>areaChartType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"auto"</span>, <span class='st'>"bar"</span>, <span class='st'>"pie"</span>, <span class='st'>"polar-area"</span>, <span class='st'>"polar-radius"</span>),
-  <span class='kw'>labelArea</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>labelMinSize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
-  <span class='kw'>labelMaxSize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
-  <span class='kw'>colLinks</span> <span class='kw'>=</span> <span class='st'>"#CCCCCC"</span>,
-  <span class='kw'>sizeLinks</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>opacityLinks</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>dirLinks</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>links</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>areas</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>tilesURL</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>defaultTilesURL</a></span>(),
-  <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>map</span>) {     <span class='no'>map</span> },
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  colAreas <span class='op'>=</span> <span class='va'>x</span><span class='op'>$</span><span class='va'>coords</span><span class='op'>$</span><span class='va'>color</span>,
+  dataAreas <span class='op'>=</span> <span class='fl'>1</span>,
+  opacityArea <span class='op'>=</span> <span class='fl'>1</span>,
+  areaMaxSize <span class='op'>=</span> <span class='fl'>30</span>,
+  areaMaxHeight <span class='op'>=</span> <span class='fl'>50</span>,
+  areaChartType <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"auto"</span>, <span class='st'>"bar"</span>, <span class='st'>"pie"</span>, <span class='st'>"polar-area"</span>, <span class='st'>"polar-radius"</span><span class='op'>)</span>,
+  labelArea <span class='op'>=</span> <span class='cn'>NULL</span>,
+  labelMinSize <span class='op'>=</span> <span class='fl'>8</span>,
+  labelMaxSize <span class='op'>=</span> <span class='fl'>8</span>,
+  colLinks <span class='op'>=</span> <span class='st'>"#CCCCCC"</span>,
+  sizeLinks <span class='op'>=</span> <span class='fl'>3</span>,
+  opacityLinks <span class='op'>=</span> <span class='fl'>1</span>,
+  dirLinks <span class='op'>=</span> <span class='fl'>0</span>,
+  links <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  areas <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  tilesURL <span class='op'>=</span> <span class='fu'><a href='plotMapOptions.html'>defaultTilesURL</a></span><span class='op'>(</span><span class='op'>)</span>,
+  preprocess <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>map</span><span class='op'>)</span> <span class='op'>{</span>     <span class='va'>map</span> <span class='op'>}</span>,
+  width <span class='op'>=</span> <span class='cn'>NULL</span>,
+  height <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -270,57 +276,55 @@ the parent element. For instance "500px" and "100%" are valid values.</p></td>
   <code><a href='https://rdrr.io/pkg/leaflet/man/leaflet.html'>leaflet</a></code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># Read the coordinates of the areas in the Antares interface, then convert it</span>
 <span class='co'># in a map layout.</span>
-<span class='no'>layout</span> <span class='kw'>&lt;-</span> <span class='fu'>readLayout</span>()
-<span class='no'>ml</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mapLayout.html'>mapLayout</a></span>(<span class='no'>layout</span>)
+<span class='va'>layout</span> <span class='op'>&lt;-</span> <span class='fu'>readLayout</span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>ml</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mapLayout.html'>mapLayout</a></span><span class='op'>(</span><span class='va'>layout</span><span class='op'>)</span>
 
 <span class='co'># Save the result for future use</span>
-<span class='fu'><a href='https://rdrr.io/r/base/save.html'>save</a></span>(<span class='no'>ml</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"ml.rda"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/save.html'>save</a></span><span class='op'>(</span><span class='va'>ml</span>, file <span class='op'>=</span> <span class='st'>"ml.rda"</span><span class='op'>)</span>
 
 <span class='co'># Plot the network on an interactive map</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>ml</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>ml</span><span class='op'>)</span>
 
 <span class='co'># change style</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>ml</span>, <span class='kw'>colAreas</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/gray.html'>gray</a></span>(<span class='fl'>0.5</span>), <span class='kw'>colLinks</span> <span class='kw'>=</span> <span class='st'>"orange"</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>ml</span>, colAreas <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/gray.html'>gray</a></span><span class='op'>(</span><span class='fl'>0.5</span><span class='op'>)</span>, colLinks <span class='op'>=</span> <span class='st'>"orange"</span><span class='op'>)</span>
 
 <span class='co'># Use polar area charts to represent multiple values for each area.</span>
-<span class='no'>nareas</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>ml</span>$<span class='no'>coords</span>)
-<span class='no'>fakeData</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='no'>nareas</span> * <span class='fl'>3</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>3</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>ml</span>, <span class='kw'>sizeAreas</span> <span class='kw'>=</span> <span class='no'>fakeData</span>)
+<span class='va'>nareas</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>ml</span><span class='op'>$</span><span class='va'>coords</span><span class='op'>)</span>
+<span class='va'>fakeData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='va'>nareas</span> <span class='op'>*</span> <span class='fl'>3</span><span class='op'>)</span>, ncol <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>ml</span>, sizeAreas <span class='op'>=</span> <span class='va'>fakeData</span><span class='op'>)</span>
 
 <span class='co'># Store the result in a variable to change it with functions from leaflet </span>
 <span class='co'># package</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>leaflet</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rstudio.github.io/leaflet/'>leaflet</a></span><span class='op'>)</span>
 
-<span class='no'>center</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>ml</span>$<span class='no'>coords</span>$<span class='no'>x</span>), <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span>(<span class='no'>ml</span>$<span class='no'>coords</span>$<span class='no'>y</span>))
+<span class='va'>center</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>ml</span><span class='op'>$</span><span class='va'>coords</span><span class='op'>$</span><span class='va'>x</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>ml</span><span class='op'>$</span><span class='va'>coords</span><span class='op'>$</span><span class='va'>y</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>ml</span>)
-<span class='no'>p</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>addCircleMarker</span>(<span class='no'>center</span>[<span class='fl'>1</span>], <span class='no'>center</span>[<span class='fl'>2</span>], <span class='kw'>color</span> <span class='kw'>=</span> <span class='st'>"red"</span>,
-                  <span class='kw'>popup</span> <span class='kw'>=</span> <span class='st'>"I'm the center !"</span>)
-}</div></pre>
+<span class='va'>p</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>ml</span><span class='op'>)</span>
+<span class='va'>p</span> <span class='op'>%&gt;%</span> 
+  <span class='fu'>addCircleMarker</span><span class='op'>(</span><span class='va'>center</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span>, <span class='va'>center</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>, color <span class='op'>=</span> <span class='st'>"red"</span>, 
+                  popup <span class='op'>=</span> <span class='st'>"I'm the center !"</span><span class='op'>)</span>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
 
       <footer>
       <div class="copyright">
-  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert.</p>
+  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert, Paul Plessiez.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
