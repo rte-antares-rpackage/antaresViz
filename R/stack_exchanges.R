@@ -364,7 +364,7 @@ exchangesStack <- function(x,
      
       L_w <- lapply(seq_along(params$x), function(i){
         myData <- params$x[[i]]
-        myData$plotFun(i, area, params$x[[1]]$dateRange, unit,
+        myData$plotFun(i, myData$area, params$x[[1]]$dateRange, unit,
                               mcYear, legend, stepPlot, drawPoints, main, stack, updateLegendOnMouseOver, yMin, yMax, customTicks)
       }    )
   
