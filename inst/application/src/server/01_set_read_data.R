@@ -315,7 +315,12 @@ observe({
         updateCheckboxInput(session, "read_hydroStorage", antaresViz:::.getLabelLanguage("hydroStorage", current_language), FALSE)
       } else {
         sel <- isolate({input$read_type_mcYears})
-        choices <- c("synthetic", "all", "custom")
+        if(opts$synthesis){
+          choices <- c("synthetic", "all", "custom")
+        } else {
+          choices <- c("all", "custom")
+          if(!sel %in% choices) sel <- "all"
+        }
         names(choices) <- sapply(choices, function(x){
           antaresViz:::.getLabelLanguage(x, current_language)
         })
