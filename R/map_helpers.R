@@ -261,7 +261,7 @@
     if(is.null(optsArea$Ra)){optsArea$Ra <- width}
     # Update areas
     
-    #Apply colors defined in color.csv
+    #Apply colors defined in colors_map.csv
     if(is.null(options$areaChartColors))
     {
       varS <- names(optsArea$maxSize)

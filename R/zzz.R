@@ -179,7 +179,7 @@ language_columns[, tmp_row := NULL]
 }
 
 # map color
-colorsVars <- fread(input = system.file("color.csv", package = "antaresViz"))
+colorsVars <- fread(input = system.file("colors_map.csv", package = "antaresViz"))
 colorsVars <- unique(colorsVars, by = "Column")
 colorsVars$colors <- rgb(colorsVars$red, colorsVars$green, colorsVars$blue, maxColorValue = 255)
 
