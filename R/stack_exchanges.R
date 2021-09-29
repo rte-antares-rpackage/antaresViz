@@ -5,18 +5,27 @@
 #' This function draws a stack representing the evolution of the exchanges of
 #' an area with its neighbours. Positive values denotes exports and negative
 #' values imports.
-#'
+#' User can either plot all flows from/to an area using the \code{default} stack or use a custom one.
+#' User can see available stacks with \code{exchangesStackAliases} and create new ones
+#' with \code{setExchangesStackAlias}.
+#' 
 #' @param x
 #'   Object of class \code{antaresData} created with function
 #'   \code{\link[antaresRead]{readAntares}}. It is required to contain link data.
 #'   If it also contains area data with column `ROW BAL.`, then exchanges with
 #'   the rest of the world are also displayed on the chart.
+#' @param stack
+#' Name of the stack to use. If \code{default}, all flows available will be plotted. One can visualize available stacks with 
+#' \code{exchangesStackAliases}
 #' @param area
 #'   Name of a single area. The flows from/to this area will be drawn by the
 #'   function.
 #' @param ylab Title of the Y-axis.
 #' @param h5requestFiltering Contains arguments used by default for h5 request,
 #'   typically h5requestFiltering = list(links = getLinks(areas = myArea), mcYears = myMcYear)
+#' @param description
+#'   Description of the stack. It is displayed by function 
+#'   \code{exchangesStackAliases}.
 #' @inheritParams prodStack
 #'
 #' @return
@@ -84,13 +93,17 @@
 #' }
 #'
 #' @export
-exchangesStack <- function(x, area = NULL, mcYear = "average",
+exchangesStack <- function(x,
+                           stack = "default",
+                           area = NULL, mcYear = "average",
                            dateRange = NULL, colors = NULL,
+                           yMin = NULL, yMax =  NULL, customTicks=NULL,
                            main = NULL, ylab = NULL, unit = c("MWh", "GWh", "TWh"),
                            compare = NULL, compareOpts = list(),
                            interactive = getInteractivity(),
                            legend = TRUE, legendId = sample(1e9, 1),
                            groupId = legendId,
+                           updateLegendOnMouseOver = TRUE,
                            legendItemsPerRow = 5,
                            width = NULL, height = NULL,
                            xyCompare = c("union", "intersect"),
@@ -104,7 +117,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                            refStudy = NULL,
                            ...) {
 
-  #we can hide these values
+    #we can hide these values
   exchangesStackValHidden <- c("H5request", "timeSteph5", "mcYearhH5", "mcYear", "main",
                                "dateRange", "unit", "area", "legend", "stepPlot", "drawPoints")
   exchangesStackValCompare <- c("mcYear", "main", "unit", "area", "legend", "stepPlot", "drawPoints")
@@ -121,7 +134,9 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     h5requestFiltering = h5requestFiltering,
     compareOptions = compareOpts
   )
-
+  
+  
+  
   listParamsCheck <- .check_params_A_get_cor_val(listParamsCheck)
   x <- listParamsCheck$x
   compare <- listParamsCheck$compare
@@ -161,6 +176,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                              flow = - `ROW BAL.`, to = "ROW", direction = 1)]
         }
       }
+    
       x <- x$links
     }
 
@@ -179,13 +195,16 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     areaList <- linksDef[, unique(area)]
 
     if (is.null(init_area)) init_area = areaList[1]
-
-    plotFun <- function(id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main) {
+    
+      plotFun <- function(id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main, stack, updateLegendOnMouseOver , yMin, yMax, customTicks) {
+      
       # Prepare data for stack creation
       a <- area
       linksDef <- getLinks(area, opts = simOptions(x), namesOnly = FALSE,
                            withDirection = TRUE)
-
+      
+      if(stack != "default") stackOpts <- .aliasToStackExchangesOptions(stack)
+      
       dt <- x
 
       if (mcYear == "average") {
@@ -207,7 +226,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       if (!flux_name %in% colnames(dt)){
         flux_name <- "FLOW LIN."
       }
-
+      
+      
       if (!is.null(dateRange)){
         dt <- merge(dt[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange,
                        .(link, timeId, flow = get(flux_name))],
@@ -220,11 +240,12 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         if (!is.null(dateRange)){
           row <- row[as.Date(.timeIdToDate(timeId, timeStep, simOptions(x))) %between% dateRange]
         }
+        
         dt <- rbind(dt, row[area == a])
       }
       dt[, flow := flow * direction / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]
 
-      if (nrow(dt) == 0){return(combineWidgets("No data"))}
+      if (nrow(dt) == 0){return(combineWidgets(.getLabelLanguage("No data",language)))}
 
       dt <- dcast(dt, timeId ~ to, value.var = "flow")
 
@@ -233,6 +254,7 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       # }
 
       # Graphical parameters
+      
       if (is.null(main) | isTRUE(all.equal("", main))){
         main <- paste(.getLabelLanguage("Flows from/to", language), area)
       }
@@ -242,8 +264,9 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
 
       if (is.null(colors)) {
         colors <- substring(rainbow(ncol(dt) - 1, s = 0.7, v = 0.7), 1, 7)
-      } else {
-        colors <- rep(colors, length.out = ncol(dt - 1))
+        }
+      else {
+        colors <-  rev(rep(colors, length.out = ncol(dt)- 1))
       }
 
       # BP 2017
@@ -259,21 +282,58 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       # }
 
       # Stack
-      g <- .plotStack(dt, timeStep, opts, colors,
-                      legendId = legendId + id - 1, groupId = groupId,
-                      main = main, ylab = ylab, stepPlot = stepPlot,
-                      drawPoints = drawPoints, language = language, type = "Exchanges")
-
+      if (stack != "default"){
+      g <- try(.plotExchangesStack(dt,
+                                       stackOpts$variables,
+                                       stackOpts$colors,
+                                       stackOpts$lines,
+                                       stackOpts$lineColors,
+                                       stackOpts$lineWidth,
+                                       opts=simOptions(x),
+                                       timeStep=timeStep,
+                                       main = main,
+                                       unit = unit,
+                                       legendId = legendId + id - 1,
+                                       groupId = groupId,
+                                       updateLegendOnMouseOver = updateLegendOnMouseOver,
+                                       dateRange = dateRange,
+                                       yMin=yMin , yMax=yMax , customTicks=customTicks,
+                                       stepPlot = stepPlot, drawPoints = drawPoints, language = language), silent = TRUE)
+      }
+      else{
+        
+        g <- .plotStack(dt, timeStep, opts, colors,
+                        legendId = legendId + id - 1, groupId = groupId,
+                        main = main, ylab = ylab, updateLegendOnMouseOver = updateLegendOnMouseOver,
+                        yMin=yMin , yMax=yMax , customTicks=customTicks,,stepPlot = stepPlot,
+                        drawPoints = drawPoints, language = language, type = "Exchanges")
+        
+      }
+      
+      
+    
+      if ("try-error" %in% class(g)){
+        return (
+          combineWidgets(paste0(.getLabelLanguage("Can't visualize stack", language), " '", stack, "'<br>", g[1]))
+        )
+      }
+      
       if (legend & !"ramcharts_base" %in% class(g)) {
         # Add a nice legend
-        legend <- tsLegend(names(dt)[-1], colors, types = "area",
-                           legendItemsPerRow = legendItemsPerRow,
-                           legendId = legendId + id - 1)
+        
+        if (stack != "default"){
+        legend <- prodStackExchangesLegend(stack, legendItemsPerRow, legendId = legendId + id - 1, 
+                                           language = language)}
+        else{
+          legend <- tsLegend(names(dt)[-1], colors, types = "area",
+                             legendItemsPerRow = legendItemsPerRow,
+                             legendId = legendId + id - 1)
+        }
       } else legend <- NULL
-
+      
       combineWidgets(g, footer = legend, width = width, height = height)
-    }
-
+      }
+  
     list(
       plotFun = plotFun,
       areaList = areaList,
@@ -284,7 +344,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       x = x
     )
   }
-
+  
+  
   if (!interactive) {
     listParamH5NoInt <- list(
       timeSteph5 = timeSteph5,
@@ -299,14 +360,14 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
                              compare = compare,
                              compareOptions = compareOptions,
                              processFun = processFun)
-
-    L_w <- lapply(seq_along(params$x), function(i){
-      myData <- params$x[[i]]
-      myData$plotFun(i, myData$area, myData$dateRange,
-                     unit, mcYear, legend,
-                     stepPlot, drawPoints, main)
-    })
-
+    
+     
+      L_w <- lapply(seq_along(params$x), function(i){
+        myData <- params$x[[i]]
+        myData$plotFun(i, myData$area, params$x[[1]]$dateRange, unit,
+                              mcYear, legend, stepPlot, drawPoints, main, stack, updateLegendOnMouseOver, yMin, yMax, customTicks)
+      }    )
+  
     return(combineWidgets(list = L_w))
   }
 
@@ -329,7 +390,8 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       if(!is.null(params)){
         ind <- .id %% length(params$x)
         if(ind == 0) ind <- length(params$x)
-        widget <- params$x[[ind]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main)
+        widget <- params$x[[ind]]$plotFun(.id, area, dateRange, unit, mcYear, legend, stepPlot, drawPoints, main,
+                                          stack, updateLegendOnMouseOver, yMin, yMax, customTicks)
         controlWidgetSize(widget, language)
       } else {
         combineWidgets(.getLabelLanguage("No data for this selection", language))
@@ -382,7 +444,6 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
         any(unlist(lapply(x_in, .isSimOpts))) & !"H5request" %in% hidden
       }
     ),
-
 
     #TODO partager ce code avec prodStack() mais avant cree le widget tables_l et lui
     #mettre comme valeur links
@@ -452,7 +513,9 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       allMcY <- .compareOperation(lapply(params$x, function(vv){
         unique(vv$x$mcYear)
       }), xyCompare)
+      allMcY=c("average",allMcY)
       names(allMcY) <- allMcY
+      
       if (is.null(allMcY)){
         allMcY <- "average"
         names(allMcY) <- .getLabelLanguage("average", language)
@@ -496,7 +559,6 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
       }
       else NULL
     }, label = .getLabelLanguage("area", language), .display = !"area" %in% hidden),
-
     dateRange = mwDateRange(value = {
       if (.initial){
         res <- NULL
@@ -540,16 +602,23 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     .display = timeStepdataload != "annual" & !"dateRange" %in% hidden,
     label = .getLabelLanguage("dateRange", language)
     ),
+    stack = mwSelect(c("default",names(pkgEnv$exchangesStackAliases)), stack,
+                     label = .getLabelLanguage("stack", language), .display = !"stack" %in% hidden),
 
     unit = mwSelect(c("MWh", "GWh", "TWh"), unit, label = .getLabelLanguage("unit", language),
                     .display = !"unit" %in% hidden),
-
+    yMin= mwNumeric(value=yMin,label="yMin",
+                    .display = !"yMin" %in% hidden),
+    yMax= mwNumeric(value=yMax,label="yMax",
+                    .display = !"yMax" %in% hidden),
     legend = mwCheckbox(legend, label = .getLabelLanguage("legend", language),
                         .display = !"legend" %in% hidden),
     stepPlot = mwCheckbox(stepPlot, label = .getLabelLanguage("stepPlot", language),
                           .display = !"stepPlot" %in% hidden),
     drawPoints = mwCheckbox(drawPoints, label = .getLabelLanguage("drawPoints", language),
                             .display = !"drawPoints" %in% hidden),
+    updateLegendOnMouseOver = mwCheckbox(updateLegendOnMouseOver, label =.getLabelLanguage("updateLegendOnMouseOver", language),
+                           .display = !"updateLegendOnMouseOver" %in% hidden),
     timeStepdataload = mwSharedValue({
       attributes(x_tranform[[1]])$timeStep
     }),
@@ -571,4 +640,117 @@ exchangesStack <- function(x, area = NULL, mcYear = "average",
     ...
   )
 
+}
+
+
+#' Returns the variables and colors corresponding to an alias
+#' 
+#' @param variables
+#'   character string représenting an alias
+#'   
+#' @return 
+#' This function returns a list with four components:
+#' \item{variables}{Definition of the variables of the stack}
+#' \item{colors}{colors for the variables}
+#' \item{lines}{Definition of the curves to draw on top of the production stack}
+#' \item{lineColors}{colors for the curves}
+#' @noRd
+.aliasToStackExchangesOptions <- function(variables) {
+  if (! variables %in% names(pkgEnv$exchangesStackAliases)) {
+    stop("Unknown alias '", variables, "'.")
+  }
+  
+  pkgEnv$exchangesStackAliases[[variables]]
+}
+
+
+#' Generate an interactive stack
+#' 
+#' @param x
+#'   data.table of class "antaresDataTable" containing data for one and only one
+#'   area.
+#' @param variables
+#'   list created with function "alist" representing the definition of the
+#'   variables to plot. 
+#' @param colors
+#'   vector of colors. It must have the same length as variables.
+#' 
+#' @return 
+#'   an htmlWidget created with function "dygraph"
+#'   
+#' @note 
+#' When series have positive and negative values, stacked area graphs are not
+#' clearly defined. In our case we want positive values shown in the part of
+#' the graph above 0 and the negative values below 0. To achieve that, we have
+#' to hack the default behavior of dygraphs:
+#' 
+#' 1 - for each time step, sum all negative values and plot the corresponding
+#' area in white
+#' 2 - plot the areas corresponding to the negative values of each series as if
+#' they were positive. This will completely cover the area drawn in step 1.
+#' 3 - plot areas corresponding to the positive values of each series.
+#'
+#' Notice that dygraphs plot series in reverse order, so the data table we need
+#' to create must contain a time column, then the positive values of each
+#' series, then the negative values of each column (absolute values) and finally
+#' a column with the total of negative values.
+#' 
+#' dygraphs does not offer the possibility to add a curve over a stacked graph.
+#' Once again this require a hack: before ploting any area, plot the curve series
+#' without filling the area under the curve, then plot an invisible series equal
+#' to the opposite of the curve in order to "go back" to zero. This way, the 
+#' next series is drawn from 0.
+#' 
+#' @noRd
+.plotExchangesStack <- function(x, variables, colors, lines, lineColors, lineWidth, opts, timeStep,
+                                    main = NULL, unit = "MWh", legendId = "",
+                                    groupId = legendId, width = NULL, height = NULL, dateRange = NULL, yMin=NULL, yMax=NULL, customTicks = NULL,
+                                    stepPlot = FALSE, drawPoints = FALSE, updateLegendOnMouseOver=TRUE, language = "en", type = "Exchanges") {
+  
+  
+  formulas <- append(variables, lines)
+  variables <- names(variables)
+  lines <- names(lines)
+  
+  
+  dt <- data.table(timeId = x$timeId)
+  
+  for (n in names(formulas)) {
+    dt[, c(n) := x[, eval(formulas[[n]]) / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]]
+  }
+
+  
+  p <- .plotStack(dt, timeStep, opts, colors, lines, lineColors, lineWidth, legendId,
+                  groupId,
+                  main = main, ylab = sprintf("Flows (%s)", unit), 
+                  width = width, height = height, dateRange = dateRange, yMin = yMin, yMax =  yMax, customTicks= customTicks,
+                  stepPlot = stepPlot, drawPoints = drawPoints, updateLegendOnMouseOver=updateLegendOnMouseOver , language = language, type = type)
+  p
+}
+
+#' @rdname tsLegend
+#' @export
+prodStackExchangesLegend <- function(stack = "default", 
+                                     legendItemsPerRow = 5, legendId = "", language = "en") {
+  
+  stackOpts <- .aliasToStackExchangesOptions(stack)
+  
+  if (!is.null(stackOpts$variables)) {
+    names(stackOpts$variables) <- sapply(names(stackOpts$variables), function(x){
+      .getColumnsLanguage(x, language)
+    })
+  }
+  if (!is.null(stackOpts$lines)) {
+    names(stackOpts$lines) <- sapply(names(stackOpts$lines), function(x){
+      .getColumnsLanguage(x, language)
+    })
+  }
+  
+  tsLegend(
+    labels = c(names(stackOpts$variables), names(stackOpts$lines)), 
+    colors = c(stackOpts$colors, stackOpts$lineColors),
+    types = c(rep("area", length(stackOpts$variables)), rep("line", length(stackOpts$lines))),
+    legendItemsPerRow = legendItemsPerRow,
+    legendId = legendId
+  )
 }

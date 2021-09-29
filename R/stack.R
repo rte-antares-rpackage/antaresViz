@@ -1,7 +1,7 @@
 # Copyright © 2016 RTE Réseau de transport d’électricité
 
 #' Generate an interactive stack
-#' 
+#'
 #' @param x
 #'   data.table containing at least a column "timeId" and numeric columns
 #'   representing areas or lines to draw
@@ -43,9 +43,10 @@
 #' @noRd
 #' @import rAmCharts
 .plotStack <- function(x, timeStep, opts, colors, lines = NULL, lineColors = NULL, lineWidth = NULL,
-                       legendId = "", groupId = legendId, main = "", ylab = "",
-                       width = NULL, height = NULL, dateRange = NULL, stepPlot = FALSE, drawPoints = FALSE, 
+                       legendId = "", groupId = legendId, updateLegendOnMouseOver=TRUE , main = "", ylab = "",
+                       width = NULL, height = NULL, dateRange = NULL, yMin = NULL, yMax =  NULL, customTicks=NULL, stepPlot = FALSE, drawPoints = FALSE, 
                        language = "en", type = "Production") {
+  
   
   variables <- setdiff(names(x), c("timeId", lines))
   
@@ -149,6 +150,9 @@
     }
     
     
+    if(is.null(yMin)){yMin=min(dt$totalNeg, na.rm = TRUE) * 1.1}
+    if(is.null(yMax)){yMax=NA}
+    
     g <- dygraph(as.xts.data.table(dt), main = main, group = groupId, width = width, height = height)  %>%
       dyOptions(
         stackedGraph = TRUE, 
@@ -163,13 +167,27 @@
         stepPlot = stepPlot,
         drawPoints = drawPoints
       ) %>% 
-      dyAxis("x", rangePad = 10) %>% 
-      dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, valueRange = c(min(dt$totalNeg, na.rm = TRUE) * 1.1, NA)) %>% 
-      dyLegend(show = "never") %>% 
-      dyCallbacks(
-        highlightCallback = JS_updateLegend(legendId, timeStep, language = language),
-        unhighlightCallback = JS_resetLegend(legendId)
-      )
+      dyAxis("x", rangePad = 10) %>%
+      dyLegend(show = "never")
+    
+    if(is.null(customTicks)){
+      g <- g %>%  dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, ticker = NULL, valueRange = c(yMin, yMax))
+    }
+    else{
+      g <- g %>%  dyAxis("y", label = ylab, rangePad = 10, pixelsPerLabel = 50, ticker = JS_userDefinedTicks(customTicks), valueRange = c(yMin, yMax))
+    }
+    
+    if(updateLegendOnMouseOver){
+      g <- g %>% dyCallbacks(highlightCallback = JS_updateLegend(legendId, timeStep, language = language),
+                  unhighlightCallback = JS_resetLegend(legendId),
+                  clickCallback =NULL)
+        }
+    else{
+      
+      g <- g %>% dyCallbacks(highlightCallback = NULL,
+                      unhighlightCallback = NULL,
+                      clickCallback = JS_updateLegend(legendId, timeStep, language = language))
+        }
     
     if (length(lines) > 0) {
       for (i in 1:length(lines)) {
@@ -179,7 +197,27 @@
                             fillGraph = FALSE, strokeWidth = lineWidth[i], color = lineColors[i])
       }
     }
-    
     g
   }
+}
+
+
+JS_userDefinedTicks <- function(scaleStep){
+  
+  string_scaleTicks= toString(scaleStep)
+  script <- "
+  function(min, max, pixels, opts, dygraph, vals) {
+  var string_scaleTicks= ' %s ' ;
+  var scaleTicks= string_scaleTicks.split(',');
+  var ticks = [];
+  var i;
+  
+  for (i = 0; i<scaleTicks.length ; i++){
+      ticks.push({v:  scaleTicks[i], label: scaleTicks[i]});  
+    }
+  return ticks;
+  }
+  "
+  
+  JS(sprintf(script,string_scaleTicks))
 }

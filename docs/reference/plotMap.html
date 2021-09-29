@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -39,7 +43,6 @@
 <meta property="og:description" content="This function generates an interactive map that let the user visually explore
 the results of an Antares simulation. By default the function starts a Shiny 
 gadget that let the user which variables to represent." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -57,7 +60,7 @@ gadget that let the user which variables to represent." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -71,7 +74,7 @@ gadget that let the user which variables to represent." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresViz</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.15.0.900</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.16</span>
       </span>
     </div>
 
@@ -79,7 +82,7 @@ gadget that let the user which variables to represent." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -101,11 +104,14 @@ gadget that let the user which variables to represent." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/rte-antares-rpackage/antaresViz">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/rte-antares-rpackage/antaresViz/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -133,43 +139,44 @@ the results of an Antares simulation. By default the function starts a Shiny
 gadget that let the user which variables to represent.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotMap</span>(
-  <span class='no'>x</span>,
-  <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>mapLayout</span>,
-  <span class='kw'>colAreaVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
-  <span class='kw'>sizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>areaChartType</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"bar"</span>, <span class='st'>"pie"</span>, <span class='st'>"polar-area"</span>, <span class='st'>"polar-radius"</span>),
-  <span class='kw'>uniqueScale</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>showLabels</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>popupAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>labelAreaVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
-  <span class='kw'>colLinkVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
-  <span class='kw'>sizeLinkVar</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
-  <span class='kw'>popupLinkVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"detail"</span>, <span class='st'>"avg"</span>),
-  <span class='kw'>timeId</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
-  <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>""</span>,
-  <span class='kw'>typeSizeAreaVars</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>aliasSizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(),
-  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
-  <span class='kw'>options</span> <span class='kw'>=</span> <span class='fu'><a href='plotMapOptions.html'>plotMapOptions</a></span>(),
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
-  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
-  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
-  <span class='kw'>sizeMiniPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
-  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>plotMap</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  refStudy <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>mapLayout</span>,
+  colAreaVar <span class='op'>=</span> <span class='st'>"none"</span>,
+  sizeAreaVars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  areaChartType <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"bar"</span>, <span class='st'>"pie"</span>, <span class='st'>"polar-area"</span>, <span class='st'>"polar-radius"</span><span class='op'>)</span>,
+  uniqueScale <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  showLabels <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  popupAreaVars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  labelAreaVar <span class='op'>=</span> <span class='st'>"none"</span>,
+  colLinkVar <span class='op'>=</span> <span class='st'>"none"</span>,
+  sizeLinkVar <span class='op'>=</span> <span class='st'>"none"</span>,
+  popupLinkVars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  closePopupOnClick <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  type <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"detail"</span>, <span class='st'>"avg"</span><span class='op'>)</span>,
+  timeId <span class='op'>=</span> <span class='cn'>NULL</span>,
+  mcYear <span class='op'>=</span> <span class='st'>"average"</span>,
+  main <span class='op'>=</span> <span class='st'>""</span>,
+  typeSizeAreaVars <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  aliasSizeAreaVars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>)</span>,
+  compare <span class='op'>=</span> <span class='cn'>NULL</span>,
+  compareOpts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  interactive <span class='op'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span><span class='op'>(</span><span class='op'>)</span>,
+  options <span class='op'>=</span> <span class='fu'><a href='plotMapOptions.html'>plotMapOptions</a></span><span class='op'>(</span><span class='op'>)</span>,
+  width <span class='op'>=</span> <span class='cn'>NULL</span>,
+  height <span class='op'>=</span> <span class='cn'>NULL</span>,
+  dateRange <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xyCompare <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"union"</span>, <span class='st'>"intersect"</span><span class='op'>)</span>,
+  h5requestFiltering <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  timeSteph5 <span class='op'>=</span> <span class='st'>"hourly"</span>,
+  mcYearh5 <span class='op'>=</span> <span class='cn'>NULL</span>,
+  tablesh5 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"areas"</span>, <span class='st'>"links"</span><span class='op'>)</span>,
+  sizeMiniPlot <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  language <span class='op'>=</span> <span class='st'>"en"</span>,
+  hidden <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -248,7 +255,11 @@ the line width of the links on the map.</p></td>
     </tr>
     <tr>
       <th>popupLinkVars</th>
-      <td><p>Vector of variables to display when user clicks on a link.</p></td>
+      <td><p>Vector of variables to display when user clicks on a link</p></td>
+    </tr>
+    <tr>
+      <th>closePopupOnClick</th>
+      <td><p><code>LogicalValue</code>, if <code>TRUE</code> the popups will automatically be closed with each click. If <code>FALSE</code>, the popups will stay open.</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -387,81 +398,78 @@ a leaflet map when the user clicks on the button <code>"OK"</code>.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>mydata</span> <span class='kw'>&lt;-</span> <span class='fu'>readAntares</span>(<span class='kw'>areas</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>links</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>timeStep</span> <span class='kw'>=</span> <span class='st'>"daily"</span>,
-                      <span class='kw'>select</span> <span class='kw'>=</span> <span class='st'>"nostat"</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>mydata</span> <span class='op'>&lt;-</span> <span class='fu'>readAntares</span><span class='op'>(</span>areas <span class='op'>=</span> <span class='st'>"all"</span>, links <span class='op'>=</span> <span class='st'>"all"</span>, timeStep <span class='op'>=</span> <span class='st'>"daily"</span>,
+                      select <span class='op'>=</span> <span class='st'>"nostat"</span><span class='op'>)</span>
 
 <span class='co'># Place areas on a map. Ths has to be done once for a given study. Then the</span>
 <span class='co'># object returned by "mapLayout" may be saved and reloaded with</span>
 <span class='co'># functions save and load</span>
 
-<span class='no'>layout</span> <span class='kw'>&lt;-</span> <span class='fu'>readLayout</span>()
-<span class='no'>ml</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='mapLayout.html'>mapLayout</a></span>(<span class='kw'>layout</span> <span class='kw'>=</span> <span class='no'>layout</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/save.html'>save</a></span>(<span class='st'>"ml"</span>, <span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"ml.rda"</span>)
+<span class='va'>layout</span> <span class='op'>&lt;-</span> <span class='fu'>readLayout</span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>ml</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mapLayout.html'>mapLayout</a></span><span class='op'>(</span>layout <span class='op'>=</span> <span class='va'>layout</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/save.html'>save</a></span><span class='op'>(</span><span class='st'>"ml"</span>, file <span class='op'>=</span> <span class='st'>"ml.rda"</span><span class='op'>)</span>
 
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>mydata</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>)
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>mydata</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span><span class='op'>)</span>
 
 <span class='co'># Specify the variables to use to control the color or size of elements.</span>
-<span class='fu'>plotMap</span>(<span class='no'>mydata</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span>  <span class='no'>ml</span>,
-        <span class='kw'>sizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"WIND"</span>, <span class='st'>"SOLAR"</span>, <span class='st'>"H. ROR"</span>),
-        <span class='kw'>sizeLinkVar</span> <span class='kw'>=</span> <span class='st'>"FLOW LIN."</span>)
+<span class='fu'>plotMap</span><span class='op'>(</span><span class='va'>mydata</span>, mapLayout <span class='op'>=</span>  <span class='va'>ml</span>, 
+        sizeAreaVars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"WIND"</span>, <span class='st'>"SOLAR"</span>, <span class='st'>"H. ROR"</span><span class='op'>)</span>,
+        sizeLinkVar <span class='op'>=</span> <span class='st'>"FLOW LIN."</span><span class='op'>)</span>
 
 <span class='co'># Change default graphical properties</span>
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>mydata</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>, <span class='kw'>options</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>colArea</span><span class='kw'>=</span><span class='st'>"red"</span>, <span class='kw'>colLink</span> <span class='kw'>=</span> <span class='st'>"orange"</span>))
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>mydata</span>, <span class='no'>mydata</span>), <span class='kw'>mapLayout</span> <span class='kw'>=</span>  <span class='no'>ml</span>)
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>mydata</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span>, options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>colArea<span class='op'>=</span><span class='st'>"red"</span>, colLink <span class='op'>=</span> <span class='st'>"orange"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>mydata</span>, <span class='va'>mydata</span><span class='op'>)</span>, mapLayout <span class='op'>=</span>  <span class='va'>ml</span><span class='op'>)</span>
 
 <span class='co'># Use custom alias</span>
-<span class='fu'>setAlias</span>(<span class='st'>"custom_alias"</span>, <span class='st'>"short description"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"OIL"</span>, <span class='st'>"GAS"</span>, <span class='st'>"COAL"</span>))
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>mydata</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>, <span class='kw'>typeSizeAreaVars</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-    <span class='kw'>aliasSizeAreaVars</span> <span class='kw'>=</span> <span class='st'>"custom_alias"</span>)
-
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>mydata</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>, <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-    <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"fr"</span>, <span class='kw'>aliasSizeAreaVars</span> <span class='kw'>=</span> <span class='st'>"Renouvelable"</span>, <span class='kw'>typeSizeAreaVars</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='fu'>setAlias</span><span class='op'>(</span><span class='st'>"custom_alias"</span>, <span class='st'>"short description"</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"OIL"</span>, <span class='st'>"GAS"</span>, <span class='st'>"COAL"</span><span class='op'>)</span><span class='op'>)</span> 
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>mydata</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span>, typeSizeAreaVars <span class='op'>=</span> <span class='cn'>TRUE</span>, 
+    aliasSizeAreaVars <span class='op'>=</span> <span class='st'>"custom_alias"</span><span class='op'>)</span>
+    
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>mydata</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span>, interactive <span class='op'>=</span> <span class='cn'>FALSE</span>, 
+    language <span class='op'>=</span> <span class='st'>"fr"</span>, aliasSizeAreaVars <span class='op'>=</span> <span class='st'>"Renouvelable"</span>, typeSizeAreaVars <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='co'># Use h5 for dynamic request / exploration in a study</span>
 <span class='co'># Set path of simulaiton</span>
-<span class='fu'>setSimulationPath</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='no'>path1</span>)
+<span class='fu'>setSimulationPath</span><span class='op'>(</span>path <span class='op'>=</span> <span class='va'>path1</span><span class='op'>)</span>
 
 <span class='co'># Convert your study in h5 format</span>
-<span class='fu'>writeAntaresH5</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='no'>myNewPath</span>)
+<span class='fu'>writeAntaresH5</span><span class='op'>(</span>path <span class='op'>=</span> <span class='va'>myNewPath</span><span class='op'>)</span>
 
 <span class='co'># Redefine sim path with h5 file</span>
-<span class='no'>opts</span> <span class='kw'>&lt;-</span> <span class='fu'>setSimulationPath</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='no'>myNewPath</span>)
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>)
+<span class='va'>opts</span> <span class='op'>&lt;-</span> <span class='fu'>setSimulationPath</span><span class='op'>(</span>path <span class='op'>=</span> <span class='va'>myNewPath</span><span class='op'>)</span>
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span><span class='op'>)</span>
 
 <span class='co'># Compare elements in a single study</span>
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>,  <span class='kw'>.compare</span> <span class='kw'>=</span> <span class='st'>"mcYear"</span>)
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span>,  .compare <span class='op'>=</span> <span class='st'>"mcYear"</span><span class='op'>)</span>
 
 <span class='co'># Compare 2 studies</span>
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>opts</span>, <span class='no'>opts2</span>), <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>)
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>opts</span>, <span class='va'>opts2</span><span class='op'>)</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span><span class='op'>)</span>
 
 <span class='co'># Compare 2 studies with argument refStudies </span>
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>opts2</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>)
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>opts2</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>, <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-<span class='fu'>plotMap</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>opts2</span>, <span class='kw'>mapLayout</span> <span class='kw'>=</span> <span class='no'>ml</span>, <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span>
-<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>mcYears</span> <span class='kw'>=</span> <span class='no'>myMcYear</span>))
-}</div></pre>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, refStudy <span class='op'>=</span> <span class='va'>opts2</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span><span class='op'>)</span>
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, refStudy <span class='op'>=</span> <span class='va'>opts2</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span>, interactive <span class='op'>=</span> <span class='cn'>FALSE</span>, mcYearh5 <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span> 
+<span class='fu'>plotMap</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, refStudy <span class='op'>=</span> <span class='va'>opts2</span>, mapLayout <span class='op'>=</span> <span class='va'>ml</span>, h5requestFiltering <span class='op'>=</span> 
+<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mcYears <span class='op'>=</span> <span class='va'>myMcYear</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>}</span>
 
+</div></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
 
       <footer>
       <div class="copyright">
-  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert.</p>
+  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert, Paul Plessiez.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

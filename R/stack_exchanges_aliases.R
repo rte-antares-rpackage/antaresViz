@@ -1,11 +1,12 @@
 # Copyright © 2016 RTE Réseau de transport d’électricité
 
-#' @rdname prodStack 
+#' @rdname exchangesStack 
 #' @export
 #' 
-prodStackAliases <- function() {
-  for (n in names(pkgEnv$prodStackAliases)) {
-    alias <- pkgEnv$prodStackAliases[[n]]
+
+exchangesStackAliases <- function() {
+  for (n in names(pkgEnv$exchangesStackAliases)) {
+    alias <- pkgEnv$exchangesStackAliases[[n]]
     
     cat("\n", n, "\n===========\n", sep = "")
     cat(alias$description, "\n")
@@ -33,7 +34,7 @@ prodStackAliases <- function() {
         as.character(as.expression(x))
       })
       formulas <- sprintf('"%s" = %s', names, formulas)
-
+      
       cat(",\n\n  lines = alist(\n    ")
       cat(paste(formulas, collapse = ",\n    "))
       cat("\n  )")
@@ -50,10 +51,12 @@ prodStackAliases <- function() {
   }
 }
 
-#' @rdname prodStack
+#' @rdname exchangesStack
 #' @export
-setProdStackAlias <- function(name, variables, colors, lines = NULL, 
-                              lineColors = NULL, lineWidth = 3, description = NULL) {
+#' 
+
+setExchangesStackAlias <- function(name, variables, colors, lines = NULL, 
+                                       lineColors = NULL, lineWidth = 3, description = NULL) {
   if (is.null(description)) description <- name
   
   if (length(variables) != length(colors)) {
@@ -82,19 +85,17 @@ setProdStackAlias <- function(name, variables, colors, lines = NULL,
     }
   }
   
-  pkgEnv$prodStackAliases[[name]] <- list(
+  pkgEnv$exchangesStackAliases[[name]] <- list(
     description = description,
     variables = variables,
     colors = colors
   )
   
   if (!is.null(lines)) {
-    pkgEnv$prodStackAliases[[name]]$lines <- lines
-    pkgEnv$prodStackAliases[[name]]$lineColors <- lineColors
-    pkgEnv$prodStackAliases[[name]]$lineWidth <- lineWidth
+    pkgEnv$exchangesStackAliases[[name]]$lines <- lines
+    pkgEnv$exchangesStackAliases[[name]]$lineColors <- lineColors
+    pkgEnv$exchangesStackAliases[[name]]$lineWidth <- lineWidth
   }
   
   invisible(NULL)
 }
-
-
