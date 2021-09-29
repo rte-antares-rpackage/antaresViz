@@ -43,7 +43,7 @@ rdsData <- reactive({
 output$directory_message <- renderText({
   if(length(input$directory) > 0){
     if(input$directory == 0){
-      antaresViz:::.getLabelLanguage("Or choose a folder with antares output", current_language$language)
+      antaresViz:::.getLabelLanguage("Choose a folder with antares output", current_language$language)
     } else {
       antaresViz:::.getLabelLanguage("No antares output found in directory", current_language$language)
     }
@@ -110,7 +110,9 @@ observe({
 })
 
 # init opts after validation
-opts <- reactive({
+opts <- reactiveVal(NULL)
+
+observe({
   if(input$init_sim > 0){
     opts <- 
       tryCatch({
@@ -120,7 +122,7 @@ opts <- reactive({
           title = "Error setting file",
           easyClose = TRUE,
           footer = NULL,
-          paste("Directory/file is not an Antares study : ", e, sep = "\n")
+          paste("Directory/file is not an Antares study : ", e$message, sep = "\n")
         ))
         NULL
       })
@@ -140,9 +142,37 @@ opts <- reactive({
         }
       }
     }
-    opts
+    opts(opts)
   } else {
-    NULL
+    opts(NULL)
+  }
+})
+
+observe({
+  if(input$init_sim_api > 0){
+    opts <- 
+      tryCatch({
+        setSimulationPathAPI(
+          host = isolate(input$api_host), 
+          study_id = isolate(input$api_study_id), 
+          token = isolate(input$api_token), 
+          simulation = isolate(input$api_simulation)
+        )
+      }, error = function(e){
+        showModal(modalDialog(
+          title = "Error reading API",
+          easyClose = TRUE,
+          footer = NULL,
+          e$message
+        ))
+        NULL
+      })
+    if(!is.null(opts)){
+      opts$h5 <- FALSE
+    }
+    opts(opts)
+  } else {
+    opts(NULL)
   }
 })
 
