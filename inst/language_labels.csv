@@ -27,8 +27,8 @@ aggregate;Agrégation
 none;sans
 mean;moyenne
 sum;somme
-mean by areas;moyenne par nœud
-sum by areas;somme par nœud
+mean by variable;moyenne par variable
+sum by variable;somme par variable
 highlight;Surbrillance
 Color;Couleur
 Size;Taille
