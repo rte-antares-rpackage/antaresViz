@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -37,9 +41,11 @@
 
 <meta property="og:title" content="Plot the exchanges of an area — exchangesStack" />
 <meta property="og:description" content="This function draws a stack representing the evolution of the exchanges of
-an area with its neighbours. Positive values denotes exports and negative 
-values imports." />
-<meta name="twitter:card" content="summary" />
+an area with its neighbours. Positive values denotes exports and negative
+values imports.
+User can either plot all flows from/to an area using the default stack or use a custom one.
+User can see available stacks with exchangesStackAliases and create new ones
+with setExchangesStackAlias." />
 
 
 
@@ -57,7 +63,7 @@ values imports." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -71,7 +77,7 @@ values imports." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresViz</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.15.0.900</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.16</span>
       </span>
     </div>
 
@@ -79,7 +85,7 @@ values imports." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -101,11 +107,14 @@ values imports." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/rte-antares-rpackage/antaresViz">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/rte-antares-rpackage/antaresViz/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -123,46 +132,66 @@ values imports." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Plot the exchanges of an area</h1>
-    <small class="dont-index">Source: <a href='https://github.com/rte-antares-rpackage/antaresViz/blob/master/R/stack_exchanges.R'><code>R/stack_exchanges.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/rte-antares-rpackage/antaresViz/blob/master/R/stack_exchanges.R'><code>R/stack_exchanges.R</code></a>, <a href='https://github.com/rte-antares-rpackage/antaresViz/blob/master/R/stack_exchanges_aliases.R'><code>R/stack_exchanges_aliases.R</code></a></small>
     <div class="hidden name"><code>exchangesStack.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>This function draws a stack representing the evolution of the exchanges of
-an area with its neighbours. Positive values denotes exports and negative 
-values imports.</p>
+an area with its neighbours. Positive values denotes exports and negative
+values imports.
+User can either plot all flows from/to an area using the <code>default</code> stack or use a custom one.
+User can see available stacks with <code>exchangesStackAliases</code> and create new ones
+with <code>setExchangesStackAlias</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>exchangesStack</span>(
-  <span class='no'>x</span>,
-  <span class='kw'>area</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>mcYear</span> <span class='kw'>=</span> <span class='st'>"average"</span>,
-  <span class='kw'>dateRange</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>main</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>ylab</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>unit</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"MWh"</span>, <span class='st'>"GWh"</span>, <span class='st'>"TWh"</span>),
-  <span class='kw'>compare</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>compareOpts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span>(),
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>legendId</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>1e+09</span>, <span class='fl'>1</span>),
-  <span class='kw'>groupId</span> <span class='kw'>=</span> <span class='no'>legendId</span>,
-  <span class='kw'>legendItemsPerRow</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>xyCompare</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"union"</span>, <span class='st'>"intersect"</span>),
-  <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>stepPlot</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>drawPoints</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>timeSteph5</span> <span class='kw'>=</span> <span class='st'>"hourly"</span>,
-  <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>tablesh5</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"areas"</span>, <span class='st'>"links"</span>),
-  <span class='kw'>language</span> <span class='kw'>=</span> <span class='st'>"en"</span>,
-  <span class='kw'>hidden</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>exchangesStack</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  stack <span class='op'>=</span> <span class='st'>"default"</span>,
+  area <span class='op'>=</span> <span class='cn'>NULL</span>,
+  mcYear <span class='op'>=</span> <span class='st'>"average"</span>,
+  dateRange <span class='op'>=</span> <span class='cn'>NULL</span>,
+  colors <span class='op'>=</span> <span class='cn'>NULL</span>,
+  yMin <span class='op'>=</span> <span class='cn'>NULL</span>,
+  yMax <span class='op'>=</span> <span class='cn'>NULL</span>,
+  customTicks <span class='op'>=</span> <span class='cn'>NULL</span>,
+  main <span class='op'>=</span> <span class='cn'>NULL</span>,
+  ylab <span class='op'>=</span> <span class='cn'>NULL</span>,
+  unit <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MWh"</span>, <span class='st'>"GWh"</span>, <span class='st'>"TWh"</span><span class='op'>)</span>,
+  compare <span class='op'>=</span> <span class='cn'>NULL</span>,
+  compareOpts <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  interactive <span class='op'>=</span> <span class='fu'><a href='setInteractivity.html'>getInteractivity</a></span><span class='op'>(</span><span class='op'>)</span>,
+  legend <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  legendId <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>1e+09</span>, <span class='fl'>1</span><span class='op'>)</span>,
+  groupId <span class='op'>=</span> <span class='va'>legendId</span>,
+  updateLegendOnMouseOver <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  legendItemsPerRow <span class='op'>=</span> <span class='fl'>5</span>,
+  width <span class='op'>=</span> <span class='cn'>NULL</span>,
+  height <span class='op'>=</span> <span class='cn'>NULL</span>,
+  xyCompare <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"union"</span>, <span class='st'>"intersect"</span><span class='op'>)</span>,
+  h5requestFiltering <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>,
+  stepPlot <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  drawPoints <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  timeSteph5 <span class='op'>=</span> <span class='st'>"hourly"</span>,
+  mcYearh5 <span class='op'>=</span> <span class='cn'>NULL</span>,
+  tablesh5 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"areas"</span>, <span class='st'>"links"</span><span class='op'>)</span>,
+  language <span class='op'>=</span> <span class='st'>"en"</span>,
+  hidden <span class='op'>=</span> <span class='cn'>NULL</span>,
+  refStudy <span class='op'>=</span> <span class='cn'>NULL</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span>
+
+<span class='fu'>exchangesStackAliases</span><span class='op'>(</span><span class='op'>)</span>
+
+<span class='fu'>setExchangesStackAlias</span><span class='op'>(</span>
+  <span class='va'>name</span>,
+  <span class='va'>variables</span>,
+  <span class='va'>colors</span>,
+  lines <span class='op'>=</span> <span class='cn'>NULL</span>,
+  lineColors <span class='op'>=</span> <span class='cn'>NULL</span>,
+  lineWidth <span class='op'>=</span> <span class='fl'>3</span>,
+  description <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,6 +202,11 @@ values imports.</p>
 <code><a href='https://rdrr.io/pkg/antaresRead/man/readAntares.html'>readAntares</a></code>. It is required to contain link data.
 If it also contains area data with column `ROW BAL.`, then exchanges with
 the rest of the world are also displayed on the chart.</p></td>
+    </tr>
+    <tr>
+      <th>stack</th>
+      <td><p>Name of the stack to use. If <code>default</code>, all flows available will be plotted. One can visualize available stacks with 
+<code>exchangesStackAliases</code></p></td>
     </tr>
     <tr>
       <th>area</th>
@@ -196,6 +230,18 @@ displayed. If NULL, then all data is displayed.</p></td>
       <td><p>Vector of colors with same length as parameter <code>variables</code>. If 
 <code>variables</code> is an alias, then this argument should be <code>NULL</code> in 
 order to use default colors.</p></td>
+    </tr>
+    <tr>
+      <th>yMin</th>
+      <td><p><code>numeric</code>, the minimum value to be displayed on all y Axis. If <code>NULL</code>, the min value is automatically set</p></td>
+    </tr>
+    <tr>
+      <th>yMax</th>
+      <td><p><code>numeric</code>, the maximum value to be displayed on all y Axis. If <code>NULL</code>, the max value is automatically set</p></td>
+    </tr>
+    <tr>
+      <th>customTicks</th>
+      <td><p><code>numeric</code> vector of the custom ticks values to be displayed on the y Axis. If <code>NULL</code>, the ticks are automatically generated</p></td>
     </tr>
     <tr>
       <th>main</th>
@@ -232,19 +278,23 @@ the user interactively choose the areas or districts to display.</p></td>
       <th>legend</th>
       <td><p>Logical value indicating if a legend should be drawn. This argument is 
 usefull when one wants to create a shared legend with
-<code><a href='tsLegend.html'>prodStackLegend</a></code></p></td>
+<code><a href='prodStackExchangesLegend.html'>prodStackLegend</a></code></p></td>
     </tr>
     <tr>
       <th>legendId</th>
       <td><p>Id of the legend linked to the graph. This argument is 
 usefull when one wants to create a shared legend with 
-<code><a href='tsLegend.html'>prodStackLegend</a></code></p></td>
+<code><a href='prodStackExchangesLegend.html'>prodStackLegend</a></code></p></td>
     </tr>
     <tr>
       <th>groupId</th>
       <td><p>Parameter that can be used to synchronize the horizontal 
 zoom of multiple charts. All charts that need to be synchronized must
 have the same group.</p></td>
+    </tr>
+    <tr>
+      <th>updateLegendOnMouseOver</th>
+      <td><p><code>LogicalValue</code>. If <code>TRUE</code> the legend will be updated when the mouse is over a stack. If <code>FALSE</code> the legend will be updated on a click</p></td>
     </tr>
     <tr>
       <th>legendItemsPerRow</th>
@@ -309,6 +359,39 @@ districts. Can also contains an opts who refer to a h5 file.</p></td>
       <th>...</th>
       <td><p>Other arguments for <code>manipulateWidget</code></p></td>
     </tr>
+    <tr>
+      <th>name</th>
+      <td><p>name of the stack to create or update</p></td>
+    </tr>
+    <tr>
+      <th>variables</th>
+      <td><p>A named list of expressions created with <code><a href='https://rdrr.io/r/base/list.html'>alist</a></code>. The
+name of each element is the name of the variable to draw in the stacked
+graph. The element itself is an expression explaining how to compute the
+variable (see examples).</p></td>
+    </tr>
+    <tr>
+      <th>lines</th>
+      <td><p>A named list of expressions created with <code><a href='https://rdrr.io/r/base/list.html'>alist</a></code>
+indicating how to compute the curves to display on top of the stacked graph.
+It should be <code>NULL</code> if there is no curve to trace or if parameter
+<code>variables</code> is an alias.</p></td>
+    </tr>
+    <tr>
+      <th>lineColors</th>
+      <td><p>Vector of colors with same length as parameter <code>lines</code>. This argument
+should be <code>NULL</code> if there is no curve to trace or if parameter
+<code>variables</code> is an alias.</p></td>
+    </tr>
+    <tr>
+      <th>lineWidth</th>
+      <td><p>Optionnal. Defaut to 3. Vector of width with same length as parameter <code>lines</code> (or only one value).</p></td>
+    </tr>
+    <tr>
+      <th>description</th>
+      <td><p>Description of the stack. It is displayed by function 
+<code>exchangesStackAliases</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -329,72 +412,69 @@ package <code>dygraphs</code>.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>mydata</span> <span class='kw'>&lt;-</span> <span class='fu'>readAntares</span>(<span class='kw'>links</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>timeStep</span> <span class='kw'>=</span> <span class='st'>"daily"</span>)
-<span class='fu'>exchangesStack</span>(<span class='no'>mydata</span>)
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>mydata</span> <span class='op'>&lt;-</span> <span class='fu'>readAntares</span><span class='op'>(</span>links <span class='op'>=</span> <span class='st'>"all"</span>, timeStep <span class='op'>=</span> <span class='st'>"daily"</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span><span class='va'>mydata</span><span class='op'>)</span>
 
 <span class='co'># Also display exchanges with the rest of the world</span>
-<span class='no'>mydata</span> <span class='kw'>&lt;-</span> <span class='fu'>readAntares</span>(<span class='kw'>areas</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>links</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>timeStep</span> <span class='kw'>=</span> <span class='st'>"daily"</span>)
-<span class='fu'>exchangesStack</span>(<span class='no'>mydata</span>)
+<span class='va'>mydata</span> <span class='op'>&lt;-</span> <span class='fu'>readAntares</span><span class='op'>(</span>areas <span class='op'>=</span> <span class='st'>"all"</span>, links <span class='op'>=</span> <span class='st'>"all"</span>, timeStep <span class='op'>=</span> <span class='st'>"daily"</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span><span class='va'>mydata</span><span class='op'>)</span>
 
 <span class='co'># Use compare :</span>
-<span class='fu'>exchangesStack</span>(<span class='no'>mydata</span>, <span class='kw'>compare</span> <span class='kw'>=</span> <span class='st'>"mcYear"</span>)
-<span class='fu'>exchangesStack</span>(<span class='no'>mydata</span>, <span class='kw'>compare</span> <span class='kw'>=</span> <span class='st'>"area"</span>)
-<span class='fu'>exchangesStack</span>(<span class='no'>mydata</span>, <span class='kw'>compare</span> <span class='kw'>=</span> <span class='st'>"unit"</span>)
-<span class='fu'>exchangesStack</span>(<span class='no'>mydata</span>, <span class='kw'>compare</span> <span class='kw'>=</span> <span class='st'>"legend"</span>)
-<span class='co'># Compare studies with refStudy argument </span>
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>myData1</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>myData2</span>)
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>myData1</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>myData2</span>, <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>myData2</span>, <span class='no'>myData3</span>, <span class='no'>myData4</span>), <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>myData1</span>)
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>myData2</span>, <span class='no'>myData3</span>, <span class='no'>myData4</span>), <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>myData1</span>, <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>exchangesStack</span><span class='op'>(</span><span class='va'>mydata</span>, compare <span class='op'>=</span> <span class='st'>"mcYear"</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span><span class='va'>mydata</span>, compare <span class='op'>=</span> <span class='st'>"area"</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span><span class='va'>mydata</span>, compare <span class='op'>=</span> <span class='st'>"unit"</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span><span class='va'>mydata</span>, compare <span class='op'>=</span> <span class='st'>"legend"</span><span class='op'>)</span>
+<span class='co'># Compare studies with refStudy argument</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>myData1</span>, refStudy <span class='op'>=</span> <span class='va'>myData2</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>myData1</span>, refStudy <span class='op'>=</span> <span class='va'>myData2</span>, interactive <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>myData2</span>, <span class='va'>myData3</span>, <span class='va'>myData4</span><span class='op'>)</span>, refStudy <span class='op'>=</span> <span class='va'>myData1</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>myData2</span>, <span class='va'>myData3</span>, <span class='va'>myData4</span><span class='op'>)</span>, refStudy <span class='op'>=</span> <span class='va'>myData1</span>, interactive <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># Use h5 opts</span>
 <span class='co'># Set path of simulaiton</span>
-<span class='fu'>setSimulationPath</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='no'>path1</span>)
+<span class='fu'>setSimulationPath</span><span class='op'>(</span>path <span class='op'>=</span> <span class='va'>path1</span><span class='op'>)</span>
 
 <span class='co'># Convert your study in h5 format</span>
-<span class='fu'>writeAntaresH5</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='no'>mynewpath</span>)
+<span class='fu'>writeAntaresH5</span><span class='op'>(</span>path <span class='op'>=</span> <span class='va'>mynewpath</span><span class='op'>)</span>
 
 <span class='co'># Redefine sim path with h5 file</span>
-<span class='no'>opts</span> <span class='kw'>&lt;-</span> <span class='fu'>setSimulationPath</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='no'>mynewpath</span>)
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>)
+<span class='va'>opts</span> <span class='op'>&lt;-</span> <span class='fu'>setSimulationPath</span><span class='op'>(</span>path <span class='op'>=</span> <span class='va'>mynewpath</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span><span class='op'>)</span>
 
 <span class='co'># Compare elements in a single study</span>
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>.compare</span> <span class='kw'>=</span> <span class='st'>"mcYear"</span>)
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, .compare <span class='op'>=</span> <span class='st'>"mcYear"</span><span class='op'>)</span>
 
 <span class='co'># Compare 2 studies</span>
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='no'>opts</span>, <span class='no'>opts2</span>))
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>opts</span>, <span class='va'>opts2</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># Compare 2 studies with argument refStudy </span>
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>opts2</span>)
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>opts2</span>, <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>mcYearh5</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>areas</span> <span class='kw'>=</span> <span class='no'>myArea</span>)
-<span class='fu'>exchangesStack</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>opts</span>, <span class='kw'>refStudy</span> <span class='kw'>=</span> <span class='no'>opts2</span>, <span class='kw'>h5requestFiltering</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-<span class='kw'>areas</span> <span class='kw'>=</span> <span class='fu'>getAreas</span>(<span class='kw'>select</span> <span class='kw'>=</span> <span class='st'>"a"</span>),
-<span class='kw'>links</span> <span class='kw'>=</span> <span class='fu'>getLinks</span>(<span class='kw'>areas</span> <span class='kw'>=</span> <span class='no'>myArea</span>),
-<span class='kw'>mcYears</span> <span class='kw'>=</span> <span class='no'>myMcYear</span>))
+<span class='co'># Compare 2 studies with argument refStudy</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, refStudy <span class='op'>=</span> <span class='va'>opts2</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, refStudy <span class='op'>=</span> <span class='va'>opts2</span>, interactive <span class='op'>=</span> <span class='cn'>FALSE</span>, mcYearh5 <span class='op'>=</span> <span class='fl'>2</span>, areas <span class='op'>=</span> <span class='va'>myArea</span><span class='op'>)</span>
+<span class='fu'>exchangesStack</span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>opts</span>, refStudy <span class='op'>=</span> <span class='va'>opts2</span>, h5requestFiltering <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+areas <span class='op'>=</span> <span class='fu'>getAreas</span><span class='op'>(</span>select <span class='op'>=</span> <span class='st'>"a"</span><span class='op'>)</span>,
+links <span class='op'>=</span> <span class='fu'>getLinks</span><span class='op'>(</span>areas <span class='op'>=</span> <span class='va'>myArea</span><span class='op'>)</span>,
+mcYears <span class='op'>=</span> <span class='va'>myMcYear</span><span class='op'>)</span><span class='op'>)</span>
 
-}</div></pre>
+<span class='op'>}</span>
+
+</div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
 
       <footer>
       <div class="copyright">
-  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert.</p>
+  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert, Paul Plessiez.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

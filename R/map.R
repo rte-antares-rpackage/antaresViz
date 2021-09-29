@@ -56,7 +56,9 @@
 #'   Name of a variable present in \code{x$links}. Its values are represented by
 #'   the line width of the links on the map.
 #' @param popupLinkVars
-#'   Vector of variables to display when user clicks on a link.
+#'   Vector of variables to display when user clicks on a link
+#' @param closePopupOnClick
+#'  \code{LogicalValue}, if \code{TRUE} the popups will automatically be closed with each click. If \code{FALSE}, the popups will stay open.
 #' @param type
 #'   If \code{type="avg"}, the data is averaged by area/and or link and
 #'   represented on the map. If it is equal to \code{"detail"}, only one time
@@ -168,6 +170,7 @@ plotMap <- function(x,
                     labelAreaVar = "none",
                     colLinkVar = "none", sizeLinkVar = "none", 
                     popupLinkVars = c(),
+                    closePopupOnClick = TRUE,
                     type = c("detail", "avg"),
                     timeId = NULL,
                     mcYear = "average",
@@ -364,10 +367,11 @@ plotMap <- function(x,
     # Function that draws the final map when leaving the shiny gadget.
     plotFun <- function(t, colAreaVar, sizeAreaVars, popupAreaVars, areaChartType, 
                         uniqueScale, showLabels, labelAreaVar, colLinkVar, sizeLinkVar, 
-                        popupLinkVars, 
+                        popupLinkVars, closePopupOnClick,
                         type = c("detail", "avg"), mcYear,
                         initial = TRUE, session = NULL, outputId = "output1",
                         dateRange = NULL, sizeMiniPlot = FALSE, options = NULL) {
+      
       
       if(!any(mapLayout$coords$area %in% unique(x$areas$area))){
         return(combineWidgets(.getLabelLanguage("Invalid Map Layout : wrongs nodes/links informations", language)))
@@ -432,9 +436,9 @@ plotMap <- function(x,
         }
       }
       map <- map %>% 
-        .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options) %>% 
+        .redrawLinks(x, mapLayout, mcYear, t, colLinkVar, sizeLinkVar, popupLinkVars, options, closePopupOnClick) %>% 
         .redrawCircles(x, mapLayout, mcYear, t, colAreaVar, sizeAreaVars, popupAreaVars, 
-                       uniqueScale, showLabels, labelAreaVar, areaChartType, options, sizeMiniPlot)
+                       uniqueScale, showLabels, labelAreaVar, areaChartType, options, closePopupOnClick, sizeMiniPlot)
 
       # combineWidgets(map, width = width, height = height) # bug
       map
@@ -533,7 +537,7 @@ plotMap <- function(x,
                 popupAreaVars = popupAreaVars, areaChartType = areaChartType,
                 uniqueScale = uniqueScale, showLabels = showLabels,
                 labelAreaVar = labelAreaVar, colLinkVar = colLinkVar, 
-                sizeLinkVar = sizeLinkVar, popupLinkVars = popupLinkVars,
+                sizeLinkVar = sizeLinkVar, popupLinkVars = popupLinkVars, closePopupOnClick = closePopupOnClick,
                 type = type, mcYear = mcYear, dateRange = dateRange,
                 sizeMiniPlot = sizeMiniPlot, options = options)
     })
@@ -584,6 +588,7 @@ plotMap <- function(x,
                                             colLinkVar = colLinkVar,
                                             sizeLinkVar = sizeLinkVar, 
                                             popupLinkVars = popupLinkVars,
+                                            closePopupOnClick = closePopupOnClick,
                                             type = type,
                                             mcYear = mcYear,
                                             initial = .initial,
@@ -807,7 +812,6 @@ plotMap <- function(x,
         areaChartType = mwSelect(
           {
             
-            
             if(length(sizeAreaVars) == 1){
               
               choices <- c("pie")
@@ -956,6 +960,7 @@ plotMap <- function(x,
       ),
       .display = any(sapply(params$x, function(p) {"links" %in% names(p$x)})) & !"Links" %in% hidden
     ),
+    closePopupOnClick = mwCheckbox(closePopupOnClick, label =.getLabelLanguage("closePopupOnClick",language), .display =  !"closePopupOnClick" %in% hidden),
     mapLayout = mwSharedValue(mapLayout),
     params = mwSharedValue({
       if(length(x_tranform) > 0 & length(mapLayout) > 0){

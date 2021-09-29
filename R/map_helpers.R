@@ -167,8 +167,9 @@
 .redrawCircles <- function(map, x, mapLayout, mcy, t, colAreaVar, sizeAreaVars,
                            popupAreaVars, uniqueScale, showLabels, labelAreaVar,
                            areaChartType,
-                           options, sizeMiniPlot = FALSE) {
+                           options,closePopupOnClick=TRUE , sizeMiniPlot = FALSE) {
   
+ 
   if (is.null(x$areas)) return(map)
   if (nrow(x$areas) == 0) return(map)
   
@@ -176,7 +177,6 @@
   
   # Just in case, we do not want to accidentally modify the original map layout.
   ml <- copy(mapLayout)
-  
   # Compute color and size of areas for the given time step.
   optsArea <- .getColAndSize(x$areas, ml$coords, "area", mcy, t,
                              colAreaVar, sizeAreaVars, popupAreaVars,
@@ -199,7 +199,10 @@
     
     # Chart options
     if (length(sizeAreaVars) < 1) areaChartType <- "polar-area"
-    if (uniqueScale) optsArea$maxSize <- max(optsArea$maxSize)
+    
+    if (uniqueScale){
+      for(n in names(optsArea$maxSize)){
+        optsArea$maxSize[n] <- max(optsArea$maxSize)}}
     
     # Labels
     labels <- NULL
@@ -219,16 +222,16 @@
     
     # Update corresponding polygons if necessary
     if (!is.null(ml$map)) {
-      onChange <- JS('
+      onChange <- JS(sprintf('
                      var s = this._map.layerManager.getLayer("shape", this.layerId);
-                     s.bindPopup(popup);
+                     s.bindPopup(popup,{autoClose: %s, closeOnClick: %s});
                      if (opts.fillColor) {
                      d3.select(s._path)
                      .transition()
                      .duration(750)
                      .attr("fill", opts.fillColor);
                      }
-                     ')
+                     ', tolower(closePopupOnClick),tolower(closePopupOnClick)))
       if (length(sizeAreaVars) == 0) width <- 0
       else width <- areaWidth
     } else {
@@ -255,7 +258,6 @@
         }
       }
     }
-    
     if(is.null(optsArea$Ra)){optsArea$Ra <- width}
     # Update areas
     
@@ -278,13 +280,14 @@
                             time = optsArea$coords$time,
                             maxValues = optsArea$maxSize, width = optsArea$Ra,
                             height = options$areaMaxHeight,
-                            showLabels = showLabels, labelText = labels, 
+                            showLabels = showLabels, labelText =  labels, 
                             type = areaChartType[[1]], 
                             colorPalette = options$areaChartColors,
                             fillColor = optsArea$color,
                             timeFormat = .getTimeFormat(timeStep),
                             legend = FALSE,
                             onChange = onChange,
+                            popupOptions=list(closeOnClick = closePopupOnClick, autoClose = closePopupOnClick),
                             popup = popupArgs(
                               showValues = showValuesInPopup,
                               digits = 2,
@@ -324,7 +327,7 @@
 
 # Update the links in an existing map
 .redrawLinks <- function(map, x, mapLayout, mcy, t, colLinkVar, sizeLinkVar, 
-                         popupLinkVars, options) {
+                         popupLinkVars, options, closePopupOnClick = TRUE) {
   if (is.null(x$links)) return(map)
   if (nrow(x$links) == 0) return(map)
   
@@ -361,7 +364,8 @@
                                  digits = 2,
                                  supValues = optsLink$coords[, optsLink$popupVars, with = FALSE]
                                ),
-                               opacity = 1)
+                               opacity = 1,
+                               popupOptions=list(closeOnClick = closePopupOnClick, autoClose= closePopupOnClick))
     
     # Update the legend
     

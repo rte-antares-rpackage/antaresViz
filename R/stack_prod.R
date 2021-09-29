@@ -30,6 +30,12 @@
 #' @param dateRange
 #'   A vector of two dates. Only data points between these two dates are 
 #'   displayed. If NULL, then all data is displayed.
+#' @param yMin
+#' \code{numeric}, the minimum value to be displayed on all y Axis. If \code{NULL}, the min value is automatically set
+#' @param yMax
+#' \code{numeric}, the maximum value to be displayed on all y Axis. If \code{NULL}, the max value is automatically set
+#' @param customTicks
+#'  \code{numeric} vector of the custom ticks values to be displayed on the y Axis. If \code{NULL}, the ticks are automatically generated
 #' @param main
 #'   Title of the graph.
 #' @param unit
@@ -63,6 +69,8 @@
 #' @param groupId Parameter that can be used to synchronize the horizontal 
 #'   zoom of multiple charts. All charts that need to be synchronized must
 #'   have the same group. 
+#' @param updateLegendOnMouseOver
+#'   \code{LogicalValue}. If \code{TRUE} the legend will be updated when the mouse is over a stack. If \code{FALSE} the legend will be updated on a click
 #' @param legendItemsPerRow
 #'   Number of elements to put in each row of the legend.
 #' @param name
@@ -214,6 +222,7 @@ prodStack <- function(x,
                       areas = NULL, 
                       mcYear = "average",
                       dateRange = NULL,
+                      yMin = NULL, yMax =  NULL, customTicks=NULL,
                       main = .getLabelLanguage("Production stack", language), 
                       unit = c("MWh", "GWh", "TWh"),
                       compare = NULL,
@@ -221,6 +230,7 @@ prodStack <- function(x,
                       interactive = getInteractivity(), 
                       legend = TRUE, legendId = sample(1e9, 1),
                       groupId = legendId,
+                      updateLegendOnMouseOver = TRUE,
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL, xyCompare = c("union", "intersect"),
                       h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
@@ -230,6 +240,7 @@ prodStack <- function(x,
                       hidden = NULL,
                       refStudy = NULL,
                       ...) {
+  
   
   #we can hide these values
   prodStackValHidden <- c("H5request", "timeSteph5", "tables", "mcYearH5", "mcYear", "main", "dateRange", 
@@ -287,7 +298,7 @@ prodStack <- function(x,
     dataDateRange <- as.Date(.timeIdToDate(range(x$timeId), timeStep, opts))
     if (length(init_dateRange) < 2) init_dateRange <- dataDateRange
     
-    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend, stepPlot, drawPoints) {
+    plotWithLegend <- function(id, areas, main = "", unit, stack, dateRange, mcYear, legend, stepPlot, drawPoints, updateLegendOnMouseOver, yMin, yMax, customTicks) {
       if (length(areas) == 0) return (combineWidgets(.getLabelLanguage("Please choose an area", language)))
       
       stackOpts <- .aliasToStackOptions(stack)
@@ -349,7 +360,9 @@ prodStack <- function(x,
                               unit = unit,
                               legendId = legendId + id - 1,
                               groupId = groupId,
+                              updateLegendOnMouseOver = updateLegendOnMouseOver,
                               dateRange = dateRange,
+                              yMin = yMin, yMax =  yMax, customTicks=customTicks,
                               stepPlot = stepPlot, drawPoints = drawPoints, language = language), silent = TRUE)
       
       if ("try-error" %in% class(p)){
@@ -399,7 +412,7 @@ prodStack <- function(x,
       myData <- params$x[[i]]
       myData$plotWithLegend(i, areas, main, unit,
                             stack, params$x[[1]]$dateRange,
-                            mcYear, legend, stepPlot, drawPoints)
+                            mcYear, legend, stepPlot, drawPoints, updateLegendOnMouseOver, yMin, yMax, customTicks)
     })
     
     return(combineWidgets(list = L_w))
@@ -432,7 +445,7 @@ prodStack <- function(x,
         widget <- params$x[[ind]]$plotWithLegend(.id, areas, main,
                                                  unit, stack, dateRange,
                                                  mcYear, legend,
-                                                 stepPlot, drawPoints)
+                                                 stepPlot, drawPoints, updateLegendOnMouseOver, yMin, yMax, customTicks)
         controlWidgetSize(widget, language)
       } else {
         return (combineWidgets(.getLabelLanguage("No data for this selection", language)))
@@ -565,7 +578,9 @@ prodStack <- function(x,
       allMcY <- .compareOperation(lapply(params$x, function(vv){
         unique(vv$x$mcYear)
       }), xyCompare)
+      allMcY=c("average",allMcY)
       names(allMcY) <- allMcY
+      
       if (is.null(allMcY)){
         allMcY <- "average"
         names(allMcY) <- .getLabelLanguage("average", language)
@@ -644,6 +659,10 @@ prodStack <- function(x,
     label = .getLabelLanguage("areas", language),
     .display = !"areas" %in% hidden
     ),
+    yMin= mwNumeric(value=yMin,label="yMin",
+                           .display = !"yMin" %in% hidden),
+    yMax= mwNumeric(value=yMax,label="yMax",
+                    .display = !"yMax" %in% hidden),
     timeStepdataload = mwSharedValue({
       attributes(x_tranform[[1]])$timeStep
     }),
@@ -651,8 +670,10 @@ prodStack <- function(x,
                         .display = !"legend" %in% hidden),
     stepPlot = mwCheckbox(stepPlot, label = .getLabelLanguage("stepPlot", language),
                           .display = !"stepPlot" %in% hidden),
-    drawPoints = mwCheckbox(drawPoints, label = .getLabelLanguage("drawPoints", language),
+    drawPoints = mwCheckbox(drawPoints, label =.getLabelLanguage("drawPoints", language),
                             .display = !"drawPoints" %in% hidden),
+    updateLegendOnMouseOver = mwCheckbox(updateLegendOnMouseOver, label =.getLabelLanguage("updateLegendOnMouseOver", language),
+                            .display = !"updateLegendOnMouseOver" %in% hidden),
     .compare = {
       compare
     },
@@ -723,9 +744,8 @@ prodStack <- function(x,
 #' @noRd
 .plotProdStack <- function(x, variables, colors, lines, lineColors, lineWidth,
                            main = NULL, unit = "MWh", legendId = "",
-                           groupId = legendId, width = NULL, height = NULL, dateRange = NULL, 
+                           groupId = legendId, updateLegendOnMouseOver = TRUE, width = NULL, height = NULL, dateRange = NULL, yMin=NULL, yMax=NULL, customTicks = NULL, 
                            stepPlot = FALSE, drawPoints = FALSE, language = "en", type = "Production") {
-  
   timeStep <- attr(x, "timeStep")
   
   formulas <- append(variables, lines)
@@ -736,11 +756,11 @@ prodStack <- function(x,
   for (n in names(formulas)) {
     dt[, c(n) := x[, eval(formulas[[n]]) / switch(unit, MWh = 1, GWh = 1e3, TWh = 1e6)]]
   }
-  
+
   p <- .plotStack(dt, timeStep, simOptions(x), colors, lines, lineColors, lineWidth, legendId,
-             groupId,
+             groupId, updateLegendOnMouseOver = updateLegendOnMouseOver,
              main = main, ylab = sprintf("Production (%s)", unit), 
-             width = width, height = height, dateRange = dateRange, stepPlot = stepPlot, 
+             width = width, height = height, dateRange = dateRange, yMin = yMin, yMax =  yMax, customTicks= customTicks, stepPlot = stepPlot, 
              drawPoints = drawPoints, language = language, type = type)
   p
 }

@@ -69,7 +69,7 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
     fillRow(do.call(fillCol, legendRows), height = i * 20),
     style = sprintf("padding-left: 100px; height:%spx", i * 20)
   )
-  
+ 
   tags$div(
     style=sprintf("position:relative;height:%spx", max(i * 20 + 20, 40)),
     tags$div(
@@ -149,10 +149,10 @@ tsLegend <- function(labels, colors, types = "line", legendItemsPerRow = 5, lege
     style = .style(width = "100%", height = h, padding = "0 4px", "font-size"= "12px"),
     content
   )
+  
 }
 
 JS_updateLegend <- function(legendId, timeStep = "hourly", language = "en") {
-  
   # Function that transform a timestamp ta a date label
   timeToLab <- switch(
     timeStep,

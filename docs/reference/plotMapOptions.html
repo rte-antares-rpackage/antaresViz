@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -38,7 +42,6 @@
 <meta property="og:title" content="Graphical options for plotMap — plotMapOptions" />
 <meta property="og:description" content="These functions get and set options that control some graphical aspects 
 of maps created with plotMap." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -56,7 +59,7 @@ of maps created with plotMap." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -70,7 +73,7 @@ of maps created with plotMap." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresViz</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.15.0.900</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.16</span>
       </span>
     </div>
 
@@ -78,7 +81,7 @@ of maps created with plotMap." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -100,11 +103,14 @@ of maps created with plotMap." />
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/rte-antares-rpackage/antaresViz">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/rte-antares-rpackage/antaresViz/">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -131,37 +137,37 @@ of maps created with plotMap." />
 of maps created with <code><a href='plotMap.html'>plotMap</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotMapOptions</span>(
-  <span class='kw'>areaDefaultCol</span> <span class='kw'>=</span> <span class='st'>"#DDDDE5"</span>,
-  <span class='kw'>areaDefaultSize</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>areaMaxSize</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-  <span class='kw'>areaMaxHeight</span> <span class='kw'>=</span> <span class='fl'>50</span>,
-  <span class='kw'>areaChartColors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>areaColorScaleOpts</span> <span class='kw'>=</span> <span class='fu'>colorScaleOptions</span>(),
-  <span class='kw'>labelMinSize</span> <span class='kw'>=</span> <span class='fl'>8</span>,
-  <span class='kw'>labelMaxSize</span> <span class='kw'>=</span> <span class='fl'>24</span>,
-  <span class='kw'>linkDefaultCol</span> <span class='kw'>=</span> <span class='st'>"#BEBECE"</span>,
-  <span class='kw'>linkDefaultSize</span> <span class='kw'>=</span> <span class='fl'>3</span>,
-  <span class='kw'>linkMaxSize</span> <span class='kw'>=</span> <span class='fl'>15</span>,
-  <span class='kw'>linkColorScaleOpts</span> <span class='kw'>=</span> <span class='fu'>colorScaleOptions</span>(),
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"choose"</span>, <span class='st'>"visible"</span>, <span class='st'>"hidden"</span>),
-  <span class='kw'>tilesURL</span> <span class='kw'>=</span> <span class='fu'>defaultTilesURL</span>(),
-  <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>map</span>) {     <span class='no'>map</span> }
-)
+    <pre class="usage"><span class='fu'>plotMapOptions</span><span class='op'>(</span>
+  areaDefaultCol <span class='op'>=</span> <span class='st'>"#DDDDE5"</span>,
+  areaDefaultSize <span class='op'>=</span> <span class='fl'>30</span>,
+  areaMaxSize <span class='op'>=</span> <span class='fl'>50</span>,
+  areaMaxHeight <span class='op'>=</span> <span class='fl'>50</span>,
+  areaChartColors <span class='op'>=</span> <span class='cn'>NULL</span>,
+  areaColorScaleOpts <span class='op'>=</span> <span class='fu'>colorScaleOptions</span><span class='op'>(</span><span class='op'>)</span>,
+  labelMinSize <span class='op'>=</span> <span class='fl'>8</span>,
+  labelMaxSize <span class='op'>=</span> <span class='fl'>24</span>,
+  linkDefaultCol <span class='op'>=</span> <span class='st'>"#BEBECE"</span>,
+  linkDefaultSize <span class='op'>=</span> <span class='fl'>3</span>,
+  linkMaxSize <span class='op'>=</span> <span class='fl'>15</span>,
+  linkColorScaleOpts <span class='op'>=</span> <span class='fu'>colorScaleOptions</span><span class='op'>(</span><span class='op'>)</span>,
+  legend <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"choose"</span>, <span class='st'>"visible"</span>, <span class='st'>"hidden"</span><span class='op'>)</span>,
+  tilesURL <span class='op'>=</span> <span class='fu'>defaultTilesURL</span><span class='op'>(</span><span class='op'>)</span>,
+  preprocess <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>map</span><span class='op'>)</span> <span class='op'>{</span>     <span class='va'>map</span> <span class='op'>}</span>
+<span class='op'>)</span>
 
-<span class='fu'>defaultTilesURL</span>()
+<span class='fu'>defaultTilesURL</span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='fu'>colorScaleOptions</span>(
-  <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>domain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>negCol</span> <span class='kw'>=</span> <span class='st'>"#FF0000"</span>,
-  <span class='kw'>zeroCol</span> <span class='kw'>=</span> <span class='st'>"#FAFAFA"</span>,
-  <span class='kw'>posCol</span> <span class='kw'>=</span> <span class='st'>"#0000FF"</span>,
-  <span class='kw'>naCol</span> <span class='kw'>=</span> <span class='st'>"#EEEEEE"</span>,
-  <span class='kw'>zeroTol</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>levels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
-)</pre>
+<span class='fu'>colorScaleOptions</span><span class='op'>(</span>
+  breaks <span class='op'>=</span> <span class='fl'>5</span>,
+  domain <span class='op'>=</span> <span class='cn'>NULL</span>,
+  negCol <span class='op'>=</span> <span class='st'>"#FF0000"</span>,
+  zeroCol <span class='op'>=</span> <span class='st'>"#FAFAFA"</span>,
+  posCol <span class='op'>=</span> <span class='st'>"#0000FF"</span>,
+  naCol <span class='op'>=</span> <span class='st'>"#EEEEEE"</span>,
+  zeroTol <span class='op'>=</span> <span class='cn'>NULL</span>,
+  colors <span class='op'>=</span> <span class='cn'>NULL</span>,
+  levels <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -286,90 +292,88 @@ variable to represent is a categorical variable.</p></td>
     <p>A list with the values of the different graphical parameters.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 
 <span class='co'># Example : Change color for area variables </span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>antaresViz</span>)
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/rte-antares-rpackage/antaresViz'>antaresViz</a></span><span class='op'>)</span>
 
-<span class='no'>studyPath</span> <span class='kw'>&lt;-</span> <span class='st'>"path/to/study"</span>
-<span class='fu'>setSimulationPath</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='no'>studyPath</span>, <span class='kw'>simulation</span> <span class='kw'>=</span> -<span class='fl'>1</span>)
-<span class='no'>myData</span><span class='kw'>&lt;-</span><span class='fu'>readAntares</span>(<span class='kw'>areas</span> <span class='kw'>=</span> <span class='st'>"all"</span>, <span class='kw'>links</span> <span class='kw'>=</span> <span class='st'>"all"</span>)
+<span class='va'>studyPath</span> <span class='op'>&lt;-</span> <span class='st'>"path/to/study"</span>
+<span class='fu'>setSimulationPath</span><span class='op'>(</span>path <span class='op'>=</span> <span class='va'>studyPath</span>, simulation <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>myData</span><span class='op'>&lt;-</span><span class='fu'>readAntares</span><span class='op'>(</span>areas <span class='op'>=</span> <span class='st'>"all"</span>, links <span class='op'>=</span> <span class='st'>"all"</span><span class='op'>)</span>
 
-<span class='no'>ml</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='kw'>file</span> <span class='kw'>=</span> <span class='st'>"path/to/mapLayout.rds"</span>)
+<span class='va'>ml</span><span class='op'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='st'>"path/to/mapLayout.rds"</span><span class='op'>)</span>
 
-<span class='no'>myOption</span><span class='kw'>&lt;-</span><span class='fu'>plotMapOptions</span>(<span class='kw'>areaChartColors</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"yellow"</span>, <span class='st'>"violetred"</span>))
+<span class='va'>myOption</span><span class='op'>&lt;-</span><span class='fu'>plotMapOptions</span><span class='op'>(</span>areaChartColors <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"yellow"</span>, <span class='st'>"violetred"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'><a href='plotMap.html'>plotMap</a></span>(<span class='no'>myData</span>,
-        <span class='no'>ml</span>,
-        <span class='kw'>sizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SOLAR"</span>, <span class='st'>"WIND"</span>),
-        <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"avg"</span>,
-        <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-       <span class='kw'>options</span> <span class='kw'>=</span> <span class='no'>myOption</span>
-)
+<span class='fu'><a href='plotMap.html'>plotMap</a></span><span class='op'>(</span><span class='va'>myData</span>, 
+        <span class='va'>ml</span>, 
+        sizeAreaVars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SOLAR"</span>, <span class='st'>"WIND"</span><span class='op'>)</span>, 
+        type<span class='op'>=</span><span class='st'>"avg"</span>, 
+        interactive <span class='op'>=</span> <span class='cn'>FALSE</span>, 
+       options <span class='op'>=</span> <span class='va'>myOption</span>
+<span class='op'>)</span>
 
 <span class='co'># for pie chart </span>
-<span class='fu'><a href='plotMap.html'>plotMap</a></span>(<span class='no'>myData</span>,
-        <span class='no'>ml</span>,
-        <span class='kw'>sizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SOLAR"</span>, <span class='st'>"WIND"</span>),
-        <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"avg"</span>,
-        <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-        <span class='kw'>options</span> <span class='kw'>=</span> <span class='no'>myOption</span>,
-        <span class='kw'>areaChartType</span> <span class='kw'>=</span> <span class='st'>"pie"</span>,
-        <span class='kw'>sizeMiniPlot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)
+<span class='fu'><a href='plotMap.html'>plotMap</a></span><span class='op'>(</span><span class='va'>myData</span>, 
+        <span class='va'>ml</span>, 
+        sizeAreaVars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SOLAR"</span>, <span class='st'>"WIND"</span><span class='op'>)</span>, 
+        type<span class='op'>=</span><span class='st'>"avg"</span>, 
+        interactive <span class='op'>=</span> <span class='cn'>FALSE</span>, 
+        options <span class='op'>=</span> <span class='va'>myOption</span>,
+        areaChartType <span class='op'>=</span> <span class='st'>"pie"</span>,
+        sizeMiniPlot <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span>
 
 <span class='co'># Example : Change color for link and area variables </span>
-<span class='no'>myOption</span> <span class='kw'>&lt;-</span> <span class='fu'>plotMapOptions</span>(<span class='kw'>areaChartColors</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"yellow"</span>, <span class='st'>"violetred"</span>), <span class='kw'>linkDefaultCol</span> <span class='kw'>=</span> <span class='st'>"green"</span>)
-<span class='fu'><a href='plotMap.html'>plotMap</a></span>(<span class='no'>myData</span>,
-        <span class='no'>ml</span>,
-        <span class='kw'>type</span><span class='kw'>=</span><span class='st'>"avg"</span>,
-        <span class='kw'>sizeAreaVars</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"SOLAR"</span>, <span class='st'>"WIND"</span>),
-        <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-        <span class='kw'>options</span> <span class='kw'>=</span> <span class='no'>myOption</span>
-)
+<span class='va'>myOption</span> <span class='op'>&lt;-</span> <span class='fu'>plotMapOptions</span><span class='op'>(</span>areaChartColors <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"yellow"</span>, <span class='st'>"violetred"</span><span class='op'>)</span>, linkDefaultCol <span class='op'>=</span> <span class='st'>"green"</span><span class='op'>)</span>
+<span class='fu'><a href='plotMap.html'>plotMap</a></span><span class='op'>(</span><span class='va'>myData</span>, 
+        <span class='va'>ml</span>, 
+        type<span class='op'>=</span><span class='st'>"avg"</span>, 
+        sizeAreaVars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SOLAR"</span>, <span class='st'>"WIND"</span><span class='op'>)</span>, 
+        interactive <span class='op'>=</span> <span class='cn'>FALSE</span>, 
+        options <span class='op'>=</span> <span class='va'>myOption</span>
+<span class='op'>)</span>
 
 <span class='co'># Change default area color </span>
-<span class='no'>myOption</span> <span class='kw'>&lt;-</span> <span class='fu'>plotMapOptions</span>(<span class='kw'>areaDefaultCol</span> <span class='kw'>=</span> <span class='st'>"green"</span>)
-<span class='fu'><a href='plotMap.html'>plotMap</a></span>(<span class='no'>myData</span>,
-        <span class='no'>ml</span>,
-        <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-        <span class='kw'>options</span> <span class='kw'>=</span> <span class='no'>myOption</span>
-)
+<span class='va'>myOption</span> <span class='op'>&lt;-</span> <span class='fu'>plotMapOptions</span><span class='op'>(</span>areaDefaultCol <span class='op'>=</span> <span class='st'>"green"</span><span class='op'>)</span>
+<span class='fu'><a href='plotMap.html'>plotMap</a></span><span class='op'>(</span><span class='va'>myData</span>, 
+        <span class='va'>ml</span>, 
+        interactive <span class='op'>=</span> <span class='cn'>FALSE</span>, 
+        options <span class='op'>=</span> <span class='va'>myOption</span>
+<span class='op'>)</span>
 
 <span class='co'># Change the scale </span>
-<span class='fu'><a href='plotMap.html'>plotMap</a></span>(<span class='no'>myData</span>,
-        <span class='no'>ml</span>,
-        <span class='kw'>colAreaVar</span> <span class='kw'>=</span> <span class='st'>"MRG. PRICE"</span>,
-        <span class='kw'>options</span> <span class='kw'>=</span> <span class='fu'>plotMapOptions</span>(
-          <span class='kw'>areaColorScaleOpts</span> <span class='kw'>=</span> <span class='fu'>colorScaleOptions</span>(
-            <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>1000</span>, <span class='fl'>100</span>, <span class='fl'>200</span>, <span class='fl'>20000</span>),
-            <span class='kw'>colors</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"green"</span>, <span class='st'>"orange"</span>, <span class='st'>"red"</span>)
-          )
-        ),
-        <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)
-}</div></pre>
-  </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+<span class='fu'><a href='plotMap.html'>plotMap</a></span><span class='op'>(</span><span class='va'>myData</span>, 
+        <span class='va'>ml</span>, 
+        colAreaVar <span class='op'>=</span> <span class='st'>"MRG. PRICE"</span>,
+        options <span class='op'>=</span> <span class='fu'>plotMapOptions</span><span class='op'>(</span>
+          areaColorScaleOpts <span class='op'>=</span> <span class='fu'>colorScaleOptions</span><span class='op'>(</span>
+            breaks <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1000</span>, <span class='fl'>100</span>, <span class='fl'>200</span>, <span class='fl'>20000</span><span class='op'>)</span>,
+            colors <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"green"</span>, <span class='st'>"orange"</span>, <span class='st'>"red"</span><span class='op'>)</span>
+          <span class='op'>)</span>
+        <span class='op'>)</span>,
+        interactive <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span>
+<span class='op'>}</span>
 
+</div></pre>
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
 
       <footer>
       <div class="copyright">
-  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert.</p>
+  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert, Paul Plessiez.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
