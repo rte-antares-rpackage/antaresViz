@@ -176,21 +176,31 @@ observe({
     isolate({
       # areas
       areas <- c("all", opts$areaList)
+      if(isTRUE(all.equal(c("all"), areas))) areas <- c("", "all")
       updateSelectInput(session, "read_areas", paste0(antaresViz:::.getLabelLanguage("Areas", current_language), " : "), 
                         choices = areas, selected = areas[1])
       
       # links
       links <- c("all", opts$linkList)
+      if(isTRUE(all.equal(c("all"), links))) links <- c("", "all")
       updateSelectInput(session, "read_links", paste0(antaresViz:::.getLabelLanguage("Links", current_language), " : "), 
                         choices = links, selected = links[1])
       
       # clusters
       clusters <- c("all", opts$areasWithClusters)
+      if(isTRUE(all.equal(c("all"), clusters))) clusters <- c("", "all")
       updateSelectInput(session, "read_clusters", paste0(antaresViz:::.getLabelLanguage("Clusters", current_language), " : "), 
                         choices = clusters, selected = clusters[1])
       
+      # clustersRes
+      clustersRes <- c("all", opts$areasWithResClusters)
+      if(isTRUE(all.equal(c("all"), clustersRes))) clustersRes <- c("", "all")
+      updateSelectInput(session, "read_clusters_res", paste0(antaresViz:::.getLabelLanguage("ClustersRes", current_language), " : "), 
+                        choices = clustersRes, selected = clustersRes[1])
+      
       # districts
       districts <- c("all", opts$districtList)
+      if(isTRUE(all.equal(c("all"), districts))) districts <- c("", "all")
       updateSelectInput(session, "read_districts", paste0(antaresViz:::.getLabelLanguage("Districts", current_language), " : "), 
                         choices = districts, selected = districts[1])
       

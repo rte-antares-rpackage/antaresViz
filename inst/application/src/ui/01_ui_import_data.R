@@ -43,17 +43,22 @@ tabPanel(textOutput("label_tab_import_data"),
                                    
                                    h3(textOutput("title_readAntares")),
                                    fluidRow(
-                                     column(3, 
-                                            selectInput("read_areas", "Areas :", choices = NULL, selected = NULL, multiple = TRUE)
+                                     column(6,
+                                            selectInput("read_areas", "Areas :", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
                                      ), 
-                                     column(3, 
-                                            selectInput("read_links", "Links :", choices = NULL, selected = NULL, multiple = TRUE)
-                                     ), 
-                                     column(3, 
-                                            selectInput("read_clusters", "Clusters : ", choices = NULL, selected = NULL, multiple = TRUE)
-                                     ), 
-                                     column(3, 
-                                            selectInput("read_districts", "Districts :", choices = NULL, selected = NULL, multiple = TRUE)
+                                     column(6, 
+                                            selectInput("read_links", "Links :", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
+                                     )
+                                   ), 
+                                   fluidRow(
+                                     column(4, 
+                                            selectInput("read_clusters", "Clusters : ", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
+                                     ),
+                                     column(4, 
+                                            selectInput("read_clusters_res", "ClustersRes : ", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
+                                     ),
+                                     column(4, 
+                                            selectInput("read_districts", "Districts :", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
                                      )
                                    ), 
                                    conditionalPanel(condition = "output.current_opts_h5 === false",
