@@ -113,7 +113,18 @@ pkgEnv$prodStackAliases <- list(
     description = "must-run",
     var = c("pumpedStorage", "import/export", "mustRunTotal", "thermalDispatchable",
             "hydraulicDispatchable", "renewableNoDispatchable")
+  ),
+  
+  eco2mix_clusters = .getProdStackAlias(
+    description = "Production stack used on Eco2mix website with detailed
+    renewable generation per type",
+    var = c("pumpedStorage", "import/export", "bioenergy", "windOnshore",
+            "windOffshore", "solarPV", "solarRooftop", "solarConcentration",
+            "otherRes","nuclear", "hydraulic", "gas", "coal", "lignite", "oil",
+            "other"),
+    lines = c("load", "totalProd")
   )
+  
 )
 
 rm(graphicalCharter, formulas, colors)
