@@ -1,7 +1,17 @@
+checkSlotId <- function(data){
+  if("SpatialPolygonsDataFrame" %in% class(data)){
+    data <- sp::spChFIDs(data, as.character(1:nrow(data@data)))
+  }
+  data
+}
+
 #' @noRd
 leafletDragPoints <- function(geopoints, map = NULL, width = NULL, height = NULL,
                               init = FALSE, reset_map = FALSE, draggable = TRUE) {
+  
   if (!is.null(map)){
+    map <- checkSlotId(map)
+    
     if("geoAreaId" %in% names(map)){
       map <- geojsonio::geojson_json(map[!duplicated(map$"geoAreaId"), ])
       # } else if("code" %in% names(map)){
