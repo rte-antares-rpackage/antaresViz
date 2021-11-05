@@ -279,7 +279,7 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   return(resList)
 }
 
-#' edit h5 file for TEST 
+#' edit h5 file only for TEST 
 #' currently only for hourly data and areas
 #' 
 #' @param pathH5 path H5 file
@@ -336,7 +336,7 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   
   hourlyData[,,,] <- newValue
   
-  rhdf5::h5writeDataset.array(
+  rhdf5::h5writeDataset(
     obj = hourlyData, 
     h5loc = H5locAntaresh5, 
     name = paste0(timeStepType, typeOfData, "/data"),
