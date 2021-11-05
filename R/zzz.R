@@ -90,7 +90,7 @@ pkgEnv$prodStackAliases <- list(
   eco2mix = .getProdStackAlias(
     description = "Production stack used on Eco2mix website: 
     http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique",
-    var = c("pumpedStorage", "import/export", "bioenergy", "wind", "solar", 
+    var = c("pumpedStorage", "import/export", "bioenergy", "wind", "solar","otherRes", 
             "nuclear", "hydraulic", "gas", "coal", "lignite", "oil", "other"),
     lines = c("load", "totalProduction")
   ),
@@ -113,7 +113,18 @@ pkgEnv$prodStackAliases <- list(
     description = "must-run",
     var = c("pumpedStorage", "import/export", "mustRunTotal", "thermalDispatchable",
             "hydraulicDispatchable", "renewableNoDispatchable")
+  ),
+  
+  eco2mix_clusters = .getProdStackAlias(
+    description = "Production stack used on Eco2mix website with detailed
+    renewable generation per type",
+    var = c("pumpedStorage", "import/export", "bioenergy", "windOnshore",
+            "windOffshore", "solarPV", "solarRooftop", "solarConcentration",
+            "otherRes","nuclear", "hydraulic", "gas", "coal", "lignite", "oil",
+            "other"),
+    lines = c("load", "totalProduction")
   )
+  
 )
 
 rm(graphicalCharter, formulas, colors)
@@ -179,7 +190,7 @@ language_columns[, tmp_row := NULL]
 }
 
 # map color
-colorsVars <- fread(input = system.file("color.csv", package = "antaresViz"))
+colorsVars <- fread(input = system.file("colors_map.csv", package = "antaresViz"))
 colorsVars <- unique(colorsVars, by = "Column")
 colorsVars$colors <- rgb(colorsVars$red, colorsVars$green, colorsVars$blue, maxColorValue = 255)
 
@@ -268,7 +279,7 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   return(resList)
 }
 
-#' edit h5 file for TEST 
+#' edit h5 file only for TEST 
 #' currently only for hourly data and areas
 #' 
 #' @param pathH5 path H5 file
@@ -325,7 +336,7 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   
   hourlyData[,,,] <- newValue
   
-  rhdf5::h5writeDataset.array(
+  rhdf5::h5writeDataset(
     obj = hourlyData, 
     h5loc = H5locAntaresh5, 
     name = paste0(timeStepType, typeOfData, "/data"),

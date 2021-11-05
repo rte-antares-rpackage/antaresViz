@@ -1,7 +1,7 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.16
+Version: 0.17
 Authors@R: c(
     person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "Zawam", role = "aut"),
@@ -22,7 +22,7 @@ BugReports: https://github.com/rte-antares-rpackage/antaresViz/issues
 License: GPL (>= 2) | file LICENSE 
 Encoding: UTF-8
 Depends:
-    antaresRead (>= 2.2.7),
+    antaresRead (>= 2.2.9),
     antaresProcessing (>= 0.13.0), 
     spMaps (>= 0.2)
 Imports:
@@ -47,7 +47,7 @@ Imports:
     assertthat,
     rAmCharts,
     utils
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     testthat,
     covr,

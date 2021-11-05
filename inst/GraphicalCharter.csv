@@ -1,29 +1,37 @@
-name;red;green;blue;formula;Needed_Col
-pumpedStorage;17;71;185;PSP;PSP
-import/export;150;150;150;- BALANCE + `ROW BAL.`;BALANCE,ROW BAL.
-mustRunTotal;120;136;194;mustRunTotal;mustRunTotal
-mustRunPartial;120;236;194;mustRunPartial;mustRunPartial
-mustRun;220;236;94;mustRun;mustRun
-bioenergy;22;106;87;`MISC. NDG`;MISC. NDG
-wind;116;205;185;WIND;WIND
-solar;242;116;6;SOLAR;SOLAR
-nuclear;245;179;0;NUCLEAR;NUCLEAR
-hydraulic;39;114;178;`H. ROR`+`H. STOR`;H. ROR,H. STOR
-gas;243;10;10;GAS;GAS
-coal;172;140;53;COAL;COAL
-other;173;255;47;`MISC. DTG` + `MIX. FUEL`;MISC. DTG,MIX. FUEL
-load;135;86;39;LOAD;LOAD
-renewable;0;255;0;WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG`;WIND,SOLAR,H. ROR,H. STOR,MISC. NDG
-renewableNoDispatchable;0;255;0;WIND+SOLAR+`H. ROR`+`MISC. NDG`;WIND,SOLAR,H. ROR,MISC. NDG
-thermal;77;77;77;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`;NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG
-thermalDispatchable;100;100;100;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`;NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG
-hydraulicDispatchable;39;114;178;`H. STOR`;H. STOR
-lignite;180;130;43;LIGNITE;LIGNITE
-oil;131;86;162;OIL;OIL
-mixFuel;127;84;156;`MIX. FUEL`;MIX. FUEL
-misc. DTG;173;255;47;`MISC. DTG`;MISC. DTG
-hydraulicRor;61;96;125;`H. ROR`;H. ROR
-hydraulicStor;84;151;208;`H. STOR`;H. STOR
-totalProduction;235;155;166;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`+WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG` + pmax(0, PSP);NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG,WIND,SOLAR,H. ROR,H. STOR,MISC. NDG,PSP
-netLoad;101;180;197;netLoad;netLoad
-thermalAvailability;1;1;1;`AVL DTG`;AVL DTG
+name;red;green;blue;formula;Needed_Col;;
+pumpedStorage;17;71;185;PSP;PSP;;
+import/export;150;150;150;- BALANCE + `ROW BAL.`;BALANCE,ROW BAL.;;
+mustRunTotal;120;136;194;mustRunTotal;mustRunTotal;;
+mustRunPartial;120;236;194;mustRunPartial;mustRunPartial;;
+mustRun;220;236;94;mustRun;mustRun;;
+bioenergy;22;106;87;`MISC. NDG`;MISC. NDG;;
+wind;116;205;185;{if(exists('WIND', inherits = FALSE)){`WIND`} else {0}}+{if(exists('WIND OFFSHORE', inherits = FALSE)){`WIND OFFSHORE`} else {0}}+{if(exists('WIND ONSHORE', inherits = FALSE)){`WIND ONSHORE`} else {0}};WIND,WIND OFFSHORE,WIND ONSHORE;;
+solar;242;116;6;{if(exists('SOLAR', inherits = FALSE)){`SOLAR`} else {0}}+{if(exists('SOLAR CONCRT.', inherits = FALSE)){`SOLAR CONCRT.`} else {0}}+{if(exists('SOLAR PV', inherits = FALSE)){`SOLAR PV`} else {0}}+{if(exists('SOLAR ROOFT', inherits = FALSE)){`SOLAR ROOFT`} else {0}};SOLAR,SOLAR CONCRT.,SOLAR PV,SOLAR ROOFT;;
+nuclear;245;179;0;NUCLEAR;NUCLEAR;;
+hydraulic;39;114;178;`H. ROR`+`H. STOR`;H. ROR,H. STOR;;
+gas;243;10;10;GAS;GAS;;
+coal;172;140;53;COAL;COAL;;
+other;173;255;47;`MISC. DTG` + `MIX. FUEL`+{if(exists('MISC. DTG 2', inherits = FALSE)){`MISC. DTG 2`} else {0}}+{if(exists('MISC. DTG 3', inherits = FALSE)){`MISC. DTG 3`} else {0}}+{if(exists('MISC. DTG 4', inherits = FALSE)){`MISC. DTG 4`} else {0}};MISC. DTG,MISC. DTG 2,MISC. DTG 3,MISC. DTG 4,MIX. FUEL;;
+load;135;86;39;LOAD;LOAD;;
+renewable;0;255;0;WIND+SOLAR+`H. ROR`+`H. STOR`+`MISC. NDG`;WIND,SOLAR,H. ROR,H. STOR,MISC. NDG;;
+renewableNoDispatchable;0;255;0;WIND+SOLAR+`H. ROR`+`MISC. NDG`;WIND,SOLAR,H. ROR,MISC. NDG;;
+thermal;77;77;77;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`;NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG;;
+thermalDispatchable;100;100;100;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`;NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG;;
+hydraulicDispatchable;39;114;178;`H. STOR`;H. STOR;;
+lignite;180;130;43;LIGNITE;LIGNITE;;
+oil;131;86;162;OIL;OIL;;
+mixFuel;127;84;156;`MIX. FUEL`;MIX. FUEL;;
+misc. DTG;173;255;47;`MISC. DTG`;MISC. DTG;;
+hydraulicRor;61;96;125;`H. ROR`;H. ROR;;
+hydraulicStor;84;151;208;`H. STOR`;H. STOR;;
+totalProduction;235;155;166;NUCLEAR+LIGNITE+COAL+GAS+OIL+`MIX. FUEL`+`MISC. DTG`+`H. ROR`+`H. STOR`+`MISC. NDG` + pmax(0, PSP)+{if(exists('MISC. DTG 2', inherits = FALSE)){`MISC. DTG 2`} else {0}}+{if(exists('MISC. DTG 23', inherits = FALSE)){`MISC. DTG 3`} else {0}}+{if(exists('MISC. DTG 4', inherits = FALSE)){`MISC. DTG 4`} else {0}}+{if(exists('WIND', inherits = FALSE)){`WIND`} else {0}}+{if(exists('SOLAR', inherits = FALSE)){`SOLAR`} else {0}}+{if(exists('WIND OFFSHORE', inherits = FALSE)){`WIND OFFSHORE`} else {0}}+{if(exists('WIND ONSHORE', inherits = FALSE)){`WIND ONSHORE`} else {0}}+{if(exists('SOLAR CONCRT.', inherits = FALSE)){`SOLAR CONCRT.`} else {0}}+{if(exists('SOLAR PV', inherits = FALSE)){`SOLAR PV`} else {0}}+{if(exists('SOLAR ROOFT', inherits = FALSE)){`SOLAR ROOFT`} else {0}}+{if(exists('RENW. 1', inherits = FALSE)){`RENW. 1`} else {0}}+{if(exists('RENW. 2', inherits = FALSE)){`RENW. 2`} else {0}}+{if(exists('RENW. 3', inherits = FALSE)){`RENW. 3`} else {0}}+{if(exists('RENW. 4', inherits = FALSE)){`RENW. 4`} else {0}};NUCLEAR,LIGNITE,COAL,GAS,OIL,MIX. FUEL,MISC. DTG,MISC. DTG 2,MISC. DTG 3,MISC. DTG 4,WIND,SOLAR,H. ROR,H. STOR,MISC. NDG,PSP,WIND OFFSHORE,WIND ONSHORE,SOLAR CONCRT.,SOLAR PV,SOLAR ROOFT, RENW. 1, RENW. 2, RENW. 3, RENW. 4;;
+netLoad;101;180;197;netLoad;netLoad;;
+thermalAvailability;1;1;1;`AVL DTG`;AVL DTG;;
+solarAggregated;242;116;6;`SOLAR CONCRT.`+`SOLAR PV`+`SOLAR ROOFT`;SOLAR CONCRT.,SOLAR PV,SOLAR ROOFT;;
+windAggregated;116;205;185;`WIND OFFSHORE`+`WIND ONSHORE`;WIND OFFSHORE,WIND ONSHORE;;
+solarPV;255;132;6;`SOLAR PV`;SOLAR PV;;
+solarRooftop;255;148;6;`SOLAR ROOFT`;SOLAR ROOFT;;
+solarConcentration;255;116;6;`SOLAR CONCRT.`;SOLAR CONCRT.;;
+windOnshore;116;205;225;`WIND ONSHORE`;WIND ONSHORE;;
+windOffshore;24;205;225;`WIND OFFSHORE`;WIND OFFSHORE;;
+otherRes;0;204;0;{if(exists('RENW. 1', inherits = FALSE)){`RENW. 1`} else {0}}+{if(exists('RENW. 2', inherits = FALSE)){`RENW. 2`} else {0}}+{if(exists('RENW. 3', inherits = FALSE)){`RENW. 3`} else {0}}+{if(exists('RENW. 4', inherits = FALSE)){`RENW. 4`} else {0}};RENW. 1, RENW. 2, RENW. 3, RENW. 4;;

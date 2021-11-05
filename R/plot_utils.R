@@ -16,7 +16,7 @@
 .getTSData <- function(x, tpl, variable, elements, 
                        uniqueElement = unique(tpl$element), 
                        mcYear = NULL, 
-                       dateRange = NULL, aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"), 
+                       dateRange = NULL, aggregate = c("none", "mean", "sum", "mean by variable", "sum by variable"), 
                        typeConfInt = FALSE) {
   
   if (length(variable) == 0){return(tpl[0])}
@@ -43,7 +43,7 @@
     tpl <- rbindlist(listVar)
     elements <- as.vector(sapply(elements, function(X){paste(X, "__", variable)}))
   }else{
-    if (aggregate %in% c("mean by areas", "sum by areas")){
+    if (aggregate %in% c("mean by variable", "sum by variable")){
       tpl <- listVar[[1]][, element := paste(element, "__", names(listVar)[1])]
       elements <- paste(elements, "__", variable)
     } else {
@@ -87,14 +87,14 @@
         tpl <- tpl[, .(element = as.factor("Sum"), value = sum(value)), 
                    by = c(.idCols(tpl))]
       }
-    } else if (aggregate == "mean by areas"){
+    } else if (aggregate == "mean by variable"){
 
       tpl$areas <- unlist(lapply(strsplit(tpl$element, "__"), function(X) X[1]))
       tpl$element <- unlist(lapply(strsplit(tpl$element, "__"), function(X) X[2]))
       
       tpl <- tpl[, .(value = mean(value)), 
                  by = c(.idCols(tpl), "element")]
-    } else if (aggregate == "sum by areas"){
+    } else if (aggregate == "sum by variable"){
 
       tpl$areas <- unlist(lapply(strsplit(tpl$element, "__"), function(X) X[1]))
       tpl$element <- unlist(lapply(strsplit(tpl$element, "__"), function(X) X[2]))

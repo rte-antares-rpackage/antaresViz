@@ -1,38 +1,74 @@
 tabPanel(textOutput("label_tab_import_data"),
-         h3(textOutput("title_import_data")),
          fluidRow(
-           column(4,  
-                  fileInput("fileRDS", 
-                            label = NULL,
-                            # antaresViz:::.getLabelLanguage("Choose rds File who contains antares data"), 
-                            accept = ".rds", width = "100%")),
-           column(8, 
-                  h3(textOutput("directory_message2"), style = "color : red;margin-top:0px")
+           column(6, h3(textOutput("title_import_data"))),
+           column(6, 
+                  selectInput("type_import", "", 
+                              choices = c("Etude Antares locale" = "local", "Fichier R .RDS" = "RDS", "API Antares" = "API"),  width = "100%")
            )
          ),
-         fluidRow(
-           column(4, 
-                  directoryInput('directory', label = '', value = 'C:\\Users\\Datastorm\\Documents\\git\\bpNumerique2018\\inst\\application_bp\\data')
-           ), 
-           conditionalPanel(condition = "output.ctrl_is_antares_study | output.ctrl_is_antares_h5", 
-                            column(1, 
-                                   div(br(), h4("Simulation : "), align = "center")
+         
+         conditionalPanel(condition = "input.type_import === 'RDS'",
+                          fluidRow(
+                            column(4,  
+                                   fileInput("fileRDS", 
+                                             label = NULL,
+                                             # antaresViz:::.getLabelLanguage("Choose rds File who contains antares data"), 
+                                             accept = ".rds", width = "100%")),
+                            column(8, 
+                                   h3(textOutput("directory_message2"), style = "color : red;margin-top:0px")
+                            )
+                          )
+         ),
+         
+         conditionalPanel(condition = "input.type_import === 'local'",
+                          fluidRow(
+                            column(4, 
+                                   directoryInput('directory', label = '', value = 'C:\\Users\\Datastorm\\Documents\\git\\bpNumerique2018\\inst\\application_bp\\data')
+                            ), 
+                            conditionalPanel(condition = "output.ctrl_is_antares_study | output.ctrl_is_antares_h5", 
+                                             column(1, 
+                                                    div(br(), h4("Simulation : "), align = "center")
+                                             ), 
+                                             column(4, 
+                                                    selectInput("study_path", "", choices = NULL, selected = NULL, width = "100%")
+                                             ), 
+                                             column(2, 
+                                                    div(br(), 
+                                                        actionButton("init_sim", "Set simulation", icon = icon("check-circle")),
+                                                        align = "center"
+                                                    )
+                                             )
+                            ),
+                            conditionalPanel(condition = "output.ctrl_is_antares_study === false & output.ctrl_is_antares_h5 === false", 
+                                             column(8, 
+                                                    h3(textOutput("directory_message"), style = "color : red")
+                                             )
+                            )
+                          )
+         ), 
+         
+         conditionalPanel(condition = "input.type_import === 'API'",
+                          fluidRow(
+                            column(3, 
+                                   textInput('api_host', label = 'Host :', value = '')
+                            ), 
+                            column(3, 
+                                   textInput('api_study_id', label = 'Study id :', value = '')
                             ), 
                             column(4, 
-                                   selectInput("study_path", "", choices = NULL, selected = NULL, width = "100%")
+                                   textInput('api_token', label = 'Token :', value = '', width = "100%")
                             ), 
-                            column(2, 
+                            column(1, 
+                                   numericInput('api_simulation', label = 'simulation :', value = 1, min = 1, step = 1)
+                            ), 
+                            column(1, 
                                    div(br(), 
-                                       actionButton("init_sim", "Set simulation", icon = icon("check-circle")),
+                                       actionButton("init_sim_api", "Go!", 
+                                                    icon = icon("check-circle"), style = "margin-top:5px"),
                                        align = "center"
                                    )
                             )
-           ),
-           conditionalPanel(condition = "output.ctrl_is_antares_study === false & output.ctrl_is_antares_h5 === false", 
-                            column(8, 
-                                   h3(textOutput("directory_message"), style = "color : red")
-                            )
-           )
+                          )
          ), 
          
          conditionalPanel(condition = "output.have_study",
@@ -43,17 +79,22 @@ tabPanel(textOutput("label_tab_import_data"),
                                    
                                    h3(textOutput("title_readAntares")),
                                    fluidRow(
-                                     column(3, 
-                                            selectInput("read_areas", "Areas :", choices = NULL, selected = NULL, multiple = TRUE)
+                                     column(6,
+                                            selectInput("read_areas", "Areas :", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
                                      ), 
-                                     column(3, 
-                                            selectInput("read_links", "Links :", choices = NULL, selected = NULL, multiple = TRUE)
-                                     ), 
-                                     column(3, 
-                                            selectInput("read_clusters", "Clusters : ", choices = NULL, selected = NULL, multiple = TRUE)
-                                     ), 
-                                     column(3, 
-                                            selectInput("read_districts", "Districts :", choices = NULL, selected = NULL, multiple = TRUE)
+                                     column(6, 
+                                            selectInput("read_links", "Links :", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
+                                     )
+                                   ), 
+                                   fluidRow(
+                                     column(4, 
+                                            selectInput("read_clusters", "Clusters : ", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
+                                     ),
+                                     column(4, 
+                                            selectInput("read_clusters_res", "ClustersRes : ", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
+                                     ),
+                                     column(4, 
+                                            selectInput("read_districts", "Districts :", choices = NULL, selected = NULL, multiple = TRUE, width = "100%")
                                      )
                                    ), 
                                    conditionalPanel(condition = "output.current_opts_h5 === false",
@@ -131,14 +172,14 @@ tabPanel(textOutput("label_tab_import_data"),
                                                     )
                                    ),
                                    
-                                  fluidRow( 
-                                   column(3, 
-                                          h4(textOutput("title_hvdc"))
-                                          
-                                   ),
-                                   
-                                   
-                                   column(9, selectInput("hvdc", "hvdc", choices = NULL, selected = NULL, multiple = TRUE))),
+                                   fluidRow( 
+                                     column(3, 
+                                            h4(textOutput("title_hvdc"))
+                                            
+                                     ),
+                                     
+                                     
+                                     column(9, selectInput("hvdc", "hvdc", choices = NULL, selected = NULL, multiple = TRUE))),
                                    div(actionButton("import_data", "Validate & import data", icon = icon("upload")), align = "center"),
                                    
                                    # convert h5
@@ -243,7 +284,7 @@ tabPanel(textOutput("label_tab_import_data"),
                                                                               ),
                                                                               
                                                                               
-                                                                     
+                                                                              
                                                                               fluidRow(
                                                                                 column(12,
                                                                                        div(actionButton("write_h5", "Convert study to h5", icon = icon("floppy-o")), align = "center")                                                           )

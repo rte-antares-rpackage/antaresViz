@@ -118,6 +118,18 @@ observe({
   # params
   updateCheckboxInput(session, "is_shared_input", antaresViz:::.getLabelLanguage("Share inputs between modules ?", current_language$language))
   
+  # import type
+  cur_type_import <- isolate({input$type_import})
+  choice <- c("local", "RDS", "API")
+  sel <- which(choice %in% cur_type_import)
+  names(choice) <- c(
+    antaresViz:::.getLabelLanguage("Local Antares Study", current_language$language),
+    antaresViz:::.getLabelLanguage("R file .RDS", current_language$language),
+    antaresViz:::.getLabelLanguage("API Antares", current_language$language)
+  )
+  updateSelectInput(session, "type_import",
+                    label = ,
+                    choices = choice, selected = choice[sel])
 })
 
 output$current_opts <- renderText({

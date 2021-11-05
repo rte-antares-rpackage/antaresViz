@@ -27,8 +27,8 @@ aggregate;Agrégation
 none;sans
 mean;moyenne
 sum;somme
-mean by areas;moyenne par nœud
-sum by areas;somme par nœud
+mean by variable;moyenne par variable
+sum by variable;somme par variable
 highlight;Surbrillance
 Color;Couleur
 Size;Taille
@@ -132,7 +132,7 @@ No data imported;Pas de données importées
 No areas imported;Pas noeuds importés 
 No links imported;Pas de liens importés
 No antares output found in directory;Pas d'étude(s) antares trouvée(s) dans le répertoire
-Or choose a folder with antares output; Ou sélectionner un répertoire contenant des études antares
+Choose a folder with antares output; Sélectionner un répertoire contenant des études antares
 Please set or import a map layout before;Editer ou importer le positionnement des points
 Download Layout;Télécharger le positionnement
 Import a layout;Importer un positionnement
@@ -157,3 +157,6 @@ Choose rds File who contains antares data;Choisir un fichier .RDS avec des donn�
 Hvdc areas;Zones Hvdc
 updateLegendOnMouseOver;Maj légende par survol
 closePopupOnClick;Fermer les popups à chaque clic
+Local Antares Study;Etude Antares locale
+R file .RDS;Fichier R .RDS
+API Antares;API Antares

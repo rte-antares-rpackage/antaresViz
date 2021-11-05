@@ -184,6 +184,7 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
 }
 
 # changeCoords Module SERVER function
+#' @import sp
 #' @importFrom rgeos gDistance
 #' @importFrom raster aggregate
 changeCoordsServer <- function(input, output, session, 
@@ -224,13 +225,13 @@ changeCoordsServer <- function(input, output, session,
   
   current_map <- reactive({
     if (!map_builder){
-      map()
+      checkSlotId(map())
     } else {
       if (!is.null(map()) & input$set_map_ml == 0){
-        map()
+        checkSlotId(map())
       } else {
-        getSpMaps(countries = isolate(input$ml_countries), states = isolate(input$ml_states), 
-                  mergeCountry = isolate(input$merge_cty))
+        checkSlotId(getSpMaps(countries = isolate(input$ml_countries), states = isolate(input$ml_states), 
+                  mergeCountry = isolate(input$merge_cty)))
       }
     }
   })
@@ -242,10 +243,12 @@ changeCoordsServer <- function(input, output, session,
         coords <- copy(layout()$areas)
         info <- coords$area
         links <- copy(layout()$links)
+        if(is.null(links)) links <- data.table()
       } else {
         coords <- copy(layout()$districts)
         info <- coords$district
         links <- copy(layout()$districtLinks)
+        if(is.null(links)) links <- data.table()
       }
       
       links$x0 <- as.numeric(links$x0)
@@ -294,7 +297,7 @@ changeCoordsServer <- function(input, output, session,
         cex[pt] <- 2
         par (mar = rep(0.1, 4))
         graphics::plot.default(points$oldLon, points$oldLat, bty = "n", xaxt = "n", yaxt = "n",
-             xlab = "", ylab = "", main = "", col = col, asp = 1, pch = 19, cex = cex)
+                               xlab = "", ylab = "", main = "", col = col, asp = 1, pch = 19, cex = cex)
       }
     })
   }
@@ -386,6 +389,10 @@ changeCoordsServer <- function(input, output, session,
     coords <- sp::SpatialPoints(coords()[, c("lon", "lat")],
                                 proj4string = sp::CRS("+proj=longlat +datum=WGS84"))
     
+    # special with only one area...
+    if(nrow(data()$coords) == 1){
+      coords <- coords[1, ]
+    } 
     
     map <- current_map()
     
@@ -396,8 +403,12 @@ changeCoordsServer <- function(input, output, session,
     }
     
     # Put coords in right order
-    ord <- order(c(data_points$pt1, data_points$pt2, (1:length(coords))[-c(data_points$pt1, data_points$pt2)]))
-    mapCoords <- coords[ord, ]
+    if(nrow(data()$coords) > 1){
+      ord <- order(c(data_points$pt1, data_points$pt2, (1:length(coords))[-c(data_points$pt1, data_points$pt2)]))
+      mapCoords <- coords[ord, ]
+    } else {
+      mapCoords <- coords
+    }
     
     final_coords <- data()$coords
     final_links <- data()$links
@@ -406,11 +417,15 @@ changeCoordsServer <- function(input, output, session,
     final_coords$y <- sp::coordinates(mapCoords)[, 2]
     
     if (what() == "areas") {
-      final_links[final_coords, `:=`(x0 = x, y0 = y), on = c(from = "area")]
-      final_links[final_coords, `:=`(x1 = x, y1 = y), on = c(to = "area")]
+      if(!is.null(final_links) && nrow(final_links) > 0){
+        final_links[final_coords, `:=`(x0 = x, y0 = y), on = c(from = "area")]
+        final_links[final_coords, `:=`(x1 = x, y1 = y), on = c(to = "area")]
+      }
     } else {
-      final_links[final_coords, `:=`(x0 = x, y0 = y), on = c(fromDistrict = "district")]
-      final_links[final_coords, `:=`(x1 = x, y1 = y), on = c(toDistrict = "district")]
+      if(!is.null(final_links) && nrow(final_links) > 0){
+        final_links[final_coords, `:=`(x0 = x, y0 = y), on = c(fromDistrict = "district")]
+        final_links[final_coords, `:=`(x1 = x, y1 = y), on = c(toDistrict = "district")]
+      }
     }
     
     if (!is.null(map)) {

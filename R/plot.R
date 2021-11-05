@@ -54,7 +54,7 @@
 #' @param aggregate
 #'   When multiple elements are selected, should the data be aggregated. If
 #'   "none", each element is represented separetly. If "mean" values are
-#'   averaged and if "sum" they are added. You can also compute mean ans sum by areas.
+#'   averaged and if "sum" they are added. You can also compute mean and sum by variable.
 #' @param colors
 #'   Vector of colors
 #' @param ylab
@@ -193,7 +193,7 @@ tsPlot <- function(x,
                    confInt = 0,
                    minValue = NULL,
                    maxValue = NULL,
-                   aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+                   aggregate = c("none", "mean", "sum", "mean by variable", "sum by variable"),
                    compare = NULL,
                    compareOpts = list(),
                    interactive = getInteractivity(),
@@ -818,12 +818,12 @@ tsPlot <- function(x,
   ),
   
   aggregate = mwSelect({
-    tmp <- c("none", "mean", "sum", "mean by areas", "sum by areas")
+    tmp <- c("none", "mean", "sum", "mean by variable", "sum by variable")
     names(tmp) <- c(.getLabelLanguage("none", language), 
                     .getLabelLanguage("mean", language),
                     .getLabelLanguage("sum", language),
-                    .getLabelLanguage("mean by areas", language),
-                    .getLabelLanguage("sum by areas", language))
+                    .getLabelLanguage("mean by variable", language),
+                    .getLabelLanguage("sum by variable", language))
     tmp
   }, value ={
     if(.initial) aggregate

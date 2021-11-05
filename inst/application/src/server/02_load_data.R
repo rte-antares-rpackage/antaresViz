@@ -48,7 +48,8 @@ observe({
           # import data
           data <- withCallingHandlers({
             tryCatch({
-              readAntares(areas = input$read_areas, links = input$read_links, clusters = input$read_clusters,
+              readAntares(areas = input$read_areas, links = input$read_links, 
+                          clusters = input$read_clusters, clustersRes = input$read_clusters_res,
                           districts = input$read_districts, misc = input$read_misc, 
                           thermalAvailabilities = input$read_thermalAvailabilities,
                           hydroStorage = input$read_hydroStorage, hydroStorageMaxPower = input$read_hydroStorageMaxPower, 

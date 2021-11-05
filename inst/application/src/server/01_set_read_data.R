@@ -43,7 +43,7 @@ rdsData <- reactive({
 output$directory_message <- renderText({
   if(length(input$directory) > 0){
     if(input$directory == 0){
-      antaresViz:::.getLabelLanguage("Or choose a folder with antares output", current_language$language)
+      antaresViz:::.getLabelLanguage("Choose a folder with antares output", current_language$language)
     } else {
       antaresViz:::.getLabelLanguage("No antares output found in directory", current_language$language)
     }
@@ -110,7 +110,9 @@ observe({
 })
 
 # init opts after validation
-opts <- reactive({
+opts <- reactiveVal(NULL)
+
+observe({
   if(input$init_sim > 0){
     opts <- 
       tryCatch({
@@ -120,7 +122,7 @@ opts <- reactive({
           title = "Error setting file",
           easyClose = TRUE,
           footer = NULL,
-          paste("Directory/file is not an Antares study : ", e, sep = "\n")
+          paste("Directory/file is not an Antares study : ", e$message, sep = "\n")
         ))
         NULL
       })
@@ -140,9 +142,37 @@ opts <- reactive({
         }
       }
     }
-    opts
+    opts(opts)
   } else {
-    NULL
+    opts(NULL)
+  }
+})
+
+observe({
+  if(input$init_sim_api > 0){
+    opts <- 
+      tryCatch({
+        setSimulationPathAPI(
+          host = isolate(input$api_host), 
+          study_id = isolate(input$api_study_id), 
+          token = isolate(input$api_token), 
+          simulation = isolate(input$api_simulation)
+        )
+      }, error = function(e){
+        showModal(modalDialog(
+          title = "Error reading API",
+          easyClose = TRUE,
+          footer = NULL,
+          e$message
+        ))
+        NULL
+      })
+    if(!is.null(opts)){
+      opts$h5 <- FALSE
+    }
+    opts(opts)
+  } else {
+    opts(NULL)
   }
 })
 
@@ -176,21 +206,31 @@ observe({
     isolate({
       # areas
       areas <- c("all", opts$areaList)
+      if(isTRUE(all.equal(c("all"), areas))) areas <- c("", "all")
       updateSelectInput(session, "read_areas", paste0(antaresViz:::.getLabelLanguage("Areas", current_language), " : "), 
                         choices = areas, selected = areas[1])
       
       # links
       links <- c("all", opts$linkList)
+      if(isTRUE(all.equal(c("all"), links))) links <- c("", "all")
       updateSelectInput(session, "read_links", paste0(antaresViz:::.getLabelLanguage("Links", current_language), " : "), 
                         choices = links, selected = links[1])
       
       # clusters
       clusters <- c("all", opts$areasWithClusters)
+      if(isTRUE(all.equal(c("all"), clusters))) clusters <- c("", "all")
       updateSelectInput(session, "read_clusters", paste0(antaresViz:::.getLabelLanguage("Clusters", current_language), " : "), 
                         choices = clusters, selected = clusters[1])
       
+      # clustersRes
+      clustersRes <- c("all", opts$areasWithResClusters)
+      if(isTRUE(all.equal(c("all"), clustersRes))) clustersRes <- c("", "all")
+      updateSelectInput(session, "read_clusters_res", paste0(antaresViz:::.getLabelLanguage("ClustersRes", current_language), " : "), 
+                        choices = clustersRes, selected = clustersRes[1])
+      
       # districts
       districts <- c("all", opts$districtList)
+      if(isTRUE(all.equal(c("all"), districts))) districts <- c("", "all")
       updateSelectInput(session, "read_districts", paste0(antaresViz:::.getLabelLanguage("Districts", current_language), " : "), 
                         choices = districts, selected = districts[1])
       
@@ -275,7 +315,12 @@ observe({
         updateCheckboxInput(session, "read_hydroStorage", antaresViz:::.getLabelLanguage("hydroStorage", current_language), FALSE)
       } else {
         sel <- isolate({input$read_type_mcYears})
-        choices <- c("synthetic", "all", "custom")
+        if(opts$synthesis){
+          choices <- c("synthetic", "all", "custom")
+        } else {
+          choices <- c("all", "custom")
+          if(!sel %in% choices) sel <- "all"
+        }
         names(choices) <- sapply(choices, function(x){
           antaresViz:::.getLabelLanguage(x, current_language)
         })

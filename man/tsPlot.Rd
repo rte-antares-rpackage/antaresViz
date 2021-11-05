@@ -21,7 +21,7 @@ tsPlot(
   confInt = 0,
   minValue = NULL,
   maxValue = NULL,
-  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  aggregate = c("none", "mean", "sum", "mean by variable", "sum by variable"),
   compare = NULL,
   compareOpts = list(),
   interactive = getInteractivity(),
@@ -61,7 +61,7 @@ tsPlot(
   confInt = 0,
   minValue = NULL,
   maxValue = NULL,
-  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  aggregate = c("none", "mean", "sum", "mean by variable", "sum by variable"),
   compare = NULL,
   compareOpts = list(),
   interactive = getInteractivity(),
@@ -101,7 +101,7 @@ tsPlot(
   confInt = 0,
   minValue = NULL,
   maxValue = NULL,
-  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  aggregate = c("none", "mean", "sum", "mean by variable", "sum by variable"),
   compare = NULL,
   compareOpts = list(),
   interactive = getInteractivity(),
@@ -141,7 +141,7 @@ tsPlot(
   confInt = 0,
   minValue = NULL,
   maxValue = NULL,
-  aggregate = c("none", "mean", "sum", "mean by areas", "sum by areas"),
+  aggregate = c("none", "mean", "sum", "mean by variable", "sum by variable"),
   compare = NULL,
   compareOpts = list(),
   interactive = getInteractivity(),
@@ -228,7 +228,7 @@ values are displayed.}
 
 \item{aggregate}{When multiple elements are selected, should the data be aggregated. If
 "none", each element is represented separetly. If "mean" values are
-averaged and if "sum" they are added. You can also compute mean ans sum by areas.}
+averaged and if "sum" they are added. You can also compute mean and sum by variable.}
 
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
