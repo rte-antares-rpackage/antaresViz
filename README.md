@@ -9,6 +9,7 @@
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/antaresViz)](https://cran.r-project.org/package=antaresViz)
 [![codecov](https://codecov.io/gh/rte-antares-rpackage/antaresViz/branch/develop/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/antaresViz)
 [![R build status](https://github.com/rte-antares-rpackage/antaresViz/workflows/R-CMD-check/badge.svg)](https://github.com/rte-antares-rpackage/antaresViz/actions)
+[![R-CMD-check](https://github.com/rte-antares-rpackage/antaresViz/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rte-antares-rpackage/antaresViz/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 
