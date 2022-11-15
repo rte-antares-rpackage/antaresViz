@@ -50,16 +50,16 @@ test_that("prodStack must work with refStudy, if x and refStudy are antaresDataL
     myData1$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1$areas[ time == DR[1] & area == myArea, ]$GAS
-  #myData2$areas[ time == DR[1] & area == myArea, ]$GAS
+  #myData1$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS
+  #myData2$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2$areas[ time == DR[1] & area == myArea, ]$GAS + 2500, myData1$areas[ time == DR[1] & area == myArea, ]$GAS)))
+  expect_true(isTRUE(all.equal(myData2$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS + 2500, myData1$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS)))
   
   PS3 <-  prodStack(x = myData2, refStudy  = myData1, interactive = FALSE, areas = myArea, dateRange = DR)
   
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
   resCompare <- antaresProcessing::compare(myData1, myData2, method = "diff")
-  expect_true(all.equal(resCompare$areas[ time == DR[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
+  expect_true(all.equal(resCompare$areas[ time == as.Date(DR)[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))
 })
@@ -86,23 +86,23 @@ test_that("prodStack must work with refStudy, if x is a list of antaresDataList 
     myData3$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1$areas[ time == DR[1] & area == myArea, ]$GAS
-  #myData3$areas[ time == DR[1] & area == myArea, ]$GAS
+  #myData1$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS
+  #myData3$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2$areas[ time == DR[1] & area == myArea, ]$GAS + 2500, myData1$areas[ time == DR[1] & area == myArea, ]$GAS)))
+  expect_true(isTRUE(all.equal(myData2$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS + 2500, myData1$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS)))
   
   PS1_list <-  prodStack(x = myDataList, refStudy = myData1, interactive = FALSE, areas = myArea, dateRange = DR)
   
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS1_list, widgetsNumber = 3)
   resCompare <- antaresProcessing::compare(myData1, myData2, method = "diff")
-  expect_true(all.equal(resCompare$areas[ time == DR[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
+  expect_true(all.equal(resCompare$areas[ time == as.Date(DR)[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
   #after DR + 5 hours (no edit)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))
   
   #no change for myData3
   resCompare3 <- antaresProcessing::compare(myData3, myData1, method = "diff")
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS1_list, widgetsNumber = 2)
-  expect_true(all.equal(resCompare3$areas[ time == DR[1] & area == myArea, GAS], dataHtmlWidgetPS$neggas[[2]]))
+  expect_true(all.equal(resCompare3$areas[ time == as.Date(DR)[1] & area == myArea, GAS], dataHtmlWidgetPS$neggas[[2]]))
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))
   
 })
@@ -154,7 +154,7 @@ test_that("prodStack must work with refStudy, if x and refStudy are optsH5, ", {
     
     resOptsH5Old <- readAntares(opts = optsH5, areas = myArea, showProgress = FALSE)
     resOptsH5New <- readAntares(opts = optsH5New, areas = myArea, showProgress = FALSE)
-    expect_equal(resOptsH5New[time == DR[1], LIGNITE], 15000)
+    expect_equal(resOptsH5New[time == as.Date(DR)[1], LIGNITE], 15000)
     
     resCompareData <- antaresProcessing::compare(x = resOptsH5Old, y = resOptsH5New)
     expect_equal(resCompareData[timeId == timeId[40], LIGNITE], -24000)
@@ -292,10 +292,10 @@ test_that("prodStack must work with refStudy, if interactive is set to TRUE and 
     myData1[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1[ time == DR[1] & area == myArea, ]$GAS
-  #myData2[ time == DR[1] & area == myArea, ]$GAS
+  #myData1[ time == as.Date(DR)[1] & area == myArea, ]$GAS
+  #myData2[ time == as.Date(DR)[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2[ time == DR[1] & area == myArea, ]$GAS + 2500, myData1[ time == DR[1] & area == myArea, ]$GAS)))
+  expect_true(isTRUE(all.equal(myData2[ time == as.Date(DR)[1] & area == myArea, ]$GAS + 2500, myData1[ time == as.Date(DR)[1] & area == myArea, ]$GAS)))
   
   PS3 <-  prodStack(x = myData2, refStudy = myData1, areas = myArea, dateRange = DR, .runApp = FALSE, interactive = TRUE)
   expect_true(is(PS3, "MWController"))
@@ -307,7 +307,7 @@ test_that("prodStack must work with refStudy, if interactive is set to TRUE and 
   
   PS3$init()
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3)
-  expect_true(all.equal(resCompare[ time == DR[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
+  expect_true(all.equal(resCompare[ time == as.Date(DR)[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$neggas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))   
   
@@ -346,10 +346,10 @@ test_that("prodStack must work with refStudy, if interactive is set to TRUE and 
     myData3[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1[ time == DR[1] & area == myArea, ]$GAS
-  #myData2[ time == DR[1] & area == myArea, ]$GAS
+  #myData1[ time == as.Date(DR)[1] & area == myArea, ]$GAS
+  #myData2[ time == as.Date(DR)[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData3[ time == DR[1] & area == myArea, ]$GAS, myData1[ time == DR[1] & area == myArea, ]$GAS + 2500)))
+  expect_true(isTRUE(all.equal(myData3[ time == as.Date(DR)[1] & area == myArea, ]$GAS, myData1[ time == as.Date(DR)[1] & area == myArea, ]$GAS + 2500)))
   
   PS3 <-  prodStack(x = myDataList, refStudy = myData1, areas = myArea, dateRange = DR, .runApp = FALSE, interactive = TRUE)
   
@@ -362,7 +362,7 @@ test_that("prodStack must work with refStudy, if interactive is set to TRUE and 
   
   PS3$init()
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 2)
-  expect_true(all.equal(resCompare3_1[ time == DR[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$gas[[2]])))
+  expect_true(all.equal(resCompare3_1[ time == as.Date(DR)[1] & area == myArea, GAS ], - (dataHtmlWidgetPS$gas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))   
   
@@ -396,10 +396,10 @@ test_that("prodStack must work with refStudy, if interactive is set to TRUE and 
     myData2$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1[ time == DR[1] & area == myArea, ]$GAS
-  #myData2[ time == DR[1] & area == myArea, ]$GAS
+  #myData1[ time == as.Date(DR)[1] & area == myArea, ]$GAS
+  #myData2[ time == as.Date(DR)[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2$areas[ time == DR[1] & area == myArea, ]$GAS, myData1$areas[ time == DR[1] & area == myArea, ]$GAS + 2500)))
+  expect_true(isTRUE(all.equal(myData2$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS, myData1$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS + 2500)))
   
   PS3 <-  prodStack(x = myData2, refStudy = myData1, areas = myArea, dateRange = DR, .runApp = FALSE, interactive = TRUE)
   
@@ -412,7 +412,7 @@ test_that("prodStack must work with refStudy, if interactive is set to TRUE and 
   
   PS3$init()
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 1)
-  expect_true(all.equal(resCompare2_1$areas[ time == DR[1] & area == myArea, GAS ], (dataHtmlWidgetPS$gas[[2]])))
+  expect_true(all.equal(resCompare2_1$areas[ time == as.Date(DR)[1] & area == myArea, GAS ], (dataHtmlWidgetPS$gas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))   
   
@@ -450,10 +450,10 @@ test_that("prodStack must work with refStudy, if interactive is set to TRUE and 
     myData2$areas[ (time == timeEditMinus | time == timeEditPlus) & area == myArea, GAS := as.integer(GAS + 2500)]
   }
   #check console
-  #myData1[ time == DR[1] & area == myArea, ]$GAS
-  #myData2[ time == DR[1] & area == myArea, ]$GAS
+  #myData1[ time == as.Date(DR)[1] & area == myArea, ]$GAS
+  #myData2[ time == as.Date(DR)[1] & area == myArea, ]$GAS
   
-  expect_true(isTRUE(all.equal(myData2$areas[ time == DR[1] & area == myArea, ]$GAS, myData1$areas[ time == DR[1] & area == myArea, ]$GAS + 2500)))
+  expect_true(isTRUE(all.equal(myData2$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS, myData1$areas[ time == as.Date(DR)[1] & area == myArea, ]$GAS + 2500)))
   
   PS3 <-  prodStack(x = myDataList, refStudy = myData1, areas = myArea, dateRange = DR, .runApp = FALSE, interactive = TRUE)
   
@@ -467,10 +467,10 @@ test_that("prodStack must work with refStudy, if interactive is set to TRUE and 
   
   PS3$init()
   dataHtmlWidgetPS <- .get_data_from_htmlwidget(PS3, widgetsNumber = 3)
-  expect_true(all.equal(resCompare2_1$areas[ time == DR[1] & area == myArea, GAS ], (dataHtmlWidgetPS$gas[[2]])))
+  expect_true(all.equal(resCompare2_1$areas[ time == as.Date(DR)[1] & area == myArea, GAS ], (dataHtmlWidgetPS$gas[[2]])))
   #no change for myData3
   dataHtmlWidgetPS3 <- .get_data_from_htmlwidget(PS3, widgetsNumber = 2)
-  expect_true(all.equal(resCompare3_1$areas[ time == DR[1] & area == myArea, GAS ], (dataHtmlWidgetPS3$gas[[2]])))
+  expect_true(all.equal(resCompare3_1$areas[ time == as.Date(DR)[1] & area == myArea, GAS ], (dataHtmlWidgetPS3$gas[[2]])))
   #after DR + 5 hours (no change)
   expect_true(all.equal(0, dataHtmlWidgetPS$neggas[[20]]))   
   
