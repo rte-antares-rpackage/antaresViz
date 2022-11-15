@@ -1,4 +1,5 @@
 # Copyright © 2016 RTE Réseau de transport d’électricité
+# Comment
 
 #' plot time series contained in an antaresData object
 #' 
