@@ -58,7 +58,7 @@ jobs:
         env:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
-          sudo apt-get install libgdal-dev libgeos-dev libproj-dev
+          sudo apt-get install libgdal-dev libgeos-dev libproj-dev libudunits2-dev
 
       - name: Install dependencies
         run: |
