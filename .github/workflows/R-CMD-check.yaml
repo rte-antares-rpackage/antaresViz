@@ -53,6 +53,11 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        run: |
+	        sudo apt-get install libgdal-dev libgeos-dev libproj-dev
+
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
