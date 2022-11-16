@@ -56,7 +56,7 @@ jobs:
       - name: Install system dependencies
         if: runner.os == 'Linux'
         run: |
-	        sudo apt-get install libgdal-dev libgeos-dev libproj-dev
+	  sudo apt-get install libgdal-dev libgeos-dev libproj-dev
 
       - name: Install dependencies
         run: |
