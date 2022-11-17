@@ -1,5 +1,9 @@
 Copyright © 2016 RTE Réseau de transport d’électricité
 
+# antaresViz 0.17.1
+
+* Fixed tests failing on CRAN.
+
 # antaresViz 0.17
 
 * antares V8.1 support
