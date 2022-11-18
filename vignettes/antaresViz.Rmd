@@ -165,7 +165,13 @@ prodStack(
 )
 ```
 
-The graphical template used by default is the one of the RTE's application [eco2mix](https://www.rte-france.com/eco2mix/la-production-delectricite-par-filiere). This template can though be redefined completely by the user with the function `setProdStackAlias()`.
+The graphical template used by default is the one of the RTE's application *eco2mix*
+
+```{r, eval=FALSE}
+https://www.rte-france.com/eco2mix/la-production-delectricite-par-filiere
+```
+
+This template can though be redefined completely by the user with the function `setProdStackAlias()`.
 
 The `exchangesStack()` function proposes similar graphs with a superposition of all the imports and exports of an area.
 

@@ -10,7 +10,7 @@
         h5requestFiltering <- list(h5requestFiltering)
       }
     }else{
-      if (class(x) == "list"){
+      if (inherits(x, "list")){
         if (length(h5requestFiltering) != length(x)){
           h5requestFiltering <- h5requestFiltering[1:length(x) %% length(h5requestFiltering) + 1]
         }
