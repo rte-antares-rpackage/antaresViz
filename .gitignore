@@ -4,3 +4,6 @@
 .Ruserdata
 inst/examples
 inst/doc
+.Rdata
+.httr-oauth
+.DS_Store
