@@ -21,7 +21,9 @@ plotMapOptions(
   linkColorScaleOpts = colorScaleOptions(),
   legend = c("choose", "visible", "hidden"),
   tilesURL = defaultTilesURL(),
-  preprocess = function(map) {     map }
+  preprocess = function(map) {
+     map
+ }
 )
 
 defaultTilesURL()

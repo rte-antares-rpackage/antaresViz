@@ -1,5 +1,5 @@
 
-setSimulationPath(path = "D:/test_case/", 1)
+setSimulationPath()
 mydata <- readAntares(areas = "all", links = "all", timeStep = "hourly")
 ml <- mapLayout(readLayout())
 

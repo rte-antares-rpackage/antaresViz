@@ -22,7 +22,9 @@
   links = TRUE,
   areas = TRUE,
   tilesURL = defaultTilesURL(),
-  preprocess = function(map) {     map },
+  preprocess = function(map) {
+     map
+ },
   width = NULL,
   height = NULL,
   ...
@@ -36,13 +38,13 @@ software are used.}
 
 \item{dataAreas}{A numeric vector or a numeric matrix that is passed to function
 \code{link[addMinicharts]}. A single vector will produce circles with
-different radius. A matrix will produce bar charts or pie charts or 
+different radius. A matrix will produce bar charts or pie charts or
 polar charts, depending on the value of \code{areaChartType}}
 
 \item{opacityArea}{Opacity of areas. It has to be a numeric vector with values
 between 0 and 1.}
 
-\item{areaMaxSize}{Maximal width in pixels of the symbols that represent 
+\item{areaMaxSize}{Maximal width in pixels of the symbols that represent
 areas on the map.}
 
 \item{areaMaxHeight}{Maximal height of bars. Used only if a barchart representation is used.}
@@ -63,7 +65,7 @@ areas on the map.}
 between 0 and 1.}
 
 \item{dirLinks}{Single value or vector indicating the direction of the link. Possible values
-are 0, -1 and 1. If it equals 0, then links are repsented by a simple line. 
+are 0, -1 and 1. If it equals 0, then links are repsented by a simple line.
 If it is equal to 1 or -1 it is represented by a line with an arrow pointing
 respectively the destination and the origin of the link.}
 
@@ -89,7 +91,7 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 }
 \value{
 The function generates an \code{htmlwidget} of class \code{leaflet}. It can
-  be stored in a variable and modified with package 
+  be stored in a variable and modified with package
   \code{\link[leaflet]{leaflet}}
 }
 \description{
@@ -118,15 +120,15 @@ nareas <- nrow(ml$coords)
 fakeData <- matrix(runif(nareas * 3), ncol = 3)
 plot(ml, sizeAreas = fakeData)
 
-# Store the result in a variable to change it with functions from leaflet 
+# Store the result in a variable to change it with functions from leaflet
 # package
 library(leaflet)
 
 center <- c(mean(ml$coords$x), mean(ml$coords$y))
 
 p <- plot(ml)
-p \%>\% 
-  addCircleMarker(center[1], center[2], color = "red", 
+p \%>\%
+  addCircleMarker(center[1], center[2], color = "red",
                   popup = "I'm the center !")
 }
 

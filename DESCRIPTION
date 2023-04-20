@@ -23,8 +23,8 @@ License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 Depends:
     antaresRead (>= 2.2.9),
-    antaresProcessing (>= 0.13.0), 
-    spMaps (>= 0.2)
+    spMaps (>= 0.2),
+    antaresProcessing (>= 0.13.0)
 Imports:
     dygraphs (>= 1.1.1.6),
     shiny (>= 0.13.0),
@@ -34,8 +34,7 @@ Imports:
     manipulateWidget (>= 0.10.0),
     leaflet (>= 1.1.0),
     sp,
-    rgeos,
-    raster,
+    terra,
     webshot,
     data.table,
     methods,
@@ -47,7 +46,7 @@ Imports:
     assertthat,
     rAmCharts,
     utils
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests: 
     testthat,
     covr,
