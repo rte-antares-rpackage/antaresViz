@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+.idea
 inst/examples
 inst/doc

@@ -185,8 +185,8 @@ changeCoordsUI <- function(id, map_builder = TRUE) {
 
 # changeCoords Module SERVER function
 #' @import sp
-#' @importFrom rgeos gDistance
-#' @importFrom raster aggregate
+#' @importFrom sf st_distance
+#' @importFrom terra aggregate
 changeCoordsServer <- function(input, output, session, 
                                layout, what = reactive("areas"), 
                                map = reactive(NULL), map_builder = TRUE, 
@@ -453,12 +453,15 @@ changeCoordsServer <- function(input, output, session,
                 ind_miss <- which(tmp_map$code %in% cty & is.na(tmp_map$geoAreaId))
                 areas <- coords[coords$geoAreaId %in% tmp_map$geoAreaId[ind_cty], ]
                 if (nrow(areas) > 0){
-                  areas_min <- suppressWarnings(apply(rgeos::gDistance(tmp_map[ind_miss, ], areas, byid = TRUE), 2, which.min))
+                  tmp_sf <- st_as_sf(tmp_map[ind_miss, ])
+                  areas_sf <- st_as_sf(areas)
+                  dist_matrix <- st_distance(tmp_sf, areas_sf)
+                  areas_min <- suppressWarnings(apply( apply(dist_matrix, 1, which.min)))
                   tmp_map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
                 }
               }
               
-              tmp_map <- raster::aggregate(tmp_map, by = c("geoAreaId"))
+              tmp_map <- terra::aggregate(tmp_map, by = c("geoAreaId"))
               map <- tmp_map[match(final_coords_map$geoAreaId, tmp_map$geoAreaId), ]
             } else {
               map <- map[final_coords_map$geoAreaId, ]

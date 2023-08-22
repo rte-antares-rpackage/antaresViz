@@ -3,7 +3,7 @@ Type: Package
 Title: Antares Visualizations
 Version: 0.17.1
 Authors@R: c(
-    person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
+    person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "Zawam", role = "aut"),
     person("Francois", "Guillem", role = "aut"),
     person("Benoit", "Thieurmel", role = "aut"),
@@ -34,8 +34,8 @@ Imports:
     manipulateWidget (>= 0.10.0),
     leaflet (>= 1.1.0),
     sp,
-    rgeos,
-    raster,
+    sf,
+    terra,
     webshot,
     data.table,
     methods,
