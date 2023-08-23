@@ -35,7 +35,6 @@ Imports:
     leaflet (>= 1.1.0),
     sp,
     sf,
-    terra,
     webshot,
     data.table,
     methods,
