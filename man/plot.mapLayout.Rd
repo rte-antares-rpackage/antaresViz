@@ -22,7 +22,9 @@
   links = TRUE,
   areas = TRUE,
   tilesURL = defaultTilesURL(),
-  preprocess = function(map) {     map },
+  preprocess = function(map) {
+     map
+ },
   width = NULL,
   height = NULL,
   ...

@@ -452,22 +452,22 @@ changeCoordsServer <- function(input, output, session,
                 ind_miss <- which(tmp_map$code %in% cty & is.na(tmp_map$geoAreaId))
                 areas <- coords[coords$geoAreaId %in% tmp_map$geoAreaId[ind_cty], ]
                 if (nrow(areas) > 0){
-                  tmp_sf <- sf::st_as_sf(tmp_map[ind_miss, ])
-                  areas_sf <- sf::st_as_sf(areas)
-                  dist_matrix <- sf::st_distance(tmp_sf, areas_sf)
+                  tmp_sf <- st_as_sf(tmp_map[ind_miss, ])
+                  areas_sf <- st_as_sf(areas)
+                  dist_matrix <- st_distance(tmp_sf, areas_sf)
                   areas_min <- suppressWarnings(apply(dist_matrix, 1, which.min))
                   tmp_map$geoAreaId[ind_miss] <- areas$geoAreaId[areas_min]
                 }
               }
-              tmp_sf <- sf::st_cast(tmp_map, "MULTIPOLYGON")  # Cast to multipolygon if needed
-              tmp_sf <- sf::st_cast(tmp_sf, "GEOMETRY")  # Remove unused geometry types
-              tmp_sf <- sf::st_combine(tmp_sf)  # Combine features with the same geoAreaId
+              tmp_sf <- st_cast(tmp_map, "MULTIPOLYGON")  # Cast to multipolygon if needed
+              tmp_sf <- st_cast(tmp_sf, "GEOMETRY")  # Remove unused geometry types
+              tmp_sf <- st_combine(tmp_sf)  # Combine features with the same geoAreaId
               map <- tmp_sf[match(final_coords_map$geoAreaId, tmp_map$geoAreaId), ]
             } else {
               map <- map[match(final_coords_map$geoAreaId, map$geoAreaId), ]
             }
           }else {
-            map <- map[F(final_coords_map$geoAreaId, map$geoAreaId), ]
+            map <- map[match(final_coords_map$geoAreaId, map$geoAreaId), ]
           }
         } else {
           map <- map[match(final_coords_map$geoAreaId, map$geoAreaId), ]
