@@ -6,9 +6,9 @@
 > `antaresViz` is the package to visualize the results of your Antares simulations that you have imported in the R session with package `antaresRead`. It provides some functions that generate interactive visualisations. Moreover, by default, these functions launch a shiny widget that provides some controls to dynamically choose what data is displayed in the graphics.
 
 <!-- badges: start -->
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/antaresViz)](https://cran.r-project.org/package=antaresViz)
-[![codecov](https://codecov.io/gh/rte-antares-rpackage/antaresViz/branch/develop/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/antaresViz)
 [![R build status](https://github.com/rte-antares-rpackage/antaresViz/workflows/R-CMD-check/badge.svg)](https://github.com/rte-antares-rpackage/antaresViz/actions)
+[![Codecov test coverage](https://codecov.io/gh/rte-antares-rpackage/antaresViz/branch/master/graph/badge.svg)](https://app.codecov.io/gh/rte-antares-rpackage/antaresViz?branch=master)
+[![CRAN status](https://www.r-pkg.org/badges/version/antaresViz)](https://CRAN.R-project.org/package=antaresViz)
 <!-- badges: end -->
 
 

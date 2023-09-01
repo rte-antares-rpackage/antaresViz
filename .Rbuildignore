@@ -10,3 +10,5 @@ inst/examples
 ^cran-comments\.md$
 ^CRAN-RELEASE$
 ^\.github$
+^revdep$
+^README\.Rmd$
