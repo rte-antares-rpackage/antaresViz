@@ -2,5 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
+.idea
 inst/examples
 inst/doc
+.Rdata
+.httr-oauth
+.DS_Store

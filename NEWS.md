@@ -1,4 +1,8 @@
-Copyright © 2016 RTE Réseau de transport d’électricité
+Copyright 2016 RTE Reseau de transport d'electricite
+
+# antaresViz 0.18.0
+* fix deprecated dependencies (issue #200)
+  * packages `rgeos`, `raster` removed and replaced by `sf`
 
 # antaresViz 0.17.1
 

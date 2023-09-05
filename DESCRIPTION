@@ -1,9 +1,9 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.17.1
+Version: 0.18.0
 Authors@R: c(
-    person("Veronique", "Bachelier", email = "veronique.bachelier@rte-france.com", role = c("aut", "cre")),
+    person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "Zawam", role = "aut"),
     person("Francois", "Guillem", role = "aut"),
     person("Benoit", "Thieurmel", role = "aut"),
@@ -23,8 +23,8 @@ License: GPL (>= 2) | file LICENSE
 Encoding: UTF-8
 Depends:
     antaresRead (>= 2.2.9),
-    antaresProcessing (>= 0.13.0), 
-    spMaps (>= 0.2)
+    antaresProcessing (>= 0.13.0),
+    spMaps (>= 0.5.0)
 Imports:
     dygraphs (>= 1.1.1.6),
     shiny (>= 0.13.0),
@@ -33,9 +33,8 @@ Imports:
     htmlwidgets (>= 0.7.0),
     manipulateWidget (>= 0.10.0),
     leaflet (>= 1.1.0),
-    sp,
-    rgeos,
-    raster,
+    sp (>= 2.0-0),
+    sf,
     webshot,
     data.table,
     methods,
@@ -47,7 +46,7 @@ Imports:
     assertthat,
     rAmCharts,
     utils
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.2
 Suggests: 
     testthat,
     covr,
