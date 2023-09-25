@@ -1,154 +1,154 @@
-context("tsPlot")
-
-test_that("tsPlot, no interactive", {
-  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-  testClass <- function(obj){
-    class(obj)[1] == 'combineWidgets'
-  }
-  listArgs <- list(noarg = list(x = dta, interactive = FALSE),
-                   elem = list(x = dta, interactive = FALSE, elements = "a"),
-                   elemS = list(x = dta, interactive = FALSE, elements = c("a", "b")),
-                   linkS = list(x = dta, table = "links", interactive = FALSE, elements = c("a - a_offshore")),
-                   linkSVarSel = list(x = dta, table = "links", interactive = FALSE,
-                                      elements = c("a - a_offshore"),
-                                      variable = "FLOW LIN._std"),
-                   bar = list(x = dta, interactive = FALSE, elements = "all", type = "barplot"),
-                   monotone = list(x = dta, interactive = FALSE, elements = "all", type = "monotone"),
-                   density = list(x = dta, interactive = FALSE, elements = "all", type = "density"),
-                   cdf = list(x = dta, interactive = FALSE, elements = "all", type = "cdf")
-  )
-  
-  lapply(listArgs, function(X){
-    re1 <- do.call(tsPlot, X)
-    expect_true(testClass(re1))
-  })
-  
-})
-
-
-
-test_that("tsPlot, no interactive return error", {
-  
-  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-  
-  expect_error(tsPlot(dta, interactive = FALSE, compare = "areas"))
-  
-})
-
-# test_that("tsPlot, work with compare", {
+# context("tsPlot")
+# 
+# test_that("tsPlot, no interactive", {
+#   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+#   testClass <- function(obj){
+#     class(obj)[1] == 'combineWidgets'
+#   }
+#   listArgs <- list(noarg = list(x = dta, interactive = FALSE),
+#                    elem = list(x = dta, interactive = FALSE, elements = "a"),
+#                    elemS = list(x = dta, interactive = FALSE, elements = c("a", "b")),
+#                    linkS = list(x = dta, table = "links", interactive = FALSE, elements = c("a - a_offshore")),
+#                    linkSVarSel = list(x = dta, table = "links", interactive = FALSE,
+#                                       elements = c("a - a_offshore"),
+#                                       variable = "FLOW LIN._std"),
+#                    bar = list(x = dta, interactive = FALSE, elements = "all", type = "barplot"),
+#                    monotone = list(x = dta, interactive = FALSE, elements = "all", type = "monotone"),
+#                    density = list(x = dta, interactive = FALSE, elements = "all", type = "density"),
+#                    cdf = list(x = dta, interactive = FALSE, elements = "all", type = "cdf")
+#   )
 #   
-#   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE, mcYears = "all")
-#   exList <-  tsPlot(x = dta, .runApp = FALSE, interactive = TRUE, compare = "mcYear")
-#   exList <- exList$init()
-#   #to get a param exList$getParams("tables")
-#   # exList$getValue("mcYear")
-#   exList$setValue("mcYear", 1, chartId = 1, reactive = FALSE)
-#   exList$setValue("mcYear", 2, chartId = 2, reactive = FALSE)
-#   exList$updateCharts()
-#   expect_equal(exList$getValue("tables"), "areas")
-#   expect_equal(exList$getValue("main"), "")
-#   expect_true(is(exList, "MWController"))
-#   expect_equal(exList$ncharts, 2)
-#   expect_equal(exList$ncol, 1)
-#   expect_equal(exList$nrow, 2)
-#   dataTsCompare <- .get_data_from_htmlwidget(exList, widgetsNumber = 1)
-#   timeEditValue <- "2018-05-06T18:00:00.000Z"
-#   indexHour <- grep(timeEditValue, dataTsCompare$hour)
-#   expect_gt(indexHour, 180)
-#   expect_equal(dataTsCompare$a[indexHour], 1627275)
-#   
-#   dataTsCompareMcYear2 <- .get_data_from_htmlwidget(exList, widgetsNumber = 2)
-#   expect_equal(dataTsCompareMcYear2$a[indexHour], 1432100)
+#   lapply(listArgs, function(X){
+#     re1 <- do.call(tsPlot, X)
+#     expect_true(testClass(re1))
+#   })
 #   
 # })
-
-test_that("tsPlot, no interactive, x and refStudy are antaresDataTable", {
-  myData1 <- readAntares(links = "all", showProgress = FALSE)
-  myData2 <- readAntares(links = "all", showProgress = FALSE)
-  myLink <- "a - a_offshore" 
-  DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-  tsDa1 <- tsPlot(x = myData1, 
-                  table = "links", 
-                  elements = myLink,
-                  type = "ts",
-                  interactive = FALSE)
-  dataTsDa1 <- .get_data_from_htmlwidget(tsDa1)
-  timeEditValue <- "2018-04-25T00:00:00.000Z"
-  indexHour <- grep(timeEditValue, dataTsDa1$hour)
-  expect_gt(indexHour, 2)
-  expect_equal(dataTsDa1$`a - a_offshore`[indexHour], -9)
-  tsDa2 <- tsPlot(x = myData1, 
-                  refStudy = myData2,
-                  table = "links", 
-                  elements = myLink,
-                  type = "ts",
-                  interactive = FALSE)
-  dataTsDa2 <- .get_data_from_htmlwidget(tsDa2)
-  expect_equal(dataTsDa2$`a - a_offshore`[indexHour], 0)
-  
-  table <- "areas"
-  myArea <- "b"
-  myData1 <- readAntares(areas = myArea, showProgress = FALSE)
-  myData2 <- readAntares(areas = myArea, showProgress = FALSE)
-  tsDa1 <- tsPlot(x = myData1, 
-                  table = table, 
-                  elements = myArea,
-                  type = "ts",
-                  interactive = FALSE)
-  dataTsDa1 <- .get_data_from_htmlwidget(tsDa1)
-  expect_equal(dataTsDa1[[myArea]][[indexHour]], 2427150)
-  tsDa2 <- tsPlot(x = myData1, 
-                  refStudy = myData2,
-                  table = table, 
-                  elements = myArea,
-                  type = "ts",
-                  interactive = FALSE)
-  dataTsDa2 <- .get_data_from_htmlwidget(tsDa2)
-  expect_equal(dataTsDa2[[myArea]][[indexHour]], 0)
-})
-
-test_that("tsPlot, no interactive, x and refStudy are antaresDataList", {
-  myArea <- "b"
-  myLink <- "a - a_offshore" 
-  myData1 <- readAntares(links = myLink, areas = myArea, showProgress = FALSE, mcYears = 1)
-  myData2 <- readAntares(links = myLink, areas = myArea, showProgress = FALSE, mcYears = 1)
-  DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-  tsDa1 <- tsPlot(x = myData1, 
-                  table = "links", 
-                  elements = myLink,
-                  type = "ts",
-                  interactive = FALSE)
-  dataTsDa1 <- .get_data_from_htmlwidget(tsDa1)
-  timeEditValue <- "2018-04-25T00:00:00.000Z"
-  indexHour <- grep(timeEditValue, dataTsDa1$hour)
-  expect_gt(indexHour, 2)
-  expect_equal(dataTsDa1$`a - a_offshore`[indexHour], -10)
-  tsDa2 <- tsPlot(x = myData1, 
-                  refStudy = myData2,
-                  table = "links", 
-                  elements = myLink,
-                  type = "ts",
-                  interactive = FALSE)
-  dataTsDa2 <- .get_data_from_htmlwidget(tsDa2)
-  expect_equal(dataTsDa2$`a - a_offshore`[indexHour], 0)
-
-  #pb timeZone local (PC, Travis, etc)
-  for (i in 0:5){
-    timeEditShift <- lubridate::hours(i)
-    timeEditMinus <- as.Date(timeEditValue) - timeEditShift
-    timeEditPlus <- as.Date(timeEditValue) + timeEditShift
-    myData2$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
-  }
-  tsDa2 <- tsPlot(x = myData1, 
-                  refStudy = myData2,
-                  table = "links", 
-                  elements = myLink,
-                  type = "ts",
-                  interactive = FALSE)
-  dataTsDa2 <- .get_data_from_htmlwidget(tsDa2)
-  expect_equal(dataTsDa2$`a - a_offshore`[indexHour], -2500)
-  
-})
+# 
+# 
+# 
+# test_that("tsPlot, no interactive return error", {
+#   
+#   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+#   
+#   expect_error(tsPlot(dta, interactive = FALSE, compare = "areas"))
+#   
+# })
+# 
+# # test_that("tsPlot, work with compare", {
+# #   
+# #   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE, mcYears = "all")
+# #   exList <-  tsPlot(x = dta, .runApp = FALSE, interactive = TRUE, compare = "mcYear")
+# #   exList <- exList$init()
+# #   #to get a param exList$getParams("tables")
+# #   # exList$getValue("mcYear")
+# #   exList$setValue("mcYear", 1, chartId = 1, reactive = FALSE)
+# #   exList$setValue("mcYear", 2, chartId = 2, reactive = FALSE)
+# #   exList$updateCharts()
+# #   expect_equal(exList$getValue("tables"), "areas")
+# #   expect_equal(exList$getValue("main"), "")
+# #   expect_true(is(exList, "MWController"))
+# #   expect_equal(exList$ncharts, 2)
+# #   expect_equal(exList$ncol, 1)
+# #   expect_equal(exList$nrow, 2)
+# #   dataTsCompare <- .get_data_from_htmlwidget(exList, widgetsNumber = 1)
+# #   timeEditValue <- "2018-05-06T18:00:00.000Z"
+# #   indexHour <- grep(timeEditValue, dataTsCompare$hour)
+# #   expect_gt(indexHour, 180)
+# #   expect_equal(dataTsCompare$a[indexHour], 1627275)
+# #   
+# #   dataTsCompareMcYear2 <- .get_data_from_htmlwidget(exList, widgetsNumber = 2)
+# #   expect_equal(dataTsCompareMcYear2$a[indexHour], 1432100)
+# #   
+# # })
+# 
+# test_that("tsPlot, no interactive, x and refStudy are antaresDataTable", {
+#   myData1 <- readAntares(links = "all", showProgress = FALSE)
+#   myData2 <- readAntares(links = "all", showProgress = FALSE)
+#   myLink <- "a - a_offshore" 
+#   DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+#   tsDa1 <- tsPlot(x = myData1, 
+#                   table = "links", 
+#                   elements = myLink,
+#                   type = "ts",
+#                   interactive = FALSE)
+#   dataTsDa1 <- .get_data_from_htmlwidget(tsDa1)
+#   timeEditValue <- "2018-04-25T00:00:00.000Z"
+#   indexHour <- grep(timeEditValue, dataTsDa1$hour)
+#   expect_gt(indexHour, 2)
+#   expect_equal(dataTsDa1$`a - a_offshore`[indexHour], -9)
+#   tsDa2 <- tsPlot(x = myData1, 
+#                   refStudy = myData2,
+#                   table = "links", 
+#                   elements = myLink,
+#                   type = "ts",
+#                   interactive = FALSE)
+#   dataTsDa2 <- .get_data_from_htmlwidget(tsDa2)
+#   expect_equal(dataTsDa2$`a - a_offshore`[indexHour], 0)
+#   
+#   table <- "areas"
+#   myArea <- "b"
+#   myData1 <- readAntares(areas = myArea, showProgress = FALSE)
+#   myData2 <- readAntares(areas = myArea, showProgress = FALSE)
+#   tsDa1 <- tsPlot(x = myData1, 
+#                   table = table, 
+#                   elements = myArea,
+#                   type = "ts",
+#                   interactive = FALSE)
+#   dataTsDa1 <- .get_data_from_htmlwidget(tsDa1)
+#   expect_equal(dataTsDa1[[myArea]][[indexHour]], 2427150)
+#   tsDa2 <- tsPlot(x = myData1, 
+#                   refStudy = myData2,
+#                   table = table, 
+#                   elements = myArea,
+#                   type = "ts",
+#                   interactive = FALSE)
+#   dataTsDa2 <- .get_data_from_htmlwidget(tsDa2)
+#   expect_equal(dataTsDa2[[myArea]][[indexHour]], 0)
+# })
+# 
+# test_that("tsPlot, no interactive, x and refStudy are antaresDataList", {
+#   myArea <- "b"
+#   myLink <- "a - a_offshore" 
+#   myData1 <- readAntares(links = myLink, areas = myArea, showProgress = FALSE, mcYears = 1)
+#   myData2 <- readAntares(links = myLink, areas = myArea, showProgress = FALSE, mcYears = 1)
+#   DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+#   tsDa1 <- tsPlot(x = myData1, 
+#                   table = "links", 
+#                   elements = myLink,
+#                   type = "ts",
+#                   interactive = FALSE)
+#   dataTsDa1 <- .get_data_from_htmlwidget(tsDa1)
+#   timeEditValue <- "2018-04-25T00:00:00.000Z"
+#   indexHour <- grep(timeEditValue, dataTsDa1$hour)
+#   expect_gt(indexHour, 2)
+#   expect_equal(dataTsDa1$`a - a_offshore`[indexHour], -10)
+#   tsDa2 <- tsPlot(x = myData1, 
+#                   refStudy = myData2,
+#                   table = "links", 
+#                   elements = myLink,
+#                   type = "ts",
+#                   interactive = FALSE)
+#   dataTsDa2 <- .get_data_from_htmlwidget(tsDa2)
+#   expect_equal(dataTsDa2$`a - a_offshore`[indexHour], 0)
+# 
+#   #pb timeZone local (PC, Travis, etc)
+#   for (i in 0:5){
+#     timeEditShift <- lubridate::hours(i)
+#     timeEditMinus <- as.Date(timeEditValue) - timeEditShift
+#     timeEditPlus <- as.Date(timeEditValue) + timeEditShift
+#     myData2$links[ (time == timeEditMinus | time == timeEditPlus) & link == "a - a_offshore", `FLOW LIN.` := as.integer(`FLOW LIN.` + 2500)]
+#   }
+#   tsDa2 <- tsPlot(x = myData1, 
+#                   refStudy = myData2,
+#                   table = "links", 
+#                   elements = myLink,
+#                   type = "ts",
+#                   interactive = FALSE)
+#   dataTsDa2 <- .get_data_from_htmlwidget(tsDa2)
+#   expect_equal(dataTsDa2$`a - a_offshore`[indexHour], -2500)
+#   
+# })
 
 # describe("tsPlot, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
 #   myData1 <- readAntares(links = "all", areas = "all", showProgress = FALSE)

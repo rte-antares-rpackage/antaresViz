@@ -12,3 +12,4 @@ inst/examples
 ^\.github$
 ^revdep$
 ^README\.Rmd$
+^CRAN-SUBMISSION$
