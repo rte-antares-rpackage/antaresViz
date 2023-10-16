@@ -4,15 +4,15 @@ library(sp)
 library(antaresViz)
 library(data.table)
 
+path_study <- "//antrsprdsa008VM/PER/Dossier travail création découpage zonal Europe/NT2030_zonal_no_flex_with_constraints"
+opts<-setSimulationPath(path_study)
 
-opts<-setSimulationPath("/run/user/1774400911/gvfs/smb-share:server=antrsprdsa008vm,share=per/Dossier travail création découpage zonal Europe/NT2030_zonal_no_flex_with_constraints")
 
-
-zoneEuRDS <- readRDS(file ="/home/vargastat/R/maplayoutEurope_v2.rds")
+# zoneEuRDS <- readRDS(file ="/home/vargastat/R/maplayoutEurope_v2.rds")
 
 
 #GeoJSON
-geojson_file <- "/home/vargastat/R/Subzones_IoSN.geojson"
+geojson_file <- "//antrsprdsa008VM/PER/Dossier travail création découpage zonal Europe/Fichiers/Subzones_IoSN.geojson"
 sf_object <- st_read(geojson_file)
 geojson_as_sp <- as(sf_object, "Spatial")
 
