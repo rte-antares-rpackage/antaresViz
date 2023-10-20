@@ -646,3 +646,98 @@ plot.mapLayout <- function(x, colAreas =  x$coords$color, dataAreas = 1,
   # Add shadows to elements
   map %>% addShadows()
 }
+
+
+
+
+
+utils::globalVariables("from")
+
+#' @title Build a `mapLayout` object with gesojson file
+#'
+#' @description 
+#' 
+#' this function creates a 'mapLayout' object from a study and an external 
+#' 'geojson' file. 
+#' The 'geojson' file must contain zones compatible with the study. 
+#' This function should be used only once per study. 
+#' The result should then be saved in an external file and be reused.
+#' 
+#' @param path_geojson_file `character` path of geojson file
+#' @param opts list of simulation parameters returned by 
+#' the function [antaresRead::setSimulationPath()]
+#' 
+#' @importFrom methods as
+#' 
+mapLayout_no_interactive <- function(path_geojson_file, 
+                                        opts = simOptions()){
+  # check parameters
+  assertthat::assert_that(inherits(path_geojson_file, "character"))
+  assertthat::assert_that(inherits(opts, "simOptions"))
+  
+  # read file
+  sf_object <- st_read(path_geojson_file)
+  geojson_as_sp <- as(sf_object, "Spatial")
+  
+  ##
+  # build "mapLayout" object
+  ##
+  all_coords <- data.table(
+    area = tolower(geojson_as_sp@data$name),
+    x = geojson_as_sp@data$Long,
+    y = geojson_as_sp@data$Lat,
+    color = rep("#0080FF", times = length(geojson_as_sp@data$name)),
+    geoAreaId = seq(seq_along(geojson_as_sp@data$name))
+  )
+  
+  # keep area and id
+  zone_geoArea_table <- data.frame(
+    ZONE = all_coords$area,
+    geoAreaId = all_coords$geoAreaId
+  )
+  
+  # update "SpatialPolygonsDataFrame" object
+  geojson_as_sp@data<-zone_geoArea_table
+  
+  setcolorder(all_coords, c("area", "x", "y", "color", "geoAreaId"))
+  
+  ##
+  # Manage study's links
+  ##
+  
+  links <- data.table(
+    opts$linksDef
+  )
+  
+  # keep links according to your study
+  links <- links[from %in% all_coords$area & to %in% all_coords$area]
+  
+  # add coordonates links "from"
+  links <- merge(
+    x = links,
+    y = all_coords[, list(from = area, x0 = x, y0 = y)],
+    by = "from"
+  )
+  
+  # add coordonates links "to"
+  links <- merge(
+    x = links,
+    y = all_coords[, list(to = area, x1 = x, y1 = y)],
+    by = "to"
+  )
+  
+  setcolorder(links, c("link", "from", "to", "x0", "y0", "x1", "y1"))
+  
+  # final object
+  zone_layout <- list(
+    coords = all_coords,
+    links = links,
+    map = geojson_as_sp,
+    all_coords = all_coords
+  )
+  
+  class(zone_layout) <- "mapLayout"
+  attr(zone_layout, "type") <- "areas"
+  
+  return(zone_layout)
+}
