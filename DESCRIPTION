@@ -55,5 +55,6 @@ Suggests:
     hexbin,
     knitr,
     visNetwork,
-    rmarkdown
+    rmarkdown,
+    antaresEditObject
 VignetteBuilder: knitr
