@@ -1,138 +1,138 @@
-# context("plotMap")
-# 
-# test_that("plotMap, no interactive", {
-#   
-#   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-#   testClass <- function(obj){
-#     class(obj)[1] == 'combineWidgets'
-#   }
-#   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
-#   
-#   listArgs <- list(noarg = list(x = dta, interactive = FALSE, mapLayout = ml),
-#                    colorLinks = list(x = dta, interactive = FALSE, mapLayout = ml, colLinkVar = "FLOW LIN."),
-#                    colorAll = list(x = dta, interactive = FALSE, mapLayout = ml, colLinkVar = "FLOW LIN.",
-#                                    colAreaVar = "OP. COST")
-#   )
-#   
-#   lapply(listArgs, function(X){
-#     re1 <- do.call(plotMap, X)
-#     expect_true(testClass(re1))
-#   })
-#   
-# })
-# 
-# test_that("plotMap, no interactive return error", {
-#   
-#   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-#   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
-#   
-#   expect_error(plotMap(x = dta, mapLayout = ml , interactive = FALSE, compare = "areas"))
-#   
-#   
-# })
-# 
-# test_that("plotMap, interactive", {
-#   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-#   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
-#   VV <- plotMap(x = dta, mapLayout = ml, .runApp = FALSE, interactive = TRUE)
-#   VV$init()
-#   expect_true("MWController" %in% class(VV))
-# })
-# 
-# test_that("plotMap, no interactive, x and refStudy are antaresDataList", {
-#   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-#   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
-#   resPlotMap <- plotMap(x = dta, 
-#                         mapLayout = ml, 
-#                         interactive = FALSE,
-#                         colAreaVar = "LOAD",
-#                         sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
-#   expect_true("htmlwidget" %in% class(resPlotMap))
-#   valToValid <- .getDataFromPlotMap(area = "c", 
-#                       time = "sam. 05 mai 2018<br/>17:00",
-#                       variable = "LOAD",
-#                       htmlPlotMap = resPlotMap)
-#   expect_gt(valToValid, 50000)
-#   # with refStudy
-#   resPlotMap <- plotMap(x = dta, 
-#                         refStudy = dta,
-#                         mapLayout = ml, 
-#                         interactive = FALSE,
-#                         colAreaVar = "LOAD",
-#                         sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
-#   expect_true("htmlwidget" %in% class(resPlotMap))
-#   valToValid <- .getDataFromPlotMap(area = "c", 
-#                                     time = "sam. 05 mai 2018<br/>17:00",
-#                                     variable = "LOAD",
-#                                     htmlPlotMap = resPlotMap)
-#   expect_equal(valToValid, 0)
-#   # edit myData
-#   data2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-#   data2$areas[ , LOAD := as.double(LOAD)][area=="c", LOAD := as.double(LOAD +2500.0)]
-#   resPlotMap2 <- plotMap(x = data2, 
-#                         refStudy = dta,
-#                         mapLayout = ml, 
-#                         interactive = FALSE,
-#                         colAreaVar = "LOAD",
-#                         sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
-#   expect_true("htmlwidget" %in% class(resPlotMap2))
-#   valToValid <- .getDataFromPlotMap(area = "c", 
-#                                     time = "sam. 05 mai 2018<br/>17:00",
-#                                     variable = "LOAD",
-#                                     htmlPlotMap = resPlotMap2)
-#   expect_equal(valToValid, 2500)
-# })
-# 
-# test_that("plotMap, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
-#   data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-#   dataList <- list(data1, data1, data1)
-#   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
-#   resPlotMap <- plotMap(x = dataList, 
-#                         mapLayout = ml, 
-#                         interactive = FALSE,
-#                         colAreaVar = "LOAD",
-#                         sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
-#   expect_true("htmlwidget" %in% class(resPlotMap))
-#   valToValid <- .getDataFromPlotMap(area = "c", 
-#                                     time = "sam. 05 mai 2018<br/>17:00",
-#                                     variable = "LOAD",
-#                                     htmlPlotMap = resPlotMap,
-#                                     idWidget = 2)
-#   expect_gt(valToValid, 50000)
-#   # with refStudy
-#   resPlotMap <- plotMap(x = dataList, 
-#                         refStudy = data1,
-#                         mapLayout = ml, 
-#                         interactive = FALSE,
-#                         colAreaVar = "LOAD",
-#                         sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
-#   expect_true("htmlwidget" %in% class(resPlotMap))
-#   valToValid <- .getDataFromPlotMap(area = "c", 
-#                                     time = "sam. 05 mai 2018<br/>17:00",
-#                                     variable = "LOAD",
-#                                     htmlPlotMap = resPlotMap,
-#                                     idWidget = 2)
-#   expect_equal(valToValid, 0)
-#   # edit myData
-#   data2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-#   data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-#   data2$areas[ , LOAD := as.double(LOAD)][area=="c", LOAD := as.double(LOAD +2500.0)]
-#   dataList2 <- list(data1, data2, data1)
-#   expect_equal(dataList2[[2]]$areas[area=="c", LOAD], dataList2[[1]]$areas[area=="c", LOAD] + 2500)
-#   resPlotMap2 <- plotMap(x = dataList2, 
-#                          refStudy = data1,
-#                          mapLayout = ml, 
-#                          interactive = FALSE,
-#                          colAreaVar = "LOAD",
-#                          sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
-#   expect_true("htmlwidget" %in% class(resPlotMap2))
-#   valToValid <- .getDataFromPlotMap(area = "c", 
-#                                     time = "sam. 05 mai 2018<br/>17:00",
-#                                     variable = "LOAD",
-#                                     htmlPlotMap = resPlotMap2,
-#                                     idWidget = 2)
-#   expect_equal(valToValid, 2500)
-# })
+context("plotMap")
+
+test_that("plotMap, no interactive", {
+
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  testClass <- function(obj){
+    class(obj)[1] == 'combineWidgets'
+  }
+  load(system.file("mapLayout/ml.rda", package = "antaresViz"))
+
+  listArgs <- list(noarg = list(x = dta, interactive = FALSE, mapLayout = ml),
+                   colorLinks = list(x = dta, interactive = FALSE, mapLayout = ml, colLinkVar = "FLOW LIN."),
+                   colorAll = list(x = dta, interactive = FALSE, mapLayout = ml, colLinkVar = "FLOW LIN.",
+                                   colAreaVar = "OP. COST")
+  )
+
+  lapply(listArgs, function(X){
+    re1 <- do.call(plotMap, X)
+    expect_true(testClass(re1))
+  })
+
+})
+
+test_that("plotMap, no interactive return error", {
+
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  load(system.file("mapLayout/ml.rda", package = "antaresViz"))
+
+  expect_error(plotMap(x = dta, mapLayout = ml , interactive = FALSE, compare = "areas"))
+
+
+})
+
+test_that("plotMap, interactive", {
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  load(system.file("mapLayout/ml.rda", package = "antaresViz"))
+  VV <- plotMap(x = dta, mapLayout = ml, .runApp = FALSE, interactive = TRUE)
+  VV$init()
+  expect_true("MWController" %in% class(VV))
+})
+
+test_that("plotMap, no interactive, x and refStudy are antaresDataList", {
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  load(system.file("mapLayout/ml.rda", package = "antaresViz"))
+  resPlotMap <- plotMap(x = dta,
+                        mapLayout = ml,
+                        interactive = FALSE,
+                        colAreaVar = "LOAD",
+                        sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
+  expect_true("htmlwidget" %in% class(resPlotMap))
+  valToValid <- .getDataFromPlotMap(area = "c",
+                      time = "sam. 05 mai 2018<br/>17:00",
+                      variable = "LOAD",
+                      htmlPlotMap = resPlotMap)
+  expect_gt(valToValid, 50000)
+  # with refStudy
+  resPlotMap <- plotMap(x = dta,
+                        refStudy = dta,
+                        mapLayout = ml,
+                        interactive = FALSE,
+                        colAreaVar = "LOAD",
+                        sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
+  expect_true("htmlwidget" %in% class(resPlotMap))
+  valToValid <- .getDataFromPlotMap(area = "c",
+                                    time = "sam. 05 mai 2018<br/>17:00",
+                                    variable = "LOAD",
+                                    htmlPlotMap = resPlotMap)
+  expect_equal(valToValid, 0)
+  # edit myData
+  data2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  data2$areas[ , LOAD := as.double(LOAD)][area=="c", LOAD := as.double(LOAD +2500.0)]
+  resPlotMap2 <- plotMap(x = data2,
+                        refStudy = dta,
+                        mapLayout = ml,
+                        interactive = FALSE,
+                        colAreaVar = "LOAD",
+                        sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
+  expect_true("htmlwidget" %in% class(resPlotMap2))
+  valToValid <- .getDataFromPlotMap(area = "c",
+                                    time = "sam. 05 mai 2018<br/>17:00",
+                                    variable = "LOAD",
+                                    htmlPlotMap = resPlotMap2)
+  expect_equal(valToValid, 2500)
+})
+
+test_that("plotMap, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
+  data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  dataList <- list(data1, data1, data1)
+  load(system.file("mapLayout/ml.rda", package = "antaresViz"))
+  resPlotMap <- plotMap(x = dataList,
+                        mapLayout = ml,
+                        interactive = FALSE,
+                        colAreaVar = "LOAD",
+                        sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
+  expect_true("htmlwidget" %in% class(resPlotMap))
+  valToValid <- .getDataFromPlotMap(area = "c",
+                                    time = "sam. 05 mai 2018<br/>17:00",
+                                    variable = "LOAD",
+                                    htmlPlotMap = resPlotMap,
+                                    idWidget = 2)
+  expect_gt(valToValid, 50000)
+  # with refStudy
+  resPlotMap <- plotMap(x = dataList,
+                        refStudy = data1,
+                        mapLayout = ml,
+                        interactive = FALSE,
+                        colAreaVar = "LOAD",
+                        sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
+  expect_true("htmlwidget" %in% class(resPlotMap))
+  valToValid <- .getDataFromPlotMap(area = "c",
+                                    time = "sam. 05 mai 2018<br/>17:00",
+                                    variable = "LOAD",
+                                    htmlPlotMap = resPlotMap,
+                                    idWidget = 2)
+  expect_equal(valToValid, 0)
+  # edit myData
+  data2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  data2$areas[ , LOAD := as.double(LOAD)][area=="c", LOAD := as.double(LOAD +2500.0)]
+  dataList2 <- list(data1, data2, data1)
+  expect_equal(dataList2[[2]]$areas[area=="c", LOAD], dataList2[[1]]$areas[area=="c", LOAD] + 2500)
+  resPlotMap2 <- plotMap(x = dataList2,
+                         refStudy = data1,
+                         mapLayout = ml,
+                         interactive = FALSE,
+                         colAreaVar = "LOAD",
+                         sizeAreaVars = c("LOAD", "WIND", "SOLAR"))
+  expect_true("htmlwidget" %in% class(resPlotMap2))
+  valToValid <- .getDataFromPlotMap(area = "c",
+                                    time = "sam. 05 mai 2018<br/>17:00",
+                                    variable = "LOAD",
+                                    htmlPlotMap = resPlotMap2,
+                                    idWidget = 2)
+  expect_equal(valToValid, 2500)
+})
 
 # test_that("plotMap, interactive, x and refStudy are antaresDataList", {
 #   dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
