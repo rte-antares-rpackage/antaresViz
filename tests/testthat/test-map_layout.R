@@ -16,6 +16,8 @@ test_that("build objet 'mapLayout' no interactive", {
   
   testthat::expect_s3_class(obj_mapLayout, 'mapLayout')
   
+  unlink(file.path(tempdir(), "zonal_test"))
+  
   # opts_zonal <- setSimulationPath(file.path(tempdir(), 
   #                                           "zonal_test"))
   # 
