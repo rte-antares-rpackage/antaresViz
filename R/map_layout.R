@@ -657,18 +657,35 @@ utils::globalVariables("from")
 #'
 #' @description 
 #' 
-#' this function creates a 'mapLayout' object from a study and an external 
-#' 'geojson' file. 
-#' The 'geojson' file must contain zones compatible with the study. 
-#' This function should be used only once per study. 
+#' This function creates a 'mapLayout' object from a study and an external 
+#' 'geojson' file.  
+#'  
+#' This function should be used only once per study.  
+#' 
 #' The result should then be saved in an external file and be reused.
 #' 
 #' @param path_geojson_file `character` path of geojson file
 #' @param opts list of simulation parameters returned by 
-#' the function [antaresRead::setSimulationPath()]
+#' the function \code{\link[antaresRead]{setSimulationPath}}
 #' 
 #' @importFrom methods as
+#' @importFrom sf st_read
 #' 
+#' @export
+#' @note The 'geojson' file must contain zones compatible with the study.
+#' 
+#' @return Object of class "mapLayout"
+#' 
+#' @examples 
+#' \dontrun{
+#' # set informations to your study ("input" mode is enough)
+#' setSimulationPath(path = "path/my_study", simulation = "input")
+#' 
+#' path_geojson <- "path/my_geosjonfile.geojson"
+#' 
+#' mapLayout_no_interactive(path_geojson_file = path_geojson)
+#' 
+#' }
 mapLayout_no_interactive <- function(path_geojson_file, 
                                         opts = simOptions()){
   # check parameters
@@ -677,6 +694,24 @@ mapLayout_no_interactive <- function(path_geojson_file,
   
   # read file
   sf_object <- st_read(path_geojson_file)
+  
+  # check geojson file
+  if(!"name"%in%names(sf_object))
+    stop("geosjon file must have key 'name'", 
+         call. = FALSE)
+  if(!all(c("Lat", "Long")%in%names(sf_object)))
+    stop("geosjon file must have key {'Lat;'Long'}", 
+         call. = FALSE)
+    
+  # check areas if compatible with geojson file
+  areas_names <- getAreas()
+  if(!any(areas_names%in%tolower(sf_object$name)))
+    stop("study must have areas according to geojson file", 
+         call. = FALSE)
+  
+  cat("\nstudy compatible with geojson file\n")
+    
+  # conversion to "sp" class
   geojson_as_sp <- as(sf_object, "Spatial")
   
   ##
@@ -704,10 +739,13 @@ mapLayout_no_interactive <- function(path_geojson_file,
   ##
   # Manage study's links
   ##
-  
   links <- data.table(
     opts$linksDef
   )
+  
+  if(nrow(links) %in% 0)
+    stop("no links are found in study", 
+         call. = FALSE)
   
   # keep links according to your study
   links <- links[from %in% all_coords$area & to %in% all_coords$area]
