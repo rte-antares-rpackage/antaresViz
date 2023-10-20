@@ -25,7 +25,7 @@ test_that("build objet 'mapLayout' no interactive", {
     # bad areas name
   bad_area_name <- geo_file
   bad_area_name$name <- sample(c("titi", "toto"), 
-                          size = length(bad_name$name), 
+                          size = length(bad_area_name$name), 
                           replace = TRUE)
   
   bad_area_name <- geojsonio::geojson_write(input = bad_area_name)
