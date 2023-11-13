@@ -5,9 +5,11 @@ test_that("build objet 'mapLayout' no interactive", {
   
  # create study ----
   # create study with areas/links according to geojson file test
-  antaresEditObject::createStudy(path = tempdir(), 
-              study_name = "zonal_test", 
-              antares_version = "8.2.0")
+  suppressWarnings(
+    antaresEditObject::createStudy(path = tempdir(), 
+                                   study_name = "zonal_test", 
+                                   antares_version = "8.2.0")
+  )
   
   lapply(c("21_FR", "24_FR", "23_FR", "16_FR"), 
          antaresEditObject::createArea)
@@ -74,23 +76,26 @@ test_that("build objet 'mapLayout' no interactive", {
   # delete study ----
   unlink(file.path(tempdir(), "zonal_test"), recursive = TRUE)
   
-  # @examples 
-    # commented code if you want to test to plot this "mapLayout"
-  
-  # opts_zonal <- setSimulationPath(file.path(tempdir(), 
+  # # @examples
+  #   # commented code if you want to test to plot this "mapLayout"
+  # 
+  # # run from ui if it don't work
+  # runSimulation("zonal_testsim",
+  #               path_solver = "D:/AppliRTE/bin/antares-8.2-solver.exe") 
+  # 
+  # # read only one simulation
+  # opts_zonal <- setSimulationPath(file.path(tempdir(),
   #                                           "zonal_test"))
   # 
-  # runSimulation("zonal_testsim") # run from ui if it don't work
-  # 
-  # mydata <- readAntares(areas = obj$coords$area, 
-  #                       links = obj$links$link, 
+  # mydata <- readAntares(areas = obj_mapLayout$coords$area,
+  #                       links = obj_mapLayout$links$link,
   #                       timeStep = "daily",
-  #                       select = "nostat", 
-  #                       opts = opts_zonal)
+  #                       select = "nostat",
+  #                       opts = simOptions())
   # 
   # # viz
-  # myOption <- plotMapOptions(areaChartColors = c("yellow", "violetred"), 
+  # myOption <- plotMapOptions(areaChartColors = c("yellow", "violetred"),
   #                            linkDefaultCol = "green")
-  # plotMap(x = mydata, mapLayout = obj, 
+  # plotMap(x = mydata, mapLayout = obj_mapLayout,
   #         options = myOption)
 })
