@@ -1,5 +1,10 @@
 Copyright 2016 RTE Reseau de transport d'electricite
 
+# antaresViz 0.18.1
+
+## new feature : 
+* `mapLayout_no_interactive()` make an object of class "mapLayout" from external geojson file
+
 # antaresViz 0.18.0
 * fix deprecated dependencies (issue #200)
   * packages `rgeos`, `raster` removed and replaced by `sf`

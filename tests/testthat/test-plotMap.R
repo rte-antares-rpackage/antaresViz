@@ -2,7 +2,7 @@ context("plotMap")
 
 test_that("plotMap, no interactive", {
 
-  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE, opts = opts)
   testClass <- function(obj){
     class(obj)[1] == 'combineWidgets'
   }
@@ -23,7 +23,7 @@ test_that("plotMap, no interactive", {
 
 test_that("plotMap, no interactive return error", {
 
-  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE, opts = opts)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
 
   expect_error(plotMap(x = dta, mapLayout = ml , interactive = FALSE, compare = "areas"))
@@ -32,7 +32,7 @@ test_that("plotMap, no interactive return error", {
 })
 
 test_that("plotMap, interactive", {
-  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE, opts = opts)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
   VV <- plotMap(x = dta, mapLayout = ml, .runApp = FALSE, interactive = TRUE)
   VV$init()
@@ -40,7 +40,7 @@ test_that("plotMap, interactive", {
 })
 
 test_that("plotMap, no interactive, x and refStudy are antaresDataList", {
-  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  dta <- readAntares(areas = "all", links = "all", showProgress = FALSE, opts = opts)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
   resPlotMap <- plotMap(x = dta,
                         mapLayout = ml,
@@ -67,7 +67,7 @@ test_that("plotMap, no interactive, x and refStudy are antaresDataList", {
                                     htmlPlotMap = resPlotMap)
   expect_equal(valToValid, 0)
   # edit myData
-  data2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  data2 <- readAntares(areas = "all", links = "all", showProgress = FALSE, opts = opts)
   data2$areas[ , LOAD := as.double(LOAD)][area=="c", LOAD := as.double(LOAD +2500.0)]
   resPlotMap2 <- plotMap(x = data2,
                         refStudy = dta,
@@ -84,7 +84,7 @@ test_that("plotMap, no interactive, x and refStudy are antaresDataList", {
 })
 
 test_that("plotMap, no interactive, x is a list of antaresDataList and refStudy an antaresDataList", {
-  data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE, opts = opts)
   dataList <- list(data1, data1, data1)
   load(system.file("mapLayout/ml.rda", package = "antaresViz"))
   resPlotMap <- plotMap(x = dataList,
@@ -114,8 +114,8 @@ test_that("plotMap, no interactive, x is a list of antaresDataList and refStudy 
                                     idWidget = 2)
   expect_equal(valToValid, 0)
   # edit myData
-  data2 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
-  data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE)
+  data2 <- readAntares(areas = "all", links = "all", showProgress = FALSE, opts = opts)
+  data1 <- readAntares(areas = "all", links = "all", showProgress = FALSE, opts = opts)
   data2$areas[ , LOAD := as.double(LOAD)][area=="c", LOAD := as.double(LOAD +2500.0)]
   dataList2 <- list(data1, data2, data1)
   expect_equal(dataList2[[2]]$areas[area=="c", LOAD], dataList2[[1]]$areas[area=="c", LOAD] + 2500)
