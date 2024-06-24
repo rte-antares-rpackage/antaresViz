@@ -1,5 +1,8 @@
 Copyright 2016 RTE Reseau de transport d'electricite
 
+# antaresViz 0.18.1
+* delete package dependecies `rhdf5`
+
 # antaresViz 0.18.0
 * fix deprecated dependencies (issue #200)
   * packages `rgeos`, `raster` removed and replaced by `sf`

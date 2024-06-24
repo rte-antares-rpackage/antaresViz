@@ -29,7 +29,6 @@ globalVariables(
 .timeIdToDate <- antaresRead:::.timeIdToDate
 .getTimeId <- antaresRead:::.getTimeId
 .mergeByRef <- antaresRead:::.mergeByRef
-.requireRhdf5_Antares <- antaresRead:::.requireRhdf5_Antares
 .checkColumns <- antaresProcessing:::.checkColumns
 .checkAttrs <- antaresProcessing:::.checkAttrs
 
@@ -309,9 +308,6 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   timeStepType <- paste("/hourly", categoryVar, sep = "/") 
   nameStructure <- paste0(timeStepType, typeOfData, "/structure")
   
-  H5locAntaresh5 <- rhdf5::H5Fopen(name = pathH5)
-  hourlyDataStructure <- rhdf5::h5read(H5locAntaresh5, name = nameStructure)
-  
   if (!is.null(area)){
     indexCateroryInstance <- grep(area, hourlyDataStructure$area)[1]
   }else{
@@ -328,21 +324,4 @@ colorsVars <- unique(rbindlist(list(colorsVars, col_fr)))
   
   listIndex <- list(indexTimeId, indexAntVar, indexCateroryInstance, indexMcYear)
   #debug print(listIndex)
-  
-  hourlyData <- rhdf5::h5read(
-    H5locAntaresh5, 
-    name = paste0(timeStepType, typeOfData, "/data"),
-    index = listIndex)
-  
-  hourlyData[,,,] <- newValue
-  
-  rhdf5::h5writeDataset(
-    obj = hourlyData, 
-    h5loc = H5locAntaresh5, 
-    name = paste0(timeStepType, typeOfData, "/data"),
-    index = listIndex
-  )
-  
-  rhdf5::H5Fclose(h5file = H5locAntaresh5)
-  rhdf5::h5closeAll()
 }

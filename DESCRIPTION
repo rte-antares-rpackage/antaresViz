@@ -1,7 +1,7 @@
 Package: antaresViz
 Type: Package
 Title: Antares Visualizations
-Version: 0.18.0
+Version: 0.18.1
 Authors@R: c(
     person("Tatiana", "Vargas", email = "tatiana.vargas@rte-france.com", role = c("aut", "cre")),
     person("Jalal-Edine", "Zawam", role = "aut"),
@@ -45,12 +45,12 @@ Imports:
     leaflet.minicharts (>= 0.5.3),
     assertthat,
     rAmCharts,
-    utils
+    utils,
+    lifecycle
 RoxygenNote: 7.2.2
 Suggests: 
     testthat,
     covr,
-    rhdf5 (>= 2.20.2),
     ggplot2,
     hexbin,
     knitr,
