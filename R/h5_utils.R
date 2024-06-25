@@ -60,43 +60,43 @@
 #   }, simplify = FALSE)
 # }
 
-.getClustersNames <- function(fid, timeStep){
-  unique(unlist(lapply(strsplit(.getstructure(fid, paste0(timeStep, "/clusters/mcInd/structure"))$cluster, "/"), function(X)X[1])))
-}
+# .getClustersNames <- function(fid, timeStep){
+#   unique(unlist(lapply(strsplit(.getstructure(fid, paste0(timeStep, "/clusters/mcInd/structure"))$cluster, "/"), function(X)X[1])))
+# }
 
-.getElements <- function(opts, tables, fid, timeStep){
-  elements <- list()
-  if ("areas" %in% tables) elements$areas <- opts$areaList
-  if ("links" %in% tables) elements$links <- opts$linkList
-  if ("districts" %in% tables) elements$districts <- opts$districtList
-  if ("clusters" %in% tables){
-    elements$clusters  <- .getClustersNames(fid, timeStep)
-  }
-  elements
-}
-
-.getDateRange <- function(opts, timeStep){
-  tim <- .timeIdToDate(sort(
-    unique(
-      antaresRead::.h5ReadAntares(opts$h5path, timeStep = timeStep, select = "timeId", 
-                                 areas = opts$areaList[1], mcYears = opts$mcYears[1], perf = FALSE)$timeId)
-  ), timeStep = timeStep, opts = opts)
-  dt <- as.Date(range(tim))
-  dt
-}
-
-
-.getGraphFunction <- function(type){
-  switch(type,
-         "ts" = .plotTS,
-         "barplot" = .barplot,
-         "monotone" = .plotMonotone,
-         "density" = .density,
-         "cdf" = .cdf,
-         "heatmap" = .heatmap,
-         stop("Invalid type")
-  )
-}
+# .getElements <- function(opts, tables, fid, timeStep){
+#   elements <- list()
+#   if ("areas" %in% tables) elements$areas <- opts$areaList
+#   if ("links" %in% tables) elements$links <- opts$linkList
+#   if ("districts" %in% tables) elements$districts <- opts$districtList
+#   if ("clusters" %in% tables){
+#     elements$clusters  <- .getClustersNames(fid, timeStep)
+#   }
+#   elements
+# }
+# 
+# .getDateRange <- function(opts, timeStep){
+#   tim <- .timeIdToDate(sort(
+#     unique(
+#       antaresRead::.h5ReadAntares(opts$h5path, timeStep = timeStep, select = "timeId", 
+#                                  areas = opts$areaList[1], mcYears = opts$mcYears[1], perf = FALSE)$timeId)
+#   ), timeStep = timeStep, opts = opts)
+#   dt <- as.Date(range(tim))
+#   dt
+# }
+# 
+# 
+# .getGraphFunction <- function(type){
+#   switch(type,
+#          "ts" = .plotTS,
+#          "barplot" = .barplot,
+#          "monotone" = .plotMonotone,
+#          "density" = .density,
+#          "cdf" = .cdf,
+#          "heatmap" = .heatmap,
+#          stop("Invalid type")
+#   )
+# }
 
 # .getTimeStep <- function(fid){
 #   timeSteps <- sapply(c("hourly", "daily", "weekly", "monthly", "annual"), function(X){

@@ -214,7 +214,7 @@
     listParamsCheck$x <- list(listParamsCheck$x, listParamsCheck$x)
   }
   
-  listParamsCheck$h5requestFiltering <- .convertH5Filtering(h5requestFiltering = listParamsCheck$h5requestFiltering, x = listParamsCheck$x)
+  # listParamsCheck$h5requestFiltering <- .convertH5Filtering(h5requestFiltering = listParamsCheck$h5requestFiltering, x = listParamsCheck$x)
   
   listParamsCheck$compareOptions <- .compOpts(listParamsCheck$x, listParamsCheck$compare)
   if (is.null(listParamsCheck$compare)){

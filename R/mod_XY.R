@@ -45,11 +45,11 @@ modXY <- function(x, xyCompare = c("union","intersect"))
     x_in = mwSharedValue({
       .giveListFormat(x)
     }),
-    paramsH5 = mwSharedValue({
-      paramsH5List <- .h5ParamList(X_I = x_in, xyCompare = xyCompare)
-      rhdf5::H5close()
-      paramsH5List
-    }),
+    # paramsH5 = mwSharedValue({
+    #   paramsH5List <- .h5ParamList(X_I = x_in, xyCompare = xyCompare)
+    #   rhdf5::H5close()
+    #   paramsH5List
+    # }),
     H5request = mwGroup(
       timeSteph5 = mwSelect(choices = paramsH5$timeStepS,
                             value =  paramsH5$timeStepS[1],

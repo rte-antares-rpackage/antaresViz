@@ -107,15 +107,41 @@ exchangesStack <- function(x,
                            legendItemsPerRow = 5,
                            width = NULL, height = NULL,
                            xyCompare = c("union", "intersect"),
-                           h5requestFiltering = list(),
+                           h5requestFiltering = deprecated(),
                            stepPlot = FALSE, drawPoints = FALSE,
-                           timeSteph5 = "hourly",
-                           mcYearh5 = NULL,
-                           tablesh5 = c("areas", "links"),
+                           timeSteph5 = deprecated(),
+                           mcYearh5 = deprecated(),
+                           tablesh5 = deprecated(),
                            language = "en",
                            hidden = NULL,
                            refStudy = NULL,
                            ...) {
+  
+  deprecated_vector_params <- c(lifecycle::is_present(h5requestFiltering),
+                                lifecycle::is_present(timeSteph5),
+                                lifecycle::is_present(mcYearh5),
+                                lifecycle::is_present(tablesh5))
+  
+  if(any(deprecated_vector_params)){
+    lifecycle::deprecate_warn(
+      when = "0.18.1", 
+      what = "exchangesStack(h5requestFiltering)",
+      details = "all these parameters are relative to the 'rhdf5' package, 
+      which is removed from the dependencies"
+    )
+    
+    h5requestFiltering <- NULL
+    timeSteph5 <- NULL
+    mcYearh5 <- NULL
+    tablesh5 <- NULL
+  }
+  
+  # force (deprecated)
+  h5requestFiltering <- NULL
+  timeSteph5 <- NULL
+  mcYearh5 <- NULL
+  tablesh5 <- NULL
+    
 
     #we can hide these values
   exchangesStackValHidden <- c("H5request", "timeSteph5", "mcYearhH5", "mcYear", "main",
@@ -385,7 +411,7 @@ exchangesStack <- function(x,
 
   manipulateWidget(
     {
-      .tryCloseH5()
+      # .tryCloseH5()
       # udpate for mw 0.11 & 0.10.1
       if(!is.null(params)){
         ind <- .id %% length(params$x)
@@ -404,9 +430,9 @@ exchangesStack <- function(x,
       .giveListFormat(x)
     }),
 
-    paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
-    }),
+    # paramsH5 = mwSharedValue({
+    #   .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
+    # }),
 
     H5request = mwGroup(
       label = .getLabelLanguage("H5request", language),

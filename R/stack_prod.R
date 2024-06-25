@@ -233,14 +233,38 @@ prodStack <- function(x,
                       updateLegendOnMouseOver = TRUE,
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-                      h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
-                      timeSteph5 = "hourly",
-                      mcYearh5 = NULL,
-                      tablesh5 = c("areas", "links"), language = "en", 
+                      h5requestFiltering = deprecated(), stepPlot = FALSE, drawPoints = FALSE,
+                      timeSteph5 =  deprecated(),
+                      mcYearh5 =  deprecated(),
+                      tablesh5 = deprecated(), language = "en", 
                       hidden = NULL,
                       refStudy = NULL,
                       ...) {
   
+  deprecated_vector_params <- c(lifecycle::is_present(h5requestFiltering),
+                                lifecycle::is_present(timeSteph5),
+                                lifecycle::is_present(mcYearh5),
+                                lifecycle::is_present(tablesh5))
+  
+  if(any(deprecated_vector_params)){
+    lifecycle::deprecate_warn(
+      when = "0.18.1", 
+      what = "prodStack(h5requestFiltering)",
+      details = "all these parameters are relative to the 'rhdf5' package, 
+      which is removed from the dependencies"
+    )
+    
+    h5requestFiltering <- NULL
+    timeSteph5 <- NULL
+    mcYearh5 <- NULL
+    tablesh5 <- NULL
+  }
+  
+  # force (deprecated)
+  h5requestFiltering <- NULL
+  timeSteph5 <- NULL
+  mcYearh5 <- NULL
+  tablesh5 <- NULL
   
   #we can hide these values
   prodStackValHidden <- c("H5request", "timeSteph5", "tables", "mcYearH5", "mcYear", "main", "dateRange", 
@@ -436,7 +460,7 @@ prodStack <- function(x,
   
   manipulateWidget(
     {
-      .tryCloseH5()
+      # .tryCloseH5()
       
       # udpate for mw 0.11 & 0.10.1
       if(!is.null(params)){
@@ -458,11 +482,11 @@ prodStack <- function(x,
     h5requestFiltering = mwSharedValue({
       h5requestFiltering
     }),
-    paramsH5 = mwSharedValue({
-      tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare,
-                          h5requestFilter = h5requestFiltering)
-      tmp
-    }),
+    # paramsH5 = mwSharedValue({
+    #   tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare,
+    #                       h5requestFilter = h5requestFiltering)
+    #   tmp
+    # }),
     H5request = mwGroup(
       label = .getLabelLanguage("H5request", language),
       timeSteph5 = mwSelect(

@@ -21,3 +21,9 @@ Flavor: r-devel-linux-x86_64-debian-gcc
 Check: tests, Result: NOTE
     Running 'testthat.R' [143s/16s]
   Running R code in 'testthat.R' had CPU time 8.9 times elapsed time
+
+## v0.18.1
+new version to fix pb with dependencies `AntaresRead` :  
+ - "M1mac" issue  
+ 
+We have to fix dependencies with package `rhdf5` on this package before to push `antaresRead` 2.7.1
