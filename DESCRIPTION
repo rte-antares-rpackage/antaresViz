@@ -52,7 +52,6 @@ Suggests:
     testthat,
     covr,
     ggplot2,
-    hexbin,
     knitr,
     visNetwork,
     rmarkdown
