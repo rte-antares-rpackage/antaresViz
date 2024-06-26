@@ -61,7 +61,7 @@
 #'   Label of the Y axis.
 #' @param colorScaleOpts
 #'   A list of parameters that control the creation of color scales. It is used
-#'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available
+#'   only for heatmaps. See [colorScaleOptions()] for available
 #'   parameters.
 #' @param xyCompare
 #'   Use when you compare studies, can be "union" or "intersect". If union, all
@@ -106,7 +106,6 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' setSimulationPath(path = path1)
 #' mydata <- readAntares(areas = "all", timeStep = "hourly")
 #' plot(x = mydata)
 #' 
@@ -170,8 +169,9 @@
 #' # Compare 2 studies with argument refStudy 
 #' plot(x = opts, refStudy = opts2)
 #' plot(x = opts, refStudy = opts2, type = "ts", interactive = FALSE, mcYearh5 = 2)
-#' plot(x = opts, refStudy = opts2, type = "ts", dateRange = DR, h5requestFiltering = list(
-#' mcYears = mcYears = mcYearToTest))
+#' plot(x = opts, refStudy = opts2, type = "ts", 
+#'     dateRange = DR, 
+#'     h5requestFiltering = list(mcYears = mcYears = mcYearToTest))
 #' 
 #' 
 #' }

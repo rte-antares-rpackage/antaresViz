@@ -6,19 +6,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quick presentation of antaresViz • antaresViz</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/readable/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Quick presentation of antaresViz">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="antaresViz">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">antaresViz</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.15.0.900</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.18.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/antaresViz.html">Get started</a>
 </li>
@@ -50,7 +46,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -61,11 +57,14 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/rte-antares-rpackage/antaresViz">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/rte-antares-rpackage/antaresViz/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -82,105 +81,137 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Quick presentation of antaresViz</h1>
-                        <h4 class="author">RTE</h4>
+      <h1 data-toc-skip>Quick presentation of antaresViz</h1>
+                        <h4 data-toc-skip class="author">RTE</h4>
             
-            <h4 class="date">2020-01-31</h4>
+            <h4 data-toc-skip class="date">2024-06-26</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/rte-antares-rpackage/antaresViz/blob/master/vignettes/antaresViz.Rmd"><code>vignettes/antaresViz.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/rte-antares-rpackage/antaresViz/blob/HEAD/vignettes/antaresViz.Rmd" class="external-link"><code>vignettes/antaresViz.Rmd</code></a></small>
       <div class="hidden name"><code>antaresViz.Rmd</code></div>
 
     </div>
 
     
     
-<p>This package works along with RTE’s adequacy software ANTARES : <a href="https://antares-simulator.org/" class="uri">https://antares-simulator.org/</a></p>
-<p><code>antaresViz</code> is a package which proposes relevant graphs and maps to vizualize the results of an ANTARES study, with numerous settings and possible customizations.</p>
-<div id="where-everything-starts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#where-everything-starts" class="anchor"></a>Where everything starts</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(antaresViz)</a></code></pre></div>
-<p>The data from an ANTARES study can be imported and easily manipulated using the <a href="https://github.com/rte-antares-rpackage/antaresRead">antaresRead</a> package.</p>
-<p>The examples presented below have been build on a fictionnal study whose output have been loaded with antaresRead. They contains different types of elements :</p>
+<p>This package works along with RTE’s adequacy software ANTARES : <a href="https://antares-simulator.org/" class="external-link uri">https://antares-simulator.org/</a></p>
+<p><code>antaresViz</code> is a package which proposes relevant graphs
+and maps to vizualize the results of an ANTARES study, with numerous
+settings and possible customizations.</p>
+<div class="section level2">
+<h2 id="where-everything-starts">Where everything starts<a class="anchor" aria-label="anchor" href="#where-everything-starts"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rte-antares-rpackage/antaresViz" class="external-link">antaresViz</a></span><span class="op">)</span></span></code></pre></div>
+<p>The data from an ANTARES study can be imported and easily manipulated
+using the <a href="https://github.com/rte-antares-rpackage/antaresRead" class="external-link">antaresRead</a>
+package.</p>
+<p>The examples presented below have been build on a fictionnal study
+whose output have been loaded with antaresRead. They contains different
+types of elements :</p>
 <ul>
 <li>outputs with an annual and an hourly time step,</li>
-<li>synthetic outputs (averaged on several Monte-Carlo years) and detailled outputs (given year by year),</li>
+<li>synthetic outputs (averaged on several Monte-Carlo years) and
+detailled outputs (given year by year),</li>
 <li>outputs for areas, links, clusters and districts.</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="st">"data_for_antaresViz_vignette_extralight.Rdata"</span>)</a></code></pre></div>
-<p>The aim of this vignette is to give a quick overview of the possibilities offered by the package antaresViz. The data with which the following graphs have been plotted are fictionnal.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="st">"data_for_antaresViz_vignette_extralight.Rdata"</span><span class="op">)</span></span></code></pre></div>
+<p>The aim of this vignette is to give a quick overview of the
+possibilities offered by the package antaresViz. The data with which the
+following graphs have been plotted are fictionnal.</p>
 </div>
-<div id="the-simple-power-of-the-plot-function" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-simple-power-of-the-plot-function" class="anchor"></a>The simple power of the <code>plot</code> function</h2>
-<p>The <code><a href="https://rdrr.io/r/graphics/plot.html">plot()</a></code> function, used with an antaresDataList object (i.e. an object returned by the <code><a href="https://rdrr.io/pkg/antaresRead/man/readAntares.html">antaresRead::readAntares()</a></code> function) offers different possible vizualisations.</p>
-<p>Moreover, this function is <strong>really easy to use</strong>. It opens a shiny interface which let the user decide :</p>
+<div class="section level2">
+<h2 id="the-simple-power-of-the-plot-function">The simple power of the <code>plot</code> function<a class="anchor" aria-label="anchor" href="#the-simple-power-of-the-plot-function"></a>
+</h2>
+<p>The <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function, used with an antaresDataList object
+(i.e. an object returned by the <code><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readAntares.html" class="external-link">antaresRead::readAntares()</a></code>
+function) offers different possible vizualisations.</p>
+<p>Moreover, this function is <strong>really easy to use</strong>. It
+opens a shiny interface which let the user decide :</p>
 <ul>
-<li>Which type of <strong>element</strong> he wants to study : areas, links or disctricts.</li>
+<li>Which type of <strong>element</strong> he wants to study : areas,
+links or disctricts.</li>
 <li>Which <strong>variable</strong> he wants to analyze.</li>
-<li>With which type of <strong>graph</strong> : barplot, time series, probability density function, heatmap, etc.</li>
+<li>With which type of <strong>graph</strong> : barplot, time series,
+probability density function, heatmap, etc.</li>
 <li>For which area(s), link(s), or district(s).</li>
 <li>And during which <strong>time period</strong>.</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(data_hourly_synthesis)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">data_hourly_synthesis</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/plot_resized.gif"><!-- --></p>
-<p>Note that all the interface manipulation can also be set directly in the arguments of the <code>plot</code> function. Some examples of the multiple graphs that can be returned by this function are given below.</p>
-<div id="barplot-of-loss-of-load-duration-lold-for-several-districts-of-the-study" class="section level6">
-<h6>Barplot of Loss of Load Duration (LOLD) for several districts of the study</h6>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(</a>
-<a class="sourceLine" id="cb4-2" title="2">  data_annual_synthesis, </a>
-<a class="sourceLine" id="cb4-3" title="3">  <span class="dt">table =</span> <span class="st">"districts"</span>, </a>
-<a class="sourceLine" id="cb4-4" title="4">  <span class="dt">variable =</span> <span class="st">"LOLD"</span>, </a>
-<a class="sourceLine" id="cb4-5" title="5">  <span class="dt">type =</span> <span class="st">"barplot"</span>, </a>
-<a class="sourceLine" id="cb4-6" title="6">  <span class="dt">elements =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"00_a"</span>, <span class="st">"00_b"</span>, <span class="st">"00_c"</span>, <span class="st">"00_d"</span>,</a>
-<a class="sourceLine" id="cb4-7" title="7">               <span class="st">"00_e"</span>, <span class="st">"00_f"</span>, <span class="st">"00_g"</span>, <span class="st">"00_h"</span>, <span class="st">"00_i"</span>), </a>
-<a class="sourceLine" id="cb4-8" title="8">  <span class="dt">interactive =</span> <span class="ot">FALSE</span>, </a>
-<a class="sourceLine" id="cb4-9" title="9">  <span class="dt">width =</span> <span class="st">"100%"</span>,</a>
-<a class="sourceLine" id="cb4-10" title="10">  <span class="dt">height =</span> <span class="dv">400</span></a>
-<a class="sourceLine" id="cb4-11" title="11">)</a></code></pre></div>
+<p>Note that all the interface manipulation can also be set directly in
+the arguments of the <code>plot</code> function. Some examples of the
+multiple graphs that can be returned by this function are given
+below.</p>
+<div class="section level6">
+<h6 id="barplot-of-loss-of-load-duration-lold-for-several-districts-of-the-study">Barplot of Loss of Load Duration (LOLD) for several districts of the
+study<a class="anchor" aria-label="anchor" href="#barplot-of-loss-of-load-duration-lold-for-several-districts-of-the-study"></a>
+</h6>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_annual_synthesis</span>, </span>
+<span>  table <span class="op">=</span> <span class="st">"districts"</span>, </span>
+<span>  variable <span class="op">=</span> <span class="st">"LOLD"</span>, </span>
+<span>  type <span class="op">=</span> <span class="st">"barplot"</span>, </span>
+<span>  elements <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"00_a"</span>, <span class="st">"00_b"</span>, <span class="st">"00_c"</span>, <span class="st">"00_d"</span>,</span>
+<span>               <span class="st">"00_e"</span>, <span class="st">"00_f"</span>, <span class="st">"00_g"</span>, <span class="st">"00_h"</span>, <span class="st">"00_i"</span><span class="op">)</span>, </span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">400</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="time-series-of-the-load-in-an-area-with-average-value-and-95-confidence-interval-" class="section level6">
-<h6>Time series of the load in an area with average value and 95% confidence interval.</h6>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(</a>
-<a class="sourceLine" id="cb5-2" title="2">  data_hourly_allmc,</a>
-<a class="sourceLine" id="cb5-3" title="3">  <span class="dt">table =</span> <span class="st">"areas"</span>,</a>
-<a class="sourceLine" id="cb5-4" title="4">  <span class="dt">variable =</span> <span class="st">"LOAD"</span>,</a>
-<a class="sourceLine" id="cb5-5" title="5">  <span class="dt">type =</span> <span class="st">"ts"</span>, </a>
-<a class="sourceLine" id="cb5-6" title="6">  <span class="dt">elements =</span> <span class="st">"23_b"</span>,</a>
-<a class="sourceLine" id="cb5-7" title="7">  <span class="dt">confInt =</span> <span class="fl">0.95</span>,</a>
-<a class="sourceLine" id="cb5-8" title="8">  <span class="dt">dateRange =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"2018-01-08"</span>, <span class="st">"2018-01-14"</span>), </a>
-<a class="sourceLine" id="cb5-9" title="9">  <span class="dt">width =</span> <span class="st">"100%"</span>,</a>
-<a class="sourceLine" id="cb5-10" title="10">  <span class="dt">height =</span> <span class="dv">400</span>,</a>
-<a class="sourceLine" id="cb5-11" title="11">  <span class="dt">interactive =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb5-12" title="12">)</a></code></pre></div>
+<div class="section level6">
+<h6 id="time-series-of-the-load-in-an-area-with-average-value-and-95-confidence-interval-">Time series of the load in an area with average value and 95%
+confidence interval.<a class="anchor" aria-label="anchor" href="#time-series-of-the-load-in-an-area-with-average-value-and-95-confidence-interval-"></a>
+</h6>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_hourly_allmc</span>,</span>
+<span>  table <span class="op">=</span> <span class="st">"areas"</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">"LOAD"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"ts"</span>, </span>
+<span>  elements <span class="op">=</span> <span class="st">"23_b"</span>,</span>
+<span>  confInt <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  dateRange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-01-08"</span>, <span class="st">"2018-01-14"</span><span class="op">)</span>, </span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">400</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="probability-density-function-of-the-wind-power-generation-in-two-areas" class="section level6">
-<h6>Probability density function of the wind power generation in two areas</h6>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(</a>
-<a class="sourceLine" id="cb6-2" title="2">  data_hourly_synthesis, </a>
-<a class="sourceLine" id="cb6-3" title="3">  <span class="dt">table =</span> <span class="st">"areas"</span>,</a>
-<a class="sourceLine" id="cb6-4" title="4">  <span class="dt">variable =</span> <span class="st">"WIND"</span>,</a>
-<a class="sourceLine" id="cb6-5" title="5">  <span class="dt">type =</span> <span class="st">"density"</span>, </a>
-<a class="sourceLine" id="cb6-6" title="6">  <span class="dt">elements =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"01_a"</span>, <span class="st">"02_a"</span>),</a>
-<a class="sourceLine" id="cb6-7" title="7">  <span class="dt">interactive =</span> <span class="ot">FALSE</span>, </a>
-<a class="sourceLine" id="cb6-8" title="8">  <span class="dt">width =</span> <span class="st">"100%"</span>,</a>
-<a class="sourceLine" id="cb6-9" title="9">  <span class="dt">height =</span> <span class="dv">400</span></a>
-<a class="sourceLine" id="cb6-10" title="10">)</a></code></pre></div>
+<div class="section level6">
+<h6 id="probability-density-function-of-the-wind-power-generation-in-two-areas">Probability density function of the wind power generation in two
+areas<a class="anchor" aria-label="anchor" href="#probability-density-function-of-the-wind-power-generation-in-two-areas"></a>
+</h6>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_hourly_synthesis</span>, </span>
+<span>  table <span class="op">=</span> <span class="st">"areas"</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">"WIND"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"density"</span>, </span>
+<span>  elements <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"01_a"</span>, <span class="st">"02_a"</span><span class="op">)</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">400</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="heatmap-of-the-congestion-probability-of-one-interconnection" class="section level6">
-<h6>Heatmap of the congestion probability of one interconnection</h6>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(</a>
-<a class="sourceLine" id="cb7-2" title="2">  data_hourly_synthesis_1year, </a>
-<a class="sourceLine" id="cb7-3" title="3">  <span class="dt">table =</span> <span class="st">"links"</span>, </a>
-<a class="sourceLine" id="cb7-4" title="4">  <span class="dt">variable =</span> <span class="st">"CONG. PROB +"</span>,</a>
-<a class="sourceLine" id="cb7-5" title="5">  <span class="dt">type =</span> <span class="st">"heatmap"</span>, </a>
-<a class="sourceLine" id="cb7-6" title="6">  <span class="dt">elements =</span> <span class="st">"25_c - 26_d"</span>, </a>
-<a class="sourceLine" id="cb7-7" title="7">  <span class="dt">interactive =</span> <span class="ot">FALSE</span>, </a>
-<a class="sourceLine" id="cb7-8" title="8">  <span class="dt">width =</span> <span class="st">"100%"</span>, </a>
-<a class="sourceLine" id="cb7-9" title="9">  <span class="dt">height =</span> <span class="dv">400</span>,</a>
-<a class="sourceLine" id="cb7-10" title="10">  <span class="dt">main =</span> <span class="st">"Congestion probability"</span></a>
-<a class="sourceLine" id="cb7-11" title="11">)</a></code></pre></div>
-<p>Note that the <code><a href="https://rdrr.io/r/graphics/plot.html">plot()</a></code> function also contains a <code>compare</code> argument which allows comparisons between :</p>
+<div class="section level6">
+<h6 id="heatmap-of-the-congestion-probability-of-one-interconnection">Heatmap of the congestion probability of one interconnection<a class="anchor" aria-label="anchor" href="#heatmap-of-the-congestion-probability-of-one-interconnection"></a>
+</h6>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_hourly_synthesis_1year</span>, </span>
+<span>  table <span class="op">=</span> <span class="st">"links"</span>, </span>
+<span>  variable <span class="op">=</span> <span class="st">"CONG. PROB +"</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"heatmap"</span>, </span>
+<span>  elements <span class="op">=</span> <span class="st">"25_c - 26_d"</span>, </span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>, </span>
+<span>  height <span class="op">=</span> <span class="fl">400</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">"Congestion probability"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Note that the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function also contains a
+<code>compare</code> argument which allows comparisons between :</p>
 <ul>
 <li>different variables</li>
 <li>different areas/links/district</li>
@@ -188,46 +219,67 @@
 </ul>
 </div>
 </div>
-<div id="when-the-production-meets-the-demand" class="section level2">
-<h2 class="hasAnchor">
-<a href="#when-the-production-meets-the-demand" class="anchor"></a>When the production meets the demand</h2>
-<p>The <code>prodStack</code> function builds a graph which contains the time series of demand in one area (or the sum of the demand of a set of areas) along with the generation of this area (or set of areas), divided between the different fuel types (e.g. nuclear, gas, wind, etc).</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="../reference/prodStack.html">prodStack</a></span>(data_hourly_synthesis)</a></code></pre></div>
-<p>Once again, this function is easy to use and opens a shiny interface which let the user manipulate the selected areas and time range. Some settings can also be passed to the function through its (optionnal) arguments.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="../reference/prodStack.html">prodStack</a></span>(</a>
-<a class="sourceLine" id="cb9-2" title="2">  data_hourly_synthesis, </a>
-<a class="sourceLine" id="cb9-3" title="3">  <span class="dt">stack =</span> <span class="st">"eco2mix"</span>,</a>
-<a class="sourceLine" id="cb9-4" title="4">  <span class="dt">areas =</span> <span class="st">"37_h"</span>, </a>
-<a class="sourceLine" id="cb9-5" title="5">  <span class="dt">dateRange =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"2018-01-08"</span>, <span class="st">"2018-01-21"</span>),</a>
-<a class="sourceLine" id="cb9-6" title="6">  <span class="dt">main =</span> <span class="st">"Production stack"</span>,</a>
-<a class="sourceLine" id="cb9-7" title="7">  <span class="dt">unit =</span> <span class="st">"GWh"</span>,  </a>
-<a class="sourceLine" id="cb9-8" title="8">  <span class="dt">interactive =</span> <span class="ot">FALSE</span>, </a>
-<a class="sourceLine" id="cb9-9" title="9">  <span class="dt">width =</span> <span class="st">"100%"</span>,</a>
-<a class="sourceLine" id="cb9-10" title="10">  <span class="dt">height =</span> <span class="dv">500</span></a>
-<a class="sourceLine" id="cb9-11" title="11">)</a></code></pre></div>
-<p>The graphical template used by default is the one of the RTE’s application <a href="http://www.rte-france.com/fr/eco2mix/eco2mix-mix-energetique">eco2mix</a>. This template can though be redefined completely by the user with the function <code><a href="../reference/prodStack.html">setProdStackAlias()</a></code>.</p>
-<p>The <code><a href="../reference/exchangesStack.html">exchangesStack()</a></code> function proposes similar graphs with a superposition of all the imports and exports of an area.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw"><a href="../reference/exchangesStack.html">exchangesStack</a></span>(</a>
-<a class="sourceLine" id="cb10-2" title="2">  data_hourly_synthesis, </a>
-<a class="sourceLine" id="cb10-3" title="3">  <span class="dt">area =</span> <span class="st">"37_h"</span>, </a>
-<a class="sourceLine" id="cb10-4" title="4">  <span class="dt">dateRange =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"2018-01-08"</span>, <span class="st">"2018-01-21"</span>),</a>
-<a class="sourceLine" id="cb10-5" title="5">  <span class="dt">main =</span> <span class="st">"Import/Export of area 37_h"</span>, </a>
-<a class="sourceLine" id="cb10-6" title="6">  <span class="dt">unit =</span> <span class="st">"GWh"</span>, </a>
-<a class="sourceLine" id="cb10-7" title="7">  <span class="dt">interactive =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb10-8" title="8">  <span class="dt">width =</span> <span class="st">"100%"</span>, </a>
-<a class="sourceLine" id="cb10-9" title="9">  <span class="dt">height =</span> <span class="dv">500</span></a>
-<a class="sourceLine" id="cb10-10" title="10">)</a></code></pre></div>
+<div class="section level2">
+<h2 id="when-the-production-meets-the-demand">When the production meets the demand<a class="anchor" aria-label="anchor" href="#when-the-production-meets-the-demand"></a>
+</h2>
+<p>The <code>prodStack</code> function builds a graph which contains the
+time series of demand in one area (or the sum of the demand of a set of
+areas) along with the generation of this area (or set of areas), divided
+between the different fuel types (e.g. nuclear, gas, wind, etc).</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/prodStack.html">prodStack</a></span><span class="op">(</span><span class="va">data_hourly_synthesis</span><span class="op">)</span></span></code></pre></div>
+<p>Once again, this function is easy to use and opens a shiny interface
+which let the user manipulate the selected areas and time range. Some
+settings can also be passed to the function through its (optionnal)
+arguments.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/prodStack.html">prodStack</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_hourly_synthesis</span>, </span>
+<span>  stack <span class="op">=</span> <span class="st">"eco2mix"</span>,</span>
+<span>  areas <span class="op">=</span> <span class="st">"37_h"</span>, </span>
+<span>  dateRange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-01-08"</span>, <span class="st">"2018-01-21"</span><span class="op">)</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">"Production stack"</span>,</span>
+<span>  unit <span class="op">=</span> <span class="st">"GWh"</span>,  </span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">500</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The graphical template used by default is the one of the RTE’s
+application <em>eco2mix</em></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>www.rte<span class="sc">-</span>france.com<span class="sc">/</span>eco2mix<span class="sc">/</span>la<span class="sc">-</span>production<span class="sc">-</span>delectricite<span class="sc">-</span>par<span class="sc">-</span>filiere</span></code></pre></div>
+<p>This template can though be redefined completely by the user with the
+function <code><a href="../reference/prodStack.html">setProdStackAlias()</a></code>.</p>
+<p>The <code><a href="../reference/exchangesStack.html">exchangesStack()</a></code> function proposes similar graphs
+with a superposition of all the imports and exports of an area.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/exchangesStack.html">exchangesStack</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_hourly_synthesis</span>, </span>
+<span>  area <span class="op">=</span> <span class="st">"37_h"</span>, </span>
+<span>  dateRange <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2018-01-08"</span>, <span class="st">"2018-01-21"</span><span class="op">)</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">"Import/Export of area 37_h"</span>, </span>
+<span>  unit <span class="op">=</span> <span class="st">"GWh"</span>, </span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>, </span>
+<span>  height <span class="op">=</span> <span class="fl">500</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="everything-looks-better-on-a-map" class="section level2">
-<h2 class="hasAnchor">
-<a href="#everything-looks-better-on-a-map" class="anchor"></a>Everything looks better on a map</h2>
-<p>Last but not least, <code>antaresViz</code> proposes several function to vizualise the results of a study on a map.</p>
-<p>To do so, the first function to use is <code><a href="../reference/mapLayout.html">mapLayout()</a></code>. This function launches an interactive application that let the user place areas of the ANTARES study on a map.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">antares_layout &lt;-<span class="st"> </span>antaresRead<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/antaresRead/man/readLayout.html">readLayout</a></span>(<span class="dt">opts =</span> antaresRead<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/antaresRead/man/setSimulationPath.html">setSimulationPath</a></span>(study_path))</a>
-<a class="sourceLine" id="cb11-2" title="2">map_layout &lt;-<span class="st"> </span><span class="kw"><a href="../reference/mapLayout.html">mapLayout</a></span>(<span class="dt">layout =</span> antares_layout)</a></code></pre></div>
+<div class="section level2">
+<h2 id="everything-looks-better-on-a-map">Everything looks better on a map<a class="anchor" aria-label="anchor" href="#everything-looks-better-on-a-map"></a>
+</h2>
+<p>Last but not least, <code>antaresViz</code> proposes several function
+to vizualise the results of a study on a map.</p>
+<p>To do so, the first function to use is <code><a href="../reference/mapLayout.html">mapLayout()</a></code>. This
+function launches an interactive application that let the user place
+areas of the ANTARES study on a map.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">antares_layout</span> <span class="op">&lt;-</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/readLayout.html" class="external-link">readLayout</a></span><span class="op">(</span>opts <span class="op">=</span> <span class="fu">antaresRead</span><span class="fu">::</span><span class="fu"><a href="https://rte-antares-rpackage.github.io/antaresRead/reference/setSimulationPath.html" class="external-link">setSimulationPath</a></span><span class="op">(</span><span class="va">study_path</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">map_layout</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mapLayout.html">mapLayout</a></span><span class="op">(</span>layout <span class="op">=</span> <span class="va">antares_layout</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figures/maplyout_resized.gif"><!-- --></p>
 <p>(Once again : the study presented here is fictionnal !)</p>
-<p>The function <code><a href="../reference/plotMap.html">plotMap()</a></code> then generates an interactive map that let the user visually explore the results of an Antares simulation. By default the function starts a Shiny gadget that let the user choose :</p>
+<p>The function <code><a href="../reference/plotMap.html">plotMap()</a></code> then generates an interactive map
+that let the user visually explore the results of an Antares simulation.
+By default the function starts a Shiny gadget that let the user choose
+:</p>
 <ul>
 <li>Which <strong>variable</strong> to represent</li>
 <li>With which <strong>type of vizualisation</strong>
@@ -236,116 +288,125 @@
 <li>links : color, width of the link, popup</li>
 </ul>
 </li>
-<li>For which <strong>time step</strong> or <strong>date range</strong>
+<li>For which <strong>time step</strong> or <strong>date
+range</strong>
 </li>
 </ul>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw"><a href="../reference/plotMap.html">plotMap</a></span>(data_hourly_synthesis, map_layout)</a></code></pre></div>
-<p>Some examples of results returned by the <code><a href="../reference/plotMap.html">plotMap()</a></code> function are depicted below.</p>
-<div id="c02-emissions" class="section level6">
-<h6>C02 emissions</h6>
-<p>This first map depicts the annual CO2 emissions of all the areas of the ANTARES study.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw"><a href="../reference/plotMap.html">plotMap</a></span>(</a>
-<a class="sourceLine" id="cb13-2" title="2">  data_annual_filtered, map_layout, </a>
-<a class="sourceLine" id="cb13-3" title="3">  <span class="dt">showLabels =</span> <span class="ot">TRUE</span>, </a>
-<a class="sourceLine" id="cb13-4" title="4">  <span class="dt">sizeAreaVar =</span> <span class="st">"CO2 EMIS."</span>,</a>
-<a class="sourceLine" id="cb13-5" title="5">  <span class="dt">interactive =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb13-6" title="6">  <span class="dt">labelAreaVar =</span> <span class="st">"CO2 EMIS."</span>, </a>
-<a class="sourceLine" id="cb13-7" title="7">  <span class="dt">colAreaVar =</span> <span class="st">"CO2 EMIS."</span>,</a>
-<a class="sourceLine" id="cb13-8" title="8">  <span class="dt">type =</span> <span class="st">"avg"</span>,</a>
-<a class="sourceLine" id="cb13-9" title="9">  <span class="dt">options =</span> <span class="kw"><a href="../reference/plotMapOptions.html">plotMapOptions</a></span>(</a>
-<a class="sourceLine" id="cb13-10" title="10">    <span class="dt">areaDefaultSize =</span> <span class="dv">30</span>, </a>
-<a class="sourceLine" id="cb13-11" title="11">    <span class="dt">labelMaxSize =</span> <span class="dv">8</span>,</a>
-<a class="sourceLine" id="cb13-12" title="12">    <span class="dt">labelMinSize =</span> <span class="dv">14</span>,</a>
-<a class="sourceLine" id="cb13-13" title="13">    <span class="dt">areaColorScaleOpts =</span> <span class="kw"><a href="../reference/plotMapOptions.html">colorScaleOptions</a></span>(</a>
-<a class="sourceLine" id="cb13-14" title="14">      <span class="dt">zeroCol =</span> <span class="st">"white"</span>, </a>
-<a class="sourceLine" id="cb13-15" title="15">      <span class="dt">posCol =</span> <span class="st">"red2"</span></a>
-<a class="sourceLine" id="cb13-16" title="16">    )</a>
-<a class="sourceLine" id="cb13-17" title="17">  ), </a>
-<a class="sourceLine" id="cb13-18" title="18">  <span class="dt">width =</span> <span class="st">"100%"</span>, </a>
-<a class="sourceLine" id="cb13-19" title="19">  <span class="dt">height =</span> <span class="dv">600</span></a>
-<a class="sourceLine" id="cb13-20" title="20">)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMap.html">plotMap</a></span><span class="op">(</span><span class="va">data_hourly_synthesis</span>, <span class="va">map_layout</span><span class="op">)</span></span></code></pre></div>
+<p>Some examples of results returned by the <code><a href="../reference/plotMap.html">plotMap()</a></code>
+function are depicted below.</p>
+<div class="section level6">
+<h6 id="c02-emissions">C02 emissions<a class="anchor" aria-label="anchor" href="#c02-emissions"></a>
+</h6>
+<p>This first map depicts the annual CO2 emissions of all the areas of
+the ANTARES study.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMap.html">plotMap</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_annual_filtered</span>, <span class="va">map_layout</span>, </span>
+<span>  showLabels <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>  sizeAreaVar <span class="op">=</span> <span class="st">"CO2 EMIS."</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  labelAreaVar <span class="op">=</span> <span class="st">"CO2 EMIS."</span>, </span>
+<span>  colAreaVar <span class="op">=</span> <span class="st">"CO2 EMIS."</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"avg"</span>,</span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="../reference/plotMapOptions.html">plotMapOptions</a></span><span class="op">(</span></span>
+<span>    areaDefaultSize <span class="op">=</span> <span class="fl">30</span>, </span>
+<span>    labelMaxSize <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>    labelMinSize <span class="op">=</span> <span class="fl">14</span>,</span>
+<span>    areaColorScaleOpts <span class="op">=</span> <span class="fu"><a href="../reference/plotMapOptions.html">colorScaleOptions</a></span><span class="op">(</span></span>
+<span>      zeroCol <span class="op">=</span> <span class="st">"white"</span>, </span>
+<span>      posCol <span class="op">=</span> <span class="st">"red2"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span>, </span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>, </span>
+<span>  height <span class="op">=</span> <span class="fl">600</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="average-balance-and-flows-in-the-system" class="section level6">
-<h6>Average balance and flows in the system</h6>
-<p>This map illustrates the annual balance (MWh exported if positive - or imported if negative - during an hour) of each area and the annual flows of each link.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw"><a href="../reference/plotMap.html">plotMap</a></span>(</a>
-<a class="sourceLine" id="cb14-2" title="2">  data_annual_synthesis, </a>
-<a class="sourceLine" id="cb14-3" title="3">  map_layout,</a>
-<a class="sourceLine" id="cb14-4" title="4">  <span class="dt">showLabels =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb14-5" title="5">  <span class="dt">colAreaVar =</span> <span class="st">"BALANCE"</span>, </a>
-<a class="sourceLine" id="cb14-6" title="6">  <span class="dt">interactive =</span> <span class="ot">FALSE</span>, </a>
-<a class="sourceLine" id="cb14-7" title="7">  <span class="dt">labelAreaVar =</span> <span class="st">"BALANCE"</span>,</a>
-<a class="sourceLine" id="cb14-8" title="8">  <span class="dt">sizeLinkVar =</span> <span class="st">"FLOW LIN."</span>,</a>
-<a class="sourceLine" id="cb14-9" title="9">  <span class="dt">type =</span> <span class="st">"avg"</span>,</a>
-<a class="sourceLine" id="cb14-10" title="10">  <span class="dt">options =</span> <span class="kw"><a href="../reference/plotMapOptions.html">plotMapOptions</a></span>(</a>
-<a class="sourceLine" id="cb14-11" title="11">    <span class="dt">areaDefaultSize =</span> <span class="dv">30</span>,</a>
-<a class="sourceLine" id="cb14-12" title="12">    <span class="dt">labelMaxSize =</span> <span class="dv">10</span>,</a>
-<a class="sourceLine" id="cb14-13" title="13">    <span class="dt">labelMinSize =</span> <span class="dv">8</span>, </a>
-<a class="sourceLine" id="cb14-14" title="14">    <span class="dt">areaColorScaleOpts =</span> <span class="kw"><a href="../reference/plotMapOptions.html">colorScaleOptions</a></span>(</a>
-<a class="sourceLine" id="cb14-15" title="15">      <span class="dt">negCol =</span> <span class="st">"tomato3"</span>,</a>
-<a class="sourceLine" id="cb14-16" title="16">      <span class="dt">zeroCol =</span> <span class="st">"white"</span>,</a>
-<a class="sourceLine" id="cb14-17" title="17">      <span class="dt">posCol =</span> <span class="st">"blue3"</span></a>
-<a class="sourceLine" id="cb14-18" title="18">    )</a>
-<a class="sourceLine" id="cb14-19" title="19">  ),</a>
-<a class="sourceLine" id="cb14-20" title="20">  <span class="dt">width =</span> <span class="st">"100%"</span>,</a>
-<a class="sourceLine" id="cb14-21" title="21">  <span class="dt">height =</span> <span class="dv">600</span></a>
-<a class="sourceLine" id="cb14-22" title="22">)</a></code></pre></div>
+<div class="section level6">
+<h6 id="average-balance-and-flows-in-the-system">Average balance and flows in the system<a class="anchor" aria-label="anchor" href="#average-balance-and-flows-in-the-system"></a>
+</h6>
+<p>This map illustrates the annual balance (MWh exported if positive -
+or imported if negative - during an hour) of each area and the annual
+flows of each link.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plotMap.html">plotMap</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_annual_synthesis</span>, </span>
+<span>  <span class="va">map_layout</span>,</span>
+<span>  showLabels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  colAreaVar <span class="op">=</span> <span class="st">"BALANCE"</span>, </span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>  labelAreaVar <span class="op">=</span> <span class="st">"BALANCE"</span>,</span>
+<span>  sizeLinkVar <span class="op">=</span> <span class="st">"FLOW LIN."</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"avg"</span>,</span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="../reference/plotMapOptions.html">plotMapOptions</a></span><span class="op">(</span></span>
+<span>    areaDefaultSize <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>    labelMaxSize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    labelMinSize <span class="op">=</span> <span class="fl">8</span>, </span>
+<span>    areaColorScaleOpts <span class="op">=</span> <span class="fu"><a href="../reference/plotMapOptions.html">colorScaleOptions</a></span><span class="op">(</span></span>
+<span>      negCol <span class="op">=</span> <span class="st">"tomato3"</span>,</span>
+<span>      zeroCol <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>      posCol <span class="op">=</span> <span class="st">"blue3"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">600</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="energy-mixes" class="section level6">
-<h6>Energy mixes</h6>
-<p>The proportion of each energy type in the annual production of each area is illustrated on this next map. The actual generated energies (in MWh) can be known by clicking on the pie charts.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">data_annual_synthesis<span class="op">$</span>areas &lt;-<span class="st"> </span>data_annual_synthesis<span class="op">$</span>areas[, <span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(</a>
-<a class="sourceLine" id="cb15-2" title="2">  <span class="dt">THERMAL =</span> NUCLEAR <span class="op">+</span><span class="st"> </span>LIGNITE <span class="op">+</span><span class="st"> </span>COAL <span class="op">+</span><span class="st"> </span>GAS <span class="op">+</span><span class="st"> </span>OIL <span class="op">+</span><span class="st"> `</span><span class="dt">MIX. FUEL</span><span class="st">`</span> <span class="op">+</span><span class="st"> `</span><span class="dt">MISC. DTG</span><span class="st">`</span>, <span class="dt">HYDRO =</span><span class="st">`</span><span class="dt">H. ROR</span><span class="st">`</span> <span class="op">+</span><span class="st"> `</span><span class="dt">H. STOR</span><span class="st">`</span></a>
-<a class="sourceLine" id="cb15-3" title="3">)]</a>
-<a class="sourceLine" id="cb15-4" title="4"></a>
-<a class="sourceLine" id="cb15-5" title="5"><span class="kw"><a href="../reference/plotMap.html">plotMap</a></span>(</a>
-<a class="sourceLine" id="cb15-6" title="6">  data_annual_synthesis,</a>
-<a class="sourceLine" id="cb15-7" title="7">  map_layout,</a>
-<a class="sourceLine" id="cb15-8" title="8">  <span class="dt">interactive =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb15-9" title="9">  <span class="dt">sizeAreaVars =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"HYDRO"</span>, <span class="st">"SOLAR"</span>, <span class="st">"WIND"</span>, <span class="st">"THERMAL"</span>), </a>
-<a class="sourceLine" id="cb15-10" title="10">  <span class="dt">popupAreaVars =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"HYDRO"</span>, <span class="st">"SOLAR"</span>, <span class="st">"WIND"</span>, <span class="st">"THERMAL"</span>),</a>
-<a class="sourceLine" id="cb15-11" title="11">  <span class="dt">areaChartType =</span> <span class="st">"pie"</span>, <span class="dt">type =</span> <span class="st">"avg"</span>, </a>
-<a class="sourceLine" id="cb15-12" title="12">  <span class="dt">options =</span> <span class="kw"><a href="../reference/plotMapOptions.html">plotMapOptions</a></span>(</a>
-<a class="sourceLine" id="cb15-13" title="13">    <span class="dt">areaDefaultSize =</span> <span class="dv">25</span></a>
-<a class="sourceLine" id="cb15-14" title="14">  ),</a>
-<a class="sourceLine" id="cb15-15" title="15">  <span class="dt">width =</span> <span class="st">"100%"</span>,</a>
-<a class="sourceLine" id="cb15-16" title="16">  <span class="dt">height =</span> <span class="dv">600</span></a>
-<a class="sourceLine" id="cb15-17" title="17">)</a></code></pre></div>
+<div class="section level6">
+<h6 id="energy-mixes">Energy mixes<a class="anchor" aria-label="anchor" href="#energy-mixes"></a>
+</h6>
+<p>The proportion of each energy type in the annual production of each
+area is illustrated on this next map. The actual generated energies (in
+MWh) can be known by clicking on the pie charts.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_annual_synthesis</span><span class="op">$</span><span class="va">areas</span> <span class="op">&lt;-</span> <span class="va">data_annual_synthesis</span><span class="op">$</span><span class="va">areas</span><span class="op">[</span>, <span class="fu">`:=`</span><span class="op">(</span></span>
+<span>  THERMAL <span class="op">=</span> <span class="va">NUCLEAR</span> <span class="op">+</span> <span class="va">LIGNITE</span> <span class="op">+</span> <span class="va">COAL</span> <span class="op">+</span> <span class="va">GAS</span> <span class="op">+</span> <span class="va">OIL</span> <span class="op">+</span> <span class="va">`MIX. FUEL`</span> <span class="op">+</span> <span class="va">`MISC. DTG`</span>, HYDRO <span class="op">=</span><span class="va">`H. ROR`</span> <span class="op">+</span> <span class="va">`H. STOR`</span></span>
+<span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plotMap.html">plotMap</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_annual_synthesis</span>,</span>
+<span>  <span class="va">map_layout</span>,</span>
+<span>  interactive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  sizeAreaVars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYDRO"</span>, <span class="st">"SOLAR"</span>, <span class="st">"WIND"</span>, <span class="st">"THERMAL"</span><span class="op">)</span>, </span>
+<span>  popupAreaVars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HYDRO"</span>, <span class="st">"SOLAR"</span>, <span class="st">"WIND"</span>, <span class="st">"THERMAL"</span><span class="op">)</span>,</span>
+<span>  areaChartType <span class="op">=</span> <span class="st">"pie"</span>, type <span class="op">=</span> <span class="st">"avg"</span>, </span>
+<span>  options <span class="op">=</span> <span class="fu"><a href="../reference/plotMapOptions.html">plotMapOptions</a></span><span class="op">(</span></span>
+<span>    areaDefaultSize <span class="op">=</span> <span class="fl">25</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  width <span class="op">=</span> <span class="st">"100%"</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">600</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="lets-get-started" class="section level2">
-<h2 class="hasAnchor">
-<a href="#lets-get-started" class="anchor"></a>Let’s get started</h2>
-<p>The <code>antaresViz</code> package is available on the CRAN and can be installed with :</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"antaresViz"</span>)</a></code></pre></div>
+<div class="section level2">
+<h2 id="lets-get-started">Let’s get started<a class="anchor" aria-label="anchor" href="#lets-get-started"></a>
+</h2>
+<p>The <code>antaresViz</code> package is available on the CRAN and can
+be installed with :</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"antaresViz"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#where-everything-starts">Where everything starts</a></li>
-      <li><a href="#the-simple-power-of-the-plot-function">The simple power of the <code>plot</code> function</a></li>
-      <li><a href="#when-the-production-meets-the-demand">When the production meets the demand</a></li>
-      <li><a href="#everything-looks-better-on-a-map">Everything looks better on a map</a></li>
-      <li><a href="#lets-get-started">Let’s get started</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
 
 
       <footer><div class="copyright">
-  <p>Developed by Veronique Bachelier, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert.</p>
+  <p></p>
+<p>Developed by Tatiana Vargas, Jalal-Edine Zawam, Francois Guillem, Benoit Thieurmel, Titouan Robert, Paul Plessiez.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
       </footer>
@@ -353,6 +414,8 @@
 
   
 
+
+  
 
   </body>
 </html>

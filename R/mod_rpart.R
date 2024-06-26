@@ -2,7 +2,7 @@
 
 #' Make rpart from antares data
 #' 
-#' @param data an antaresData after use of \code{\link[antaresProcessing]{mergeAllAntaresData}}
+#' @param data an antaresData after use of [antaresProcessing::mergeAllAntaresData]
 #' 
 #' @examples 
 #' \dontrun{

@@ -13,7 +13,7 @@
 #' @param height
 #'   height of the output file
 #' @param ...
-#'   Other parameters passed to function \code{\link[webshot]{webshot}}
+#'   Other parameters passed to function [webshot::webshot]
 #' 
 #' @return 
 #' The function only creates the required file. Nothing is returned

@@ -1,8 +1,8 @@
-pandoc: 2.11.4
-pkgdown: 1.6.1
+pandoc: 3.1.1
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   antaresViz: antaresViz.html
-  article/creating_new_layouts: creating_new_layouts.html
-last_built: 2021-08-05T13:37Z
+  creating_new_layouts: article/creating_new_layouts.html
+last_built: 2024-06-26T09:18Z
 

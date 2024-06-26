@@ -9,7 +9,7 @@ stackMap(x, mapLayout)
 \arguments{
 \item{x}{\code{antaresDataList} antaresDataList contian areas ans links.}
 
-\item{mapLayout}{Object created with function \code{\link{mapLayout}}}
+\item{mapLayout}{Object created with function [mapLayout()]}
 }
 \description{
 plot stack and map

@@ -12,13 +12,13 @@ mapLayout(
 )
 }
 \arguments{
-\item{layout}{object returned by function \code{\link[antaresRead]{readLayout}}}
+\item{layout}{object returned by function [antaresRead::readLayout()]}
 
 \item{what}{Either "areas" or "districts". Indicates what type of object to place
 on the map.}
 
-\item{map}{An optional \code{\link[sp]{SpatialPolygons}} or 
-\code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} object. See \code{\link[spMaps:spMaps]{getSpMaps}}}
+\item{map}{An optional [sp::SpatialPolygons()] or 
+[sp::SpatialPolygonsDataFrame()] object. See [spMaps::getSpMaps()]}
 
 \item{map_builder}{\code{logical} Add inputs for build custom map ? Defaut to TRUE.}
 }
@@ -33,7 +33,7 @@ study. The result should then be saved in an external file and be reused.
 }
 \details{
 With \code{map_builder} option, you can build a quiet custom map using \code{spMaps} package. 
-This package help you to build \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} on Europe. 
+This package help you to build [sp::SpatialPolygons()] on Europe. 
 Moreover, you can use two options in the module : 
 
 \itemize{
@@ -61,5 +61,5 @@ save(ml, file = "ml.rda")
 
 }
 \seealso{
-\code{\link{plotMapLayout}}
+[plotMapLayout()]
 }

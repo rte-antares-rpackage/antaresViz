@@ -8,11 +8,11 @@
 #' 
 #' @param x
 #'   Object of class \code{antaresDataList} created with 
-#'   \code{\link[antaresRead]{readAntares}} and containing areas and links data.
+#'   [antaresRead::readAntares()] and containing areas and links data.
 #'    It can be a list of \code{antaresData} objects. 
 #'    In this case, one chart is created for each object.
 #' @param mapLayout
-#'   Object created with function \code{\link{mapLayout}}
+#'   Object created with function [antaresViz::mapLayout()]
 #' @param colAreaVar
 #'   Name of a variable present in \code{x$areas}. The values of this variable
 #'   are represented by the color of the areas on the map. If \code{"none"}, then
@@ -28,7 +28,7 @@
 #'   \code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}
 #' @param aliasSizeAreaVars
 #'   If \code{typeSizeAreaVars} is set to TRUE, name of alias. You can find the list 
-#'   of alias with the function \code{\link[antaresRead]{showAliases}}
+#'   of alias with the function [antaresRead::showAliases()]
 #' @param areaChartType
 #'   If parameter \code{sizeAreaVars} contains multiple variables, this parameter
 #'   determines the type of representation. Possible values are \code{"bar"} for
@@ -70,7 +70,7 @@
 #'   Title of the map.
 #' @param options
 #'   List of parameters that override some default visual settings. See the
-#'   help of \code{\link{plotMapOptions}}.
+#'   help of [antaresViz::plotMapOptions()].
 #' @param sizeMiniPlot \code{boolean} variable size for miniplot
 #' @param h5requestFiltering Contains arguments used by default for h5 request,
 #'   typically h5requestFiltering = list(mcYears = 3)

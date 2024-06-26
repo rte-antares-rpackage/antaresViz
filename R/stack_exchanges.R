@@ -11,7 +11,7 @@
 #' 
 #' @param x
 #'   Object of class \code{antaresData} created with function
-#'   \code{\link[antaresRead]{readAntares}}. It is required to contain link data.
+#'   [antaresRead::readAntares]. It is required to contain link data.
 #'   If it also contains area data with column `ROW BAL.`, then exchanges with
 #'   the rest of the world are also displayed on the chart.
 #' @param stack

@@ -15,7 +15,7 @@ savePlotAsPng(plot, file = "Rplot.png", width = 600, height = 480, ...)
 
 \item{height}{height of the output file}
 
-\item{...}{Other parameters passed to function \code{\link[webshot]{webshot}}}
+\item{...}{Other parameters passed to function [webshot::webshot]}
 }
 \value{
 The function only creates the required file. Nothing is returned
