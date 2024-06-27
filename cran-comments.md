@@ -28,3 +28,6 @@ new version to fix pb with dependencies `AntaresRead` :
  
 We have to fix dependencies with package `rhdf5` on this package before to push `antaresRead` 2.7.1
 
+## v0.18.2
+Cran check in ERROR cause test skip not skip 
+

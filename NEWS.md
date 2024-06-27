@@ -1,5 +1,8 @@
 Copyright 2016 RTE Reseau de transport d'electricite
 
+# antaresViz 0.18.2 
+* fix cran issue on test not skip well
+
 # antaresViz 0.18.1
 * delete package dependecies `rhdf5`
 
