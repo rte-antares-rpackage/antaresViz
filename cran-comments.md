@@ -31,3 +31,6 @@ We have to fix dependencies with package `rhdf5` on this package before to push 
 ## v0.18.2
 Cran check in ERROR cause test skip not skip 
 
+## v0.18.3
+To put the package back on CRAN
+

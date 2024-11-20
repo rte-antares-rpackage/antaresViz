@@ -1,5 +1,9 @@
 Copyright 2016 RTE Reseau de transport d'electricite
 
+# antaresViz 0.18.3 
+* The package has been accepted but archived as version 0.18.2.  
+New version for distribution on CRAN
+
 # antaresViz 0.18.2 
 * fix cran issue on test not skip well
 
