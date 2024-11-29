@@ -13,3 +13,4 @@ inst/examples
 ^revdep$
 ^README\.Rmd$
 ^CRAN-SUBMISSION$
+^LICENSE\.md$
