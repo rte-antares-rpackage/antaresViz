@@ -198,50 +198,46 @@ Compare argument can take following values :
    }
 }
 \examples{
-\dontrun{
-mydata <- readAntares(links = "all", timeStep = "daily")
-exchangesStack(mydata)
+\donttest{
+library(antaresRead)
+# with study test for example (study is in package antaresRead)
+sourcedir <- system.file("testdata", package = "antaresRead")
 
-# Also display exchanges with the rest of the world
-mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
-exchangesStack(mydata)
+# untar study in temp dir
+path_latest <- file.path(tempdir(), "latest")
+untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path_latest)
 
-# Use compare :
-exchangesStack(mydata, compare = "mcYear")
-exchangesStack(mydata, compare = "area")
-exchangesStack(mydata, compare = "unit")
-exchangesStack(mydata, compare = "legend")
-# Compare studies with refStudy argument
-exchangesStack(x = myData1, refStudy = myData2)
-exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
-exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
-exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
+study_path <- file.path(path_latest, "test_case")
 
-# Use h5 opts
-# Set path of simulaiton
-setSimulationPath(path = path1)
+# set path to your Antares simulation
+opts <- setSimulationPath(study_path)
 
-# Convert your study in h5 format
-writeAntaresH5(path = mynewpath)
-
-# Redefine sim path with h5 file
-opts <- setSimulationPath(path = mynewpath)
-exchangesStack(x = opts)
-
-# Compare elements in a single study
-exchangesStack(x = opts, .compare = "mcYear")
-
-# Compare 2 studies
-exchangesStack(x = list(opts, opts2))
-
-# Compare 2 studies with argument refStudy
-exchangesStack(x = opts, refStudy = opts2)
-exchangesStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea)
-exchangesStack(x = opts, refStudy = opts2, h5requestFiltering = list(
-areas = getAreas(select = "a"),
-links = getLinks(areas = myArea),
-mcYears = myMcYear))
-
+if(interactive()){
+  mydata <- readAntares(links = "all", timeStep = "daily")
+  exchangesStack(mydata)
+  
+  # Also display exchanges with the rest of the world
+  mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
+  exchangesStack(mydata)
+  
+  # Use compare :
+  exchangesStack(mydata, compare = "mcYear")
+  exchangesStack(mydata, compare = "area")
+  exchangesStack(mydata, compare = "unit")
+  exchangesStack(mydata, compare = "legend")
+  # Compare studies with refStudy argument
+  exchangesStack(x = myData1, refStudy = myData2)
+  exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
+  exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
+  exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
+  
+  
+  # Compare 2 studies
+  exchangesStack(x = list(opts, opts))
+  
+  # Compare 2 studies with argument refStudy
+  exchangesStack(x = opts, refStudy = opts)
+}
 }
 
 }

@@ -32,5 +32,15 @@ We have to fix dependencies with package `rhdf5` on this package before to push 
 Cran check in ERROR cause test skip not skip 
 
 ## v0.18.3
-To put the package back on CRAN
+To put the package back on CRAN  
+ - `exchangesStack()` documentation updated with `\donttest` and rewrite example  
+ - Update file "Licence" with GPL licence `usethis::use_gpl_license()`  
+ 
+```
+> devtools::check_man()
+ℹ Updating antaresViz documentation
+ℹ Loading antaresViz
+ℹ Checking documentation...
+✔ No issues detected
+```
 
