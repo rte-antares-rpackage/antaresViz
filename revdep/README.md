@@ -10,7 +10,7 @@
 |collate  |French_France.utf8                  |
 |ctype    |French_France.utf8                  |
 |tz       |Europe/Paris                        |
-|date     |2024-11-19                          |
+|date     |2024-11-29                          |
 |rstudio  |2023.12.0+369 Ocean Storm (desktop) |
 |pandoc   |NA                                  |
 
@@ -18,7 +18,7 @@
 
 |package     |old    |new      |Δ  |
 |:-----------|:------|:--------|:--|
-|antaresViz  |0.18.0 |0.18.2   |*  |
+|antaresViz  |0.18.0 |0.18.3   |*  |
 |askpass     |NA     |1.2.1    |*  |
 |bit         |NA     |4.5.0    |*  |
 |bit64       |NA     |4.5.2    |*  |
@@ -46,7 +46,9 @@
 |jqr         |NA     |1.3.5    |*  |
 |jsonlite    |NA     |1.8.9    |*  |
 |knitr       |NA     |1.49     |*  |
+|later       |NA     |1.4.1    |*  |
 |openssl     |NA     |2.2.2    |*  |
+|promises    |NA     |1.3.2    |*  |
 |protolite   |NA     |2.3.1    |*  |
 |ps          |NA     |1.8.1    |*  |
 |raster      |NA     |3.6-30   |*  |
