@@ -30,7 +30,7 @@ tsLegend(labels, colors, types = "line", legendItemsPerRow = 5, legendId = "")
 
 \item{legendId}{Id of the legend linked to the graph. This argument is 
 usefull when one wants to create a shared legend with 
-\code{\link{prodStackLegend}}}
+[prodStackLegend()]}
 
 \item{language}{\code{character} language use for label. Defaut to 'en'. Can be 'fr'.}
 

@@ -8,19 +8,19 @@
 #' study. The result should then be saved in an external file and be reused.
 #' 
 #' @param layout
-#'   object returned by function \code{\link[antaresRead]{readLayout}}
+#'   object returned by function [antaresRead::readLayout()]
 #' @param what
 #'   Either "areas" or "districts". Indicates what type of object to place
 #'   on the map.
 #' @param map
-#'   An optional \code{\link[sp]{SpatialPolygons}} or 
-#'   \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} object. See \code{\link[spMaps:spMaps]{getSpMaps}}
+#'   An optional [sp::SpatialPolygons()] or 
+#'   [sp::SpatialPolygonsDataFrame()] object. See [spMaps::getSpMaps()]
 #'   
 #' @param map_builder \code{logical} Add inputs for build custom map ? Defaut to TRUE.
 #' 
 #' @details 
 #' With \code{map_builder} option, you can build a quiet custom map using \code{spMaps} package. 
-#' This package help you to build \code{\link[sp:SpatialPolygons]{SpatialPolygonsDataFrame}} on Europe. 
+#' This package help you to build [sp::SpatialPolygons()] on Europe. 
 #' Moreover, you can use two options in the module : 
 #' 
 #' \itemize{
@@ -51,7 +51,7 @@
 #' @export
 #' @import spMaps
 #'
-#' @seealso \code{\link{plotMapLayout}}
+#' @seealso [plotMapLayout()]
 mapLayout <- function(layout, what = c("areas", "districts"), map = getSpMaps(), map_builder = TRUE) {
   
   what <- match.arg(what)
@@ -73,7 +73,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = getSpMaps(),
 #' Visualize mapLayout output.
 #' 
 #' @param mapLayout
-#'   object returned by function \code{\link{mapLayout}}
+#'   object returned by function [mapLayout()]
 #'   
 #' @examples 
 #' 
@@ -90,7 +90,7 @@ mapLayout <- function(layout, what = c("areas", "districts"), map = getSpMaps(),
 #' 
 #' @export
 #' 
-#' @seealso \code{\link{mapLayout}}
+#' @seealso [mapLayout()]
 plotMapLayout <- function(mapLayout){
   
   if (!is.null(mapLayout$all_coords)){
@@ -513,10 +513,10 @@ changeCoordsServer <- function(input, output, session,
 #' 
 #' This method can be used to visualize the network of an antares study.
 #' It generates an interactive map with a visual representaiton of a
-#' map layout created with function \code{\link{mapLayout}}. 
+#' map layout created with function [mapLayout()]. 
 #' 
 #' @param x
-#'   Object created with function \code{\link{mapLayout}}
+#'   Object created with function [mapLayout()]
 #' @param colAreas
 #'   Vector of colors for areas. By default, the colors used in the Antares
 #'   software are used.
@@ -554,7 +554,7 @@ changeCoordsServer <- function(input, output, session,
 #' @return 
 #'   The function generates an \code{htmlwidget} of class \code{leaflet}. It can
 #'   be stored in a variable and modified with package 
-#'   \code{\link[leaflet]{leaflet}}
+#'   [leaflet::leaflet()]
 #'   
 #' @method plot mapLayout
 #'    

@@ -8,13 +8,13 @@
 #' 
 #' @param x
 #'   An object of class \code{antaresData} created with function 
-#'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
+#'   [antaresRead::readAntares()] containing data for areas and or
 #'   districts. it can be a list of \code{antaresData} objects. 
 #'   In this case, one chart is created for each object. 
 #'   Can also contains opts who refer to a h5 file or list of opts.
 #' @param refStudy
 #'   An object of class \code{antaresData} created with function 
-#'   \code{\link[antaresRead]{readAntares}} containing data for areas and or
+#'   [antaresRead::readAntares()] containing data for areas and or
 #'   districts. Can also contains an opts who refer to a h5 file.
 #' @param stack
 #'   Name of the stack to use. One can visualize available stacks with 
@@ -49,7 +49,7 @@
 #' @param compareOpts
 #'   List of options that indicates the number of charts to create and their 
 #'   position. Check out the documentation of 
-#'   \code{\link[manipulateWidget]{compareOptions}} to see available options.
+#'   [manipulateWidget::compareOptions] to see available options.
 #' @param width
 #'   Width of the graph expressed in pixels or in percentage of 
 #'   the parent element. For instance "500px" and "100\%" are valid values.
@@ -62,10 +62,10 @@
 #' @param legend
 #'   Logical value indicating if a legend should be drawn. This argument is 
 #'   usefull when one wants to create a shared legend with
-#'   \code{\link{prodStackLegend}}
+#'   [prodStackLegend()]
 #' @param legendId Id of the legend linked to the graph. This argument is 
 #'   usefull when one wants to create a shared legend with 
-#'   \code{\link{prodStackLegend}}
+#'   [prodStackLegend()]
 #' @param groupId Parameter that can be used to synchronize the horizontal 
 #'   zoom of multiple charts. All charts that need to be synchronized must
 #'   have the same group. 
@@ -76,7 +76,7 @@
 #' @param name
 #'   name of the stack to create or update
 #' @param variables
-#'   A named list of expressions created with \code{\link[base:list]{alist}}. The
+#'   A named list of expressions created with [base::alist]. The
 #'   name of each element is the name of the variable to draw in the stacked
 #'   graph. The element itself is an expression explaining how to compute the
 #'   variable (see examples).
@@ -85,7 +85,7 @@
 #'   \code{variables} is an alias, then this argument should be \code{NULL} in 
 #'   order to use default colors.
 #' @param lines
-#'   A named list of expressions created with \code{\link[base:list]{alist}}
+#'   A named list of expressions created with [base::alist]
 #'   indicating how to compute the curves to display on top of the stacked graph.
 #'   It should be \code{NULL} if there is no curve to trace or if parameter
 #'   \code{variables} is an alias.
@@ -111,7 +111,7 @@
 #' @param tablesh5 \code{character} tables for h5 ("areas" "links", "clusters" or "disticts"). Only for Non interactive mode.
 #' @param language \code{character} language use for label. Defaut to 'en'. Can be 'fr'.
 #' @param hidden \code{logical} Names of input to hide. Defaut to NULL
-#' @param ... Other arguments for \code{\link{manipulateWidget}}
+#' @param ... Other arguments for [manipulateWidget::manipulateWidget]
 #'  
 #' @return 
 #' \code{prodStack} returns an interactive html graphic. If argument
@@ -123,7 +123,7 @@
 #' 
 #' \code{setProdStackAlias} creates or updates a stack alias.
 #' 
-#' @seealso \code{\link{prodStackLegend}}
+#' @seealso [prodStackLegend()]
 #' 
 #' @details 
 #' compare argument can take following values :
@@ -233,14 +233,38 @@ prodStack <- function(x,
                       updateLegendOnMouseOver = TRUE,
                       legendItemsPerRow = 5,
                       width = NULL, height = NULL, xyCompare = c("union", "intersect"),
-                      h5requestFiltering = list(), stepPlot = FALSE, drawPoints = FALSE,
-                      timeSteph5 = "hourly",
-                      mcYearh5 = NULL,
-                      tablesh5 = c("areas", "links"), language = "en", 
+                      h5requestFiltering = deprecated(), stepPlot = FALSE, drawPoints = FALSE,
+                      timeSteph5 =  deprecated(),
+                      mcYearh5 =  deprecated(),
+                      tablesh5 = deprecated(), language = "en", 
                       hidden = NULL,
                       refStudy = NULL,
                       ...) {
   
+  deprecated_vector_params <- c(lifecycle::is_present(h5requestFiltering),
+                                lifecycle::is_present(timeSteph5),
+                                lifecycle::is_present(mcYearh5),
+                                lifecycle::is_present(tablesh5))
+  
+  if(any(deprecated_vector_params)){
+    lifecycle::deprecate_warn(
+      when = "0.18.1", 
+      what = "prodStack(h5requestFiltering)",
+      details = "all these parameters are relative to the 'rhdf5' package, 
+      which is removed from the dependencies"
+    )
+    
+    h5requestFiltering <- NULL
+    timeSteph5 <- NULL
+    mcYearh5 <- NULL
+    tablesh5 <- NULL
+  }
+  
+  # force (deprecated)
+  h5requestFiltering <- NULL
+  timeSteph5 <- NULL
+  mcYearh5 <- NULL
+  tablesh5 <- NULL
   
   #we can hide these values
   prodStackValHidden <- c("H5request", "timeSteph5", "tables", "mcYearH5", "mcYear", "main", "dateRange", 
@@ -436,7 +460,7 @@ prodStack <- function(x,
   
   manipulateWidget(
     {
-      .tryCloseH5()
+      # .tryCloseH5()
       
       # udpate for mw 0.11 & 0.10.1
       if(!is.null(params)){
@@ -458,11 +482,11 @@ prodStack <- function(x,
     h5requestFiltering = mwSharedValue({
       h5requestFiltering
     }),
-    paramsH5 = mwSharedValue({
-      tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare,
-                          h5requestFilter = h5requestFiltering)
-      tmp
-    }),
+    # paramsH5 = mwSharedValue({
+    #   tmp <- .h5ParamList(X_I = x_in, xyCompare = xyCompare,
+    #                       h5requestFilter = h5requestFiltering)
+    #   tmp
+    # }),
     H5request = mwGroup(
       label = .getLabelLanguage("H5request", language),
       timeSteph5 = mwSelect(

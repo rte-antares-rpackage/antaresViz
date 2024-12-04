@@ -524,430 +524,430 @@ test_that("exchangesStack, interactive, x is a list of antaresDataList and refSt
   expect_equal(dataExListV3g2$negROW[indexHour], 1000)
 })
 
-test_that("exchangesStack, no interactive, x and refStudy are optsH5 ", {
-  if (.requireRhdf5_Antares(stopP = FALSE)){
-    skip_if_not(.runExchangesStackTest)
-    suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
-    optsH5 <- setSimulationPath(pathtemp)
-    myArea <- "a"
-    DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-    ES1 <-  exchangesStack(x = optsH5, interactive = FALSE, area = myArea, dateRange = DR)
-    dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ES1)
-    timeEditValue <- "2018-04-25T00:00:00.000Z"
-    indexHour <- grep(timeEditValue, dataHtmlWidgetES1$hour)
-    expect_gt(indexHour, 2)
-    expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 9)
-    # with refStudy
-    ESRef <-  exchangesStack(x = optsH5, refStudy = optsH5, interactive = FALSE, area = myArea, dateRange = DR)
-    dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESRef)
-    expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 0)
-    # with a new Study H5 test if compare prodStack works
-    ## create a new folder h5
-    pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
-    pathNewH5 <- file.path(pathInitial, "testH5")
-    if (!dir.exists(pathNewH5)){
-      dir.create(pathNewH5)
-    }
-    #write the study
-    #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
-    optsData <- antaresRead::setSimulationPath(path = studyPath)
-    suppressWarnings(writeAntaresH5(path = pathNewH5, opts = optsData,
-                                    overwrite = TRUE, supressMessages = TRUE))
+# test_that("exchangesStack, no interactive, x and refStudy are optsH5 ", {
+#   if (.requireRhdf5_Antares(stopP = FALSE)){
+#     skip_if_not(.runExchangesStackTest)
+#     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
+#     optsH5 <- setSimulationPath(pathtemp)
+#     myArea <- "a"
+#     DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+#     ES1 <-  exchangesStack(x = optsH5, interactive = FALSE, area = myArea, dateRange = DR)
+#     dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ES1)
+#     timeEditValue <- "2018-04-25T00:00:00.000Z"
+#     indexHour <- grep(timeEditValue, dataHtmlWidgetES1$hour)
+#     expect_gt(indexHour, 2)
+#     expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 9)
+#     # with refStudy
+#     ESRef <-  exchangesStack(x = optsH5, refStudy = optsH5, interactive = FALSE, area = myArea, dateRange = DR)
+#     dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESRef)
+#     expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 0)
+#     # with a new Study H5 test if compare prodStack works
+#     ## create a new folder h5
+#     pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
+#     pathNewH5 <- file.path(pathInitial, "testH5")
+#     if (!dir.exists(pathNewH5)){
+#       dir.create(pathNewH5)
+#     }
+#     #write the study
+#     #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
+#     optsData <- antaresRead::setSimulationPath(path = studyPath)
+#     suppressWarnings(writeAntaresH5(path = pathNewH5, opts = optsData,
+#                                     overwrite = TRUE, supressMessages = TRUE))
+# 
+# 
+#     pathNewH5File <- file.path(pathNewH5, list.files(pathNewH5))
+#     myLink <- getLinks()[1]
+#     .h5Antares_edit_variable(
+#       pathH5 = pathNewH5File,
+#       link = myLink,
+#       timeId = 1:40,
+#       antVar = "FLOW LIN.",
+#       newValue = 15000
+#     )
+# 
+#     optsH5New <- setSimulationPath(path = pathNewH5File)
+#     ES1New <-  exchangesStack(x = optsH5New, interactive = FALSE, area = myArea, dateRange = DR)
+#     dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ES1New)
+#     expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 9)
+#     expect_equal(dataHtmlWidgetES1$a_offshore[2], 15000)
+#     ES1NewRef <-  exchangesStack(x = optsH5New, refStudy = optsH5, interactive = FALSE, area = myArea, dateRange = DR)
+#     dataHtmlWidgetES1Ref <- .get_data_from_htmlwidget(ES1NewRef)
+#     expect_equal(dataHtmlWidgetES1Ref$nega_offshore[indexHour], 0)
+#     expect_gt(dataHtmlWidgetES1Ref$a_offshore[2], 15000)
+#   }
+# })
 
+# test_that("exchangesStack, no interactive, x is a list of optH5 and refStudy are optsH5 ", {
+#   if (.requireRhdf5_Antares(stopP = FALSE)){
+#     skip_if_not(.runExchangesStackTest)
+#     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
+#     optsH5 <- setSimulationPath(pathtemp)
+# 
+#     # with new Studies H5 test if compare prodStack works
+#     ## create new folders h5
+#     pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
+# 
+#     listFolderToCreate <- c("testH5v2", "testH5v3", "testH5v4")
+#     for (folder in listFolderToCreate){
+#       pathNewH5 <- file.path(pathInitial, folder)
+#       if (!dir.exists(pathNewH5)){
+#         dir.create(pathNewH5)
+#       }
+# 
+#       #write the study
+#       #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
+#       optsData <- antaresRead::setSimulationPath(path = studyPath)
+#       suppressWarnings(
+#         writeAntaresH5(
+#           path = pathNewH5,
+#           opts = optsData,
+#           overwrite = TRUE,
+#           supressMessages = TRUE)
+#       )
+#     }
+#     idWidgetToEdit <- 2
+#     pathH5FolderToEdit <- file.path(pathInitial, listFolderToCreate[[idWidgetToEdit]])
+#     pathH5FileToEdit <- file.path(pathH5FolderToEdit, list.files(pathH5FolderToEdit))
+#     newValueFlow <- 15000
+#     myLink <- getLinks()[1]
+#     .h5Antares_edit_variable(
+#       pathH5 = pathH5FileToEdit,
+#       link = myLink,
+#       timeId = 1:40,
+#       antVar = "FLOW LIN.",
+#       newValue = newValueFlow
+#     )
+# 
+#     optsList <- list()
+#     antaresDataListH5 <- list()
+#     for (i in 1:length(listFolderToCreate)){
+#       pathOptsI <- file.path(pathInitial, listFolderToCreate[[i]])
+#       optsList[[i]] <- setSimulationPath(path = pathOptsI)
+#       antaresDataListH5[[i]] <- readAntares(links = myLink)
+#     }
+#     #test the data from h5
+#     #get the data from the h5 file
+#     antaresDataRef <- readAntares(opts = optsH5, links = myLink)
+#     expect_equal(max(antaresDataListH5[[idWidgetToEdit]]$`FLOW LIN.`), newValueFlow)
+#     expect_equal(max(antaresDataListH5[[1]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`))
+#     expect_equal(max(antaresDataListH5[[3]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`))
+#     # get the data from htmlwidget
+#     myArea <- "a"
+#     DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+#     ESList <-  exchangesStack(x = optsList, interactive = FALSE, area = myArea, dateRange = DR)
+#     dataHtmlWidgetES2 <- .get_data_from_htmlwidget(ESList, widgetsNumber = idWidgetToEdit)
+#     expect_equal(dataHtmlWidgetES2$a_offshore[3], newValueFlow)
+#     dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESList, widgetsNumber = 1)
+#     expect_equal(dataHtmlWidgetES1$a_offshore[3], 0)
+#     expect_equal(dataHtmlWidgetES1$nega_offshore[3], 6)
+#     # with refStudy
+#     ESListRef <-  exchangesStack(x = optsList, refStudy = optsH5, interactive = FALSE, area = myArea, dateRange = DR)
+#     dataHtmlWidgetES2Ref <- .get_data_from_htmlwidget(ESListRef, widgetsNumber = idWidgetToEdit)
+#     expect_equal(dataHtmlWidgetES2Ref$a_offshore[3] - dataHtmlWidgetES1$nega_offshore[3], newValueFlow)
+#     dataHtmlWidgetES1Ref <- .get_data_from_htmlwidget(ESListRef, widgetsNumber = 1)
+#     expect_equal(dataHtmlWidgetES1Ref$a_offshore[3], 0)
+#     expect_equal(dataHtmlWidgetES1Ref$nega_offshore[3], 0)
+#   }
+# })
 
-    pathNewH5File <- file.path(pathNewH5, list.files(pathNewH5))
-    myLink <- getLinks()[1]
-    .h5Antares_edit_variable(
-      pathH5 = pathNewH5File,
-      link = myLink,
-      timeId = 1:40,
-      antVar = "FLOW LIN.",
-      newValue = 15000
-    )
+# test_that("exchangesStack, interactive, x and refStudy are optsH5 ", {
+#   if (.requireRhdf5_Antares(stopP = FALSE)){
+#     skip_if_not(.runExchangesStackTest)
+#     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
+#     optsH5 <- setSimulationPath(pathtemp)
+#     myArea <- "a"
+#     DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+#     # no interactive
+#     ES1 <-  exchangesStack(x = optsH5,
+#                            interactive = FALSE,
+#                            area = myArea,
+#                            dateRange = DR,
+#                            mcYearh5 = 1)
+#     dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ES1)
+#     timeEditValue <- "2018-04-24T23:00:00.000Z"
+#     indexHour <- grep(timeEditValue, dataHtmlWidgetES1$hour)
+#     expect_gt(indexHour, 2)
+#     expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 10)
+#     # with interactive
+#     #FOR DEBUG
+#     #ES1I <-  exchangesStack(x = optsH5,
+#     #                       interactive = TRUE)
+# 
+#     ES1I <-  exchangesStack(x = optsH5,
+#                             .runApp = FALSE,
+#                             interactive = TRUE,
+#                             dateRange = DR)
+#     ES1I <- ES1I$init()
+#     expect_true(is(ES1I, "MWController"))
+#     expect_equal(ES1I$ncharts, 1)
+#     expect_equal(ES1I$ncol, 1)
+#     expect_equal(ES1I$nrow, 1)
+#     dataHtmlWidgetES1I <- .get_data_from_htmlwidget(ES1I)
+#     expect_equal(dataHtmlWidgetES1I$nega_offshore[indexHour], 10)
+#     # with refStudy no interactive
+#     ESRef <-  exchangesStack(x = optsH5,
+#                              refStudy = optsH5,
+#                              interactive = FALSE,
+#                              area = myArea,
+#                              dateRange = DR,
+#                              mcYearh5 = 1)
+#     dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESRef)
+#     expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 0)
+#     # refStudy with interactive
+#     ESRefI <-  exchangesStack(x = optsH5,
+#                               refStudy = optsH5,
+#                               interactive = TRUE,
+#                               .runApp = FALSE,
+#                               area = myArea,
+#                               dateRange = DR)
+#     ESRefI <- ESRefI$init()
+#     expect_true(is(ESRefI, "MWController"))
+#     expect_equal(ESRefI$ncharts, 1)
+#     expect_equal(ESRefI$ncol, 1)
+#     expect_equal(ESRefI$nrow, 1)
+#     dataHtmlWidgetESRefI <- .get_data_from_htmlwidget(ESRefI)
+#     expect_equal(dataHtmlWidgetESRefI$nega_offshore[indexHour], 0)
+#     # with a new Study H5 test if compare prodStack works
+#     ## create a new folder h5
+#     pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
+#     pathNewH5 <- file.path(pathInitial, "testH5")
+#     if (!dir.exists(pathNewH5)){
+#       dir.create(pathNewH5)
+#     }
+#     #write the study
+#     #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
+#     optsData <- antaresRead::setSimulationPath(path = studyPath)
+#     suppressWarnings(writeAntaresH5(path = pathNewH5, opts = optsData,
+#                                     overwrite = TRUE, supressMessages = TRUE))
+# 
+# 
+#     pathNewH5File <- file.path(pathNewH5, list.files(pathNewH5))
+#     myLink <- getLinks()[1]
+#     .h5Antares_edit_variable(
+#       pathH5 = pathNewH5File,
+#       link = myLink,
+#       timeId = 1:40,
+#       antVar = "FLOW LIN.",
+#       newValue = 15000,
+#       mcYear = 1
+#     )
+# 
+#     optsH5New <- setSimulationPath(path = pathNewH5File)
+#     #no interactive
+#     ES1New <-  exchangesStack(x = optsH5New,
+#                               interactive = FALSE,
+#                               area = myArea,
+#                               dateRange = DR,
+#                               mcYearh5 = 1)
+#     dataHtmlWidgetES1New <- .get_data_from_htmlwidget(ES1New)
+#     expect_equal(dataHtmlWidgetES1New$nega_offshore[indexHour], 10)
+#     expect_equal(dataHtmlWidgetES1New$a_offshore[2], 15000)
+#     # with interactive
+#     ES1NewI <-  exchangesStack(x = optsH5New,
+#                                interactive = TRUE,
+#                                .runApp = FALSE,
+#                                area = myArea,
+#                                dateRange = DR)
+#     ES1NewI <- ES1NewI$init()
+#     expect_true(is(ES1NewI, "MWController"))
+#     expect_equal(ES1NewI$ncharts, 1)
+#     expect_equal(ES1NewI$ncol, 1)
+#     expect_equal(ES1NewI$nrow, 1)
+#     dataHtmlWidgetES1New <- .get_data_from_htmlwidget(ES1NewI)
+#     expect_equal(dataHtmlWidgetES1New$nega_offshore[indexHour], 10)
+#     expect_equal(dataHtmlWidgetES1New$a_offshore[2], 15000)
+#     # no interactive, refStudy,
+#     ES1NewRef <-  exchangesStack(x = optsH5New,
+#                                  refStudy = optsH5,
+#                                  interactive = FALSE,
+#                                  area = myArea,
+#                                  dateRange = DR,
+#                                  mcYearh5 = 1)
+#     dataHtmlWidgetES1Ref <- .get_data_from_htmlwidget(ES1NewRef)
+#     expect_equal(dataHtmlWidgetES1Ref$nega_offshore[indexHour], 0)
+#     expect_gt(dataHtmlWidgetES1Ref$a_offshore[2], 15000)
+#     # interactive, refStudy,
+#     ES1NewRefI <-  exchangesStack(x = optsH5New,
+#                                   refStudy = optsH5,
+#                                   interactive = TRUE,
+#                                   .runApp = FALSE,
+#                                   area = myArea,
+#                                   dateRange = DR,
+#                                   mcYearh5 = 1)
+#     ES1NewRefI <- ES1NewRefI$init()
+#     expect_true(is(ES1NewRefI, "MWController"))
+#     expect_equal(ES1NewRefI$ncharts, 1)
+#     expect_equal(ES1NewRefI$ncol, 1)
+#     expect_equal(ES1NewRefI$nrow, 1)
+#     dataHtmlWidgetES1RefI <- .get_data_from_htmlwidget(ES1NewRefI)
+#     expect_equal(dataHtmlWidgetES1RefI$nega_offshore[indexHour], 0)
+#     expect_gt(dataHtmlWidgetES1RefI$a_offshore[2], 15000)
+#   }
+# })
 
-    optsH5New <- setSimulationPath(path = pathNewH5File)
-    ES1New <-  exchangesStack(x = optsH5New, interactive = FALSE, area = myArea, dateRange = DR)
-    dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ES1New)
-    expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 9)
-    expect_equal(dataHtmlWidgetES1$a_offshore[2], 15000)
-    ES1NewRef <-  exchangesStack(x = optsH5New, refStudy = optsH5, interactive = FALSE, area = myArea, dateRange = DR)
-    dataHtmlWidgetES1Ref <- .get_data_from_htmlwidget(ES1NewRef)
-    expect_equal(dataHtmlWidgetES1Ref$nega_offshore[indexHour], 0)
-    expect_gt(dataHtmlWidgetES1Ref$a_offshore[2], 15000)
-  }
-})
-
-test_that("exchangesStack, no interactive, x is a list of optH5 and refStudy are optsH5 ", {
-  if (.requireRhdf5_Antares(stopP = FALSE)){
-    skip_if_not(.runExchangesStackTest)
-    suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
-    optsH5 <- setSimulationPath(pathtemp)
-
-    # with new Studies H5 test if compare prodStack works
-    ## create new folders h5
-    pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
-
-    listFolderToCreate <- c("testH5v2", "testH5v3", "testH5v4")
-    for (folder in listFolderToCreate){
-      pathNewH5 <- file.path(pathInitial, folder)
-      if (!dir.exists(pathNewH5)){
-        dir.create(pathNewH5)
-      }
-
-      #write the study
-      #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
-      optsData <- antaresRead::setSimulationPath(path = studyPath)
-      suppressWarnings(
-        writeAntaresH5(
-          path = pathNewH5,
-          opts = optsData,
-          overwrite = TRUE,
-          supressMessages = TRUE)
-      )
-    }
-    idWidgetToEdit <- 2
-    pathH5FolderToEdit <- file.path(pathInitial, listFolderToCreate[[idWidgetToEdit]])
-    pathH5FileToEdit <- file.path(pathH5FolderToEdit, list.files(pathH5FolderToEdit))
-    newValueFlow <- 15000
-    myLink <- getLinks()[1]
-    .h5Antares_edit_variable(
-      pathH5 = pathH5FileToEdit,
-      link = myLink,
-      timeId = 1:40,
-      antVar = "FLOW LIN.",
-      newValue = newValueFlow
-    )
-
-    optsList <- list()
-    antaresDataListH5 <- list()
-    for (i in 1:length(listFolderToCreate)){
-      pathOptsI <- file.path(pathInitial, listFolderToCreate[[i]])
-      optsList[[i]] <- setSimulationPath(path = pathOptsI)
-      antaresDataListH5[[i]] <- readAntares(links = myLink)
-    }
-    #test the data from h5
-    #get the data from the h5 file
-    antaresDataRef <- readAntares(opts = optsH5, links = myLink)
-    expect_equal(max(antaresDataListH5[[idWidgetToEdit]]$`FLOW LIN.`), newValueFlow)
-    expect_equal(max(antaresDataListH5[[1]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`))
-    expect_equal(max(antaresDataListH5[[3]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`))
-    # get the data from htmlwidget
-    myArea <- "a"
-    DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-    ESList <-  exchangesStack(x = optsList, interactive = FALSE, area = myArea, dateRange = DR)
-    dataHtmlWidgetES2 <- .get_data_from_htmlwidget(ESList, widgetsNumber = idWidgetToEdit)
-    expect_equal(dataHtmlWidgetES2$a_offshore[3], newValueFlow)
-    dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESList, widgetsNumber = 1)
-    expect_equal(dataHtmlWidgetES1$a_offshore[3], 0)
-    expect_equal(dataHtmlWidgetES1$nega_offshore[3], 6)
-    # with refStudy
-    ESListRef <-  exchangesStack(x = optsList, refStudy = optsH5, interactive = FALSE, area = myArea, dateRange = DR)
-    dataHtmlWidgetES2Ref <- .get_data_from_htmlwidget(ESListRef, widgetsNumber = idWidgetToEdit)
-    expect_equal(dataHtmlWidgetES2Ref$a_offshore[3] - dataHtmlWidgetES1$nega_offshore[3], newValueFlow)
-    dataHtmlWidgetES1Ref <- .get_data_from_htmlwidget(ESListRef, widgetsNumber = 1)
-    expect_equal(dataHtmlWidgetES1Ref$a_offshore[3], 0)
-    expect_equal(dataHtmlWidgetES1Ref$nega_offshore[3], 0)
-  }
-})
-
-test_that("exchangesStack, interactive, x and refStudy are optsH5 ", {
-  if (.requireRhdf5_Antares(stopP = FALSE)){
-    skip_if_not(.runExchangesStackTest)
-    suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
-    optsH5 <- setSimulationPath(pathtemp)
-    myArea <- "a"
-    DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-    # no interactive
-    ES1 <-  exchangesStack(x = optsH5,
-                           interactive = FALSE,
-                           area = myArea,
-                           dateRange = DR,
-                           mcYearh5 = 1)
-    dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ES1)
-    timeEditValue <- "2018-04-24T23:00:00.000Z"
-    indexHour <- grep(timeEditValue, dataHtmlWidgetES1$hour)
-    expect_gt(indexHour, 2)
-    expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 10)
-    # with interactive
-    #FOR DEBUG
-    #ES1I <-  exchangesStack(x = optsH5,
-    #                       interactive = TRUE)
-
-    ES1I <-  exchangesStack(x = optsH5,
-                            .runApp = FALSE,
-                            interactive = TRUE,
-                            dateRange = DR)
-    ES1I <- ES1I$init()
-    expect_true(is(ES1I, "MWController"))
-    expect_equal(ES1I$ncharts, 1)
-    expect_equal(ES1I$ncol, 1)
-    expect_equal(ES1I$nrow, 1)
-    dataHtmlWidgetES1I <- .get_data_from_htmlwidget(ES1I)
-    expect_equal(dataHtmlWidgetES1I$nega_offshore[indexHour], 10)
-    # with refStudy no interactive
-    ESRef <-  exchangesStack(x = optsH5,
-                             refStudy = optsH5,
-                             interactive = FALSE,
-                             area = myArea,
-                             dateRange = DR,
-                             mcYearh5 = 1)
-    dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESRef)
-    expect_equal(dataHtmlWidgetES1$nega_offshore[indexHour], 0)
-    # refStudy with interactive
-    ESRefI <-  exchangesStack(x = optsH5,
-                              refStudy = optsH5,
-                              interactive = TRUE,
-                              .runApp = FALSE,
-                              area = myArea,
-                              dateRange = DR)
-    ESRefI <- ESRefI$init()
-    expect_true(is(ESRefI, "MWController"))
-    expect_equal(ESRefI$ncharts, 1)
-    expect_equal(ESRefI$ncol, 1)
-    expect_equal(ESRefI$nrow, 1)
-    dataHtmlWidgetESRefI <- .get_data_from_htmlwidget(ESRefI)
-    expect_equal(dataHtmlWidgetESRefI$nega_offshore[indexHour], 0)
-    # with a new Study H5 test if compare prodStack works
-    ## create a new folder h5
-    pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
-    pathNewH5 <- file.path(pathInitial, "testH5")
-    if (!dir.exists(pathNewH5)){
-      dir.create(pathNewH5)
-    }
-    #write the study
-    #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
-    optsData <- antaresRead::setSimulationPath(path = studyPath)
-    suppressWarnings(writeAntaresH5(path = pathNewH5, opts = optsData,
-                                    overwrite = TRUE, supressMessages = TRUE))
-
-
-    pathNewH5File <- file.path(pathNewH5, list.files(pathNewH5))
-    myLink <- getLinks()[1]
-    .h5Antares_edit_variable(
-      pathH5 = pathNewH5File,
-      link = myLink,
-      timeId = 1:40,
-      antVar = "FLOW LIN.",
-      newValue = 15000,
-      mcYear = 1
-    )
-
-    optsH5New <- setSimulationPath(path = pathNewH5File)
-    #no interactive
-    ES1New <-  exchangesStack(x = optsH5New,
-                              interactive = FALSE,
-                              area = myArea,
-                              dateRange = DR,
-                              mcYearh5 = 1)
-    dataHtmlWidgetES1New <- .get_data_from_htmlwidget(ES1New)
-    expect_equal(dataHtmlWidgetES1New$nega_offshore[indexHour], 10)
-    expect_equal(dataHtmlWidgetES1New$a_offshore[2], 15000)
-    # with interactive
-    ES1NewI <-  exchangesStack(x = optsH5New,
-                               interactive = TRUE,
-                               .runApp = FALSE,
-                               area = myArea,
-                               dateRange = DR)
-    ES1NewI <- ES1NewI$init()
-    expect_true(is(ES1NewI, "MWController"))
-    expect_equal(ES1NewI$ncharts, 1)
-    expect_equal(ES1NewI$ncol, 1)
-    expect_equal(ES1NewI$nrow, 1)
-    dataHtmlWidgetES1New <- .get_data_from_htmlwidget(ES1NewI)
-    expect_equal(dataHtmlWidgetES1New$nega_offshore[indexHour], 10)
-    expect_equal(dataHtmlWidgetES1New$a_offshore[2], 15000)
-    # no interactive, refStudy,
-    ES1NewRef <-  exchangesStack(x = optsH5New,
-                                 refStudy = optsH5,
-                                 interactive = FALSE,
-                                 area = myArea,
-                                 dateRange = DR,
-                                 mcYearh5 = 1)
-    dataHtmlWidgetES1Ref <- .get_data_from_htmlwidget(ES1NewRef)
-    expect_equal(dataHtmlWidgetES1Ref$nega_offshore[indexHour], 0)
-    expect_gt(dataHtmlWidgetES1Ref$a_offshore[2], 15000)
-    # interactive, refStudy,
-    ES1NewRefI <-  exchangesStack(x = optsH5New,
-                                  refStudy = optsH5,
-                                  interactive = TRUE,
-                                  .runApp = FALSE,
-                                  area = myArea,
-                                  dateRange = DR,
-                                  mcYearh5 = 1)
-    ES1NewRefI <- ES1NewRefI$init()
-    expect_true(is(ES1NewRefI, "MWController"))
-    expect_equal(ES1NewRefI$ncharts, 1)
-    expect_equal(ES1NewRefI$ncol, 1)
-    expect_equal(ES1NewRefI$nrow, 1)
-    dataHtmlWidgetES1RefI <- .get_data_from_htmlwidget(ES1NewRefI)
-    expect_equal(dataHtmlWidgetES1RefI$nega_offshore[indexHour], 0)
-    expect_gt(dataHtmlWidgetES1RefI$a_offshore[2], 15000)
-  }
-})
-
-test_that("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5  , ", {
-  if (.requireRhdf5_Antares(stopP = FALSE)){
-    skip_if_not(.runExchangesStackTest)
-    suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
-    optsH5 <- setSimulationPath(pathtemp)
-
-    # with new Studies H5 test if compare prodStack works
-    ## create new folders h5
-    pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
-
-    listFolderToCreate <- c("testH5v2", "testH5v3", "testH5v4")
-    for (folder in listFolderToCreate){
-      pathNewH5 <- file.path(pathInitial, folder)
-      if (!dir.exists(pathNewH5)){
-        dir.create(pathNewH5)
-      }
-
-      #write the study
-      #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
-      optsData <- antaresRead::setSimulationPath(path = studyPath)
-      suppressWarnings(
-        writeAntaresH5(
-          path = pathNewH5,
-          opts = optsData,
-          overwrite = TRUE,
-          supressMessages = TRUE)
-      )
-    }
-    pathH5FolderToEdit <- file.path(pathInitial, listFolderToCreate[[2]])
-    pathH5FileToEdit <- file.path(pathH5FolderToEdit, list.files(pathH5FolderToEdit))
-    myLink <- getLinks()[1]
-    newValueFlow <- 50000
-    mcYearToTestList <- c(2, NULL)
-    for (mcYearToTest in mcYearToTestList){
-      .h5Antares_edit_variable(
-        pathH5 = pathH5FileToEdit,
-        link = myLink,
-        timeId = 1:40,
-        antVar = "FLOW LIN.",
-        newValue = newValueFlow,
-        mcYear = mcYearToTest
-      )
-
-      optsList <- list()
-      antaresDataListH5 <- list()
-      for (i in 1:length(listFolderToCreate)){
-        pathOptsI <- file.path(pathInitial, listFolderToCreate[[i]])
-        optsList[[i]] <- setSimulationPath(path = pathOptsI)
-        antaresDataListH5[[i]] <- readAntares(links = myLink, mcYear = mcYearToTest)
-      }
-
-      DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
-      #try without refStudy and interactive == FALSE
-      myArea <- "a"
-      ESListNoInt <-  exchangesStack(x = optsList,
-                                     dateRange = DR,
-                                     area = myArea,
-                                     interactive = FALSE,
-                                     mcYearh5 = mcYearToTest)
-      dataHtmlWidgetESNoInt <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 2)
-      expect_equal(max(dataHtmlWidgetESNoInt$a_offshore, na.rm = TRUE), 50000)
-
-      # try with refStudy
-      ESListNoInt <-  exchangesStack(x = optsList,
-                                     refStudy = optsH5,
-                                     interactive = FALSE,
-                                     areas = myArea,
-                                     dateRange = DR,
-                                     mcYearh5 = mcYearToTest)
-      ## get the data from htmlwidget
-      dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 1)
-      dataHtmlWidgetES2 <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 2)
-
-      ## get the data from the h5 file
-      antaresDataRef <- readAntares(opts = optsH5, links = myLink, mcYears = mcYearToTest)
-      expect_equal(max(antaresDataListH5[[2]]$`FLOW LIN.`), newValueFlow)
-      expect_equal(max(antaresDataListH5[[1]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`))
-      expect_equal(max(antaresDataListH5[[3]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`))
-      expect_equal(antaresDataListH5[[2]]$`OV. COST`, antaresDataRef$`OV. COST`)
-
-      ## compare data
-      resCompareData1_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[1]])
-      resCompareData2_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[2]])
-      expect_equal(resCompareData1_ref[timeId == timeId[40], `FLOW LIN.`], -dataHtmlWidgetES1$nega_offshore[[2]])
-      expect_gt(resCompareData2_ref[timeId == timeId[40], `FLOW LIN.`], newValueFlow)
-
-      # interactive == TRUE
-      ## DEBUG
-      # PSWORef <-  prodStack(x = optsList,
-      #                       dateRange = DR,
-      #                       h5requestFiltering = list(areas = myArea,
-      #                                                 mcYears = mcYearToTest),
-      #                       .runApp = FALSE,
-      #                       interactive = TRUE)
-      # PSWORef <- PSWORef$init()
-      # ESWORef <-  exchangesStack(x = antaresDataListH5[[2]])
-      # ESWORef <-  exchangesStack(x = optsList)
-      # ESWORef <-  exchangesStack(x = antaresDataListH5[[2]],
-      #                            dateRange = DR)
-      # ESWORef <-  exchangesStack(x = optsList,
-      #                            dateRange = DR)
-
-      ESWORef <-  exchangesStack(
-        x = optsList,
-        dateRange = DR,
-        .runApp = FALSE,
-        interactive = TRUE,
-        h5requestFiltering = list(
-          areas = getAreas(select = "a"),
-          links = getLinks(areas = myArea),
-          mcYears = mcYearToTest))
-      ESWORef <- ESWORef$init()
-      expect_true(is(ESWORef, "MWController"))
-      expect_equal(ESWORef$ncharts, 3)
-      expect_equal(ESWORef$ncol, 2)
-      expect_equal(ESWORef$nrow, 2)
-      ## get the data from htmlwidget
-      dataHtmlWidgetESWORef <- .get_data_from_htmlwidget(ESWORef, widgetsNumber = 2)
-      expect_equal(dataHtmlWidgetESWORef$a_offshore[[2]], 50000)
-      expect_equal(dataHtmlWidgetESWORef$nega_offshore[[2]], 0)
-      dataHtmlWidgetESWORef1 <- .get_data_from_htmlwidget(ESWORef, widgetsNumber = 1)
-      expect_equal(dataHtmlWidgetESWORef1$a_offshore[[2]], 0)
-      expect_gt(dataHtmlWidgetESWORef1$nega_offshore[[2]], 0)
-
-      # fourth, MWController with refStudy and interactive == TRUE
-      ESWORefListI <-  exchangesStack(
-        x = optsList,
-        refStudy  = optsH5,
-        dateRange = DR,
-        .runApp = FALSE,
-        interactive = TRUE,
-        h5requestFiltering = list(
-          areas = getAreas(select = "a"),
-          links = getLinks(areas = myArea),
-          mcYears = mcYearToTest))
-      ESWORefListI <- ESWORefListI$init()
-      expect_true(is(ESWORefListI, "MWController"))
-      expect_equal(ESWORefListI$ncharts, 3)
-      expect_equal(ESWORefListI$ncol, 2)
-      expect_equal(ESWORefListI$nrow, 2)
-      #check data from htmlwidgets
-      dataHtmlWidgetES31 <- .get_data_from_htmlwidget(ESWORefListI, widgetsNumber = 2)
-      expect_gt(dataHtmlWidgetES31$a_offshore[[2]], 50000)
-      expect_equal(dataHtmlWidgetES31$nega_offshore[[2]], 0)
-      dataHtmlWidgetES21 <- .get_data_from_htmlwidget(ESWORefListI, widgetsNumber = 1)
-      expect_equal(dataHtmlWidgetES21$a_offshore[[2]], 0)
-      expect_equal(dataHtmlWidgetES21$nega_offshore[[2]], 0)
-
-      resOptsH5Old <- readAntares(opts = optsH5, links = myLink, showProgress = FALSE, mcYears = mcYearToTest)
-      resOptsH5New <- readAntares(opts = optsList[[2]], links = myLink, showProgress = FALSE, mcYears = mcYearToTest)
-      #timeId for time = "2018-04-24 00:00:00 UTC" ? timeId = 2713
-      timeIdVal <- 2713
-      expect_equal(resOptsH5New[timeId == timeIdVal, `FLOW LIN.`], newValueFlow)
-      expect_lt(resOptsH5Old[timeId == timeIdVal, `FLOW LIN.`], 0)
-
-      resCompareData <- antaresProcessing::compare(x = resOptsH5Old, y = resOptsH5New)
-      expect_gt(resCompareData[timeId == timeIdVal, `FLOW LIN.`], newValueFlow)
-      expect_equal(resCompareData[timeId == timeIdVal, `FLOW LIN.`], dataHtmlWidgetES31$a_offshore[[1]])
-      #no change after timeID > 40
-      expect_equal(resCompareData[timeId == (timeIdVal + 90), `FLOW LIN.`], dataHtmlWidgetES31$a_offshore[[50]])
-      expect_equal(dataHtmlWidgetES21$a_offshore[[1]], 0)
-      expect_equal(dataHtmlWidgetES21$nega_offshore[[1]], 0)
-    }
-  }
-
-})
+# test_that("exchangesStack, interactive, x is a list of optsH5 and refStudy optsH5  , ", {
+#   if (.requireRhdf5_Antares(stopP = FALSE)){
+#     skip_if_not(.runExchangesStackTest)
+#     suppressMessages(writeAntaresH5(pathtemp, opts = opts, overwrite = TRUE))
+#     optsH5 <- setSimulationPath(pathtemp)
+# 
+#     # with new Studies H5 test if compare prodStack works
+#     ## create new folders h5
+#     pathInitial <- file.path(dirname(pathtemp), basename(pathtemp))
+# 
+#     listFolderToCreate <- c("testH5v2", "testH5v3", "testH5v4")
+#     for (folder in listFolderToCreate){
+#       pathNewH5 <- file.path(pathInitial, folder)
+#       if (!dir.exists(pathNewH5)){
+#         dir.create(pathNewH5)
+#       }
+# 
+#       #write the study
+#       #windows pb ? pathNewH5 <- gsub("/", "\\", pathNewH5, fixed = TRUE)
+#       optsData <- antaresRead::setSimulationPath(path = studyPath)
+#       suppressWarnings(
+#         writeAntaresH5(
+#           path = pathNewH5,
+#           opts = optsData,
+#           overwrite = TRUE,
+#           supressMessages = TRUE)
+#       )
+#     }
+#     pathH5FolderToEdit <- file.path(pathInitial, listFolderToCreate[[2]])
+#     pathH5FileToEdit <- file.path(pathH5FolderToEdit, list.files(pathH5FolderToEdit))
+#     myLink <- getLinks()[1]
+#     newValueFlow <- 50000
+#     mcYearToTestList <- c(2, NULL)
+#     for (mcYearToTest in mcYearToTestList){
+#       .h5Antares_edit_variable(
+#         pathH5 = pathH5FileToEdit,
+#         link = myLink,
+#         timeId = 1:40,
+#         antVar = "FLOW LIN.",
+#         newValue = newValueFlow,
+#         mcYear = mcYearToTest
+#       )
+# 
+#       optsList <- list()
+#       antaresDataListH5 <- list()
+#       for (i in 1:length(listFolderToCreate)){
+#         pathOptsI <- file.path(pathInitial, listFolderToCreate[[i]])
+#         optsList[[i]] <- setSimulationPath(path = pathOptsI)
+#         antaresDataListH5[[i]] <- readAntares(links = myLink, mcYear = mcYearToTest)
+#       }
+# 
+#       DR <- c("2018-04-24 00:00:00 UTC", "2018-04-26 00:00:00 UTC")
+#       #try without refStudy and interactive == FALSE
+#       myArea <- "a"
+#       ESListNoInt <-  exchangesStack(x = optsList,
+#                                      dateRange = DR,
+#                                      area = myArea,
+#                                      interactive = FALSE,
+#                                      mcYearh5 = mcYearToTest)
+#       dataHtmlWidgetESNoInt <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 2)
+#       expect_equal(max(dataHtmlWidgetESNoInt$a_offshore, na.rm = TRUE), 50000)
+# 
+#       # try with refStudy
+#       ESListNoInt <-  exchangesStack(x = optsList,
+#                                      refStudy = optsH5,
+#                                      interactive = FALSE,
+#                                      areas = myArea,
+#                                      dateRange = DR,
+#                                      mcYearh5 = mcYearToTest)
+#       ## get the data from htmlwidget
+#       dataHtmlWidgetES1 <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 1)
+#       dataHtmlWidgetES2 <- .get_data_from_htmlwidget(ESListNoInt, widgetsNumber = 2)
+# 
+#       ## get the data from the h5 file
+#       antaresDataRef <- readAntares(opts = optsH5, links = myLink, mcYears = mcYearToTest)
+#       expect_equal(max(antaresDataListH5[[2]]$`FLOW LIN.`), newValueFlow)
+#       expect_equal(max(antaresDataListH5[[1]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`))
+#       expect_equal(max(antaresDataListH5[[3]]$`FLOW LIN.`), max(antaresDataRef$`FLOW LIN.`))
+#       expect_equal(antaresDataListH5[[2]]$`OV. COST`, antaresDataRef$`OV. COST`)
+# 
+#       ## compare data
+#       resCompareData1_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[1]])
+#       resCompareData2_ref <- antaresProcessing::compare(x = antaresDataRef, y = antaresDataListH5[[2]])
+#       expect_equal(resCompareData1_ref[timeId == timeId[40], `FLOW LIN.`], -dataHtmlWidgetES1$nega_offshore[[2]])
+#       expect_gt(resCompareData2_ref[timeId == timeId[40], `FLOW LIN.`], newValueFlow)
+# 
+#       # interactive == TRUE
+#       ## DEBUG
+#       # PSWORef <-  prodStack(x = optsList,
+#       #                       dateRange = DR,
+#       #                       h5requestFiltering = list(areas = myArea,
+#       #                                                 mcYears = mcYearToTest),
+#       #                       .runApp = FALSE,
+#       #                       interactive = TRUE)
+#       # PSWORef <- PSWORef$init()
+#       # ESWORef <-  exchangesStack(x = antaresDataListH5[[2]])
+#       # ESWORef <-  exchangesStack(x = optsList)
+#       # ESWORef <-  exchangesStack(x = antaresDataListH5[[2]],
+#       #                            dateRange = DR)
+#       # ESWORef <-  exchangesStack(x = optsList,
+#       #                            dateRange = DR)
+# 
+#       ESWORef <-  exchangesStack(
+#         x = optsList,
+#         dateRange = DR,
+#         .runApp = FALSE,
+#         interactive = TRUE,
+#         h5requestFiltering = list(
+#           areas = getAreas(select = "a"),
+#           links = getLinks(areas = myArea),
+#           mcYears = mcYearToTest))
+#       ESWORef <- ESWORef$init()
+#       expect_true(is(ESWORef, "MWController"))
+#       expect_equal(ESWORef$ncharts, 3)
+#       expect_equal(ESWORef$ncol, 2)
+#       expect_equal(ESWORef$nrow, 2)
+#       ## get the data from htmlwidget
+#       dataHtmlWidgetESWORef <- .get_data_from_htmlwidget(ESWORef, widgetsNumber = 2)
+#       expect_equal(dataHtmlWidgetESWORef$a_offshore[[2]], 50000)
+#       expect_equal(dataHtmlWidgetESWORef$nega_offshore[[2]], 0)
+#       dataHtmlWidgetESWORef1 <- .get_data_from_htmlwidget(ESWORef, widgetsNumber = 1)
+#       expect_equal(dataHtmlWidgetESWORef1$a_offshore[[2]], 0)
+#       expect_gt(dataHtmlWidgetESWORef1$nega_offshore[[2]], 0)
+# 
+#       # fourth, MWController with refStudy and interactive == TRUE
+#       ESWORefListI <-  exchangesStack(
+#         x = optsList,
+#         refStudy  = optsH5,
+#         dateRange = DR,
+#         .runApp = FALSE,
+#         interactive = TRUE,
+#         h5requestFiltering = list(
+#           areas = getAreas(select = "a"),
+#           links = getLinks(areas = myArea),
+#           mcYears = mcYearToTest))
+#       ESWORefListI <- ESWORefListI$init()
+#       expect_true(is(ESWORefListI, "MWController"))
+#       expect_equal(ESWORefListI$ncharts, 3)
+#       expect_equal(ESWORefListI$ncol, 2)
+#       expect_equal(ESWORefListI$nrow, 2)
+#       #check data from htmlwidgets
+#       dataHtmlWidgetES31 <- .get_data_from_htmlwidget(ESWORefListI, widgetsNumber = 2)
+#       expect_gt(dataHtmlWidgetES31$a_offshore[[2]], 50000)
+#       expect_equal(dataHtmlWidgetES31$nega_offshore[[2]], 0)
+#       dataHtmlWidgetES21 <- .get_data_from_htmlwidget(ESWORefListI, widgetsNumber = 1)
+#       expect_equal(dataHtmlWidgetES21$a_offshore[[2]], 0)
+#       expect_equal(dataHtmlWidgetES21$nega_offshore[[2]], 0)
+# 
+#       resOptsH5Old <- readAntares(opts = optsH5, links = myLink, showProgress = FALSE, mcYears = mcYearToTest)
+#       resOptsH5New <- readAntares(opts = optsList[[2]], links = myLink, showProgress = FALSE, mcYears = mcYearToTest)
+#       #timeId for time = "2018-04-24 00:00:00 UTC" ? timeId = 2713
+#       timeIdVal <- 2713
+#       expect_equal(resOptsH5New[timeId == timeIdVal, `FLOW LIN.`], newValueFlow)
+#       expect_lt(resOptsH5Old[timeId == timeIdVal, `FLOW LIN.`], 0)
+# 
+#       resCompareData <- antaresProcessing::compare(x = resOptsH5Old, y = resOptsH5New)
+#       expect_gt(resCompareData[timeId == timeIdVal, `FLOW LIN.`], newValueFlow)
+#       expect_equal(resCompareData[timeId == timeIdVal, `FLOW LIN.`], dataHtmlWidgetES31$a_offshore[[1]])
+#       #no change after timeID > 40
+#       expect_equal(resCompareData[timeId == (timeIdVal + 90), `FLOW LIN.`], dataHtmlWidgetES31$a_offshore[[50]])
+#       expect_equal(dataHtmlWidgetES21$a_offshore[[1]], 0)
+#       expect_equal(dataHtmlWidgetES21$nega_offshore[[1]], 0)
+#     }
+#   }
+# 
+# })

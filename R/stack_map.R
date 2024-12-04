@@ -6,7 +6,7 @@
 #' 
 #' @param x \code{antaresDataList} antaresDataList contian areas ans links.
 #' @param mapLayout
-#'   Object created with function \code{\link{mapLayout}}
+#'   Object created with function [mapLayout()]
 #'
 #' @examples 
 #' \dontrun{

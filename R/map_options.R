@@ -3,7 +3,7 @@
 #' Graphical options for plotMap
 #' 
 #' These functions get and set options that control some graphical aspects 
-#' of maps created with \code{\link{plotMap}}.
+#' of maps created with [plotMap()].
 #' 
 #' @param areaDefaultCol
 #'   default color of areas.

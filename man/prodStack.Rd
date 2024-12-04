@@ -40,12 +40,12 @@ prodStack(
   width = NULL,
   height = NULL,
   xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(),
+  h5requestFiltering = deprecated(),
   stepPlot = FALSE,
   drawPoints = FALSE,
-  timeSteph5 = "hourly",
-  mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"),
+  timeSteph5 = deprecated(),
+  mcYearh5 = deprecated(),
+  tablesh5 = deprecated(),
   language = "en",
   hidden = NULL,
   refStudy = NULL,
@@ -55,7 +55,7 @@ prodStack(
 \arguments{
 \item{name}{name of the stack to create or update}
 
-\item{variables}{A named list of expressions created with \code{\link[base:list]{alist}}. The
+\item{variables}{A named list of expressions created with [base::alist]. The
 name of each element is the name of the variable to draw in the stacked
 graph. The element itself is an expression explaining how to compute the
 variable (see examples).}
@@ -64,7 +64,7 @@ variable (see examples).}
 \code{variables} is an alias, then this argument should be \code{NULL} in 
 order to use default colors.}
 
-\item{lines}{A named list of expressions created with \code{\link[base:list]{alist}}
+\item{lines}{A named list of expressions created with [base::alist]
 indicating how to compute the curves to display on top of the stacked graph.
 It should be \code{NULL} if there is no curve to trace or if parameter
 \code{variables} is an alias.}
@@ -79,7 +79,7 @@ should be \code{NULL} if there is no curve to trace or if parameter
 \code{prodStackAliases}.}
 
 \item{x}{An object of class \code{antaresData} created with function 
-\code{\link[antaresRead]{readAntares}} containing data for areas and or
+[antaresRead::readAntares()] containing data for areas and or
 districts. it can be a list of \code{antaresData} objects. 
 In this case, one chart is created for each object. 
 Can also contains opts who refer to a h5 file or list of opts.}
@@ -116,18 +116,18 @@ list with the initial values of the given parameter for each chart. See details
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 
-\code{\link[manipulateWidget]{compareOptions}} to see available options.}
+[manipulateWidget::compareOptions] to see available options.}
 
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}
 
 \item{legend}{Logical value indicating if a legend should be drawn. This argument is 
 usefull when one wants to create a shared legend with
-\code{\link{prodStackLegend}}}
+[prodStackLegend()]}
 
 \item{legendId}{Id of the legend linked to the graph. This argument is 
 usefull when one wants to create a shared legend with 
-\code{\link{prodStackLegend}}}
+[prodStackLegend()]}
 
 \item{groupId}{Parameter that can be used to synchronize the horizontal 
 zoom of multiple charts. All charts that need to be synchronized must
@@ -165,10 +165,10 @@ typically h5requestFiltering = list(areas = "a", mcYears = 2)}
 \item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
 
 \item{refStudy}{An object of class \code{antaresData} created with function 
-\code{\link[antaresRead]{readAntares}} containing data for areas and or
+[antaresRead::readAntares()] containing data for areas and or
 districts. Can also contains an opts who refer to a h5 file.}
 
-\item{...}{Other arguments for \code{\link{manipulateWidget}}}
+\item{...}{Other arguments for [manipulateWidget::manipulateWidget]}
 }
 \value{
 \code{prodStack} returns an interactive html graphic. If argument
@@ -279,5 +279,5 @@ mcYears = 2))
 
 }
 \seealso{
-\code{\link{prodStackLegend}}
+[prodStackLegend()]
 }

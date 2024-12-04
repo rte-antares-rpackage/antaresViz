@@ -8,11 +8,11 @@
 #' 
 #' @param x
 #'   Object of class \code{antaresDataList} created with 
-#'   \code{\link[antaresRead]{readAntares}} and containing areas and links data.
+#'   [antaresRead::readAntares()] and containing areas and links data.
 #'    It can be a list of \code{antaresData} objects. 
 #'    In this case, one chart is created for each object.
 #' @param mapLayout
-#'   Object created with function \code{\link{mapLayout}}
+#'   Object created with function [antaresViz::mapLayout()]
 #' @param colAreaVar
 #'   Name of a variable present in \code{x$areas}. The values of this variable
 #'   are represented by the color of the areas on the map. If \code{"none"}, then
@@ -28,7 +28,7 @@
 #'   \code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}
 #' @param aliasSizeAreaVars
 #'   If \code{typeSizeAreaVars} is set to TRUE, name of alias. You can find the list 
-#'   of alias with the function \code{\link[antaresRead]{showAliases}}
+#'   of alias with the function [antaresRead::showAliases()]
 #' @param areaChartType
 #'   If parameter \code{sizeAreaVars} contains multiple variables, this parameter
 #'   determines the type of representation. Possible values are \code{"bar"} for
@@ -70,12 +70,12 @@
 #'   Title of the map.
 #' @param options
 #'   List of parameters that override some default visual settings. See the
-#'   help of \code{\link{plotMapOptions}}.
+#'   help of [antaresViz::plotMapOptions()].
 #' @param sizeMiniPlot \code{boolean} variable size for miniplot
 #' @param h5requestFiltering Contains arguments used by default for h5 request,
 #'   typically h5requestFiltering = list(mcYears = 3)
 #' @inheritParams prodStack
-#'   
+#' @importFrom lifecycle is_present deprecate_warn deprecated 
 #'   
 #' @details 
 #' 
@@ -181,13 +181,29 @@ plotMap <- function(x,
                     compareOpts = list(),
                     interactive = getInteractivity(),
                     options = plotMapOptions(),
-                    width = NULL, height = NULL, dateRange = NULL, xyCompare = c("union","intersect"),
-                    h5requestFiltering = list(),
-                    timeSteph5 = "hourly",
-                    mcYearh5 = NULL,
-                    tablesh5 = c("areas", "links"),
+                    width = NULL, 
+                    height = NULL, 
+                    dateRange = NULL, 
+                    xyCompare = c("union","intersect"),
+                    h5requestFiltering = deprecated(),
+                    timeSteph5 = deprecated(),
+                    mcYearh5 = deprecated(),
+                    tablesh5 = deprecated(),
                     sizeMiniPlot = FALSE,language = "en", 
                     hidden = NULL, ...) {
+  
+  deprecated_vector_params <- c(lifecycle::is_present(h5requestFiltering),
+                                lifecycle::is_present(timeSteph5),
+                                lifecycle::is_present(mcYearh5),
+                                lifecycle::is_present(tablesh5))
+  
+  if(any(deprecated_vector_params))
+    lifecycle::deprecate_warn(
+      when = "0.18.1", 
+      what = "plotMap(h5requestFiltering)",
+      details = "all these parameters are relative to the 'rhdf5' package, 
+      which is removed from the dependencies"
+    )
   
   .check_x(x)
   .check_compare_interactive(compare, interactive)
@@ -251,7 +267,7 @@ plotMap <- function(x,
   }
   # .testXclassAndInteractive(x, interactive)
   
-  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
+  # h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
   
   compareOptions <- .compOpts(x, compare)
@@ -512,15 +528,15 @@ plotMap <- function(x,
   
   if (!interactive) {
     
-    listParamH5NoInt <- list(
-      timeSteph5 = timeSteph5,
-      mcYearh5 = mcYearh5,
-      tablesh5 = tablesh5, 
-      h5requestFiltering = h5requestFiltering
-    )
+    # listParamH5NoInt <- list(
+    #   timeSteph5 = timeSteph5,
+    #   mcYearh5 = mcYearh5,
+    #   tablesh5 = tablesh5, 
+    #   h5requestFiltering = h5requestFiltering
+    # )
     params <- .getParamsNoInt(x = x, 
                               refStudy = refStudy, 
-                              listParamH5NoInt = listParamH5NoInt, 
+                              listParamH5NoInt = NULL, 
                               compare = compare, 
                               compareOptions = compareOptions, 
                               processFun = processFun,
@@ -560,7 +576,7 @@ plotMap <- function(x,
     {
       if(!is.null(params))
       {
-        .tryCloseH5()
+        # .tryCloseH5()
         # udpate for mw 0.11 & 0.10.1
         if(!is.null(params)){
           ind <- .id %% length(params$x)
@@ -617,82 +633,82 @@ plotMap <- function(x,
       .giveListFormat(x)
     }),
     
-    h5requestFiltering = mwSharedValue({h5requestFiltering}),
+    # h5requestFiltering = mwSharedValue({h5requestFiltering}),
     
-    paramsH5 = mwSharedValue({
-      paramsH5List <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
-      rhdf5::H5close()
-      paramsH5List
-    }),
-    H5request = mwGroup(
-      label = .getLabelLanguage("H5request", language),
-      timeSteph5 = mwSelect(
-        {
-          if(length(paramsH5) > 0){
-            choices = paramsH5$timeStepS
-            names(choices) <- sapply(choices, function(x) .getLabelLanguage(x, language))
-          } else {
-            choices <- NULL
-          }
-          choices
-        }, 
-        value =  paramsH5$timeStepS[1],
-        label = .getLabelLanguage("timeStep", language), 
-        multiple = FALSE, .display = !"timeSteph5" %in% hidden
-      ),
-      tables = mwSelect( 
-        {
-          if(length(paramsH5) > 0){
-            choices = paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "links")]
-            names(choices) <- sapply(choices, function(x) .getLabelLanguage(x, language))
-          } else {
-            choices <- NULL
-          }
-          choices
-        },
-        value = {
-          if(.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "links")]} else {NULL}
-        }, 
-        label = .getLabelLanguage("table", language), multiple = TRUE, 
-        .display = !"tables" %in% hidden
-      ),
-      mcYearH5 = mwSelectize(
-        choices = {
-          ch <- c("Average" = "", paramsH5[["mcYearS"]])
-          names(ch)[1] <- .getLabelLanguage("Average", language)
-          ch
-        },
-        value = {
-          if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
-        },
-        label = .getLabelLanguage("mcYears to be imported", language), 
-        multiple = TRUE, options = list(maxItems = 4),
-        .display = (!"mcYearH5" %in% hidden  & !meanYearH5)
-      ),
-      meanYearH5 = mwCheckbox(value = FALSE, 
-                              label = .getLabelLanguage("Average mcYear", language),
-                              .display = !"meanYearH5" %in% hidden),
-      .display = {any(unlist(lapply(x_in, .isSimOpts))) &  !"H5request" %in% hidden}
-    ),
-    sharerequest = mwSharedValue({
-      if(length(meanYearH5) > 0){
-        if(meanYearH5){
-          list(timeSteph5_l = timeSteph5, mcYearh_l = NULL, tables_l = tables)
-        } else {
-          list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
-        }
-      } else {
-        list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
-      }
-    }),
-    x_tranform = mwSharedValue({
-      resXT <- .get_x_transform(x_in = x_in,
-                                sharerequest = sharerequest,
-                                refStudy = refStudy, 
-                                h5requestFilter = paramsH5$h5requestFilter )
-      resXT 
-      
-    }),
+    # paramsH5 = mwSharedValue({
+    #   paramsH5List <- .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
+    #   rhdf5::H5close()
+    #   paramsH5List
+    # }),
+    # H5request = mwGroup(
+    #   label = .getLabelLanguage("H5request", language),
+    #   timeSteph5 = mwSelect(
+    #     {
+    #       if(length(paramsH5) > 0){
+    #         choices = paramsH5$timeStepS
+    #         names(choices) <- sapply(choices, function(x) .getLabelLanguage(x, language))
+    #       } else {
+    #         choices <- NULL
+    #       }
+    #       choices
+    #     }, 
+    #     value =  paramsH5$timeStepS[1],
+    #     label = .getLabelLanguage("timeStep", language), 
+    #     multiple = FALSE, .display = !"timeSteph5" %in% hidden
+    #   ),
+    #   tables = mwSelect( 
+    #     {
+    #       if(length(paramsH5) > 0){
+    #         choices = paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "links")]
+    #         names(choices) <- sapply(choices, function(x) .getLabelLanguage(x, language))
+    #       } else {
+    #         choices <- NULL
+    #       }
+    #       choices
+    #     },
+    #     value = {
+    #       if(.initial) {paramsH5[["tabl"]][paramsH5[["tabl"]] %in% c("areas", "links")]} else {NULL}
+    #     }, 
+    #     label = .getLabelLanguage("table", language), multiple = TRUE, 
+    #     .display = !"tables" %in% hidden
+    #   ),
+    #   mcYearH5 = mwSelectize(
+    #     choices = {
+    #       ch <- c("Average" = "", paramsH5[["mcYearS"]])
+    #       names(ch)[1] <- .getLabelLanguage("Average", language)
+    #       ch
+    #     },
+    #     value = {
+    #       if(.initial){paramsH5[["mcYearS"]][1]}else{NULL}
+    #     },
+    #     label = .getLabelLanguage("mcYears to be imported", language), 
+    #     multiple = TRUE, options = list(maxItems = 4),
+    #     .display = (!"mcYearH5" %in% hidden  & !meanYearH5)
+    #   ),
+    #   meanYearH5 = mwCheckbox(value = FALSE, 
+    #                           label = .getLabelLanguage("Average mcYear", language),
+    #                           .display = !"meanYearH5" %in% hidden),
+    #   .display = {any(unlist(lapply(x_in, .isSimOpts))) &  !"H5request" %in% hidden}
+    # ),
+    # sharerequest = mwSharedValue({
+    #   if(length(meanYearH5) > 0){
+    #     if(meanYearH5){
+    #       list(timeSteph5_l = timeSteph5, mcYearh_l = NULL, tables_l = tables)
+    #     } else {
+    #       list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
+    #     }
+    #   } else {
+    #     list(timeSteph5_l = timeSteph5, mcYearh_l = mcYearH5, tables_l = tables)
+    #   }
+    # }),
+    # x_tranform = mwSharedValue({
+    #   resXT <- .get_x_transform(x_in = x_in,
+    #                             sharerequest = sharerequest,
+    #                             refStudy = refStudy, 
+    #                             h5requestFilter = paramsH5$h5requestFilter )
+    #   resXT 
+    #   
+    # }),
     
     ##Stop h5
     mcYear = mwSelect(

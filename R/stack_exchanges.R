@@ -1,8 +1,8 @@
 # Copyright © 2016 RTE Réseau de transport d’électricité
 
-#' Plot the exchanges of an area
+#' @title Plot the exchanges of an area
 #'
-#' This function draws a stack representing the evolution of the exchanges of
+#' @description This function draws a stack representing the evolution of the exchanges of
 #' an area with its neighbours. Positive values denotes exports and negative
 #' values imports.
 #' User can either plot all flows from/to an area using the \code{default} stack or use a custom one.
@@ -11,7 +11,7 @@
 #' 
 #' @param x
 #'   Object of class \code{antaresData} created with function
-#'   \code{\link[antaresRead]{readAntares}}. It is required to contain link data.
+#'   [antaresRead::readAntares]. It is required to contain link data.
 #'   If it also contains area data with column `ROW BAL.`, then exchanges with
 #'   the rest of the world are also displayed on the chart.
 #' @param stack
@@ -46,50 +46,46 @@
 #'    }
 #'
 #' @examples
-#' \dontrun{
-#' mydata <- readAntares(links = "all", timeStep = "daily")
-#' exchangesStack(mydata)
+#' \donttest{
+#' library(antaresRead)
+#' # with study test for example (study is in package antaresRead)
+#' sourcedir <- system.file("testdata", package = "antaresRead")
 #'
-#' # Also display exchanges with the rest of the world
-#' mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
-#' exchangesStack(mydata)
-#'
-#' # Use compare :
-#' exchangesStack(mydata, compare = "mcYear")
-#' exchangesStack(mydata, compare = "area")
-#' exchangesStack(mydata, compare = "unit")
-#' exchangesStack(mydata, compare = "legend")
-#' # Compare studies with refStudy argument
-#' exchangesStack(x = myData1, refStudy = myData2)
-#' exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
-#' exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
-#' exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
-#'
-#' # Use h5 opts
-#' # Set path of simulaiton
-#' setSimulationPath(path = path1)
-#'
-#' # Convert your study in h5 format
-#' writeAntaresH5(path = mynewpath)
-#'
-#' # Redefine sim path with h5 file
-#' opts <- setSimulationPath(path = mynewpath)
-#' exchangesStack(x = opts)
-#'
-#' # Compare elements in a single study
-#' exchangesStack(x = opts, .compare = "mcYear")
-#'
-#' # Compare 2 studies
-#' exchangesStack(x = list(opts, opts2))
-#'
-#' # Compare 2 studies with argument refStudy
-#' exchangesStack(x = opts, refStudy = opts2)
-#' exchangesStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea)
-#' exchangesStack(x = opts, refStudy = opts2, h5requestFiltering = list(
-#' areas = getAreas(select = "a"),
-#' links = getLinks(areas = myArea),
-#' mcYears = myMcYear))
-#'
+#' # untar study in temp dir
+#' path_latest <- file.path(tempdir(), "latest")
+#' untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path_latest)
+#' 
+#' study_path <- file.path(path_latest, "test_case")
+#' 
+#' # set path to your Antares simulation
+#' opts <- setSimulationPath(study_path)
+#' 
+#' if(interactive()){
+#'   mydata <- readAntares(links = "all", timeStep = "daily")
+#'   exchangesStack(mydata)
+#'   
+#'   # Also display exchanges with the rest of the world
+#'   mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
+#'   exchangesStack(mydata)
+#'   
+#'   # Use compare :
+#'   exchangesStack(mydata, compare = "mcYear")
+#'   exchangesStack(mydata, compare = "area")
+#'   exchangesStack(mydata, compare = "unit")
+#'   exchangesStack(mydata, compare = "legend")
+#'   # Compare studies with refStudy argument
+#'   exchangesStack(x = myData1, refStudy = myData2)
+#'   exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
+#'   exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
+#'   exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
+#'   
+#'   
+#'   # Compare 2 studies
+#'   exchangesStack(x = list(opts, opts))
+#'   
+#'   # Compare 2 studies with argument refStudy
+#'   exchangesStack(x = opts, refStudy = opts)
+#' }
 #' }
 #'
 #' @export
@@ -107,15 +103,41 @@ exchangesStack <- function(x,
                            legendItemsPerRow = 5,
                            width = NULL, height = NULL,
                            xyCompare = c("union", "intersect"),
-                           h5requestFiltering = list(),
+                           h5requestFiltering = deprecated(),
                            stepPlot = FALSE, drawPoints = FALSE,
-                           timeSteph5 = "hourly",
-                           mcYearh5 = NULL,
-                           tablesh5 = c("areas", "links"),
+                           timeSteph5 = deprecated(),
+                           mcYearh5 = deprecated(),
+                           tablesh5 = deprecated(),
                            language = "en",
                            hidden = NULL,
                            refStudy = NULL,
                            ...) {
+  
+  deprecated_vector_params <- c(lifecycle::is_present(h5requestFiltering),
+                                lifecycle::is_present(timeSteph5),
+                                lifecycle::is_present(mcYearh5),
+                                lifecycle::is_present(tablesh5))
+  
+  if(any(deprecated_vector_params)){
+    lifecycle::deprecate_warn(
+      when = "0.18.1", 
+      what = "exchangesStack(h5requestFiltering)",
+      details = "all these parameters are relative to the 'rhdf5' package, 
+      which is removed from the dependencies"
+    )
+    
+    h5requestFiltering <- NULL
+    timeSteph5 <- NULL
+    mcYearh5 <- NULL
+    tablesh5 <- NULL
+  }
+  
+  # force (deprecated)
+  h5requestFiltering <- NULL
+  timeSteph5 <- NULL
+  mcYearh5 <- NULL
+  tablesh5 <- NULL
+    
 
     #we can hide these values
   exchangesStackValHidden <- c("H5request", "timeSteph5", "mcYearhH5", "mcYear", "main",
@@ -385,7 +407,7 @@ exchangesStack <- function(x,
 
   manipulateWidget(
     {
-      .tryCloseH5()
+      # .tryCloseH5()
       # udpate for mw 0.11 & 0.10.1
       if(!is.null(params)){
         ind <- .id %% length(params$x)
@@ -404,9 +426,9 @@ exchangesStack <- function(x,
       .giveListFormat(x)
     }),
 
-    paramsH5 = mwSharedValue({
-      .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
-    }),
+    # paramsH5 = mwSharedValue({
+    #   .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
+    # }),
 
     H5request = mwGroup(
       label = .getLabelLanguage("H5request", language),

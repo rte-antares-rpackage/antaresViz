@@ -31,7 +31,7 @@
 )
 }
 \arguments{
-\item{x}{Object created with function \code{\link{mapLayout}}}
+\item{x}{Object created with function [mapLayout()]}
 
 \item{colAreas}{Vector of colors for areas. By default, the colors used in the Antares
 software are used.}
@@ -92,12 +92,12 @@ the parent element. For instance "500px" and "100\%" are valid values.}
 \value{
 The function generates an \code{htmlwidget} of class \code{leaflet}. It can
   be stored in a variable and modified with package 
-  \code{\link[leaflet]{leaflet}}
+  [leaflet::leaflet()]
 }
 \description{
 This method can be used to visualize the network of an antares study.
 It generates an interactive map with a visual representaiton of a
-map layout created with function \code{\link{mapLayout}}.
+map layout created with function [mapLayout()].
 }
 \examples{
 \dontrun{

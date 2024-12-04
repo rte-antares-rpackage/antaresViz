@@ -7,7 +7,7 @@
 modRpart(data)
 }
 \arguments{
-\item{data}{an antaresData after use of \code{\link[antaresProcessing]{mergeAllAntaresData}}}
+\item{data}{an antaresData after use of [antaresProcessing::mergeAllAntaresData]}
 }
 \description{
 Make rpart from antares data

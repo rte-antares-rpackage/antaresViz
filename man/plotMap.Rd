@@ -33,10 +33,10 @@ plotMap(
   height = NULL,
   dateRange = NULL,
   xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(),
-  timeSteph5 = "hourly",
-  mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"),
+  h5requestFiltering = deprecated(),
+  timeSteph5 = deprecated(),
+  mcYearh5 = deprecated(),
+  tablesh5 = deprecated(),
   sizeMiniPlot = FALSE,
   language = "en",
   hidden = NULL,
@@ -45,15 +45,15 @@ plotMap(
 }
 \arguments{
 \item{x}{Object of class \code{antaresDataList} created with 
-\code{\link[antaresRead]{readAntares}} and containing areas and links data.
+[antaresRead::readAntares()] and containing areas and links data.
  It can be a list of \code{antaresData} objects. 
  In this case, one chart is created for each object.}
 
 \item{refStudy}{An object of class \code{antaresData} created with function 
-\code{\link[antaresRead]{readAntares}} containing data for areas and or
+[antaresRead::readAntares()] containing data for areas and or
 districts. Can also contains an opts who refer to a h5 file.}
 
-\item{mapLayout}{Object created with function \code{\link{mapLayout}}}
+\item{mapLayout}{Object created with function [antaresViz::mapLayout()]}
 
 \item{colAreaVar}{Name of a variable present in \code{x$areas}. The values of this variable
 are represented by the color of the areas on the map. If \code{"none"}, then
@@ -113,7 +113,7 @@ averaged.}
 \item{typeSizeAreaVars}{\code{logical}. Select \code{sizeAreaVars} using alias ? Default to \code{FALSE}}
 
 \item{aliasSizeAreaVars}{If \code{typeSizeAreaVars} is set to TRUE, name of alias. You can find the list 
-of alias with the function \code{\link[antaresRead]{showAliases}}}
+of alias with the function [antaresRead::showAliases()]}
 
 \item{compare}{An optional character vector containing names of parameters. When it is set,
 two charts are outputed with their own input controls. Alternatively, it can
@@ -123,13 +123,13 @@ list with the initial values of the given parameter for each chart. See details
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 
-\code{\link[manipulateWidget]{compareOptions}} to see available options.}
+[manipulateWidget::compareOptions] to see available options.}
 
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}
 
 \item{options}{List of parameters that override some default visual settings. See the
-help of \code{\link{plotMapOptions}}.}
+help of [antaresViz::plotMapOptions()].}
 
 \item{width}{Width of the graph expressed in pixels or in percentage of 
 the parent element. For instance "500px" and "100\%" are valid values.}
@@ -159,7 +159,7 @@ typically h5requestFiltering = list(mcYears = 3)}
 
 \item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
 
-\item{...}{Other arguments for \code{\link{manipulateWidget}}}
+\item{...}{Other arguments for [manipulateWidget::manipulateWidget]}
 }
 \value{
 An htmlwidget of class "leaflet". It can be modified with package 

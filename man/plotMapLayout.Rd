@@ -7,7 +7,7 @@
 plotMapLayout(mapLayout)
 }
 \arguments{
-\item{mapLayout}{object returned by function \code{\link{mapLayout}}}
+\item{mapLayout}{object returned by function [mapLayout()]}
 }
 \description{
 Visualize mapLayout output.
@@ -27,5 +27,5 @@ plotMapLayout(ml)
 
 }
 \seealso{
-\code{\link{mapLayout}}
+[mapLayout()]
 }

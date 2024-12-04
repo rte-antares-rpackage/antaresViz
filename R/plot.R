@@ -61,7 +61,7 @@
 #'   Label of the Y axis.
 #' @param colorScaleOpts
 #'   A list of parameters that control the creation of color scales. It is used
-#'   only for heatmaps. See \code{\link{colorScaleOptions}}() for available
+#'   only for heatmaps. See [colorScaleOptions()] for available
 #'   parameters.
 #' @param xyCompare
 #'   Use when you compare studies, can be "union" or "intersect". If union, all
@@ -106,7 +106,6 @@
 #' 
 #' @examples 
 #' \dontrun{
-#' setSimulationPath(path = path1)
 #' mydata <- readAntares(areas = "all", timeStep = "hourly")
 #' plot(x = mydata)
 #' 
@@ -170,8 +169,9 @@
 #' # Compare 2 studies with argument refStudy 
 #' plot(x = opts, refStudy = opts2)
 #' plot(x = opts, refStudy = opts2, type = "ts", interactive = FALSE, mcYearh5 = 2)
-#' plot(x = opts, refStudy = opts2, type = "ts", dateRange = DR, h5requestFiltering = list(
-#' mcYears = mcYears = mcYearToTest))
+#' plot(x = opts, refStudy = opts2, type = "ts", 
+#'     dateRange = DR, 
+#'     h5requestFiltering = list(mcYears = mcYears = mcYearToTest))
 #' 
 #' 
 #' }
@@ -204,12 +204,37 @@ tsPlot <- function(x,
                    legendItemsPerRow = 5,
                    colorScaleOpts = colorScaleOptions(20),
                    width = NULL, height = NULL, xyCompare = c("union","intersect"),
-                   h5requestFiltering = list(), highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
+                   h5requestFiltering = deprecated(), highlight = FALSE, stepPlot = FALSE, drawPoints = FALSE,
                    secondAxis = FALSE,
-                   timeSteph5 = "hourly",
-                   mcYearh5 = NULL,
-                   tablesh5 = c("areas", "links"), language = "en", 
+                   timeSteph5 = deprecated(),
+                   mcYearh5 = deprecated(),
+                   tablesh5 = deprecated(), language = "en", 
                    hidden = NULL, ...) {
+  
+  deprecated_vector_params <- c(lifecycle::is_present(h5requestFiltering),
+                                lifecycle::is_present(timeSteph5),
+                                lifecycle::is_present(mcYearh5),
+                                lifecycle::is_present(tablesh5))
+  
+  if(any(deprecated_vector_params)){
+    lifecycle::deprecate_warn(
+      when = "0.18.1", 
+      what = "tsPlot(h5requestFiltering)",
+      details = "all these parameters are relative to the 'rhdf5' package, 
+      which is removed from the dependencies"
+    )
+    
+    h5requestFiltering <- NULL
+    timeSteph5 <- NULL
+    mcYearh5 <- NULL
+    tablesh5 <- NULL
+  }
+  
+  # force (deprecated)
+  h5requestFiltering <- NULL
+  timeSteph5 <- NULL
+  mcYearh5 <- NULL
+  tablesh5 <- NULL
   
   
   .check_x(x)
@@ -258,7 +283,7 @@ tsPlot <- function(x,
   }
   # .testXclassAndInteractive(x, interactive)
   
-  h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
+  # h5requestFiltering <- .convertH5Filtering(h5requestFiltering = h5requestFiltering, x = x)
   
   
   # Generate a group number for dygraph objects
@@ -478,7 +503,7 @@ tsPlot <- function(x,
   meanYearH5 <- NULL
   
   manipulateWidget({
-    .tryCloseH5()
+    # .tryCloseH5()
 
     # udpate for mw 0.11 & 0.10.1
     if(!is.null(params)){
@@ -531,9 +556,9 @@ tsPlot <- function(x,
   
   h5requestFiltering = mwSharedValue({h5requestFiltering}),
   
-  paramsH5 = mwSharedValue({
-    .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
-  }),
+  # paramsH5 = mwSharedValue({
+  #   .h5ParamList(X_I = x_in, xyCompare = xyCompare, h5requestFilter = h5requestFiltering)
+  # }),
   
   H5request = mwGroup(
     label = .getLabelLanguage("H5request", language),

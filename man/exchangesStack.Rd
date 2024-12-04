@@ -30,12 +30,12 @@ exchangesStack(
   width = NULL,
   height = NULL,
   xyCompare = c("union", "intersect"),
-  h5requestFiltering = list(),
+  h5requestFiltering = deprecated(),
   stepPlot = FALSE,
   drawPoints = FALSE,
-  timeSteph5 = "hourly",
-  mcYearh5 = NULL,
-  tablesh5 = c("areas", "links"),
+  timeSteph5 = deprecated(),
+  mcYearh5 = deprecated(),
+  tablesh5 = deprecated(),
   language = "en",
   hidden = NULL,
   refStudy = NULL,
@@ -56,7 +56,7 @@ setExchangesStackAlias(
 }
 \arguments{
 \item{x}{Object of class \code{antaresData} created with function
-\code{\link[antaresRead]{readAntares}}. It is required to contain link data.
+[antaresRead::readAntares]. It is required to contain link data.
 If it also contains area data with column `ROW BAL.`, then exchanges with
 the rest of the world are also displayed on the chart.}
 
@@ -98,18 +98,18 @@ list with the initial values of the given parameter for each chart. See details
 
 \item{compareOpts}{List of options that indicates the number of charts to create and their 
 position. Check out the documentation of 
-\code{\link[manipulateWidget]{compareOptions}} to see available options.}
+[manipulateWidget::compareOptions] to see available options.}
 
 \item{interactive}{LogicalValue. If \code{TRUE}, then a shiny gadget is launched that lets
 the user interactively choose the areas or districts to display.}
 
 \item{legend}{Logical value indicating if a legend should be drawn. This argument is 
 usefull when one wants to create a shared legend with
-\code{\link{prodStackLegend}}}
+[prodStackLegend()]}
 
 \item{legendId}{Id of the legend linked to the graph. This argument is 
 usefull when one wants to create a shared legend with 
-\code{\link{prodStackLegend}}}
+[prodStackLegend()]}
 
 \item{groupId}{Parameter that can be used to synchronize the horizontal 
 zoom of multiple charts. All charts that need to be synchronized must
@@ -147,19 +147,19 @@ typically h5requestFiltering = list(links = getLinks(areas = myArea), mcYears = 
 \item{hidden}{\code{logical} Names of input to hide. Defaut to NULL}
 
 \item{refStudy}{An object of class \code{antaresData} created with function 
-\code{\link[antaresRead]{readAntares}} containing data for areas and or
+[antaresRead::readAntares()] containing data for areas and or
 districts. Can also contains an opts who refer to a h5 file.}
 
-\item{...}{Other arguments for \code{\link{manipulateWidget}}}
+\item{...}{Other arguments for [manipulateWidget::manipulateWidget]}
 
 \item{name}{name of the stack to create or update}
 
-\item{variables}{A named list of expressions created with \code{\link[base:list]{alist}}. The
+\item{variables}{A named list of expressions created with [base::alist]. The
 name of each element is the name of the variable to draw in the stacked
 graph. The element itself is an expression explaining how to compute the
 variable (see examples).}
 
-\item{lines}{A named list of expressions created with \code{\link[base:list]{alist}}
+\item{lines}{A named list of expressions created with [base::alist]
 indicating how to compute the curves to display on top of the stacked graph.
 It should be \code{NULL} if there is no curve to trace or if parameter
 \code{variables} is an alias.}
@@ -198,50 +198,46 @@ Compare argument can take following values :
    }
 }
 \examples{
-\dontrun{
-mydata <- readAntares(links = "all", timeStep = "daily")
-exchangesStack(mydata)
+\donttest{
+library(antaresRead)
+# with study test for example (study is in package antaresRead)
+sourcedir <- system.file("testdata", package = "antaresRead")
 
-# Also display exchanges with the rest of the world
-mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
-exchangesStack(mydata)
+# untar study in temp dir
+path_latest <- file.path(tempdir(), "latest")
+untar(file.path(sourcedir, "antares-test-study.tar.gz"), exdir = path_latest)
 
-# Use compare :
-exchangesStack(mydata, compare = "mcYear")
-exchangesStack(mydata, compare = "area")
-exchangesStack(mydata, compare = "unit")
-exchangesStack(mydata, compare = "legend")
-# Compare studies with refStudy argument
-exchangesStack(x = myData1, refStudy = myData2)
-exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
-exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
-exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
+study_path <- file.path(path_latest, "test_case")
 
-# Use h5 opts
-# Set path of simulaiton
-setSimulationPath(path = path1)
+# set path to your Antares simulation
+opts <- setSimulationPath(study_path)
 
-# Convert your study in h5 format
-writeAntaresH5(path = mynewpath)
-
-# Redefine sim path with h5 file
-opts <- setSimulationPath(path = mynewpath)
-exchangesStack(x = opts)
-
-# Compare elements in a single study
-exchangesStack(x = opts, .compare = "mcYear")
-
-# Compare 2 studies
-exchangesStack(x = list(opts, opts2))
-
-# Compare 2 studies with argument refStudy
-exchangesStack(x = opts, refStudy = opts2)
-exchangesStack(x = opts, refStudy = opts2, interactive = FALSE, mcYearh5 = 2, areas = myArea)
-exchangesStack(x = opts, refStudy = opts2, h5requestFiltering = list(
-areas = getAreas(select = "a"),
-links = getLinks(areas = myArea),
-mcYears = myMcYear))
-
+if(interactive()){
+  mydata <- readAntares(links = "all", timeStep = "daily")
+  exchangesStack(mydata)
+  
+  # Also display exchanges with the rest of the world
+  mydata <- readAntares(areas = "all", links = "all", timeStep = "daily")
+  exchangesStack(mydata)
+  
+  # Use compare :
+  exchangesStack(mydata, compare = "mcYear")
+  exchangesStack(mydata, compare = "area")
+  exchangesStack(mydata, compare = "unit")
+  exchangesStack(mydata, compare = "legend")
+  # Compare studies with refStudy argument
+  exchangesStack(x = myData1, refStudy = myData2)
+  exchangesStack(x = myData1, refStudy = myData2, interactive = FALSE)
+  exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1)
+  exchangesStack(x = list(myData2, myData3, myData4), refStudy = myData1, interactive = FALSE)
+  
+  
+  # Compare 2 studies
+  exchangesStack(x = list(opts, opts))
+  
+  # Compare 2 studies with argument refStudy
+  exchangesStack(x = opts, refStudy = opts)
+}
 }
 
 }
