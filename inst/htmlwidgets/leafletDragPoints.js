@@ -5,6 +5,9 @@ HTMLWidgets.widget({
   type: 'output',
 
   factory: function(el, width, height) {
+    console.log(typeof L);
+    
+  if (typeof L !== 'undefined') {
     var map = L.map(el).setView([0, 0], 2);
     L.tileLayer(
       'http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
@@ -12,7 +15,12 @@ HTMLWidgets.widget({
         attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
       }
     ).addTo(map);
-
+    
+  } else {
+    console.error("Leaflet (L) is not defined. Please check your dependencies.");
+    
+  }
+    
     var points = [];
     var mapLayer;
     var markersLayer = [];
@@ -20,6 +28,11 @@ HTMLWidgets.widget({
     function clear_polyline() {
       map.removeLayer( linesFeatureLayer );
     }
+    
+    Shiny.addCustomMessageHandler('debug', function(message) {
+      console.log(message);
+      
+    })
 
     // Function that updates shiny input
     function updateShinyInput() {
