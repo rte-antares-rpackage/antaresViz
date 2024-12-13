@@ -3,3 +3,9 @@ dependencies:
     version: 4.6.3
     src: htmlwidgets/lib/font-awesome-4.6.3
     stylesheet: css/font-awesome.min.css
+  - name: leaflet
+    version: 1.9.4
+    src:
+      href: https://unpkg.com/leaflet@1.9.4/dist
+    script: leaflet.js
+    stylesheet: leaflet.css
