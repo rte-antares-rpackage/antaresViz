@@ -1,5 +1,13 @@
 Copyright 2016 RTE Reseau de transport d'electricite
 
+# antaresViz 0.18.4.9000
+
+GITHUB ACTIONS :  
+
+* Actions artifacts v3 is closing down, update to v4  
+* test-coverage.yaml updated 
+
+
 # antaresViz 0.18.3 
 * The package has been accepted but archived as version 0.18.2.  
 New version for distribution on CRAN  
